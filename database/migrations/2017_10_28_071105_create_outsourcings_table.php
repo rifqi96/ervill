@@ -15,6 +15,8 @@ class CreateOutsourcingsTable extends Migration
     {
         Schema::create('outsourcings', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('type');
+            $table->string('name');
             $table->timestamps();
         });
     }
