@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class CreateUsersSeeder extends Seeder
 {
@@ -40,11 +41,15 @@ class CreateUsersSeeder extends Seeder
                     'username' => 'driver',
                     'password' => bcrypt('driver'),
                     'full_name' => 'Ervill Driver',
+                    'email' => 'driver@ervill.com',
                     'phone' => '085882738190'
                 ));
             }
         }
 
-        DB::table('users')->insert($data);
+        foreach($data as $key=>$val){
+            User::create($data[$key]);
+        }
+//        DB::table('users')->insert($data);
     }
 }

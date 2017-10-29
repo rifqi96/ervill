@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Role;
 
 class CreateRolesSeeder extends Seeder
 {
@@ -28,6 +29,10 @@ class CreateRolesSeeder extends Seeder
             'name'=>'driver'
         ));
 
-        DB::table('roles')->insert($data);
+        foreach($data as $key=>$val){
+            Role::create($data[$key]);
+        }
+
+//        DB::table('roles')->insert($data);
     }
 }
