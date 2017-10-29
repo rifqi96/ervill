@@ -17,12 +17,12 @@
 
 Route::prefix('/')->group(function(){
     Route::get('/', [
-        'uses' => 'HomeController@index',
+        'uses' => 'OverviewController@index',
         'as' => 'overview.home'
     ]);
 
     Route::get('/home', [
-        'uses' => 'HomeController@index',
+        'uses' => 'OverviewController@index',
         'as' => 'overview.home'
     ]);
 });

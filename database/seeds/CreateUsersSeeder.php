@@ -68,7 +68,7 @@ class CreateUsersSeeder extends Seeder
         foreach($data as $key=>$val){
             User::create($data[$key]);
         }
-        
+
 //        DB::table('users')->insert($data);
     }
 }

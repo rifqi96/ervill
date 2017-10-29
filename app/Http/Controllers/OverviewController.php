@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class OverviewController extends Controller
 {
+    private $data = array();
     /**
      * Create a new controller instance.
      *
@@ -14,6 +15,7 @@ class OverviewController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->data['module'] = 'overview';
     }
 
     /**
@@ -23,6 +25,9 @@ class OverviewController extends Controller
      */
     public function index()
     {
-        return view('overview.home');
+        $this->data['slug'] = "";
+        $this->data['breadcrumb'] = "Home - Overview";
+
+        return view('overview.index', $this->data);
     }
 }
