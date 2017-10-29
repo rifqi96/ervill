@@ -1,6 +1,6 @@
 # README #
 
-Hello, welcome. This is an internal system project made using laravel framework.
+Hello, welcome. This is an internal system project of ERVILL under PT. Liman Bangun Utama made using laravel framework.
 
 ### System Requirements ###
 
