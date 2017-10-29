@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Module;
 
 class CreateModulesSeeder extends Seeder
 {
@@ -93,6 +94,10 @@ class CreateModulesSeeder extends Seeder
             'name'=>'settings_profile'
         ));
 
-        DB::table('modules')->insert($data);
+        foreach($data as $key=>$val){
+            Module::create($data[$key]);
+        }
+
+//        DB::table('modules')->insert($data);
     }
 }

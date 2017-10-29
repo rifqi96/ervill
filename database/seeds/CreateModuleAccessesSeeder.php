@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Module;
+use App\Models\ModuleAccess;
 
 class CreateModuleAccessesSeeder extends Seeder
 {
@@ -213,6 +214,10 @@ class CreateModuleAccessesSeeder extends Seeder
             }
         }
 
-        DB::table('module_accesses')->insert($data);
+        foreach($data as $key=>$val){
+            ModuleAccess::create($data[$key]);
+        }
+
+//        DB::table('module_accesses')->insert($data);
     }
 }
