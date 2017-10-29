@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Role;
 
 class CreateUsersSeeder extends Seeder
 {
@@ -12,12 +13,27 @@ class CreateUsersSeeder extends Seeder
      */
     public function run()
     {
+        $roles = array();
+
+        foreach(Role::all() as $role){
+            if($role->name == "owner"){
+                $roles['owner'] = $role->id;
+            }
+            else if($role->name == "admin"){
+                $roles['admin'] = $role->id;
+            }
+            else if($role->name == "driver"){
+                $roles['driver'] = $role->id;
+            }
+        }
+
         $data = array();
 
         for($i=1; $i<=3; $i++){
             if($i == 1){
                 array_push($data, array(
                     'id' => $i,
+                    'role_id' => $roles['admin'],
                     'username' => 'owner',
                     'password' => bcrypt('owner'),
                     'full_name' => 'Sulhan Syadeli',
@@ -28,6 +44,7 @@ class CreateUsersSeeder extends Seeder
             else if($i == 2){
                 array_push($data, array(
                     'id' => $i,
+                    'role_id' => $roles['admin'],
                     'username' => 'admin',
                     'password' => bcrypt('admin'),
                     'full_name' => 'Ervill Admin',
@@ -38,6 +55,7 @@ class CreateUsersSeeder extends Seeder
             else if($i == 3){
                 array_push($data, array(
                     'id' => $i,
+                    'role_id' => $roles['driver'],
                     'username' => 'driver',
                     'password' => bcrypt('driver'),
                     'full_name' => 'Ervill Driver',
@@ -50,6 +68,7 @@ class CreateUsersSeeder extends Seeder
         foreach($data as $key=>$val){
             User::create($data[$key]);
         }
+        
 //        DB::table('users')->insert($data);
     }
 }
