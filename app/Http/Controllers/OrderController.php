@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    private $data = array();
+    protected $data = array();
     /**
      * Create a new controller instance.
      *
@@ -16,5 +16,13 @@ class OrderController extends Controller
     {
         $this->middleware('auth');
         $this->data['module'] = 'order';
+    }
+
+    public function getData(){
+        return $this->data;
+    }
+
+    public function setData($key, $val){
+        $this->data[$key] = $val;
     }
 }
