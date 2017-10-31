@@ -36,6 +36,10 @@ class CreateModuleAccessesTable extends Migration
      */
     public function down()
     {
+        Schema::table('module_accesses', function (Blueprint $table) {
+            $table->dropForeign('module_accesses_module_id_foreign');
+            $table->dropForeign('module_accesses_role_id_foreign');
+        });
         Schema::dropIfExists('module_accesses');
     }
 }

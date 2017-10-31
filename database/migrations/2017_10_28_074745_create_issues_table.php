@@ -33,6 +33,9 @@ class CreateIssuesTable extends Migration
      */
     public function down()
     {
+        Schema::table('issues', function (Blueprint $table) {
+            $table->dropForeign('issues_inventory_id_foreign');
+        });
         Schema::dropIfExists('issues');
     }
 }
