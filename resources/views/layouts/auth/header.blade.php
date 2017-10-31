@@ -1,4 +1,4 @@
-<h1><strong>{{config('app.name', 'ERVILL')}}</strong> @yield('title')</h1>
+<h1><a href="{{route('overview.home')}}"><strong>{{config('app.name', 'ERVILL')}}</strong></a> @yield('title')</h1>
 <div class="description">
     {{--<p>--}}
     {{--{{@description}}--}}

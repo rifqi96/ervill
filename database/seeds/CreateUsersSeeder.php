@@ -33,7 +33,7 @@ class CreateUsersSeeder extends Seeder
             if($i == 1){
                 array_push($data, array(
                     'id' => $i,
-                    'role_id' => $roles['admin'],
+                    'role_id' => $roles['owner'],
                     'username' => 'owner',
                     'password' => bcrypt('owner'),
                     'full_name' => 'Sulhan Syadeli',
