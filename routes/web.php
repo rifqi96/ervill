@@ -27,6 +27,15 @@ Route::prefix('/')->group(function(){
     ]);
 });
 
+Route::prefix('order')->group(function(){
+    Route::prefix('customer')->group(function(){
+        Route::get('/', [
+            'uses' => 'OrderCustomerController@index',
+            'as' => 'order.customer.index'
+        ]);
+    });
+});
+
 /**
  * Auth::routes() are :
  *
