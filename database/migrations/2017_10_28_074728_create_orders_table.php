@@ -18,9 +18,9 @@ class CreateOrdersTable extends Migration
             $table->integer('inventory_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->integer('quantity');
-            $table->datetime('created_at');
-            $table->datetime('delivery_at');
-            $table->datetime('accepted_at');
+            $table->datetime('created_at')->nullable();
+            $table->datetime('delivery_at')->nullable();
+            $table->datetime('accepted_at')->nullable();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
                 ->onUpdate('cascade')->onDelete('cascade');
