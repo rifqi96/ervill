@@ -18,11 +18,11 @@ class OrderController extends Controller
         $this->data['module'] = 'order';
     }
 
-    public function getData(){
-        return $this->data;
-    }
-
-    public function setData($key, $val){
-        $this->data[$key] = $val;
-    }
+//    public function getData(){
+//        return $this->data;
+//    }
+//
+//    public function setData($key, $val){
+//        $this->data[$key] = $val;
+//    }
 }
