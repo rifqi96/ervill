@@ -25,6 +25,7 @@ class OverviewController extends Controller
      */
     public function index()
     {
+//        abort(401, 'This action is unauthorized');
         $this->data['slug'] = "";
         $this->data['breadcrumb'] = "Home - Overview";
 
