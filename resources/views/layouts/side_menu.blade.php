@@ -1,6 +1,6 @@
 <ul class="side-menu-list">
     <li class="{{$module=="overview"?"opened":""}}">
-        <a href="">
+        <a href="{{route('overview.index')}}">
             <i class="font-icon font-icon-dashboard"></i>
             <span class="lbl">Overview</span>
         </a>
@@ -12,7 +12,7 @@
                 </span>
         <ul>
             <li>
-                {!!$slug=="gallon"?'<span class="lbl">Gallon</span>':'<a href=""><span class="lbl">Gallon</span></a>'!!}
+                {!!$slug=="gallon"?'<span class="lbl">Gallon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Gallon</span></a>'!!}
             </li>
             <li>
                 {!!$slug=="water"?'<span class="lbl">Water</span>':'<a href=""><span class="lbl">Water</span></a>'!!}

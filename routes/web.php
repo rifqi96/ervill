@@ -18,21 +18,53 @@
 Route::prefix('/')->group(function(){
     Route::get('/', [
         'uses' => 'OverviewController@index',
-        'as' => 'overview.home'
+        'as' => 'overview.index'
     ]);
 
-    Route::get('/home', [
+    Route::get('index', [
         'uses' => 'OverviewController@index',
-        'as' => 'overview.home'
+        'as' => 'overview.index'
+    ]);
+
+    Route::get('home', [
+        'uses' => 'OverviewController@index',
+        'as' => 'overview.index'
     ]);
 });
 
 Route::prefix('order')->group(function(){
-    Route::prefix('customer')->group(function(){
+    Route::prefix('gallon')->group(function(){
         Route::get('/', [
-            'uses' => 'OrderCustomerController@index',
-            'as' => 'order.customer.index'
+            'uses' => 'OrderGallonController@index',
+            'as' => 'order.gallon.index'
         ]);
+
+        Route::get('make', [
+            'uses' => 'OrderGallonController@showMake',
+            'as' => 'order.gallon.make'
+        ]);
+
+        Route::get('inventory', [
+            'uses' => 'OrderGallonController@showInventory',
+            'as' => 'order.gallon.inventory'
+        ]);
+
+        Route::prefix('post')->group(function(){
+            Route::post('make', [
+                'uses' => 'OrderGallonController@doMake',
+                'as' => 'order.gallon.post.make'
+            ]);
+
+            Route::post('update', [
+                'uses' => 'OrderGallonController@doUpdate',
+                'as' => 'order.gallon.post.update'
+            ]);
+
+            Route::post('delete', [
+                'uses' => 'OrderGallonController@doDelete',
+                'as' => 'order.gallon.post.delete'
+            ]);
+        });
     });
 });
 
