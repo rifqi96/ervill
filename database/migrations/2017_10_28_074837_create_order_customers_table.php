@@ -36,6 +36,10 @@ class CreateOrderCustomersTable extends Migration
      */
     public function down()
     {
+        Schema::table('order_customers', function (Blueprint $table) {
+            $table->dropForeign('order_customers_order_id_foreign');
+            $table->dropForeign('order_customers_shipment_id_foreign');
+        });
         Schema::dropIfExists('order_customers');
     }
 }

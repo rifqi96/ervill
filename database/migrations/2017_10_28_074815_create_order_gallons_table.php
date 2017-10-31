@@ -33,6 +33,10 @@ class CreateOrderGallonsTable extends Migration
      */
     public function down()
     {
+        Schema::table('order_gallons', function (Blueprint $table) {
+            $table->dropForeign('order_gallons_order_id_foreign');
+            $table->dropForeign('order_gallons_outsourcing_id_foreign');
+        });
         Schema::dropIfExists('order_gallons');
     }
 }

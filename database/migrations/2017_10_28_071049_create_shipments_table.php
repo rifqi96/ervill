@@ -31,6 +31,9 @@ class CreateShipmentsTable extends Migration
      */
     public function down()
     {
+        Schema::table('shipments', function (Blueprint $table) {
+            $table->dropForeign('shipments_user_id_foreign');
+        });
         Schema::dropIfExists('shipments');
     }
 }
