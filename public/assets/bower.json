@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "moment": "^2.19.1",
-    "popper.js": "^1.12.6"
+    "popper.js": "^1.12.6",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"
   }
 }
