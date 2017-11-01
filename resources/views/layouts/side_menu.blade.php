@@ -15,10 +15,10 @@
                 {!!$slug=="gallon"?'<span class="lbl">Gallon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Gallon</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="water"?'<span class="lbl">Water</span>':'<a href=""><span class="lbl">Water</span></a>'!!}
+                {!!$slug=="water"?'<span class="lbl">Water</span>':'<a href="'.route("order.water.index").'"><span class="lbl">Water</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="customer"?'<span class="lbl">Customer</span>':'<a href=""><span class="lbl">Customer</span></a>'!!}
+                {!!$slug=="customer"?'<span class="lbl">Customer</span>':'<a href="'.route("order.customer.index").'"><span class="lbl">Customer</span></a>'!!}
             </li>
         </ul>
     </li>

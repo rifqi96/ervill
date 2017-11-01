@@ -30,6 +30,7 @@ Route::prefix('/')->group(function(){
         'uses' => 'OverviewController@index',
         'as' => 'overview.index'
     ]);
+
 });
 
 Route::prefix('order')->group(function(){
@@ -65,6 +66,30 @@ Route::prefix('order')->group(function(){
                 'as' => 'order.gallon.post.delete'
             ]);
         });
+    });
+    Route::prefix('water')->group(function(){
+        Route::get('/', [
+            'uses' => 'OrderWaterController@index',
+            'as' => 'order.water.index'
+        ]);
+        Route::get('/create', [
+            'uses' => 'OrderWaterController@showMake',
+            'as' => 'order.water.make'
+        ]);
+        Route::get('/issue', [
+            'uses' => 'OrderWaterController@createIssue',
+            'as' => 'order.water.issue'
+        ]);
+    });
+    Route::prefix('customer')->group(function(){
+        Route::get('/', [
+            'uses' => 'OrderCustomerController@index',
+            'as' => 'order.customer.index'
+        ]);
+        Route::get('/create', [
+            'uses' => 'OrderCustomerController@showMake',
+            'as' => 'order.customer.make'
+        ]);      
     });
 });
 
