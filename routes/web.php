@@ -76,7 +76,7 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderWaterController@showMake',
             'as' => 'order.water.make'
         ]);
-        Route::get('/issue', [
+        Route::get('/issue/{id}', [
             'uses' => 'OrderWaterController@createIssue',
             'as' => 'order.water.issue'
         ]);
@@ -89,8 +89,58 @@ Route::prefix('order')->group(function(){
         Route::get('/create', [
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
-        ]);      
+        ]);     
+        Route::get('/track', [
+            'uses' => 'OrderCustomerController@track',
+            'as' => 'order.customer.track'
+        ]); 
     });
+});
+
+
+Route::prefix('setting')->group(function(){
+    Route::prefix('outsourcing')->group(function(){
+        Route::get('/', [
+            'uses' => 'OutsourcingController@index',
+            'as' => 'setting.outsourcing.index'
+        ]);
+         Route::get('/create', [
+            'uses' => 'OutsourcingController@showMake',
+            'as' => 'setting.outsourcing.make'
+        ]);    
+    });
+
+    Route::prefix('user_management')->group(function(){
+        Route::get('/', [
+            'uses' => 'UserController@index',
+            'as' => 'setting.user_management.index'
+        ]);
+         Route::get('/create', [
+            'uses' => 'UserController@showMake',
+            'as' => 'setting.user_management.make'
+        ]);    
+    });
+
+    Route::prefix('user_role')->group(function(){
+        Route::get('/', [
+            'uses' => 'RoleController@index',
+            'as' => 'setting.user_role.index'
+        ]);
+         Route::get('/create', [
+            'uses' => 'RoleController@showMake',
+            'as' => 'setting.user_role.make'
+        ]);    
+    });
+
+    Route::prefix('module_access')->group(function(){
+        Route::get('/', [
+            'uses' => 'ModuleAccessController@index',
+            'as' => 'setting.module_access.index'
+        ]);         
+    });
+    
+   
+    
 });
 
 /**
