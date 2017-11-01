@@ -24,5 +24,11 @@ class OrderCustomerController extends OrderController
 
         return view('order.customer.make', $this->data);
     }
+    public function track()
+    {
+        $this->data['breadcrumb'] = "Order - Customer Order - Track";
+
+        return view('order.customer.track', $this->data);
+    }
 
 }
