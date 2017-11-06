@@ -137,11 +137,14 @@ Route::prefix('setting')->group(function(){
             'uses' => 'ModuleAccessController@index',
             'as' => 'setting.module_access.index'
         ]);         
-    });
-    
-   
+    });   
     
 });
+
+Route::get('/profile', [
+            'uses' => 'UserController@showProfile',
+            'as' => 'profile.index'
+]);
 
 /**
  * Auth::routes() are :
