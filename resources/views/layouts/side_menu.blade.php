@@ -1,7 +1,7 @@
 <ul class="side-menu-list">
     <li class="{{$module=="overview"?"opened":""}}">
         <a href="{{route('overview.index')}}">
-            <i class="font-icon font-icon-dashboard"></i>
+            <i class="font-icon font-icon-home"></i>
             <span class="lbl">Overview</span>
         </a>
     </li>
@@ -12,20 +12,26 @@
                 </span>
         <ul>
             <li>
-                {!!$slug=="gallon"?'<span class="lbl">Gallon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Gallon</span></a>'!!}
+                {!!$slug=="gallon"?'<span class="lbl">Galon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Galon</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="water"?'<span class="lbl">Water</span>':'<a href="'.route("order.water.index").'"><span class="lbl">Water</span></a>'!!}
+                {!!$slug=="water"?'<span class="lbl">Air</span>':'<a href="'.route("order.water.index").'"><span class="lbl">Air</span></a>'!!}
             </li>
             <li>
                 {!!$slug=="customer"?'<span class="lbl">Customer</span>':'<a href="'.route("order.customer.index").'"><span class="lbl">Customer</span></a>'!!}
             </li>
         </ul>
     </li>
+    <li class="{{$module=="shipment"?"opened":""}}">
+        <a href="{{route('shipment.index')}}">
+            <i class="font-icon font-icon-calend"></i>
+            <span class="lbl">Pengiriman</span>
+        </a>
+    </li>
     <li class="with-sub {{$module=="settings"?"opened":""}}">
                 <span>
-                    <i class="font-icon font-icon-build"></i>
-                    <span class="lbl">Settings</span>
+                    <i class="font-icon font-icon-cogwheel"></i>
+                    <span class="lbl">Pengaturan</span>
                 </span>
         <ul>
             <li>

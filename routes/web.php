@@ -33,6 +33,18 @@ Route::prefix('/')->group(function(){
 
 });
 
+Route::prefix('shipment')->group(function(){
+    Route::get('/', [
+        'uses' => 'ShipmentController@index',
+        'as' => 'shipment.index'
+    ]);
+
+    Route::get('make', [
+        'uses' => 'ShipmentController@showMake',
+        'as' => 'shipment.make'
+    ]);
+});
+
 Route::prefix('order')->group(function(){
     Route::prefix('gallon')->group(function(){
         Route::get('/', [
@@ -50,20 +62,20 @@ Route::prefix('order')->group(function(){
             'as' => 'order.gallon.inventory'
         ]);
 
-        Route::prefix('post')->group(function(){
+        Route::prefix('do')->group(function(){
             Route::post('make', [
                 'uses' => 'OrderGallonController@doMake',
-                'as' => 'order.gallon.post.make'
+                'as' => 'order.gallon.do.make'
             ]);
 
             Route::post('update', [
                 'uses' => 'OrderGallonController@doUpdate',
-                'as' => 'order.gallon.post.update'
+                'as' => 'order.gallon.do.update'
             ]);
 
             Route::post('delete', [
                 'uses' => 'OrderGallonController@doDelete',
-                'as' => 'order.gallon.post.delete'
+                'as' => 'order.gallon.do.delete'
             ]);
         });
     });

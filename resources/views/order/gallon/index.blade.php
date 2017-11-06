@@ -19,8 +19,8 @@ List Pesanan Galon
                 <th>Outsourcing</th>
                 <th>Jumlah (Gallon)</th>
                 <th align="center">Tgl Order</th>
-                <th align="center">Tgl Pengiriman</th>
                 <th align="center">Tgl Penerimaan</th>
+                <th>Actions</th>
                 </thead>
                 <tbody>
                 <tr>
@@ -29,8 +29,12 @@ List Pesanan Galon
                     <td>PT Jingkrak</td>
                     <td>200</td>
                     <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 10:20:55</td>
                     <td>20/10/2017 12:20:55</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
+                        <button class="btn btn-sm">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -38,11 +42,35 @@ List Pesanan Galon
                     <td>PT Jingkrak</td>
                     <td>350</td>
                     <td>25/10/2017 08:20:55</td>
-                    <td>26/10/2017 10:20:55</td>
                     <td>26/10/2017 12:20:55</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
+                        <button class="btn btn-sm">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmModalLabel">Terima Stock</h4>
+                </div>
+                <form>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
+                    </div>
+                </form>
+
+            </div>
         </div>
     </div>
 

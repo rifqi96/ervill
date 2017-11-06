@@ -27,5 +27,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call('CreateOutsourcingsSeeder');
         $this->command->info("Outsourcings table seeded :)");
+
+        $this->call('CreateInventoriesSeeder');
+        $this->command->info("Inventories table seeded :)");
     }
 }

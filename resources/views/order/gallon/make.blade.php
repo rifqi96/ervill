@@ -17,7 +17,7 @@ Pesan Gallon
             {{--<h4><span class="label label-success">{{@SESSION.addtasksuccess}}</span></h4>--}}
         {{--</check>--}}
 
-        <form action="{{route('order.gallon.post.make')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route('order.gallon.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Outsourcing</label>
