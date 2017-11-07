@@ -31,7 +31,6 @@ List Pesanan Galon
                     <td>20/10/2017 08:20:55</td>
                     <td>20/10/2017 12:20:55</td>
                     <td>
-                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
                         <button class="btn btn-sm">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>
@@ -42,7 +41,7 @@ List Pesanan Galon
                     <td>PT Jingkrak</td>
                     <td>350</td>
                     <td>25/10/2017 08:20:55</td>
-                    <td>26/10/2017 12:20:55</td>
+                    <td>-</td>
                     <td>
                         <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
                         <button class="btn btn-sm">Edit</button>
@@ -77,7 +76,8 @@ List Pesanan Galon
     <script>
         $(document).ready(function () {
             $('#gallon_order').dataTable({
-                'order':[4, 'asc']
+                'order':[4, 'desc'],
+                'responsive':true
             });
         });
     </script>
