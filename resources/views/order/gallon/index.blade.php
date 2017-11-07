@@ -77,7 +77,9 @@ List Pesanan Galon
         $(document).ready(function () {
             $('#gallon_order').dataTable({
                 'order':[4, 'desc'],
-                'responsive':true
+                scrollX: true,     
+                fixedHeader: true,       
+                processing: true,
             });
         });
     </script>

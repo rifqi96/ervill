@@ -107,10 +107,16 @@ Overview
     <script>
         $(document).ready(function () {
            $('#recent_order').dataTable({
+                scrollX: true,    
+                fixedHeader: true,       
+                processing: true,
                'order':[3, 'asc']
            });
 
             $('#recent_issue').dataTable({
+                scrollX: true,  
+                fixedHeader: true,       
+                processing: true,
                 'order':[3, 'asc']
             });
         });
