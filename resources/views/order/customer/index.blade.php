@@ -138,7 +138,7 @@ List Pesanan Customer
                 scrollX: true,  
                 fixedHeader: true,       
                 processing: true,
-                'order':[5, 'asc']
+                'order':[8, 'desc']
             });
         });
     </script>
