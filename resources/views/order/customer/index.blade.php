@@ -135,6 +135,9 @@ List Pesanan Customer
     <script>
         $(document).ready(function () {
             $('#customer_order').dataTable({
+                scrollX: true,  
+                fixedHeader: true,       
+                processing: true,
                 'order':[5, 'asc']
             });
         });

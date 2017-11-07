@@ -51,6 +51,9 @@ List Outsourcing
     <script>
         $(document).ready(function () {
             $('#setting_outsourcing').dataTable({
+                scrollX: true,    
+                fixedHeader: true,       
+                processing: true,
                 'order':[3, 'asc']
             });
         });

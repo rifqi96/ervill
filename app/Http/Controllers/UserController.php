@@ -25,4 +25,13 @@ class UserController extends SettingController
 
         return view('setting.user_management.make', $this->data);
     }
+
+    public function showProfile()
+    {
+        $this->data['module'] = '';
+        $this->data['slug'] = '';
+        $this->data['breadcrumb'] = "Profile";
+
+        return view('profile', $this->data);
+    }
 }

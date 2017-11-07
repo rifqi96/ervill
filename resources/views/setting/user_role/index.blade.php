@@ -58,6 +58,9 @@ List User Role
     <script>
         $(document).ready(function () {
             $('#setting_user_role').dataTable({
+                scrollX: true,  
+                fixedHeader: true,       
+                processing: true,
                 'order':[2, 'asc']
             });
         });

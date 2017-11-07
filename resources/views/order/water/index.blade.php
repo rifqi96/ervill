@@ -241,6 +241,9 @@ List Pesanan Air
     <script>
         $(document).ready(function () {
             $('#water_order').dataTable({
+                scrollX: true,     
+                fixedHeader: true,       
+                processing: true,
                 'order':[6, 'desc']
             });
         });
