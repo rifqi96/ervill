@@ -48,6 +48,9 @@ Modul Akses
     <script>
         $(document).ready(function () {
             $('#setting_module_access').dataTable({
+                scrollX: true,   
+                fixedHeader: true,       
+                processing: true,
                 'order':[3, 'asc']
             });
         });

@@ -74,6 +74,9 @@ List User
     <script>
         $(document).ready(function () {
             $('#setting_user_management').dataTable({
+                scrollX: true, 
+                fixedHeader: true,       
+                processing: true,
                 'order':[6, 'asc']
             });
         });

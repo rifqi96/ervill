@@ -12,7 +12,7 @@ Inventory Gallon
                 <a href="{{route('order.gallon.index')}}"><button class="btn btn-primary">Lihat Pesanan Gallon</button></a>
                 <a href="{{route('order.gallon.inventory')}}"><button class="btn btn-primary">Pesan Galon</button></a>
             </header>
-            <table class="table table-hover" id="gallon_order">
+            <table class="table table-hover" id="gallon_inventory">
                 <thead>
                 <th>ID</th>
                 <th>Nama</th>
@@ -78,7 +78,10 @@ Inventory Gallon
 
     <script>
         $(document).ready(function () {
-            $('#gallon_order').dataTable({
+            $('#gallon_inventory').dataTable({
+                scrollX: true,  
+                fixedHeader: true,       
+                processing: true,
                 'order':[4, 'asc']
             });
         });
