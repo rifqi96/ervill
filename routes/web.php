@@ -43,6 +43,11 @@ Route::prefix('shipment')->group(function(){
         'uses' => 'ShipmentController@showMake',
         'as' => 'shipment.make'
     ]);
+
+    Route::get('track/{shipment_id}', [
+        'uses' => 'ShipmentController@track',
+        'as' => 'shipment.track'
+    ]);
 });
 
 Route::prefix('order')->group(function(){
@@ -84,11 +89,11 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderWaterController@index',
             'as' => 'order.water.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'OrderWaterController@showMake',
             'as' => 'order.water.make'
         ]);
-        Route::get('/issue/{id}', [
+        Route::get('issue/{id}', [
             'uses' => 'OrderWaterController@createIssue',
             'as' => 'order.water.issue'
         ]);
@@ -98,14 +103,10 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@index',
             'as' => 'order.customer.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
-        ]);     
-        Route::get('/track', [
-            'uses' => 'OrderCustomerController@track',
-            'as' => 'order.customer.track'
-        ]); 
+        ]);
     });
 });
 
@@ -116,7 +117,7 @@ Route::prefix('setting')->group(function(){
             'uses' => 'OutsourcingController@index',
             'as' => 'setting.outsourcing.index'
         ]);
-         Route::get('/create', [
+         Route::get('create', [
             'uses' => 'OutsourcingController@showMake',
             'as' => 'setting.outsourcing.make'
         ]);    
