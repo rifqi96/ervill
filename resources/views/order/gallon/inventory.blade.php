@@ -73,7 +73,7 @@ Inventory Gallon
                 scrollX: true,  
                 fixedHeader: true,       
                 processing: true,
-                'order':[4, 'asc']
+                'order':[4, 'desc']
             });
         });
     </script>

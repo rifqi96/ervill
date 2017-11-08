@@ -32,4 +32,11 @@ class ShipmentController extends Controller
 
         return view('shipment.make', $this->data);
     }
+
+    public function track($shipment_id)
+    {
+        $this->data['breadcrumb'] = "Shipment - Pak Tarjo (ID ".$shipment_id.") - Track";
+
+        return view('shipment.track', $this->data);
+    }
 }
