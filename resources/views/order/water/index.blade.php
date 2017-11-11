@@ -38,7 +38,7 @@ List Pesanan Air
                     <td>22/10/2017 08:20:55</td>
                     <td>               
                         <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#issueModal">Lihat Masalah</button>      	
-                    	<button class="btn btn-sm">Edit</button>
+                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                     	<button class="btn btn-sm btn-danger">Delete</button>
                     </td>
                 </tr>
@@ -53,7 +53,7 @@ List Pesanan Air
                     <td>19/10/2017</td>
                     <td>20/10/2017 08:20:55</td>
                     <td>                    	
-                    	<button class="btn btn-sm">Edit</button>
+                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                     	<button class="btn btn-sm btn-danger">Delete</button>
                     </td>
                 </tr>
@@ -69,7 +69,7 @@ List Pesanan Air
                     <td>-</td>
                     <td>
                     	<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
-                    	<button class="btn btn-sm">Edit</button>
+                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                     	<button class="btn btn-sm btn-danger">Delete</button>
                     </td>
                 </tr>
@@ -232,6 +232,68 @@ List Pesanan Air
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
               </div>
        
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
+                </div>
+
+                <div class="modal-body">                       
+                    <div class="form-group">
+                        <label for="admin"><strong>Admin</strong></label>
+                        <input type="text" class="form-control" name="admin">
+                    </div> 
+                    <div class="form-group">
+                        <label for="outsourcing"><strong>Outsourcing</strong></label>
+                        <select id="outsourcing" name="outsourcing" class="form-control">
+                            <option value=""></option>
+                            <option value="1">Outsourcing 1</option>
+                            <option value="2">Outsourcing 2</option>
+                            <option value="3">Outsourcing 3</option>
+                        </select>
+                    </div>  
+                    <div class="form-group">
+                        <label for="driver_name"><strong>Nama Pengemudi</strong></label>
+                        <input type="text" class="form-control" name="driver_name">
+                    </div>                     
+                    <div class="form-group">
+                        <label for="quantity"><strong>Jumlah Galon</strong></label>
+                        <input type="text" class="form-control" name="quantity">
+                    </div>                   
+                    <div class="form-group">
+                        <label for="order_at"><strong>Tgl Order</strong></label>
+                        <input type="date" class="form-control" name="order_at">
+                    </div>        
+                     <div class="form-group">
+                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <input type="date" class="form-control" name="delivery_at">
+                    </div>                
+                    <div class="form-group">
+                        <label for="accepted_at"><strong>Tgl Penerimaan</strong></label>
+                        <input type="date" class="form-control" name="accepted_at">
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
 
         </div>
       </div>

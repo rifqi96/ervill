@@ -26,7 +26,7 @@ List User Role
                     <td>20/10/2017 08:20:55</td>
                     <td>20/10/2017 08:20:55</td>   
                      <td>                      
-                        <button class="btn btn-sm">Edit</button>
+                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>              
                 </tr>
@@ -36,7 +36,7 @@ List User Role
                     <td>20/10/2017 08:20:55</td>
                     <td>20/10/2017 08:20:55</td>   
                      <td>                      
-                        <button class="btn btn-sm">Edit</button>
+                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>              
                 </tr>
@@ -46,13 +46,47 @@ List User Role
                     <td>20/10/2017 08:20:55</td>
                     <td>20/10/2017 08:20:55</td>   
                      <td>                      
-                        <button class="btn btn-sm">Edit</button>
+                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>              
                 </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+
+
+    <!-- Edit Modal -->
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
+                </div>
+
+                <div class="modal-body">                                          
+                    <div class="form-group">
+                        <label for="name"><strong>Nama</strong></label>
+                        <input type="text" class="form-control" name="name">
+                    </div>    
+                    <div class="form-group">
+                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>                                                                               
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+
+        </div>
+      </div>
     </div>
 
     <script>
