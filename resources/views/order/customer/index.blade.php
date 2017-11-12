@@ -130,6 +130,8 @@ List Pesanan Customer
                           </tr>
                       </tbody>
                   </table>     
+
+                  <p>Jumlah Galon yang bermasalah: 5</p> 
               </div>
 
               <div class="modal-footer">

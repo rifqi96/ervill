@@ -32,7 +32,7 @@ List Pesanan Air
                     <td>Abi</td>
                     <td>Outsourcing 1</td>
                     <td>Delta</td>
-                    <td>155</td>
+                    <td>160 (-5)</td>
                     <td>20/10/2017 08:20:55</td>
                     <td>21/10/2017</td>
                     <td>22/10/2017 08:20:55</td>
@@ -151,7 +151,9 @@ List Pesanan Air
                               <td>2</td>
                           </tr>
                       </tbody>
-                  </table>     
+                  </table>  
+
+                  <p>Jumlah Galon yang bermasalah: 5</p>   
               </div>
 
               <div class="modal-footer">
