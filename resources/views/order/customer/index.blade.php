@@ -106,18 +106,30 @@ List Pesanan Customer
           </div>
      
               <div class="modal-body">                       
-                <div class="form-group">
-                    <label for="description"><strong>Deskripsi Masalah</strong></label>
-                    <p class="form-control-static">
-                        Galon pecah 1 karena terjatuh
-                    </p> 
-                </div> 
-                <div class="form-group">
-                    <label for="quantity"><strong>Jumlah Galon yang Bermasalah</strong></label>
-                    <p class="form-control-static">
-                        1
-                    </p> 
-                </div>          
+                <table class="table table-hover" id="issues">
+                      <thead>
+                          <th>Tipe Masalah</th>
+                          <th>Deskripsi Masalah</th>
+                          <th>Jumlah</th>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Tipe 1</td>
+                              <td>Saat angkat galon, galon pecah</td>
+                              <td>1</td>
+                          </tr>
+                          <tr>
+                              <td>Tipe 2</td>
+                              <td>Tisu kurang</td>
+                              <td>2</td>
+                          </tr>
+                          <tr>
+                              <td>Tipe 3</td>
+                              <td>Segel terbuka</td>
+                              <td>2</td>
+                          </tr>
+                      </tbody>
+                  </table>     
               </div>
 
               <div class="modal-footer">
@@ -233,6 +245,11 @@ List Pesanan Customer
                 fixedHeader: true,       
                 processing: true,
                 'order':[8, 'desc']
+            });
+
+            $('#issues').dataTable({               
+                fixedHeader: true,       
+                processing: true
             });
         });
     </script>

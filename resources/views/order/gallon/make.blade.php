@@ -20,14 +20,18 @@ Pesan Gallon
         <form action="{{route('order.gallon.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
-                <label class="col-sm-2 form-control-label">Outsourcing</label>
+                <label class="col-sm-2 form-control-label">Outsourcing Pengemudi</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static"><input type="text" class="form-control" name="outsourcing_id" placeholder="Nama Perusahaan Outsourcing"></p>
-                    {{--<check if="{{@SESSION.addtaskerror['name']}}">--}}
-                        {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['name']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
-                    {{--</check>--}}
+                    <p class="form-control-static">                 
+                        <select id="outsourcing_driver" name="outsourcing_driver" class="form-control">
+                            <option value=""></option>
+                            <option value="1">Outsourcing Pengemudi 1</option>
+                            <option value="2">Outsourcing Pengemudi 2</option>
+                            <option value="3">Outsourcing Pengemudi 3</option>
+                        </select> 
+                    </p>
                 </div>
-            </div>
+            </div>    
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
                 <div class="col-sm-10">

@@ -22,21 +22,33 @@ Pesan Air
                 <form action="" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Outsourcing</label>
+                        <label class="col-sm-2 form-control-label">Outsourcing Pabrik</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">
-                                <select id="outsourcing" name="outsourcing" class="form-control">
+                            <p class="form-control-static">                 
+                                <select id="outsourcing_factory" name="outsourcing_factory" class="form-control">
                                     <option value=""></option>
-                                    <option value="1">Outsourcing 1</option>
-                                    <option value="2">Outsourcing 2</option>
-                                    <option value="3">Outsourcing 3</option>
+                                    <option value="1">Outsourcing Pabrik 1</option>
+                                    <option value="2">Outsourcing Pabrik 2</option>
+                                    <option value="3">Outsourcing Pabrik 3</option>
                                 </select>
                             </p>
-                            {{--<check if="{{@SESSION.addtaskerror['name']}}">--}}
-                                {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['name']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
-                            {{--</check>--}}
                         </div>
-                    </div>                
+                    </div>      
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Outsourcing Pengemudi</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">                 
+                                <select id="outsourcing_driver" name="outsourcing_driver" class="form-control">
+                                    <option value=""></option>
+                                    <option value="1">Outsourcing Pengemudi 1</option>
+                                    <option value="2">Outsourcing Pengemudi 2</option>
+                                    <option value="3">Outsourcing Pengemudi 3</option>
+                                </select> 
+                            </p>
+                        </div>
+                    </div>            
+                    
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
                         <div class="col-sm-10">
