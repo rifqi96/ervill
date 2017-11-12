@@ -42,7 +42,7 @@ List Pesanan Galon
                     <td>PT Jingkrak</td>
                     <td>350</td>
                     <td>25/10/2017 08:20:55</td>
-                    <td>26/10/2017 12:20:55</td>
+                    <td>-</td>
                     <td>
                         <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
                         <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
@@ -126,10 +126,10 @@ List Pesanan Galon
     <script>
         $(document).ready(function () {
             $('#gallon_order').dataTable({
+                'order':[4, 'desc'],
                 scrollX: true,     
                 fixedHeader: true,       
                 processing: true,
-                'order':[4, 'asc']
             });
         });
     </script>

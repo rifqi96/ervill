@@ -34,9 +34,6 @@ Inventory Gallon
                         <a class="edit ml10" href="javascript:void(0)" title="Edit" data-toggle="modal" data-target="#editModal">
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
-                        <a class="remove ml10" href="javascript:void(0)" data-action="task/doremove" title="Remove">
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -50,9 +47,6 @@ Inventory Gallon
                         <a class="edit ml10" href="javascript:void(0)" title="Edit" data-toggle="modal" data-target="#editModal">
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
-                        <a class="remove ml10" href="javascript:void(0)" data-action="task/doremove" title="Remove">
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -65,9 +59,6 @@ Inventory Gallon
                     <td>
                         <a class="edit ml10" href="javascript:void(0)" title="Edit" data-toggle="modal" data-target="#editModal">
                             <i class="glyphicon glyphicon-edit"></i>
-                        </a>
-                        <a class="remove ml10" href="javascript:void(0)" data-action="task/doremove" title="Remove">
-                            <i class="glyphicon glyphicon-remove"></i>
                         </a>
                     </td>
                 </tr>
@@ -123,7 +114,7 @@ Inventory Gallon
                 scrollX: true,  
                 fixedHeader: true,       
                 processing: true,
-                'order':[4, 'asc']
+                'order':[4, 'desc']
             });
         });
     </script>

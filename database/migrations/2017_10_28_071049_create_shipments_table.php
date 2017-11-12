@@ -17,6 +17,7 @@ class CreateShipmentsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('track_data')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')

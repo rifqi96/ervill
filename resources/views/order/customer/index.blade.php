@@ -41,7 +41,7 @@ List Pesanan Customer
                     <td>20/10/2017</td>
                     <td>20/10/2017 12:20:55</td>
                     <td>                                     
-                        <a class="btn btn-sm" href="{{route('order.customer.track')}}">Tracking History</a>       	
+                        <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Tracking History</a> 
                     	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
                     	<button class="btn btn-sm btn-danger">Delete</button>
                     </td>
@@ -59,7 +59,7 @@ List Pesanan Customer
                     <td>20/10/2017</td>
                     <td>20/10/2017 12:20:55</td>
                     <td>                                      
-                        <a class="btn btn-sm" href="{{route('order.customer.track')}}">Tracking History</a>  
+                        <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Tracking History</a>  
                         <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#issueModal">Lihat Masalah</button> 
                         <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
@@ -78,7 +78,7 @@ List Pesanan Customer
                     <td>20/10/2017</td>
                     <td>-</td>
                     <td>                                     
-                        <a class="btn btn-sm" href="{{route('order.customer.track')}}">Live Tracking</a>  
+                        <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Live Tracking</a>  
                         <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>
