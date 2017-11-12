@@ -41,9 +41,9 @@ List Pesanan Customer
                     <td>20/10/2017</td>
                     <td>20/10/2017 12:20:55</td>
                     <td>                                     
-                        <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Tracking History</a>       	
-                    	<button class="btn btn-sm">Edit</button>
-                    	<button class="btn btn-sm btn-danger">Delete</button>
+                        <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Tracking History</a> 
+                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
+                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                     </td>
                 </tr>
                 <tr>
@@ -61,8 +61,8 @@ List Pesanan Customer
                     <td>                                      
                         <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Tracking History</a>  
                         <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#issueModal">Lihat Masalah</button> 
-                        <button class="btn btn-sm">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                     </td>
                 </tr>
                <tr>
@@ -79,8 +79,8 @@ List Pesanan Customer
                     <td>-</td>
                     <td>                                     
                         <a class="btn btn-sm" href="{{route('shipment.track','200')}}">Live Tracking</a>  
-                        <button class="btn btn-sm">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                     </td>
                 </tr>
                 </tbody>
@@ -106,24 +106,132 @@ List Pesanan Customer
           </div>
      
               <div class="modal-body">                       
-                <div class="form-group">
-                    <label for="description"><strong>Deskripsi Masalah</strong></label>
-                    <p class="form-control-static">
-                        Galon pecah 1 karena terjatuh
-                    </p> 
-                </div> 
-                <div class="form-group">
-                    <label for="quantity"><strong>Jumlah Galon yang Bermasalah</strong></label>
-                    <p class="form-control-static">
-                        1
-                    </p> 
-                </div>          
+                <table class="table table-hover" id="issues">
+                      <thead>
+                          <th>Tipe Masalah</th>
+                          <th>Deskripsi Masalah</th>
+                          <th>Jumlah</th>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Tipe 1</td>
+                              <td>Saat angkat galon, galon pecah</td>
+                              <td>1</td>
+                          </tr>
+                          <tr>
+                              <td>Tipe 2</td>
+                              <td>Tisu kurang</td>
+                              <td>2</td>
+                          </tr>
+                          <tr>
+                              <td>Tipe 3</td>
+                              <td>Segel terbuka</td>
+                              <td>2</td>
+                          </tr>
+                      </tbody>
+                  </table>     
+
+                  <p>Jumlah Galon yang bermasalah: 5</p> 
               </div>
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
               </div>
          
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
+                </div>
+
+                <div class="modal-body">                       
+                    <div class="form-group">
+                        <label for="admin"><strong>Admin</strong></label>
+                        <input type="text" class="form-control" name="admin">
+                    </div> 
+                    <div class="form-group">
+                        <label for="driver_name"><strong>Nama Pengemudi</strong></label>
+                        <input type="text" class="form-control" name="driver_name">
+                    </div>   
+                    <div class="form-group">
+                        <label for="customer"><strong>Customer</strong></label>
+                        <input type="text" class="form-control" name="customer">
+                    </div>       
+                    <div class="form-group">
+                        <label for="customer_address"><strong>Alamat Customer</strong></label>
+                        <input type="text" class="form-control" name="customer_address">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity"><strong>Jumlah Galon</strong></label>
+                        <input type="text" class="form-control" name="quantity">
+                    </div>
+                    <div class="form-group">
+                        <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
+                        <input type="text" class="form-control" name="empty_gallon_quantity">
+                    </div>
+                    <div class="form-group">
+                        <label for="order_at"><strong>Tgl Order</strong></label>
+                        <input type="date" class="form-control" name="order_at">
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <input type="date" class="form-control" name="delivery_at">
+                    </div>
+                    <div class="form-group">
+                        <label for="accepted_at"><strong>Tgl Penerimaan</strong></label>
+                        <input type="date" class="form-control" name="accepted_at">
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
+                </div>
+
+                <div class="modal-body">                                           
+                    <div class="form-group">
+                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
 
         </div>
       </div>
@@ -139,6 +247,11 @@ List Pesanan Customer
                 fixedHeader: true,       
                 processing: true,
                 'order':[8, 'desc']
+            });
+
+            $('#issues').dataTable({               
+                fixedHeader: true,       
+                processing: true
             });
         });
     </script>

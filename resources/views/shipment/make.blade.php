@@ -67,7 +67,7 @@ Buat Pengiriman
 	            </table>
 
 
-            
+            	<p>Jumlah Galon: 180</p>
 
                 <div class="form-group row">
                     <div class="col-sm-3"></div>
@@ -76,6 +76,8 @@ Buat Pengiriman
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#existingShipmentModal">Tambah ke pengiriman</button>
                     </div>
                 </div>
+
+                
             	
             
 
