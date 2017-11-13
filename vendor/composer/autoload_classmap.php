@@ -56,6 +56,7 @@ return array(
     'Carbon\\Carbon' => $vendorDir . '/nesbot/carbon/src/Carbon/Carbon.php',
     'Carbon\\CarbonInterval' => $vendorDir . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
     'Carbon\\Exceptions\\InvalidDateException' => $vendorDir . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
+    'ChangeErOutsourcings' => $baseDir . '/database/migrations/2017_11_08_083728_change_er_outsourcings.php',
     'CreateInventoriesSeeder' => $baseDir . '/database/seeds/CreateInventoriesSeeder.php',
     'CreateInventoriesTable' => $baseDir . '/database/migrations/2017_10_28_074646_create_inventories_table.php',
     'CreateIssuesTable' => $baseDir . '/database/migrations/2017_10_28_074745_create_issues_table.php',
