@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username','full_name', 'email', 'phone', 'password',
     ];
 
     /**
@@ -26,6 +26,32 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function doUpdate($request)
+    {
+        $this->username = $request->username;
+        $this->full_name = $request->full_name;
+        $this->email = $request->email;
+        $this->phone = $request->phone;
+
+        return ($this->save());
+    }
+
+    public function doMake($request)
+    {
+        //check only owner can create owner
+        if(auth()->user()->role->id!=1 && $request->role==1)
+            return false;
+
+        $this->role_id = $request->role;
+        $this->username = $request->username;
+        $this->password = bcrypt($request->username);
+        $this->full_name = $request->full_name;
+        $this->email = $request->email;
+        $this->phone = $request->phone;
+
+        return ($this->save());
+    }
 
     public function role()
     {
@@ -39,4 +65,6 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Shipment');
     }
+    
+   
 }

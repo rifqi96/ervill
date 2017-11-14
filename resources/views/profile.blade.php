@@ -11,13 +11,13 @@ Profile
 
     <section class="box-typical box-typical-padding">       
 
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="{{route('profile.do.update')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}       
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Role</label>
                 <div class="col-sm-10">
                     <p class="form-control-static">
-	                    Admin
+	                    {{auth()->user()->role->name}}
                     </p>
                 </div>
             </div>     
@@ -30,7 +30,7 @@ Profile
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Nama</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static"><input type="text" class="form-control" name="name" placeholder="Nama" value="{{auth()->user()->full_name}}"></p>                  
+                    <p class="form-control-static"><input type="text" class="form-control" name="full_name" placeholder="Nama" value="{{auth()->user()->full_name}}"></p>                  
                 </div>
             </div>
             <div class="form-group row">

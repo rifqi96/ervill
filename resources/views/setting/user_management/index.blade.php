@@ -23,49 +23,6 @@ List User
                 <th>Tgl Update</th>     
                 <th>Action</th>    
                 </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Owner</td>
-                    <td>owner</td>
-                    <td>Sulhan Syadeli</td> 
-                    <td>owner@gmail.com</td>  
-                    <td>08230984343</td>              
-                    <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>   
-                     <td>                                            
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>              
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Admin</td>
-                    <td>admin</td>
-                    <td>Ervill Admin</td> 
-                    <td>admin@gmail.com</td>  
-                    <td>0839849839</td>              
-                    <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>   
-                     <td>                      
-                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>              
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Driver</td>
-                    <td>driver</td>
-                    <td>Ervill Driver</td> 
-                    <td>driver@gmail.com</td>  
-                    <td>08993483742</td>              
-                    <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>   
-                     <td>                      
-                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>              
-                </tr>
-                </tbody>
             </table>
         </div>
     </div>
@@ -159,7 +116,35 @@ List User
                 scrollX: true, 
                 fixedHeader: true,       
                 processing: true,
-                'order':[6, 'asc']
+                order:[6, 'asc'],
+                ajax: {
+                    url: '/getUsers',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'id'},
+                    {data: 'role.name'},
+                    {data: 'username'},
+                    {data: 'full_name'},
+                    {data: 'email'},
+                    {data: 'phone'},
+                    {data: 'created_at'},
+                    {data: 'updated_at'},
+                    {
+                        data: null, 
+                        render: function ( data, type, row, meta ) {
+                            if((<?php echo strcmp(auth()->user()->role->name,'admin');?> == 0 && row.role.name != 'driver') || 
+                                (<?php echo strcmp(auth()->user()->role->name,'driver');?> == 0)
+                                ){
+                                return '';
+                            }else{
+                                return '<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>'+
+                                    '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
+                            }
+                           
+                        }
+                    }                   
+                ]
             });
         });
     </script>

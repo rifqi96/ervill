@@ -30,5 +30,6 @@
         @yield('content')
     </div><!--.container-fluid-->
 </div><!--.page-content-->
+@include('layouts.errors')<!--.errors-->
 </body>
 </html>
