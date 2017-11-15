@@ -18,21 +18,21 @@ class CreateInventoriesSeeder extends Seeder
             'id'=>1,
             'name'=>'Galon Kosong',
             'quantity' => 0,
-            'price' => 0
+            'price' => 43000
         ));
 
         array_push($data, array(
             'id'=>2,
             'name'=>'Galon Isi',
             'quantity' => 0,
-            'price' => 0
+            'price' => 8000
         ));
 
         array_push($data, array(
             'id'=>3,
             'name'=>'Galon Rusak',
             'quantity' => 0,
-            'price' => 0
+            'price' => 10000
         ));
 
         foreach($data as $key=>$val){

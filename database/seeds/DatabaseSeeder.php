@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call('CreateUsersSeeder');
         $this->command->info("Users table seeded :)");
 
-        $this->call('CreateOutsourcingsSeeder');
-        $this->command->info("Outsourcings table seeded :)");
+        $this->call('CreateOutsourcingDriversSeeder');
+        $this->command->info("Inventories table seeded :)");
 
         $this->call('CreateInventoriesSeeder');
         $this->command->info("Inventories table seeded :)");
