@@ -28,6 +28,20 @@
             <span class="lbl">Pengiriman</span>
         </a>
     </li>
+    <li class="with-sub {{$module=="history"?"opened":""}}">
+                <span>
+                    <i class="font-icon font-icon-clock"></i>
+                    <span class="lbl">History</span>
+                </span>
+        <ul>
+            <li>
+                {!!$slug=="edit_history"?'<span class="lbl">Edit History</span>':'<a href="'.route("history.edit.index").'"><span class="lbl">Edit History</span></a>'!!}
+            </li>
+            <li>
+                {!!$slug=="delete_history"?'<span class="lbl">Delete History</span>':'<a href="'.route("history.delete.index").'"><span class="lbl">Delete History</span></a>'!!}
+            </li>
+        </ul>
+    </li>
     <li class="with-sub {{$module=="settings"?"opened":""}}">
                 <span>
                     <i class="font-icon font-icon-cogwheel"></i>

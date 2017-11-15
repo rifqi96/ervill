@@ -123,6 +123,20 @@ Route::prefix('order')->group(function(){
     });
 });
 
+Route::prefix('history')->group(function(){
+
+    Route::get('edit', [
+        'uses' => 'EditHistoryController@index',
+        'as' => 'history.edit.index'
+    ]);
+
+    Route::get('delete', [
+        'uses' => 'EditHistoryController@index',
+        'as' => 'history.delete.index'
+    ]);
+
+});
+
 
 Route::prefix('setting')->group(function(){
     Route::prefix('outsourcing')->group(function(){
