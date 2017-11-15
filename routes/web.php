@@ -151,6 +151,10 @@ Route::prefix('setting')->group(function(){
                 'uses' => 'UserController@doMake',
                 'as' => 'setting.user_management.do.make'
             ]);
+            Route::post('update', [
+                'uses' => 'UserController@doUpdate',
+                'as' => 'setting.user_management.do.update'
+            ]);
         });
 
     });

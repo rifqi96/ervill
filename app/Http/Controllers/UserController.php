@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\EditHistory;
 
 class UserController extends SettingController
 {
@@ -76,6 +77,66 @@ class UserController extends SettingController
         $user = new User();
         
         if($user->doMake($request)){
+            return back();
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
+    public function doUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'role' => 'required|integer|exists:roles,id',
+            'username' => 'required|string|min:3|unique:users',
+            'full_name' => 'required|string',
+            'email' => 'required|string|email',
+            'phone' => 'required|string|digits_between:3,14',
+            'description' => 'required|string'
+        ]);   
+
+        $user = User::find($request->id);
+
+        //set old values
+        $old_value_obj = User::where('id',$request->id)->first()->toArray();
+        unset($old_value_obj['id']);
+        unset($old_value_obj['created_at']);
+        unset($old_value_obj['updated_at']);
+        $old_value = '';
+        $i=0;
+        foreach ($old_value_obj as $row) { 
+            if($i == count($old_value_obj)-1){
+                $old_value .= $row;
+            }else{
+                $old_value .= $row.',';
+            }           
+            $i++;
+        }
+
+        //set new values
+        $new_value_obj = $request->toArray();
+        unset($new_value_obj['_token']);
+        unset($new_value_obj['id']);
+        unset($new_value_obj['description']);
+        $new_value = '';
+        $i=0;
+        foreach ($new_value_obj as $row) {
+            if($i == count($new_value_obj)-1){
+                $new_value .= $row;
+            }else{
+                $new_value .= $row.',';
+            }
+            $i++;
+        }
+
+        $edit_data = array(
+            'module_name' => 'User Management',
+            'old_value' => $old_value,
+            'new_value' => $new_value,
+            'description' => $request->description
+        );
+
+        if($user->doUpdate($request) && EditHistory::create($edit_data)){
             return back();
         }else{
             return back()
