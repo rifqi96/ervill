@@ -27,12 +27,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function __construct($user=null){
-        if ($user !=null){
-            $this->doMake($user);
-        }
-    }
-
     public function doUpdateProfile($user)
     {
         $this->username = $user->username;

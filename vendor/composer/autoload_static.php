@@ -274,6 +274,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
 
     public static $classMap = array (
         'AddRoleIdToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
+        'AddSoftDeletesToTables' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_205738_add_soft_deletes_to_tables.php',
         'AddStatusToOrderCustomersAndWaters' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
