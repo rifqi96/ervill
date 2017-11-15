@@ -39,8 +39,8 @@ class User extends Authenticatable
 
     public function doMake($request)
     {
-        //check only owner can create owner
-        if(auth()->user()->role->id!=1 && $request->role==1)
+        //check that admin only can create driver
+        if(auth()->user()->role->name=='admin' && $request->role!=3)
             return false;
 
         $this->role_id = $request->role;

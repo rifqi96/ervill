@@ -21,15 +21,17 @@ class UserController extends SettingController
     }
 
     public function showMake()
-    {
+    {    
         $this->data['breadcrumb'] = "Setting - User Management - Create";
 
-        if(auth()->user()->role->name == 'owner')
+        if(auth()->user()->role->name == 'superadmin')
             $this->data['roles'] = Role::all();
         else if(auth()->user()->role->name == 'admin')
-            $this->data['roles'] = Role::where('name','!=','owner')->get();
+            $this->data['roles'] = Role::where('name','driver')->get();
 
         return view('setting.user_management.make', $this->data);
+        
+
     }
 
     public function showProfile()
