@@ -30,7 +30,20 @@ Route::prefix('/')->group(function(){
         'uses' => 'OverviewController@index',
         'as' => 'overview.index'
     ]);
+});
 
+Route::prefix('profile')->group(function(){
+    Route::get('/', [
+        'uses' => 'UserController@showProfile',
+        'as' => 'profile.index'
+    ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('update', [
+            'uses' => 'UserController@doUpdateProfile',
+            'as' => 'profile.do.updateProfile'
+        ]);
+    });
 });
 
 Route::prefix('shipment')->group(function(){
@@ -128,10 +141,18 @@ Route::prefix('setting')->group(function(){
             'uses' => 'UserController@index',
             'as' => 'setting.user_management.index'
         ]);
-         Route::get('/create', [
+        Route::get('/create', [
             'uses' => 'UserController@showMake',
             'as' => 'setting.user_management.make'
         ]);    
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'UserController@doMake',
+                'as' => 'setting.user_management.do.make'
+            ]);
+        });
+
     });
 
 //    Route::prefix('user_role')->group(function(){
@@ -154,10 +175,10 @@ Route::prefix('setting')->group(function(){
     
 });
 
-Route::get('/profile', [
-            'uses' => 'UserController@showProfile',
-            'as' => 'profile.index'
-]);
+Route::get('/getUsers', 'UserController@getUsers');
+
+
+
 
 /**
  * Auth::routes() are :

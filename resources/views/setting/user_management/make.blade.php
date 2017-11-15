@@ -6,13 +6,12 @@ Tambah User
 
 @section('content')
     <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-        {{--<h3 class="panel-title"></h3>--}}
         <a href="{{route('setting.user_management.index')}}"><button class="btn btn-primary">Lihat Daftar User</button></a> 
     </header>
 
     <section class="box-typical box-typical-padding">       
 
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="{{route('setting.user_management.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Role</label>
@@ -20,9 +19,9 @@ Tambah User
                     <p class="form-control-static">
 	                    <select id="role" name="role" class="form-control">
 	                        <option value=""></option>
-	                        <option value="1">Owner</option>
-	                        <option value="2">Admin</option>
-	                        <option value="3">Driver</option>
+                            @foreach($roles as $role)
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
 	                    </select>
                     </p>
                 </div>
@@ -40,9 +39,15 @@ Tambah User
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Password Confirmation</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static"><input type="password" class="form-control" name="password_confirmation" placeholder="Password Confirmation"></p>                  
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Nama</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static"><input type="text" class="form-control" name="name" placeholder="Nama"></p>                  
+                    <p class="form-control-static"><input type="text" class="form-control" name="full_name" placeholder="Nama"></p>                  
                 </div>
             </div>
             <div class="form-group row">
