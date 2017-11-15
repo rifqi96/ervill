@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddRoleIdToUsers' => $baseDir . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
+    'AddStatusToOrderCustomersAndWaters' => $baseDir . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -58,6 +59,7 @@ return array(
     'Carbon\\CarbonInterval' => $vendorDir . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
     'Carbon\\Exceptions\\InvalidDateException' => $vendorDir . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
     'ChangeErOutsourcings' => $baseDir . '/database/migrations/2017_11_08_083728_change_er_outsourcings.php',
+    'CreateEditHistories' => $baseDir . '/database/migrations/2017_11_15_104931_create_edit_histories.php',
     'CreateInventoriesSeeder' => $baseDir . '/database/seeds/CreateInventoriesSeeder.php',
     'CreateInventoriesTable' => $baseDir . '/database/migrations/2017_10_28_074646_create_inventories_table.php',
     'CreateIssuesTable' => $baseDir . '/database/migrations/2017_10_28_074745_create_issues_table.php',
