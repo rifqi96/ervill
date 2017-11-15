@@ -40,12 +40,12 @@
             <li>
                 {!!$slug=="user_management"?'<span class="lbl">User Management</span>':'<a href="'.route("setting.user_management.index").'"><span class="lbl">User Management</span></a>'!!}
             </li>
-            <li>
-                {!!$slug=="user_role"?'<span class="lbl">User Role</span>':'<a href="'.route("setting.user_role.index").'"><span class="lbl">User Role</span></a>'!!}
-            </li>
-            <li>
-                {!!$slug=="module_access"?'<span class="lbl">Module Access</span>':'<a href="'.route("setting.module_access.index").'"><span class="lbl">Module Access</span></a>'!!}
-            </li>
+            {{--<li>--}}
+                {{--{!!$slug=="user_role"?'<span class="lbl">User Role</span>':'<a href="'.route("setting.user_role.index").'"><span class="lbl">User Role</span></a>'!!}--}}
+            {{--</li>--}}
+            {{--<li>--}}
+                {{--{!!$slug=="module_access"?'<span class="lbl">Module Access</span>':'<a href="'.route("setting.module_access.index").'"><span class="lbl">Module Access</span></a>'!!}--}}
+            {{--</li>--}}
         </ul>
     </li>
 </ul>
