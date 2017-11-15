@@ -274,6 +274,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
 
     public static $classMap = array (
         'AddRoleIdToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
+        'AddStatusToOrderCustomersAndWaters' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -325,6 +326,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
         'ChangeErOutsourcings' => __DIR__ . '/../..' . '/database/migrations/2017_11_08_083728_change_er_outsourcings.php',
+        'CreateEditHistories' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_104931_create_edit_histories.php',
         'CreateInventoriesSeeder' => __DIR__ . '/../..' . '/database/seeds/CreateInventoriesSeeder.php',
         'CreateInventoriesTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_28_074646_create_inventories_table.php',
         'CreateIssuesTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_28_074745_create_issues_table.php',
