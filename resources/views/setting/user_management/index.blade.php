@@ -38,37 +38,47 @@ List User
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
                 </div>
 
-                <div class="modal-body">                       
-                    <div class="form-group">
-                        <label for="role"><strong>Jenis Role</strong></label>
-                        <select id="role" name="role" class="form-control">
-                            <option value=""></option>
-                            <option value="1">Owner</option>
-                            <option value="2">Admin</option>
-                            <option value="3">Driver</option>
-                        </select>
-                    </div> 
+                <div class="modal-body">       
+                    @if(auth()->user()->role->name=='superadmin')                
+                        <div class="form-group">
+                            <label for="role"><strong>Jenis Role</strong></label>
+                            <select id="role" name="role" class="form-control">
+                                <option value=""></option>
+                                @foreach($roles as $role)
+                                    <option value="{{$role->id}}">{{$role->name}}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+
+                    @elseif(auth()->user()->role->name=='admin')
+                        <div class="form-group">
+                            <label for="role"><strong>Jenis Role</strong></label>
+                            <select id="role" name="role" class="form-control">
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                            </select>  
+                        </div> 
+                    @endif
                     <div class="form-group">
                         <label for="username"><strong>Username</strong></label>
-                        <input type="text" class="form-control" name="username">
+                        <input id="username" type="text" class="form-control" name="username">
                     </div>   
                     <div class="form-group">
-                        <label for="name"><strong>Nama</strong></label>
-                        <input type="text" class="form-control" name="full_name">
+                        <label for="full_name"><strong>Nama</strong></label>
+                        <input id="full_name" type="text" class="form-control" name="full_name">
                     </div>     
                     <div class="form-group">
                         <label for="email"><strong>E-mail</strong></label>
-                        <input type="text" class="form-control" name="email">
+                        <input id="email" type="text" class="form-control" name="email">
                     </div>  
                     <div class="form-group">
                         <label for="phone"><strong>No. Telepon</strong></label>
-                        <input type="text" class="form-control" name="phone">
+                        <input id="phone" type="text" class="form-control" name="phone">
                     </div>    
                     <div class="form-group">
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                     </div>                                       
-                    <input type="hidden" name="id" value="3">  
+                    <input type="hidden" name="id" value="" id="input_id">  
                     {{csrf_field()}}                       
                 </div>
 
@@ -114,6 +124,21 @@ List User
 
     <script>
         $(document).ready(function () {
+            var users = [];
+            $('#setting_user_management').on('click','.detail-btn',function(){
+                
+                for(var i in users){
+                    if(users[i].id==$(this).data('index')){
+                        $('#role').val(users[i].role_id);
+                        $('#username').val(users[i].username);
+                        $('#full_name').val(users[i].full_name);
+                        $('#email').val(users[i].email);
+                        $('#phone').val(users[i].phone);
+                        $('#input_id').val(users[i].id);
+                    }
+                }
+            });
+
             $('#setting_user_management').dataTable({
                 scrollX: true, 
                 fixedHeader: true,       
@@ -140,7 +165,15 @@ List User
                                 ){
                                 return '';
                             }else{
-                                return '<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>'+
+                                users.push({
+                                    'id': row.id,
+                                    'role_id': row.role.id,
+                                    'username': row.username,
+                                    'full_name': row.full_name,
+                                    'email': row.email,
+                                    'phone': row.phone
+                                });
+                                return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                     '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
                             }
                            

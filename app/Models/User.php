@@ -61,6 +61,9 @@ class User extends Authenticatable
 
     public function doUpdate($user)
     {
+        if(auth()->user()->role->name=='admin' && $user->role!=3)
+            return false;
+        
         $this->role_id = $user->role;
         $this->username = $user->username;
         $this->full_name = $user->full_name;
