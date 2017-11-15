@@ -27,7 +27,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function doUpdate($request)
+    public function doUpdateProfile($request)
     {
         $this->username = $request->username;
         $this->full_name = $request->full_name;

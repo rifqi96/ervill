@@ -40,8 +40,8 @@ Route::prefix('profile')->group(function(){
 
     Route::prefix('do')->group(function(){
         Route::post('update', [
-            'uses' => 'UserController@doUpdate',
-            'as' => 'profile.do.update'
+            'uses' => 'UserController@doUpdateProfile',
+            'as' => 'profile.do.updateProfile'
         ]);
     });
 });

@@ -11,7 +11,7 @@ Profile
 
     <section class="box-typical box-typical-padding">       
 
-        <form action="{{route('profile.do.update')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route('profile.do.updateProfile')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}       
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Role</label>

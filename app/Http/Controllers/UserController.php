@@ -43,7 +43,7 @@ class UserController extends SettingController
         return view('profile', $this->data);
     }
 
-    public function doUpdate(Request $request)
+    public function doUpdateProfile(Request $request)
     {
         $user = auth()->user();
 
@@ -54,7 +54,7 @@ class UserController extends SettingController
             'phone' => 'required|string|digits_between:3,14'
         ]);   
 
-        if($user->doUpdate($request)){
+        if($user->doUpdateProfile($request)){
             return back();
         }else{
             return back()
