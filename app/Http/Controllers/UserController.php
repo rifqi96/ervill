@@ -18,6 +18,12 @@ class UserController extends SettingController
      public function index()
     {
         $this->data['breadcrumb'] = "Setting - User Management";
+
+        if(auth()->user()->role->name == 'superadmin')
+            $this->data['roles'] = Role::all();
+        else if(auth()->user()->role->name == 'admin')
+            $this->data['role'] = Role::where('name','driver')->first();
+
         return view('setting.user_management.index', $this->data);
     }
 
