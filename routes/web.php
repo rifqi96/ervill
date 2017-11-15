@@ -126,12 +126,12 @@ Route::prefix('order')->group(function(){
 Route::prefix('history')->group(function(){
 
     Route::get('edit', [
-        'uses' => 'EditHistoryController@index',
+        'uses' => 'HistoryController@showEdit',
         'as' => 'history.edit.index'
     ]);
 
     Route::get('delete', [
-        'uses' => 'EditHistoryController@index',
+        'uses' => 'HistoryController@showDelete',
         'as' => 'history.delete.index'
     ]);
 
@@ -172,25 +172,6 @@ Route::prefix('setting')->group(function(){
         });
 
     });
-
-//    Route::prefix('user_role')->group(function(){
-//        Route::get('/', [
-//            'uses' => 'RoleController@index',
-//            'as' => 'setting.user_role.index'
-//        ]);
-//         Route::get('/create', [
-//            'uses' => 'RoleController@showMake',
-//            'as' => 'setting.user_role.make'
-//        ]);
-//    });
-//
-//    Route::prefix('module_access')->group(function(){
-//        Route::get('/', [
-//            'uses' => 'ModuleAccessController@index',
-//            'as' => 'setting.module_access.index'
-//        ]);
-//    });
-    
 });
 
 Route::get('/getUsers', 'UserController@getUsers');
