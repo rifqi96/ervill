@@ -16,8 +16,8 @@ class CreateUsersSeeder extends Seeder
         $roles = array();
 
         foreach(Role::all() as $role){
-            if($role->name == "owner"){
-                $roles['owner'] = $role->id;
+            if($role->name == "superadmin"){
+                $roles['superadmin'] = $role->id;
             }
             else if($role->name == "admin"){
                 $roles['admin'] = $role->id;
@@ -33,9 +33,9 @@ class CreateUsersSeeder extends Seeder
             if($i == 1){
                 array_push($data, array(
                     'id' => $i,
-                    'role_id' => $roles['owner'],
-                    'username' => 'owner',
-                    'password' => bcrypt('owner'),
+                    'role_id' => $roles['superadmin'],
+                    'username' => 'superadmin',
+                    'password' => bcrypt('superadmin'),
                     'full_name' => 'Sulhan Syadeli',
                     'email' => 'owner@ervill.com',
                     'phone' => '081314151818'

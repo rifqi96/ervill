@@ -16,7 +16,7 @@ class CreateRolesSeeder extends Seeder
 
         array_push($data, array(
             'id'=>1,
-            'name'=>'owner'
+            'name'=>'superadmin'
         ));
 
         array_push($data, array(
