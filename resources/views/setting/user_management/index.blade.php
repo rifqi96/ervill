@@ -32,7 +32,7 @@ List User
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('setting.user_management.do.update')}}" method="POST">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
@@ -54,7 +54,7 @@ List User
                     </div>   
                     <div class="form-group">
                         <label for="name"><strong>Nama</strong></label>
-                        <input type="text" class="form-control" name="name">
+                        <input type="text" class="form-control" name="full_name">
                     </div>     
                     <div class="form-group">
                         <label for="email"><strong>E-mail</strong></label>
@@ -65,9 +65,11 @@ List User
                         <input type="text" class="form-control" name="phone">
                     </div>    
                     <div class="form-group">
-                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
-                    </div>                                                                
+                    </div>                                       
+                    <input type="hidden" name="id" value="3">  
+                    {{csrf_field()}}                       
                 </div>
 
                 <div class="modal-footer">

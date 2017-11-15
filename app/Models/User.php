@@ -27,28 +27,45 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function doUpdateProfile($request)
+    public function __construct($user=null){
+        if ($user !=null){
+            $this->doMake($user);
+        }
+    }
+
+    public function doUpdateProfile($user)
     {
-        $this->username = $request->username;
-        $this->full_name = $request->full_name;
-        $this->email = $request->email;
-        $this->phone = $request->phone;
+        $this->username = $user->username;
+        $this->full_name = $user->full_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
 
         return ($this->save());
     }
 
-    public function doMake($request)
+    public function doMake($user)
     {
         //check that admin only can create driver
-        if(auth()->user()->role->name=='admin' && $request->role!=3)
+        if(auth()->user()->role->name=='admin' && $user->role!=3)
             return false;
 
-        $this->role_id = $request->role;
-        $this->username = $request->username;
-        $this->password = bcrypt($request->username);
-        $this->full_name = $request->full_name;
-        $this->email = $request->email;
-        $this->phone = $request->phone;
+        $this->role_id = $user->role;
+        $this->username = $user->username;
+        $this->password = bcrypt($user->username);
+        $this->full_name = $user->full_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+
+        return ($this->save());
+    }
+
+    public function doUpdate($user)
+    {
+        $this->role_id = $user->role;
+        $this->username = $user->username;
+        $this->full_name = $user->full_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
 
         return ($this->save());
     }
