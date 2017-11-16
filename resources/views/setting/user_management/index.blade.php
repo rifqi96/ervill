@@ -33,6 +33,9 @@ List User
       <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{route('setting.user_management.do.update')}}" method="POST">
+                {{csrf_field()}} 
+                <input type="hidden" name="id" value="" id="input_id">  
+                        
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
@@ -78,8 +81,7 @@ List User
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                     </div>                                       
-                    <input type="hidden" name="id" value="" id="input_id">  
-                    {{csrf_field()}}                       
+                                      
                 </div>
 
                 <div class="modal-footer">

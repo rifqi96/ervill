@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\OutsourcingWater;
+use App\Models\OutsourcingDriver;
+use App\Models\EditHistory;
 
 class OutsourcingController extends SettingController
 {
@@ -24,4 +27,125 @@ class OutsourcingController extends SettingController
 
         return view('setting.outsourcing.make', $this->data);
     }
+
+    public function doUpdateWater(Request $request)
+    {
+        $this->validate($request, [           
+            'name' => 'required|string',           
+            'description' => 'required|string'
+        ]);   
+
+        $outsourcingWaters = OutsourcingWater::find($request->id);
+
+        //set old values
+        $old_value_obj = OutsourcingWater::where('id',$request->id)->first()->toArray();
+        unset($old_value_obj['created_at']);
+        unset($old_value_obj['updated_at']);
+        $old_value = '';
+        $i=0;
+        foreach ($old_value_obj as $row) { 
+            if($i == count($old_value_obj)-1){
+                $old_value .= $row;
+            }else{
+                $old_value .= $row.';';
+            }           
+            $i++;
+        }
+
+        //set new values
+        $new_value_obj = $request->toArray();
+        unset($new_value_obj['_token']);
+        unset($new_value_obj['description']);
+        $new_value = '';
+        $i=0;
+        foreach ($new_value_obj as $row) {
+            if($i == count($new_value_obj)-1){
+                $new_value .= $row;
+            }else{
+                $new_value .= $row.';';
+            }
+            $i++;
+        }
+
+        $edit_data = array(
+            'module_name' => 'Outsourcing Water',
+            'old_value' => $old_value,
+            'new_value' => $new_value,
+            'description' => $request->description
+        );
+
+        if($outsourcingWaters->doUpdate($request) && EditHistory::create($edit_data)){
+            return back();
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
+    public function doUpdateDriver(Request $request)
+    {
+        $this->validate($request, [           
+            'name' => 'required|string',           
+            'description' => 'required|string'
+        ]);   
+
+        $outsourcingDrivers = OutsourcingDriver::find($request->id);
+
+        //set old values
+        $old_value_obj = OutsourcingDriver::where('id',$request->id)->first()->toArray();
+        unset($old_value_obj['created_at']);
+        unset($old_value_obj['updated_at']);
+        $old_value = '';
+        $i=0;
+        foreach ($old_value_obj as $row) { 
+            if($i == count($old_value_obj)-1){
+                $old_value .= $row;
+            }else{
+                $old_value .= $row.',';
+            }           
+            $i++;
+        }
+
+        //set new values
+        $new_value_obj = $request->toArray();
+        unset($new_value_obj['_token']);
+        unset($new_value_obj['description']);
+        $new_value = '';
+        $i=0;
+        foreach ($new_value_obj as $row) {
+            if($i == count($new_value_obj)-1){
+                $new_value .= $row;
+            }else{
+                $new_value .= $row.',';
+            }
+            $i++;
+        }
+
+        $edit_data = array(
+            'module_name' => 'Outsourcing Driver',
+            'old_value' => $old_value,
+            'new_value' => $new_value,
+            'description' => $request->description
+        );
+
+        if($outsourcingDrivers->doUpdate($request) && EditHistory::create($edit_data)){
+            return back();
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
+    public function getOutsourcingWaters()
+    {
+        $outsourcingWaters = OutsourcingWater::all();
+        return json_encode($outsourcingWaters);
+    }
+
+    public function getOutsourcingDrivers()
+    {
+        $outsourcingDrivers = OutsourcingDriver::all();
+        return json_encode($outsourcingDrivers);
+    }
+
 }
