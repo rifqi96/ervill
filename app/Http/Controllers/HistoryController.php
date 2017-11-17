@@ -46,6 +46,12 @@ class HistoryController extends Controller
 
                 $new_value_arr['ID'] = $new_value[0];
                 $new_value_arr['Nama'] = $new_value[1];
+            }else if($edit_history->module_name == "Outsourcing Water"){
+                $old_value_arr['ID'] = $old_value[0];
+                $old_value_arr['Nama'] = $old_value[1];
+
+                $new_value_arr['ID'] = $new_value[0];
+                $new_value_arr['Nama'] = $new_value[1];
             }
 
             $edit_history->old_value = $old_value_arr;

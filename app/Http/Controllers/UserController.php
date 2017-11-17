@@ -100,7 +100,7 @@ class UserController extends SettingController
             'full_name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string|digits_between:3,14',
-            'description' => 'required|string'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
 
         
