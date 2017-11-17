@@ -19,6 +19,7 @@ class CreateShipmentsTable extends Migration
             $table->string('track_data')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('cascade')->onDelete('cascade');
