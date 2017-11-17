@@ -29,12 +29,14 @@ class ChangeErOutsourcings extends Migration
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('outsourcing_waters', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::table('order_waters', function (Blueprint $table){

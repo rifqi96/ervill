@@ -18,6 +18,7 @@ class CreateOutsourcingsTable extends Migration
             $table->string('type');
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
