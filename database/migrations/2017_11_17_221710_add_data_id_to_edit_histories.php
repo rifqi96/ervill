@@ -14,7 +14,7 @@ class AddDataIdToEditHistories extends Migration
     public function up()
     {
         Schema::table('edit_histories', function (Blueprint $table){
-            $table->integer('data_id')->after('module_name');
+            $table->integer('data_id')->length(10)->unsigned()->after('module_name');
         });
     }
 

@@ -10,6 +10,7 @@ return array(
     'AddRoleIdToUsers' => $baseDir . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
     'AddSoftDeletesToTables' => $baseDir . '/database/migrations/2017_11_15_205738_add_soft_deletes_to_tables.php',
     'AddStatusToOrderCustomersAndWaters' => $baseDir . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
+    'AddUserIdToEditHistories' => $baseDir . '/database/migrations/2017_11_17_222529_add_user_id_to_edit_histories.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
