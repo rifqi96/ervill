@@ -148,6 +148,21 @@ Route::prefix('setting')->group(function(){
             'uses' => 'OutsourcingController@showMake',
             'as' => 'setting.outsourcing.make'
         ]);    
+
+         Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'OutsourcingController@doMake',
+                'as' => 'setting.outsourcing.do.make'
+            ]);
+            Route::post('updateWater', [
+                'uses' => 'OutsourcingController@doUpdateWater',
+                'as' => 'setting.outsourcing.do.updateWater'
+            ]);
+            Route::post('updateDriver', [
+                'uses' => 'OutsourcingController@doUpdateDriver',
+                'as' => 'setting.outsourcing.do.updateDriver'
+            ]);
+        });
     });
 
     Route::prefix('user_management')->group(function(){
@@ -175,7 +190,9 @@ Route::prefix('setting')->group(function(){
 });
 
 Route::get('/getUsers', 'UserController@getUsers');
-
+Route::get('/getOutsourcingWaters', 'OutsourcingController@getOutsourcingWaters');
+Route::get('/getOutsourcingDrivers', 'OutsourcingController@getOutsourcingDrivers');
+Route::get('/getEditHistories', 'HistoryController@getEditHistories');
 
 
 

@@ -92,20 +92,21 @@ class UserController extends SettingController
 
     public function doUpdate(Request $request)
     {
+        $user = User::find($request->id);
+
         $this->validate($request, [
             'role' => 'required|integer|exists:roles,id',
-            'username' => 'required|string|min:3|unique:users',
+            'username' => 'required|string|min:3|unique:users,username,'.$user->id,
             'full_name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string|digits_between:3,14',
             'description' => 'required|string'
         ]);   
 
-        $user = User::find($request->id);
+        
 
         //set old values
         $old_value_obj = User::where('id',$request->id)->first()->toArray();
-        unset($old_value_obj['id']);
         unset($old_value_obj['created_at']);
         unset($old_value_obj['updated_at']);
         $old_value = '';
@@ -114,7 +115,7 @@ class UserController extends SettingController
             if($i == count($old_value_obj)-1){
                 $old_value .= $row;
             }else{
-                $old_value .= $row.',';
+                $old_value .= $row.';';
             }           
             $i++;
         }
@@ -122,7 +123,6 @@ class UserController extends SettingController
         //set new values
         $new_value_obj = $request->toArray();
         unset($new_value_obj['_token']);
-        unset($new_value_obj['id']);
         unset($new_value_obj['description']);
         $new_value = '';
         $i=0;
@@ -130,11 +130,11 @@ class UserController extends SettingController
             if($i == count($new_value_obj)-1){
                 $new_value .= $row;
             }else{
-                $new_value .= $row.',';
+                $new_value .= $row.';';
             }
             $i++;
         }
-
+        
         $edit_data = array(
             'module_name' => 'User Management',
             'old_value' => $old_value,
