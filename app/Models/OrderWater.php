@@ -6,9 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderWater extends Model
 {
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $guarded = [];
+    
     public function order()
     {
-        return $this->hasOne('App\Models\Order');
+        return $this->belongsTo('App\Models\Order');
     }
     public function outsourcingWater()
     {

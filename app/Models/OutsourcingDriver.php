@@ -13,6 +13,12 @@ class OutsourcingDriver extends Model
         return ($this->save());
     }
 
+    public function doMake($outsourcingDriver)
+    {
+        $this->name = $outsourcingDriver->name;
+        return ($this->save());
+    }
+
     public function orderGallons()
     {
         return $this->hasMany('App\Models\OrderGallon');

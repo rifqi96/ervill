@@ -28,17 +28,48 @@ class OutsourcingController extends SettingController
         return view('setting.outsourcing.make', $this->data);
     }
 
+    public function doMake(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required|integer|between:1,2',
+            'name' => 'required|string|min:3'           
+        ]);   
+
+        if($request->type==1){
+            $outsourcingDriver = new OutsourcingDriver();
+            if($outsourcingDriver->doMake($request)){
+                return back();
+            }else{
+                return back()
+                ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            }
+            
+        }else if($request->type==2){
+            $outsourcingWaters = new OutsourcingWater();
+            if($outsourcingWaters->doMake($request)){
+                return back();
+            }else{
+                return back()
+                ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            }
+        }
+
+        return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+    }
+
     public function doUpdateWater(Request $request)
     {
         $this->validate($request, [           
             'name' => 'required|string',           
-            'description' => 'required|string'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
 
         $outsourcingWaters = OutsourcingWater::find($request->id);
 
         //set old values
         $old_value_obj = OutsourcingWater::where('id',$request->id)->first()->toArray();
+        unset($old_value_obj['id']);
         unset($old_value_obj['created_at']);
         unset($old_value_obj['updated_at']);
         $old_value = '';
@@ -54,6 +85,7 @@ class OutsourcingController extends SettingController
 
         //set new values
         $new_value_obj = $request->toArray();
+        unset($new_value_obj['id']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
@@ -69,9 +101,11 @@ class OutsourcingController extends SettingController
 
         $edit_data = array(
             'module_name' => 'Outsourcing Water',
+            'data_id' => $request->id,
             'old_value' => $old_value,
             'new_value' => $new_value,
-            'description' => $request->description
+            'description' => $request->description,
+            'user_id' => auth()->id()
         );
 
         if($outsourcingWaters->doUpdate($request) && EditHistory::create($edit_data)){
@@ -86,13 +120,14 @@ class OutsourcingController extends SettingController
     {
         $this->validate($request, [           
             'name' => 'required|string',           
-            'description' => 'required|string'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
 
         $outsourcingDrivers = OutsourcingDriver::find($request->id);
 
         //set old values
         $old_value_obj = OutsourcingDriver::where('id',$request->id)->first()->toArray();
+        unset($old_value_obj['id']);
         unset($old_value_obj['created_at']);
         unset($old_value_obj['updated_at']);
         $old_value = '';
@@ -101,13 +136,14 @@ class OutsourcingController extends SettingController
             if($i == count($old_value_obj)-1){
                 $old_value .= $row;
             }else{
-                $old_value .= $row.',';
+                $old_value .= $row.';';
             }           
             $i++;
         }
 
         //set new values
         $new_value_obj = $request->toArray();
+        unset($new_value_obj['id']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
@@ -116,16 +152,18 @@ class OutsourcingController extends SettingController
             if($i == count($new_value_obj)-1){
                 $new_value .= $row;
             }else{
-                $new_value .= $row.',';
+                $new_value .= $row.';';
             }
             $i++;
         }
 
         $edit_data = array(
             'module_name' => 'Outsourcing Driver',
+            'data_id' => $request->id,
             'old_value' => $old_value,
             'new_value' => $new_value,
-            'description' => $request->description
+            'description' => $request->description,
+            'user_id' => auth()->id()
         );
 
         if($outsourcingDrivers->doUpdate($request) && EditHistory::create($edit_data)){

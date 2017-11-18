@@ -63,7 +63,8 @@ class UserController extends SettingController
         ]);   
 
         if($user->doUpdateProfile($request)){
-            return back();
+            return back()
+            ->with('success', 'Data telah berhasil diupdate');
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -84,7 +85,8 @@ class UserController extends SettingController
         $user = new User();
         
         if($user->doMake($request)){
-            return back();
+            return back()
+            ->with('success', 'Data telah berhasil dibuat');
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -93,36 +95,38 @@ class UserController extends SettingController
 
     public function doUpdate(Request $request)
     {
-        $user = User::find($request->id);
+        $user = User::with('role')->select('role_id','username','full_name','email','phone')->find($request->id);
 
         $this->validate($request, [
             'role' => 'required|integer|exists:roles,id',
-            'username' => 'required|string|min:3|unique:users,username,'.$user->id,
+            'username' => 'required|string|min:3|unique:users,username,'.$request->id,
             'full_name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string|digits_between:3,14',
-            'description' => 'required|string'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
-
         
 
         //set old values
-        $old_value_obj = User::where('id',$request->id)->first()->toArray();
-        unset($old_value_obj['created_at']);
-        unset($old_value_obj['updated_at']);
+        $old_value_obj = $user->toArray();        
+        unset($old_value_obj['role_id']);
         $old_value = '';
         $i=0;
         foreach ($old_value_obj as $row) { 
-            if($i == count($old_value_obj)-1){
-                $old_value .= $row;
+            if($i == count($old_value_obj)-1){                
+                $old_value .= $row['name'];
             }else{
                 $old_value .= $row.';';
             }           
             $i++;
         }
 
+
         //set new values
         $new_value_obj = $request->toArray();
+        $new_value_obj['role_name'] = Role::find($new_value_obj['role'])->name;
+        unset($new_value_obj['id']);
+        unset($new_value_obj['role']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
@@ -138,13 +142,16 @@ class UserController extends SettingController
         
         $edit_data = array(
             'module_name' => 'User Management',
+            'data_id' => $request->id,
             'old_value' => $old_value,
             'new_value' => $new_value,
-            'description' => $request->description
+            'description' => $request->description,
+            'user_id' => auth()->id()
         );
 
         if($user->doUpdate($request) && EditHistory::create($edit_data)){
-            return back();
+            return back()
+            ->with('success', 'Data telah berhasil diupdate');
         }else{
             return back()
             ->withErrors(['message' => 'Terjadi kesalahan pada update data']);

@@ -100,4 +100,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\DeleteHistory');
     }
+    public function editHistories()
+    {
+        return $this->hasMany('App\Models\EditHistory');
+    }
+    
 }
