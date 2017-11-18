@@ -26,10 +26,7 @@ class OrderGallon extends Model
     {      
         
         $this->outsourcing_driver_id = $orderGallon->outsourcing;
-        $this->order->quantity = $orderGallon->quantity;
-        $this->order->created_at = $orderGallon->order_at;
-        $this->order->accepted_at = $orderGallon->accepted_at;
-
+        
         return ($this->save());
     }
 

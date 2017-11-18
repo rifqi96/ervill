@@ -63,7 +63,9 @@ List Pesanan Galon
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="confirmModalLabel">Terima Stock</h4>
                 </div>
-                <form>
+                <form action="{{route('order.gallon.do.confirm')}}" method="POST">
+                    {{csrf_field()}}
+                    <input type="hidden" name="id" value="" id="confirm_id">
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
                     </div>
@@ -101,14 +103,6 @@ List Pesanan Galon
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
                         <input type="number" class="form-control" name="quantity" id="quantity">
                     </div>                   
-                    <div class="form-group">
-                        <label for="order_at"><strong>Tgl Order</strong></label>
-                        <input type="text" class="form-control" name="order_at" id="order_at">
-                    </div>                   
-                    <div class="form-group">
-                        <label for="accepted_at"><strong>Tgl Penerimaan</strong></label>
-                        <input type="text" class="form-control" name="accepted_at" id="accepted_at">
-                    </div>
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
                         <textarea class="form-control" name="description" rows="3" id="description"></textarea>
@@ -181,6 +175,14 @@ List Pesanan Galon
                 }
             });
 
+            $('#gallon_order').on('click','.confirm-btn',function(){
+                for(var i in orderGallons){
+                    if(orderGallons[i].id==$(this).data('index')){
+                        $('#confirm_id').val(orderGallons[i].id);
+                    }
+                }
+            });
+
             $('#gallon_order').dataTable({
                 'order':[4, 'desc'],
                 scrollX: true,     
@@ -210,7 +212,7 @@ List Pesanan Galon
                             });
 
                             if(row.order.accepted_at == null){
-                                return '<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>'+ 
+                                return '<button class="btn btn-sm btn-success confirm-btn" type="button" data-toggle="modal" data-target="#confirmModal" data-index="' + row.id + '">Terima Stock</button>'+ 
                                 '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';   
                             }else{

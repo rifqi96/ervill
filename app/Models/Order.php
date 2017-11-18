@@ -16,7 +16,7 @@ class Order extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-    
+
     protected $guarded = [];
 
     public function doMakeOrderGallon($order)
@@ -27,12 +27,22 @@ class Order extends Model
         return ($this->save());
     }
 
+    public function doUpdateOrderGallon($order){
+        $this->quantity = $order->quantity;
+        return $this->save();
+    }
+
     public function doDelete(){
         return $this->delete();
     }
 
     public function doForceDelete(){
         return $this->forceDelete();
+    }
+
+    public function doConfirm(){
+        $this->accepted_at = Carbon::now();
+        return ($this->save()); 
     }
 
     public function user()

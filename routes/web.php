@@ -95,6 +95,11 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderGallonController@doDelete',
                 'as' => 'order.gallon.do.delete'
             ]);
+
+            Route::post('confirm', [
+                'uses' => 'OrderGallonController@doConfirm',
+                'as' => 'order.gallon.do.confirm'
+            ]);
         });
     });
     Route::prefix('water')->group(function(){
