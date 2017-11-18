@@ -20,6 +20,7 @@ class CreateIssuesTable extends Migration
             $table->text('description');
             $table->integer('quantity');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
                 ->onUpdate('cascade')->onDelete('cascade');
