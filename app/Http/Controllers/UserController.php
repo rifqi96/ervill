@@ -162,7 +162,7 @@ class UserController extends SettingController
         $user = User::find($request->user_id);
 
         $this->validate($request, [
-            'description' => 'required|string'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
         $data = array(

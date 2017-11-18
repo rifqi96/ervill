@@ -7,6 +7,7 @@ use App\Models\OrderGallon;
 use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\EditHistory;
+use App\Models\DeleteHistory;
 
 class OrderGallonController extends OrderController
 {
@@ -45,7 +46,8 @@ class OrderGallonController extends OrderController
         $orderGallon = new OrderGallon();
         
         if($order->doMakeOrderGallon($request) && $orderGallon->doMake($order, $request)){
-            return back();
+            return back()
+            ->with('success', 'Data telah berhasil dibuat');
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -117,6 +119,29 @@ class OrderGallonController extends OrderController
         }
     }
 
+    public function doDelete(Request $request){
+        $orderGallon = OrderGallon::find($request->id);
+//dd($orderGallon);
+        $this->validate($request, [
+            'description' => 'required|string|regex:/^[^;]+$/'
+        ]);
+
+        $data = array(
+            'module_name' => 'Order Gallon',
+            'description' => $request->description,
+            'data_id' => $orderGallon->id,
+            'user_id' => auth()->user()->id
+        );
+
+        if($orderGallon->order->doDelete() && DeleteHistory::create($data)){
+            return back()
+                ->with('success', 'Data telah berhasil dihapus');
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
+        }
+    }
+
     public function showInventory(){
         $this->data['breadcrumb'] = 'Order - Inventory Gallon';
 
@@ -127,6 +152,14 @@ class OrderGallonController extends OrderController
     public function getOrderGallons()
     {
         $orderGallons = OrderGallon::with('outsourcingDriver','order','order.user')->get();
-        return json_encode($orderGallons);
+
+        $result = array();
+        foreach ($orderGallons as $row) {
+            if($row->order){
+                array_push($result, $row);
+            }
+        }
+        
+        return json_encode($result);
     }
 }
