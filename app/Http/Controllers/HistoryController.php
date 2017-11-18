@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\EditHistory;
 use App\Models\User;
 use App\Models\OutsourcingDriver;
+use App\Models\Order;
+use App\Models\OrderGallon;
 use League\CLImate\TerminalObject\Basic\Out;
 
 class HistoryController extends Controller
@@ -91,13 +93,8 @@ class HistoryController extends Controller
         $delete_histories = DeleteHistory::with('user')->get();
 
         foreach($delete_histories as $dh){
-            if($dh->module_name == "User Management"){
-                $user = User::onlyTrashed()
-                    ->where('id', $dh->data_id)
-                    ->first();
-
-                $dh->data_id = $user;
-            }
+            $object = $this->getTrashedObject($dh);
+            $dh->data_id = $object;
         }
 
         $this->data['delete_histories'] = $delete_histories;
@@ -112,7 +109,14 @@ class HistoryController extends Controller
     }
 
     public function getTrashedObject($request){
-        $dh = DeleteHistory::find($request->delete_id);
+        if($request->delete_id){
+           $delete_id = $request->delete_id;
+        }
+        else{
+            $delete_id = $request->id;
+        }
+
+        $dh = DeleteHistory::find($delete_id);
 
         if($dh->module_name == "User Management"){
             return User::onlyTrashed()
@@ -121,6 +125,11 @@ class HistoryController extends Controller
         else if($dh->module_name == "Outsourcing Driver"){
             return OutsourcingDriver::onlyTrashed()
                 ->find($dh->data_id);
+        }
+        else if($dh->module_name == "Order Gallon"){
+            return OrderGallon::with(['order' => function($query) use ($dh){
+                $query->where('id', $dh->data_id);
+            }])->first();
         }
     }
 
