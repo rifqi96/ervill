@@ -114,7 +114,43 @@ Inventory Gallon
                 scrollX: true,  
                 fixedHeader: true,       
                 processing: true,
-                'order':[4, 'desc']
+                'order':[4, 'desc'],
+                ajax: {
+                    url: '/getInventories',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'id'},
+                    {data: 'role.name'},
+                    {data: 'username'},
+                    {data: 'full_name'},
+                    {data: 'email'},
+                    {data: 'phone'},
+                    {data: 'created_at'},
+                    {data: 'updated_at'},
+                    {
+                        data: null, 
+                        render: function ( data, type, row, meta ) {
+                            if((<?php echo strcmp(auth()->user()->role->name,'admin');?> == 0 && row.role.name != 'driver') || 
+                                (<?php echo strcmp(auth()->user()->role->name,'driver');?> == 0)
+                                ){
+                                return '';
+                            }else{
+                                users.push({
+                                    'id': row.id,
+                                    'role_id': row.role.id,
+                                    'username': row.username,
+                                    'full_name': row.full_name,
+                                    'email': row.email,
+                                    'phone': row.phone
+                                });
+                                return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                                    '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
+                            }
+                           
+                        }
+                    }                   
+                ]
             });
         });
     </script>

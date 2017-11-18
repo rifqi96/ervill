@@ -149,8 +149,6 @@ List User
                         $('input[name=user_id]').val(users[i].id);
                     }
                 }
-
-                $('input[name=data_id]').val($(this).data('index'));
             });
 
             $('#setting_user_management').dataTable({

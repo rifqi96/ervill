@@ -131,7 +131,9 @@ List Pesanan Galon
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('order.gallon.do.delete')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="id" value="" id="delete_id"> 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -171,6 +173,14 @@ List Pesanan Galon
                 }
             });
 
+            $('#gallon_order').on('click','.delete-btn',function(){
+                for(var i in orderGallons){
+                    if(orderGallons[i].id==$(this).data('index')){
+                        $('#delete_id').val(orderGallons[i].id);
+                    }
+                }
+            });
+
             $('#gallon_order').dataTable({
                 'order':[4, 'desc'],
                 scrollX: true,     
@@ -202,10 +212,10 @@ List Pesanan Galon
                             if(row.order.accepted_at == null){
                                 return '<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>'+ 
                                 '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
-                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';   
+                                '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';   
                             }else{
                                 return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
-                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';   
+                                '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';   
                             }                             
                         }
                     }                   
