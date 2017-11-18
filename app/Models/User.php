@@ -4,10 +4,19 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -67,6 +76,14 @@ class User extends Authenticatable
         return ($this->save());
     }
 
+    public function doDelete(){
+        return $this->delete();
+    }
+
+    public function doForceDelete(){
+        return $this->forceDelete();
+    }
+
     public function role()
     {
         return $this->belongsTo('App\Models\Role');
@@ -79,10 +96,13 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Shipment');
     }
+    public function delete_histories()
+    {
+        return $this->hasMany('App\Models\DeleteHistory');
+    }
     public function editHistories()
     {
         return $this->hasMany('App\Models\EditHistory');
     }
     
-   
 }
