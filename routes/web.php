@@ -135,6 +135,16 @@ Route::prefix('history')->group(function(){
         'as' => 'history.delete.index'
     ]);
 
+    Route::post('do/restore-or-delete', [
+        'uses' => 'HistoryController@doRestoreOrDelete',
+        'as' => 'history.do.restore_or_delete'
+    ]);
+
+    Route::post('do/mass-restore-or-delete', [
+        'uses' => 'HistoryController@doMassRestoreOrDelete',
+        'as' => 'history.do.mass_restore_or_delete'
+    ]);
+
 });
 
 
@@ -183,6 +193,10 @@ Route::prefix('setting')->group(function(){
             Route::post('update', [
                 'uses' => 'UserController@doUpdate',
                 'as' => 'setting.user_management.do.update'
+            ]);
+            Route::post('delete', [
+                'uses' => 'UserController@doDelete',
+                'as' => 'setting.user_management.do.delete'
             ]);
         });
 

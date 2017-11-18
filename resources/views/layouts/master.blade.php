@@ -31,5 +31,6 @@
     </div><!--.container-fluid-->
 </div><!--.page-content-->
 @include('layouts.errors')<!--.errors-->
+@include('layouts.success')<!--.errors-->
 </body>
 </html>
