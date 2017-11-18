@@ -100,7 +100,10 @@ List User
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('setting.user_management.do.delete')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="user_id" value="">
+                <input type="hidden" name="data_id" value="">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -108,7 +111,7 @@ List User
 
                 <div class="modal-body">                                           
                     <div class="form-group">
-                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
+                        <label for="description"><strong>Alasan menghapus data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                     </div>
                 </div>
@@ -128,7 +131,6 @@ List User
         $(document).ready(function () {
             var users = [];
             $('#setting_user_management').on('click','.detail-btn',function(){
-                
                 for(var i in users){
                     if(users[i].id==$(this).data('index')){
                         $('#role').val(users[i].role_id);
@@ -141,11 +143,21 @@ List User
                 }
             });
 
+            $('#setting_user_management').on('click','.delete-btn',function(){
+                for(var i in users){
+                    if(users[i].id==$(this).data('index')){
+                        $('input[name=user_id]').val(users[i].id);
+                    }
+                }
+
+                $('input[name=data_id]').val($(this).data('index'));
+            });
+
             $('#setting_user_management').dataTable({
                 scrollX: true, 
                 fixedHeader: true,       
                 processing: true,
-                order:[6, 'asc'],
+                order:[6, 'desc'],
                 ajax: {
                     url: '/getUsers',
                     dataSrc: ''
@@ -176,7 +188,7 @@ List User
                                     'phone': row.phone
                                 });
                                 return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
-                                    '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
+                                    '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
                             }
                            
                         }

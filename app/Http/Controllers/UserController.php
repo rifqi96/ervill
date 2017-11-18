@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\EditHistory;
+use App\Models\DeleteHistory;
 
 class UserController extends SettingController
 {
@@ -153,7 +154,52 @@ class UserController extends SettingController
             ->with('success', 'Data telah berhasil diupdate');
         }else{
             return back()
-            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            ->withErrors(['message' => 'Terjadi kesalahan pada update data']);
+        }
+    }
+
+    public function doDelete(Request $request){
+        $user = User::find($request->user_id);
+
+        $this->validate($request, [
+            'description' => 'required|string'
+        ]);
+
+        $data = array(
+            'module_name' => 'User Management',
+            'description' => $request->description,
+            'data_id' => $user->id,
+            'user_id' => auth()->user()->id
+        );
+
+        if(auth()->user()->role->name=='admin' && $user->role!=3){
+            return back()
+                ->withErrors(['message' => 'Admin hanya dapat update data driver']);
+        }
+
+        if($user->doDelete() && DeleteHistory::create($data)){
+            return back()
+                ->with('success', 'Data telah berhasil dihapus');
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
+        }
+    }
+
+    public function doForceDelete(Request $request){
+        $user = User::onlyTrashed()->find($request->user_id);
+
+        if(auth()->user()->role->name!='superadmin'){
+            return back()
+                ->withErrors(['message' => 'Anda tidak dapat menghapus data secara permanen']);
+        }
+
+        if($user->doForceDelete() && DeleteHistory::destroy($request->data_id)){
+            return back()
+                ->with('success', 'Data telah berhasil dihapus');
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
         }
     }
 
