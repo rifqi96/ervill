@@ -95,8 +95,8 @@ class UserController extends SettingController
 
     public function doUpdate(Request $request)
     {
-        $user = User::with('role')->select('role_id','username','full_name','email','phone')->find($request->id);
-
+        $user = User::with('role')->select('id','role_id','username','full_name','email','phone')->find($request->id);
+        
         $this->validate($request, [
             'role' => 'required|integer|exists:roles,id',
             'username' => 'required|string|min:3|unique:users,username,'.$request->id,

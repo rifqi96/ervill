@@ -69,13 +69,9 @@ class HistoryController extends Controller
             }else if($edit_history->module_name == "Order Gallon"){             
                 $old_value_arr['Outsourcing Pengemudi'] = $old_value[0];
                 $old_value_arr['Jumlah (Galon)'] = $old_value[1];
-                $old_value_arr['Tgl Order'] = $old_value[2];
-                $old_value_arr['Tgl Penerimaan'] = $old_value[3];
                 
                 $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
                 $new_value_arr['Jumlah (Galon)'] = $new_value[1];
-                $new_value_arr['Tgl Order'] = $new_value[2];
-                $new_value_arr['Tgl Penerimaan'] = $new_value[3];
             }
 
             $edit_history->old_value = $old_value_arr;

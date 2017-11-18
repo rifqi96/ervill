@@ -21,7 +21,6 @@ class OrderGallonController extends OrderController
 
         $outsourcingDrivers = OutsourcingDriver::all();
         $this->data['outsourcingDrivers'] = $outsourcingDrivers;
-
         return view('order.gallon.index', $this->data);
     }
 
@@ -59,16 +58,15 @@ class OrderGallonController extends OrderController
         $this->validate($request, [           
             'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
             'quantity' => 'required|integer|min:1',
-            'order_at' => 'required|date',
             'description' => 'required|string|regex:/^[^;]+$/'
             
         ]);   
         
         $orderGallon = OrderGallon::with('outsourcingDriver','order')->find($request->id);
-       
+        
         //set old values
         $old_value_obj = $orderGallon->toArray();
-      
+     
         unset($old_value_obj['id']);    
         unset($old_value_obj['outsourcing_driver_id']);
         unset($old_value_obj['order_id']);  
@@ -78,9 +76,7 @@ class OrderGallonController extends OrderController
             if($i == 0){
                 $old_value .= $row['name'].';';
             }else if($i == 1){
-                $old_value .= $row['quantity'].';';
-                $old_value .= $row['created_at'].';';
-                $old_value .= $row['accepted_at'];
+                $old_value .= $row['quantity'];
             }      
             $i++;
         }
@@ -111,8 +107,10 @@ class OrderGallonController extends OrderController
             'user_id' => auth()->id()
         );
 
-        if($orderGallon->doUpdate($request) && EditHistory::create($edit_data)){
-            return back();
+        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdateOrderGallon($request) && EditHistory::create($edit_data)){
+            //dd($orderGallon->id . $request->id);
+            return back()
+            ->with('success', 'Data telah berhasil diupdate');
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -121,7 +119,7 @@ class OrderGallonController extends OrderController
 
     public function doDelete(Request $request){
         $orderGallon = OrderGallon::find($request->id);
-//dd($orderGallon);
+
         $this->validate($request, [
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
@@ -142,6 +140,19 @@ class OrderGallonController extends OrderController
         }
     }
 
+    public function doConfirm(Request $request)
+    {
+        $orderGallon = OrderGallon::find($request->id);
+        
+        if($orderGallon->order->doConfirm()){
+            return back()
+            ->with('success', 'Data telah berhasil dikonfirmasi');
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
     public function showInventory(){
         $this->data['breadcrumb'] = 'Order - Inventory Gallon';
 
@@ -151,15 +162,8 @@ class OrderGallonController extends OrderController
 
     public function getOrderGallons()
     {
-        $orderGallons = OrderGallon::with('outsourcingDriver','order','order.user')->get();
-
-        $result = array();
-        foreach ($orderGallons as $row) {
-            if($row->order){
-                array_push($result, $row);
-            }
-        }
-        
-        return json_encode($result);
+        $orderGallons = OrderGallon::has('order')->with('outsourcingDriver','order','order.user')->get();
+       
+        return json_encode($orderGallons);
     }
 }

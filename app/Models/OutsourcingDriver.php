@@ -10,6 +10,7 @@ class OutsourcingDriver extends Model
 	public function doUpdate($outsourcingDriver)
     {   
         $this->name = $outsourcingDriver->name;
+        
         return ($this->save());
     }
 

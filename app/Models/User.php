@@ -58,7 +58,7 @@ class User extends Authenticatable
         $this->full_name = $user->full_name;
         $this->email = $user->email;
         $this->phone = $user->phone;
-
+        
         return ($this->save());
     }
 
@@ -73,7 +73,8 @@ class User extends Authenticatable
         $this->email = $user->email;
         $this->phone = $user->phone;
 
-        return ($this->save());
+        
+        return $this->save();
     }
 
     public function doDelete(){
