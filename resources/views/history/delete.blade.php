@@ -154,7 +154,7 @@
                         }
 
                         $('#values_template').append(values_template);
-                        $('#delete-id-input').val(delete_histories_json[i].id)
+                        $('#delete-id-input').val(delete_histories_json[i].id);
 
                         values_template = "";
                     }
@@ -165,7 +165,7 @@
                 scrollX: true,
                 fixedHeader: true,
                 processing: true,
-                'order':[5, 'desc'],
+                'order':[6, 'desc'],
                 data:delete_histories_json,
                 columns: [
                     {

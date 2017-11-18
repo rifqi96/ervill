@@ -10,6 +10,7 @@ use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\OrderGallon;
 use League\CLImate\TerminalObject\Basic\Out;
+use Illuminate\Support\Collection;
 
 class HistoryController extends Controller
 {
@@ -104,7 +105,7 @@ class HistoryController extends Controller
         return json_encode($editHistories);
     }
 
-    public function getTrashedObject($request){
+    public function getTrashedObject($request, $mode = ""){
         if($request->delete_id){
            $delete_id = $request->delete_id;
         }
@@ -123,21 +124,38 @@ class HistoryController extends Controller
                 ->find($dh->data_id);
         }
         else if($dh->module_name == "Order Gallon"){
-            return OrderGallon::with(['order' => function($query) use ($dh){
-                $query->where('id', $dh->data_id);
-            }])->first();
+            $order_gallon = OrderGallon::with(['order' => function($query){
+                $query->onlyTrashed();
+            }])
+                ->where('order_id', $dh->data_id)
+                ->first();
+
+            $order = Order::onlyTrashed()
+                ->with('user')
+                ->find($dh->data_id);
+
+            if($mode == '' || empty($mode)){
+                $new_attributes = array(
+                    'Admin' => $order->user->full_name
+                );
+                $order->fill($new_attributes);
+                $order->setAttribute('id', $order_gallon->id);
+                $order->makeHidden(['inventory_id', 'user']);
+            }
+
+            return $order;
         }
     }
 
     /*======= Do Methods =======*/
     public function doRestore(Request $request){
-        $object = $this->getTrashedObject($request);
+        $object = $this->getTrashedObject($request, 'restore');
 
         return ($object->restore() && DeleteHistory::destroy($request->delete_id));
     }
 
     public function doForceDelete(Request $request){
-        $object = $this->getTrashedObject($request);
+        $object = $this->getTrashedObject($request, 'delete');
 
         return ($object->doForceDelete() && DeleteHistory::destroy($request->delete_id));
     }

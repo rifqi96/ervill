@@ -127,7 +127,7 @@ class OrderGallonController extends OrderController
         $data = array(
             'module_name' => 'Order Gallon',
             'description' => $request->description,
-            'data_id' => $orderGallon->id,
+            'data_id' => $orderGallon->order_id,
             'user_id' => auth()->user()->id
         );
 
