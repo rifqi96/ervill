@@ -6,9 +6,36 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderGallon extends Model
 {
+	/**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $guarded = [];
+
+	public function doMake($order, $orderGallon)
+    {        
+        $this->outsourcing_driver_id = $orderGallon->outsourcing_driver;
+        $this->order_id = $order->id;
+        return ($this->save());
+    }
+
+    public function doUpdate($orderGallon)
+    {      
+        
+        $this->outsourcing_driver_id = $orderGallon->outsourcing;
+        $this->order->quantity = $orderGallon->quantity;
+        $this->order->created_at = $orderGallon->order_at;
+        $this->order->accepted_at = $orderGallon->accepted_at;
+
+        return ($this->save());
+    }
+
     public function order()
     {
-        return $this->hasOne('App\Models\Order');
+        return $this->belongsTo('App\Models\Order');
     }
     public function outsourcingDriver()
     {

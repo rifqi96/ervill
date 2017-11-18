@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-Pesan Gallon
+Buat Outsourcing
 @endsection
 
 @section('content')
@@ -11,12 +11,8 @@ Pesan Gallon
     </header>
 
     <section class="box-typical box-typical-padding">
-        {{--<h5 class="m-t-lg with-border">Input New Task Data</h5>--}}
-        {{--<check if="{{@SESSION.addtasksuccess}}">--}}
-            {{--<h4><span class="label label-success">{{@SESSION.addtasksuccess}}</span></h4>--}}
-        {{--</check>--}}
 
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="{{route('setting.outsourcing.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Jenis</label>
@@ -24,9 +20,8 @@ Pesan Gallon
                     <p class="form-control-static">
 	                    <select id="type" name="type" class="form-control">
 	                        <option value=""></option>
-	                        <option value="1">Supir Air</option>
-	                        <option value="2">Pabrik Galon</option>
-	                        <option value="3">Jenis 3</option>
+	                        <option value="1">Pengemudi</option>
+	                        <option value="2">Pabrik Air</option>	                       
 	                    </select>
                     </p>
                 </div>

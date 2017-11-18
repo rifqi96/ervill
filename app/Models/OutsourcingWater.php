@@ -13,6 +13,12 @@ class OutsourcingWater extends Model
         return ($this->save());
     }
 
+    public function doMake($outsourcingWater)
+    {
+        $this->name = $outsourcingWater->name;
+        return ($this->save());
+    }
+
     public function orderWaters()
     {
         return $this->hasMany('App\Models\OrderWater');
