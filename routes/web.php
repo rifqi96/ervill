@@ -194,6 +194,7 @@ Route::get('/getOutsourcingWaters', 'OutsourcingController@getOutsourcingWaters'
 Route::get('/getOutsourcingDrivers', 'OutsourcingController@getOutsourcingDrivers');
 Route::get('/getEditHistories', 'HistoryController@getEditHistories');
 Route::get('/getOrderGallons', 'OrderGallonController@getOrderGallons');
+Route::get('/getInventories', 'InventoryController@getInventories');
 
 
 
