@@ -79,6 +79,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Shipment');
     }
+    public function editHistories()
+    {
+        return $this->hasMany('App\Models\EditHistory');
+    }
     
    
 }

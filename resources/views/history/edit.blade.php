@@ -11,6 +11,9 @@
                 <thead>
                 <th>ID</th>
                 <th>Nama Modul</th>
+                <th>Data ID</th>
+                <th>Author ID</th>
+                <th>Author Name</th>
                 <th>Tgl Edit</th>
                 <th>Action</th>
                 </thead>                
@@ -34,7 +37,13 @@
                     <div class="form-group">
                         <label for="module_name"><strong>Module Name</strong></label>
                         <p id="module_name" class="form-control-static">
-                           a
+                           
+                        </p> 
+                    </div>
+                    <div class="form-group">
+                        <label for="data_id"><strong>Data ID</strong></label>
+                        <p id="data_id" class="form-control-static">
+                           
                         </p> 
                     </div>
 
@@ -65,7 +74,7 @@
     <script>
         $(document).ready(function () {
 
-            var edit_history_json = {!!$edit_history->toJson()!!};console.log(edit_history_json);
+            var edit_history_json = {!!$edit_history->toJson()!!};
             var old_values_template = "";
             var new_values_template = "";
 
@@ -76,6 +85,7 @@
                 for(var i in edit_history_json){                    
                     if(edit_history_json[i].id==$(this).data('index')){
                         $('#module_name').text(edit_history_json[i].module_name);
+                        $('#data_id').text(edit_history_json[i].data_id);
                         $('#description').text(edit_history_json[i].description);
 
                         for(var j in edit_history_json[i].old_value){
@@ -115,11 +125,14 @@
                 scrollX: true,
                 fixedHeader: true,
                 processing: true,
-                'order':[2, 'desc'],
+                'order':[5, 'desc'],
                 data:edit_history_json,
                 columns: [
                     {data: 'id'},
-                    {data: 'module_name'},                  
+                    {data: 'module_name'},    
+                    {data: 'data_id'},
+                    {data: 'user_id'},  
+                    {data: 'user.full_name'},            
                     {data: 'updated_at'},
                     {
                         data: null, 

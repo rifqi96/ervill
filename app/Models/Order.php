@@ -3,9 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Order extends Model
 {
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    protected $guarded = [];
+
+    public function doMakeOrderGallon($order)
+    {        
+        $this->inventory_id = 1;
+        $this->user_id = auth()->id();
+        $this->quantity = $order->quantity;
+        $this->created_at = Carbon::now();
+        return ($this->save());
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
@@ -16,14 +35,14 @@ class Order extends Model
     }
     public function orderGallon()
     {
-        return $this->belongsTo('App\Models\OrderGallon');
+        return $this->hasOne('App\Models\OrderGallon');
     }
     public function orderWater()
     {
-        return $this->belongsTo('App\Models\OrderWater');
+        return $this->hasOne('App\Models\OrderWater');
     }
     public function orderCustomer()
     {
-        return $this->belongsTo('App\Models\OrderCustomer');
+        return $this->hasOne('App\Models\OrderCustomer');
     }
 }

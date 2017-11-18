@@ -8,7 +8,6 @@ List Pesanan Galon
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                {{--<h3 class="panel-title"></h3>--}}
                 <a href="{{route('order.gallon.make')}}"><button class="btn btn-primary">Pesan Galon</button></a>
                 <a href="{{route('order.gallon.inventory')}}"><button class="btn btn-primary">Stock Gudang</button></a>
             </header>
@@ -79,36 +78,40 @@ List Pesanan Galon
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('order.gallon.do.update')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="id" value="" id="input_id">  
+
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
                 </div>
 
-                <div class="modal-body">                       
-                    <div class="form-group">
-                        <label for="admin"><strong>Admin</strong></label>
-                        <input type="text" class="form-control" name="admin">
-                    </div> 
+                <div class="modal-body">                                          
                     <div class="form-group">
                         <label for="outsourcing"><strong>Outsourcing</strong></label>
-                        <input type="text" class="form-control" name="outsourcing">
+                        <select id="outsourcing" name="outsourcing" class="form-control">
+                            <option value=""></option>
+                            @foreach($outsourcingDrivers as $outsourcingDriver)
+                                <option value="{{$outsourcingDriver->id}}">{{$outsourcingDriver->name}}</option>           
+                            @endforeach
+                        </select> 
                     </div>                      
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="text" class="form-control" name="quantity">
+                        <input type="number" class="form-control" name="quantity" id="quantity">
                     </div>                   
                     <div class="form-group">
                         <label for="order_at"><strong>Tgl Order</strong></label>
-                        <input type="date" class="form-control" name="order_at">
+                        <input type="text" class="form-control" name="order_at" id="order_at">
                     </div>                   
                     <div class="form-group">
                         <label for="accepted_at"><strong>Tgl Penerimaan</strong></label>
-                        <input type="date" class="form-control" name="accepted_at">
+                        <input type="text" class="form-control" name="accepted_at" id="accepted_at">
                     </div>
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <textarea class="form-control" name="description" rows="3" id="description"></textarea>
                     </div>
                 </div>
 
@@ -154,11 +157,59 @@ List Pesanan Galon
 
     <script>
         $(document).ready(function () {
+
+            var orderGallons = [];
+            $('#gallon_order').on('click','.detail-btn',function(){
+                for(var i in orderGallons){
+                    if(orderGallons[i].id==$(this).data('index')){                        
+                        $('#outsourcing').val(orderGallons[i].outsourcing);
+                        $('#quantity').val(orderGallons[i].quantity);
+                        $('#order_at').val(orderGallons[i].order_at);
+                        $('#accepted_at').val(orderGallons[i].accepted_at);
+                        $('#input_id').val(orderGallons[i].id);
+                    }
+                }
+            });
+
             $('#gallon_order').dataTable({
                 'order':[4, 'desc'],
                 scrollX: true,     
                 fixedHeader: true,       
                 processing: true,
+                ajax: {
+                    url: '/getOrderGallons',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'id'},
+                    {data: 'order.user.full_name'},
+                    {data: 'outsourcing_driver.name'},
+                    {data: 'order.quantity'},
+                    {data: 'order.created_at'},
+                    {data: 'order.accepted_at'},
+                    {
+                        data: null, 
+                        render: function ( data, type, row, meta ) {
+                            orderGallons.push({
+                                'id': row.id,
+                                'admin': row.order.user.full_name,                               
+                                'outsourcing': row.outsourcing_driver.id,
+                                'quantity': row.order.quantity,
+                                'order_at': row.order.created_at,
+                                'accepted_at': row.order.accepted_at                            
+                            });
+
+                            if(row.order.accepted_at == null){
+                                return '<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>'+ 
+                                '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';   
+                            }else{
+                                return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';   
+                            }                             
+                        }
+                    }                   
+                ]
             });
         });
     </script>
