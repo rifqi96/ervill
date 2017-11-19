@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\OrderGallon;
+use App\Models\Customer;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
 
@@ -22,7 +23,7 @@ class HistoryController extends Controller
      * 4. Order Gallon
      * 5. Order Water
      * 6. Order Customer
-     * 7. ....
+     * 7. Customers
      */
 
     public function __construct()
@@ -58,7 +59,17 @@ class HistoryController extends Controller
                 $new_value_arr['No. Telepon'] = $new_value[3];
                 $new_value_arr['Role'] = $new_value[4];
 
-            }else if($edit_history->module_name == "Outsourcing Driver"){             
+            }
+            else if($edit_history->module_name == "Customers"){
+                $old_value_arr['Nama'] = $old_value[0];
+                $old_value_arr['Alamat'] = $old_value[1];
+                $old_value_arr['No. Telepon'] = $old_value[2];
+
+                $new_value_arr['Nama'] = $new_value[0];
+                $new_value_arr['Alamat'] = $new_value[1];
+                $new_value_arr['No. Telepon'] = $new_value[2];
+            }
+            else if($edit_history->module_name == "Outsourcing Driver"){
                 $old_value_arr['Nama'] = $old_value[0];
                 
                 $new_value_arr['Nama'] = $new_value[0];
@@ -117,6 +128,10 @@ class HistoryController extends Controller
 
         if($dh->module_name == "User Management"){
             return User::onlyTrashed()
+                ->find($dh->data_id);
+        }
+        else if($dh->module_name == "Customers"){
+            return Customer::onlyTrashed()
                 ->find($dh->data_id);
         }
         else if($dh->module_name == "Outsourcing Driver"){

@@ -49,6 +49,9 @@
                 </span>
         <ul>
             <li>
+                {!!$slug=="customers"?'<span class="lbl">Customer</span>':'<a href="'.route("setting.customers.index").'"><span class="lbl">Customer</span></a>'!!}
+            </li>
+            <li>
                 {!!$slug=="outsourcing"?'<span class="lbl">Outsourcing</span>':'<a href="'.route("setting.outsourcing.index").'"><span class="lbl">Outsourcing</span></a>'!!}
             </li>
             <li>

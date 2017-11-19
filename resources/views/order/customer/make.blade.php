@@ -19,7 +19,7 @@ Pesan Customer
                     {{--<h4><span class="label label-success">{{@SESSION.addtasksuccess}}</span></h4>--}}
                 {{--</check>--}}
 
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{{route('order.customer.do.make')}}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Customer</label>
@@ -52,7 +52,7 @@ Pesan Customer
                         <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">
-                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman">
+                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}">
                             </p>
                             {{--<check if="{{@SESSION.addtaskerror['status']}}">--}}
                                 {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['status']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
