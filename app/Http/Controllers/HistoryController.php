@@ -83,6 +83,12 @@ class HistoryController extends Controller
                 
                 $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
                 $new_value_arr['Jumlah (Galon)'] = $new_value[1];
+            }else if($edit_history->module_name == "Inventory"){             
+                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
+                $old_value_arr['Harga'] = $old_value[1];
+                
+                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
+                $new_value_arr['Harga'] = $new_value[1];
             }
 
             $edit_history->old_value = $old_value_arr;

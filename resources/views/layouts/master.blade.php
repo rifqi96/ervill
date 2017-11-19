@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{config('app.name', 'ERVILL')}} - @yield('title')</title>
 
     @include('layouts.include_header')
@@ -32,5 +36,14 @@
 </div><!--.page-content-->
 @include('layouts.errors')<!--.errors-->
 @include('layouts.success')<!--.errors-->
+<script type="text/javascript">
+    //disable button after submit
+    $("form").submit(function(){
+        $(this).find("button[type='submit'],input[type='submit']").attr('disabled','disabled');
+    });
+    $(".ajax-btn").click(function(){
+        $(this).attr('disabled','disabled');
+    });
+</script>
 </body>
 </html>
