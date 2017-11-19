@@ -100,6 +100,11 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderGallonController@doConfirm',
                 'as' => 'order.gallon.do.confirm'
             ]);
+
+            Route::post('cancel', [
+                'uses' => 'OrderGallonController@doCancel',
+                'as' => 'order.gallon.do.cancel'
+            ]);
         });
     });
     Route::prefix('water')->group(function(){
@@ -125,6 +130,15 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
         ]);
+    });
+});
+
+Route::prefix('inventory')->group(function(){
+    Route::prefix('do')->group(function(){
+        Route::post('update', [
+            'uses' => 'InventoryController@doUpdate',
+            'as' => 'inventory.do.update'
+        ]);            
     });
 });
 

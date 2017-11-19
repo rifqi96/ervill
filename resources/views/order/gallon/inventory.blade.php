@@ -72,28 +72,26 @@ Inventory Gallon
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('inventory.do.update')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="id" value="" id="input_id">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
                 </div>
 
-                <div class="modal-body">                       
-                    <div class="form-group">
-                        <label for="name"><strong>Nama</strong></label>
-                        <input type="text" class="form-control" name="name">
-                    </div>                                  
+                <div class="modal-body">                                              
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="text" class="form-control" name="quantity">
+                        <input id="quantity" type="number" class="form-control" name="quantity">
                     </div>          
                      <div class="form-group">
                         <label for="price"><strong>Harga (Rupiah)</strong></label>
-                        <input type="text" class="form-control" name="price">
+                        <input id="price" type="text" class="form-control" name="price">
                     </div>    
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <textarea id="description" class="form-control" name="description" rows="3"></textarea>
                     </div>                                   
                 </div>
 
@@ -110,44 +108,46 @@ Inventory Gallon
 
     <script>
         $(document).ready(function () {
+
+            var inventories = [];
+            $('#gallon_inventory').on('click','.detail-btn',function(){
+                var index = $(this).data('index');
+                for(var i in inventories){
+                    if(inventories[i].id==index){                                     
+                        $('#quantity').val(inventories[i].quantity);
+                        $('#price').val(inventories[i].price);       
+                        $('#input_id').val(inventories[i].id);
+                    }
+                }
+            });
+
             $('#gallon_inventory').dataTable({
                 scrollX: true,  
                 fixedHeader: true,       
                 processing: true,
-                'order':[4, 'desc'],
+                'order':[0, 'asc'],
                 ajax: {
                     url: '/getInventories',
                     dataSrc: ''
                 },
                 columns: [
                     {data: 'id'},
-                    {data: 'role.name'},
-                    {data: 'username'},
-                    {data: 'full_name'},
-                    {data: 'email'},
-                    {data: 'phone'},
+                    {data: 'name'},
+                    {data: 'quantity'},
+                    {data: 'price'},
                     {data: 'created_at'},
                     {data: 'updated_at'},
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {
-                            if((<?php echo strcmp(auth()->user()->role->name,'admin');?> == 0 && row.role.name != 'driver') || 
-                                (<?php echo strcmp(auth()->user()->role->name,'driver');?> == 0)
-                                ){
-                                return '';
-                            }else{
-                                users.push({
-                                    'id': row.id,
-                                    'role_id': row.role.id,
-                                    'username': row.username,
-                                    'full_name': row.full_name,
-                                    'email': row.email,
-                                    'phone': row.phone
-                                });
-                                return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
-                                    '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
-                            }
-                           
+                            inventories.push({
+                                'id': row.id,
+                                'quantity': row.quantity,
+                                'price': row.price                               
+                            });
+                            return '<a class="edit ml10 detail-btn" href="javascript:void(0)" title="Edit" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">'+
+                                    '<i class="glyphicon glyphicon-edit"></i>'+
+                                '</a>';
                         }
                     }                   
                 ]

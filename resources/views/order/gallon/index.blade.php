@@ -110,6 +110,7 @@ List Pesanan Galon
                 </div>
 
                 <div class="modal-footer">
+                    <button id="cancel-btn" type="button" class="btn btn-info" style="float: left;">Batalkan penerimaan stock</button>
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                 </div>
@@ -156,16 +157,49 @@ List Pesanan Galon
 
             var orderGallons = [];
             $('#gallon_order').on('click','.detail-btn',function(){
+                var index = $(this).data('index');
                 for(var i in orderGallons){
-                    if(orderGallons[i].id==$(this).data('index')){                        
+                    if(orderGallons[i].id==index){
+                        if(orderGallons[i].accepted_at==null){
+                            $('#cancel-btn').css('display','none');
+                        }else{
+                            $('#cancel-btn').css('display','inline-block');
+                        }                        
                         $('#outsourcing').val(orderGallons[i].outsourcing);
                         $('#quantity').val(orderGallons[i].quantity);
-                        $('#order_at').val(orderGallons[i].order_at);
-                        $('#accepted_at').val(orderGallons[i].accepted_at);
                         $('#input_id').val(orderGallons[i].id);
+
                     }
                 }
+
+                $('#cancel-btn').on('click',function(){
+                    for(var i in orderGallons){
+                        if(orderGallons[i].id==index){
+                            if(orderGallons[i].accepted_at!=null){
+                               $.ajax({
+                                  method: "POST",
+                                  url: "{{route('order.gallon.do.cancel')}}",
+                                  data: {id: orderGallons[i].id},
+                                  headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                  }
+                                })
+                                .done(function(data){                              
+                                    location.reload(); 
+                                    //alert('data telah berhasil diupdate');                          
+                                })
+                                .fail(function(data){
+                                    alert('Terjadi kesalahan!');
+                                   
+                                });
+                            }
+                            break;
+                        }
+                    }                
+                });
             });
+
+            
 
             $('#gallon_order').on('click','.delete-btn',function(){
                 for(var i in orderGallons){

@@ -153,6 +153,19 @@ class OrderGallonController extends OrderController
         }
     }
 
+    public function doCancel(Request $request)
+    {
+        $orderGallon = OrderGallon::find($request->id);
+        
+        if($orderGallon->order->doCancel()){
+            return back()
+            ->with('success', 'Data telah berhasil diupdate');
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
     public function showInventory(){
         $this->data['breadcrumb'] = 'Order - Inventory Gallon';
 
