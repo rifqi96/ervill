@@ -130,6 +130,28 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
         ]);
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'OrderCustomerController@doMake',
+                'as' => 'order.customer.do.make'
+            ]);
+
+            Route::post('update', [
+                'uses' => 'OrderCustomerController@doUpdate',
+                'as' => 'order.customer.do.update'
+            ]);
+
+            Route::post('delete', [
+                'uses' => 'OrderCustomerController@doDelete',
+                'as' => 'order.customer.do.delete'
+            ]);
+
+            Route::post('confirm', [
+                'uses' => 'OrderCustomerController@doConfirm',
+                'as' => 'order.customer.do.confirm'
+            ]);
+        });
     });
 });
 
@@ -220,6 +242,33 @@ Route::prefix('setting')->group(function(){
         });
 
     });
+
+    Route::prefix('customers')->group(function(){
+        Route::get('/', [
+            'uses' => 'CustomerController@index',
+            'as' => 'setting.customers.index'
+        ]);
+        Route::get('/create', [
+            'uses' => 'CustomerController@showMake',
+            'as' => 'setting.customers.make'
+        ]);
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'CustomerController@doMake',
+                'as' => 'setting.customers.do.make'
+            ]);
+            Route::post('update', [
+                'uses' => 'CustomerController@doUpdate',
+                'as' => 'setting.customers.do.update'
+            ]);
+            Route::post('delete', [
+                'uses' => 'CustomerController@doDelete',
+                'as' => 'setting.customers.do.delete'
+            ]);
+        });
+
+    });
 });
 
 Route::get('/getUsers', 'UserController@getUsers');
@@ -228,6 +277,8 @@ Route::get('/getOutsourcingDrivers', 'OutsourcingController@getOutsourcingDriver
 Route::get('/getEditHistories', 'HistoryController@getEditHistories');
 Route::get('/getOrderGallons', 'OrderGallonController@getOrderGallons');
 Route::get('/getInventories', 'InventoryController@getInventories');
+
+Route::get('/getCustomers', 'CustomerController@getAll');
 
 
 

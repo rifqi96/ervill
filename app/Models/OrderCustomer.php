@@ -19,6 +19,9 @@ class OrderCustomer extends Model
     {
         return $this->belongsTo('App\Models\Order');
     }
+    public function customer(){
+        return $this->belongsTo('App\Models\Customer');
+    }
     public function issues()
     {
         return $this->belongsToMany('App\Models\Issue');
@@ -26,5 +29,20 @@ class OrderCustomer extends Model
     public function shipment()
     {
         return $this->belongsTo('App\Models\Shipment');
+    }
+
+    public function doMake($order, $orderGallon)
+    {
+
+        $this->order_id = $order->id;
+        return ($this->save());
+    }
+
+    public function doUpdate($orderGallon)
+    {
+
+        $this->outsourcing_driver_id = $orderGallon->outsourcing;
+
+        return ($this->save());
     }
 }
