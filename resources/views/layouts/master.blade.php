@@ -36,5 +36,14 @@
 </div><!--.page-content-->
 @include('layouts.errors')<!--.errors-->
 @include('layouts.success')<!--.errors-->
+<script type="text/javascript">
+    //disable button after submit
+    $("form").submit(function(){
+        $(this).find("button[type='submit'],input[type='submit']").attr('disabled','disabled');
+    });
+    $(".ajax-btn").click(function(){
+        $(this).attr('disabled','disabled');
+    });
+</script>
 </body>
 </html>

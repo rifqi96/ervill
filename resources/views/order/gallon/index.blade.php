@@ -110,7 +110,7 @@ List Pesanan Galon
                 </div>
 
                 <div class="modal-footer">
-                    <button id="cancel-btn" type="button" class="btn btn-info" style="float: left;">Batalkan penerimaan stock</button>
+                    <button id="cancel-btn" type="button" class="btn btn-info ajax-btn" style="float: left;">Batalkan penerimaan stock</button>
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                 </div>
