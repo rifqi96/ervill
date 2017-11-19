@@ -27,6 +27,20 @@ class Inventory extends Model
         return $this->save();
     }
 
+    public function addEmptyGallon($quantity)
+    {    	
+        $this->quantity += $quantity;
+        
+        return $this->save();
+    }
+
+    public function removeEmptyGallon($quantity)
+    {    	
+        $this->quantity -= $quantity;
+        
+        return $this->save();
+    }
+
     public function orders()
     {
         return $this->hasMany('App\Models\Order');

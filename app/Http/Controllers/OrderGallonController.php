@@ -8,6 +8,7 @@ use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
+use App\Models\Inventory;
 
 class OrderGallonController extends OrderController
 {
@@ -142,9 +143,10 @@ class OrderGallonController extends OrderController
 
     public function doConfirm(Request $request)
     {
-        $orderGallon = OrderGallon::find($request->id);
+        $orderGallon = OrderGallon::with('order')->find($request->id);
+        $inventory = Inventory::find(1);
         
-        if($orderGallon->order->doConfirm()){
+        if($orderGallon->order->doConfirm() && $inventory->addEmptyGallon($orderGallon->order->quantity)){
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{
@@ -155,9 +157,10 @@ class OrderGallonController extends OrderController
 
     public function doCancel(Request $request)
     {
-        $orderGallon = OrderGallon::find($request->id);
+        $orderGallon = OrderGallon::with('order')->find($request->id);
+        $inventory = Inventory::find(1);
         
-        if($orderGallon->order->doCancel()){
+        if($orderGallon->order->doCancel() && $inventory->removeEmptyGallon($orderGallon->order->quantity)){
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{
