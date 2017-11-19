@@ -88,13 +88,13 @@ class ChangeErOutsourcings extends Migration
         });
 
         Schema::table('order_gallons', function (Blueprint $table){
-            $table->integer('outsourcing_id')->unsigned()->after('id');
+            $table->integer('outsourcing_id')->unsigned()->after('id')->nullable();
             $table->foreign('outsourcing_id')->references('id')->on('outsourcings')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
 
         Schema::table('order_waters', function (Blueprint $table){
-            $table->integer('outsourcing_id')->unsigned()->after('id');
+            $table->integer('outsourcing_id')->unsigned()->after('id')->nullable();
             $table->foreign('outsourcing_id')->references('id')->on('outsourcings')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
