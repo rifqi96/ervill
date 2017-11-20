@@ -24,6 +24,8 @@ class OrderCustomerController extends OrderController
     {
         $this->data['breadcrumb'] = "Order - Customer Order";
 
+        $this->data['inventory'] = Inventory::find(2);
+
         return view('order.customer.index', $this->data);
     }
 

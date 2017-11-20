@@ -92,7 +92,7 @@ List Pesanan Customer
                     </div>
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="number" class="form-control" name="quantity" id="edit-qty">
+                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1">
                     </div>
                     <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
