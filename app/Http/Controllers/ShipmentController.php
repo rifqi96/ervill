@@ -14,7 +14,7 @@ class ShipmentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('SuperadminAndAdmin');
         $this->data['module'] = 'shipment';
         $this->data['slug'] = '';
     }

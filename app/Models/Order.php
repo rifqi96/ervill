@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Inventory;
 
 class Order extends Model
 {
@@ -19,16 +20,42 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function doMakeOrderGallon($order)
+    public function doMakeOrderGallon($data)
     {        
         $this->inventory_id = 1;
         $this->user_id = auth()->id();
-        $this->quantity = $order->quantity;
+        $this->quantity = $data->quantity;
         return ($this->save());
+    }
+
+    public function doMakeOrderCustomer($data){
+        $this->inventory_id = 2;
+        $this->user_id = auth()->id();
+        $this->quantity = $data->quantity;
+
+        $filled_gallon = Inventory::find(2);
+        $filled_gallon->quantity -= $data->quantity;
+        if(!$filled_gallon->save()){
+            return false;
+        }
+
+        if($data->empty_gallon){
+            $empty_gallon = Inventory::find(1);
+            $empty_gallon->quantity += $data->quantity;
+            if(!$empty_gallon->save()){
+                return false;
+            }
+        }
+
+        return $this->save();
     }
 
     public function doUpdateOrderGallon($order){
         $this->quantity = $order->quantity;
+        return $this->save();
+    }
+
+    public function doUpdateOrderCustomer($data){
         return $this->save();
     }
 
@@ -57,6 +84,9 @@ class Order extends Model
     public function inventory()
     {
         return $this->belongsTo('App\Models\Inventory');
+    }
+    public function issues(){
+        return $this->hasMany('App\Models\Issue');
     }
     public function orderGallon()
     {

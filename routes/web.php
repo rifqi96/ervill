@@ -279,7 +279,7 @@ Route::get('/getOrderGallons', 'OrderGallonController@getOrderGallons');
 Route::get('/getInventories', 'InventoryController@getInventories');
 
 Route::get('/getCustomers', 'CustomerController@getAll');
-
+Route::get('/getOrderCustomers', 'OrderCustomerController@getAll');
 
 
 /**

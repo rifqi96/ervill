@@ -16,7 +16,7 @@ class CreateOrderCustomersTable extends Migration
         Schema::create('order_customers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('order_id')->unsigned();
-            $table->integer('shipment_id')->unsigned();
+            $table->integer('shipment_id')->unsigned()->nullable();
             $table->string('customer_name');
             $table->string('customer_address');
             $table->integer('empty_gallon_quantity');

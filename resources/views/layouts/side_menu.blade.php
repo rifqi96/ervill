@@ -28,6 +28,7 @@
             <span class="lbl">Pengiriman</span>
         </a>
     </li>
+    @if(auth()->user()->role->name == 'superadmin')
     <li class="with-sub {{$module=="history"?"opened":""}}">
                 <span>
                     <i class="font-icon font-icon-clock"></i>
@@ -42,6 +43,7 @@
             </li>
         </ul>
     </li>
+    @endif
     <li class="with-sub {{$module=="settings"?"opened":""}}">
                 <span>
                     <i class="font-icon font-icon-cogwheel"></i>

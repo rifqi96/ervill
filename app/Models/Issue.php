@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Issue extends Model
 {
-    public function orderWaters()
+    public function order()
     {
-        return $this->belongsToMany('App\Models\OrderWater');
-    }
-    public function orderCustomers()
-    {
-        return $this->belongsToMany('App\Models\OrderCustomer');
+        return $this->belongsTo('App\Models\Order');
     }
     public function inventory()
     {

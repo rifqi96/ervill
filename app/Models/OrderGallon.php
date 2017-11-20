@@ -23,8 +23,7 @@ class OrderGallon extends Model
     }
 
     public function doUpdate($orderGallon)
-    {      
-        
+    {
         $this->outsourcing_driver_id = $orderGallon->outsourcing;
         
         return ($this->save());
