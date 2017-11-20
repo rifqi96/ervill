@@ -42,19 +42,17 @@ class OrderCustomer extends Model
         return ($this->save());
     }
 
-    public function doUpdate($orderGallon)
+    public function doUpdate($data)
     {
-        $this->outsourcing_driver_id = $orderGallon->outsourcing;
+        $this->order->quantity = $data->quantity;
+        $this->empty_gallon_quantity = $data->empty_gallon_quantity;
+        $this->delivery_at = $data->delivery_at;
+        $this->status = $data->status;
+        $this->customer_id = $data->customer_id;
 
+        if(!$this->order->save()){
+            return false;
+        }
         return ($this->save());
-    }
-
-    public function doDelete(){
-
-        return $this->delete();
-    }
-
-    public function doForceDelete(){
-        return $this->forceDelete();
     }
 }

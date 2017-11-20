@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Inventory;
+use App\Models\Issue;
 
 class Order extends Model
 {
@@ -60,7 +61,72 @@ class Order extends Model
     }
 
     public function doDelete(){
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+        if($this->inventory_id == 2){
+            // If delete order customer
+
+            if($this->issues){
+                foreach($this->issues as $issue){
+                    if($issue->type == "Refund Gallon"){
+                        $broken_gallon->quantity -= $issue->quantity;
+                        $filled_gallon->quantity += $issue->quantity;
+                    }
+                    else{
+                        $broken_gallon->quantity -= $issue->quantity;
+                    }
+                }
+            }
+            $filled_gallon->quantity += $this->quantity;
+            $empty_gallon->quantity -= $this->orderCustomer->empty_gallon_quantity;
+
+            if(!$filled_gallon->save()){
+                return false;
+            }
+            else if(!$empty_gallon->save()){
+                return false;
+            }
+        }
         return $this->delete();
+    }
+
+    public function doRestore(){
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+        if($this->inventory_id == 2){
+            // If restore order customer
+
+            if($this->issues){
+                foreach($this->issues as $issue){
+                    if($issue->type == "Refund Gallon"){
+                        $broken_gallon->quantity += $issue->quantity;
+                        $filled_gallon->quantity -= $issue->quantity;
+                    }
+                    else{
+                        $broken_gallon->quantity += $issue->quantity;
+                    }
+//                    else if($issue->type == "Refund Cash"){
+//                        $broken_gallon->quantity += $issue->quantity;
+//                    }
+//                    else if($issue->type == "Kesalahan Customer"){
+//                        $broken_gallon->quantity += $issue->quantity;
+//                    }
+                }
+            }
+            $filled_gallon->quantity -= $this->quantity;
+            $empty_gallon->quantity += $this->orderCustomer->empty_gallon_quantity;
+
+            if(!$filled_gallon->save()){
+                return false;
+            }
+            else if(!$empty_gallon->save()){
+                return false;
+            }
+        }
+
+        return $this->restore();
     }
 
     public function doForceDelete(){

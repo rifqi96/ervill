@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\OrderCustomer;
 use App\Models\Inventory;
 use App\Models\Customer;
+use App\Models\DeleteHistory;
+use App\Models\EditHistory;
 
 class OrderCustomerController extends OrderController
 {
@@ -106,47 +108,50 @@ class OrderCustomerController extends OrderController
     public function doUpdate(Request $request)
     {
         $this->validate($request, [
-            'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
+            'customer_id' => 'required|integer|exists:customers,id',
             'quantity' => 'required|integer|min:1',
+            'empty_gallon_quantity' => 'required|integer|min:0',
+            'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
 
         ]);
 
-        $orderGallon = OrderGallon::with('outsourcingDriver','order')->find($request->id);
+        $order_customer = OrderCustomer::with('customer', 'order')->find($request->id);
 
         //set old values
-        $old_value_obj = $orderGallon->toArray();
+        $old_value_obj = $order_customer->toArray();
+
+        $old_value_obj['customer_name'] = $old_value_obj['customer']['name'];
+        $old_value_obj['quantity'] = $old_value_obj['order']['quantity'];
 
         unset($old_value_obj['id']);
-        unset($old_value_obj['outsourcing_driver_id']);
+        unset($old_value_obj['shipment_id']);
+        unset($old_value_obj['customer_id']);
         unset($old_value_obj['order_id']);
+        unset($old_value_obj['order']);
+        unset($old_value_obj['customer']);
+
         $old_value = '';
-        $i=0;
-        foreach ($old_value_obj as $row) {
-            if($i == 0){
-                $old_value .= $row['name'].';';
-            }else if($i == 1){
-                $old_value .= $row['quantity'];
-            }
-            $i++;
-        }
+        $old_value .= $old_value_obj['quantity'] . ';';
+        $old_value .= $old_value_obj['empty_gallon_quantity']. ';';
+        $old_value .= $old_value_obj['delivery_at']. ';';
+        $old_value .= $old_value_obj['customer_name']. ';';
+        $old_value .= $old_value_obj['status'];
 
         //set new values
         $new_value_obj = $request->toArray();
-        $new_value_obj['outsourcing'] = OutsourcingDriver::find($new_value_obj['outsourcing'])->name;
+        $new_customer = Customer::find($request->customer_id);
+        $new_value_obj['customer_name'] = $new_customer->name;
         unset($new_value_obj['id']);
+        unset($new_value_obj['customer-table_length']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
-        $i=0;
-        foreach ($new_value_obj as $row) {
-            if($i == count($new_value_obj)-1){
-                $new_value .= $row;
-            }else{
-                $new_value .= $row.';';
-            }
-            $i++;
-        }
+        $new_value .= $new_value_obj['quantity'] . ';';
+        $new_value .= $new_value_obj['empty_gallon_quantity']. ';';
+        $new_value .= $new_value_obj['delivery_at']. ';';
+        $new_value .= $new_value_obj['customer_name']. ';';
+        $new_value .= $new_value_obj['status'];
 
         $edit_data = array(
             'module_name' => 'Order Gallon',
@@ -157,8 +162,7 @@ class OrderCustomerController extends OrderController
             'user_id' => auth()->id()
         );
 
-        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdateOrderGallon($request) && EditHistory::create($edit_data)){
-            //dd($orderGallon->id . $request->id);
+        if($order_customer->doUpdate($request) && EditHistory::create($edit_data)){
             return back()
                 ->with('success', 'Data telah berhasil diupdate');
         }else{
@@ -175,7 +179,7 @@ class OrderCustomerController extends OrderController
         ]);
 
         $data = array(
-            'module_name' => 'Order Gallon',
+            'module_name' => 'Order Customer',
             'description' => $request->description,
             'data_id' => $order_customer->order_id,
             'user_id' => auth()->user()->id

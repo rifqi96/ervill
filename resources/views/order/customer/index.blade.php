@@ -69,7 +69,7 @@ List Pesanan Customer
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('order.customer.do.update')}}" method="POST">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
@@ -84,27 +84,32 @@ List Pesanan Customer
                                 <th></th>
                                 <th>ID</th>
                                 <th>Nama Customer</th>
-                                <th>No. Telepon</th>
                                 <th>Alamat</th>
+                                <th>No. Telepon</th>
                                 </thead>
                             </table>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="number" class="form-control" name="quantity">
+                        <input type="number" class="form-control" name="quantity" id="edit-qty">
                     </div>
                     <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
-                        <input type="number" class="form-control" name="empty_gallon_quantity">
+                        <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
                     </div>
                     <div class="form-group">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
-                        <input type="date" class="form-control" name="delivery_at">
+                        <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
                     <div class="form-group">
-                        <label for="accepted_at"><strong>Tgl Penerimaan</strong></label>
-                        <input type="date" class="form-control" name="accepted_at">
+                        <label for="status"><strong>Status</strong></label>
+                        <select name="status" id="edit-status" class="form-control">
+                            <option value="Draft">Draft</option>
+                            <option value="Proses">Proses</option>
+                            <option value="Bermasalah">Bermasalah</option>
+                            <option value="Selesai">Selesai</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
@@ -130,7 +135,7 @@ List Pesanan Customer
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('order.customer.do.delete')}}" method="POST">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -150,8 +155,6 @@ List Pesanan Customer
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                 </div>
             </form>
-
-
         </div>
       </div>
     </div>
@@ -220,13 +223,15 @@ List Pesanan Customer
                                 render: function(data, type, row, meta){
                                     var result = "";
                                     if(data.status != "Draft"){
-                                        var shipment_url = "{{route("shipment.track", ":id")}}";
-                                        shipment_url = shipment_url.replace(':id', data.shipment.id);
-                                        if(data.status == "Proses"){
-                                            result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
-                                        }
-                                        else if(data.status == "Bermasalah" || data.status == "Selesai"){
-                                            result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
+                                        if(data.shipment){
+                                            var shipment_url = "{{route("shipment.track", ":id")}}";
+                                            shipment_url = shipment_url.replace(':id', data.shipment.id);
+                                            if(data.status == "Proses"){
+                                                result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
+                                            }
+                                            else if(data.status == "Bermasalah" || data.status == "Selesai"){
+                                                result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
+                                            }
                                         }
                                     }
 
@@ -274,6 +279,43 @@ List Pesanan Customer
 
                     $('.edit-modal').on('click', function(){
                         $('#edit-id').val($(this).data('index'));
+                        var order_data = null;
+                        for(var i in result){
+                            if(result[i].id == $(this).data('index')){
+                                order_data = result[i];
+                            }
+                        }
+                        var delivery_at = new Date(order_data.delivery_at);
+
+                        $('#edit-qty').val(order_data.order.quantity);
+                        $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
+                        $('#edit-delivery-at').val(delivery_at.getFullYear() + '-' + (delivery_at.getMonth()+1) + '-' + delivery_at.getDate());
+                        $('#edit-status').val(order_data.status);
+
+                        $('#customer-table').DataTable().destroy();
+                        $('#customer-table').dataTable({
+                            scrollX: true,
+                            fixedHeader: true,
+                            ajax: {
+                                url: '/getCustomers',
+                                dataSrc: ''
+                            },
+                            columns: [
+                                {data: null,
+                                    render: function (data, type, row, meta) {
+                                        if(data.id == order_data.customer.id){
+                                            return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'" checked>';
+                                        }
+                                        return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'">';
+                                    }},
+                                {data: 'id'},
+                                {data: 'name'},
+                                {data: 'address'},
+                                {data: 'phone'}
+                            ],
+                            processing: true,
+                            'order':[1, 'desc']
+                        });
                     });
                 }
             });
