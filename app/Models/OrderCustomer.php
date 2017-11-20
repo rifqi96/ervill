@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
+use App\Models\OrderCustomerIssue;
 
 class OrderCustomer extends Model
 {
@@ -22,27 +24,35 @@ class OrderCustomer extends Model
     public function customer(){
         return $this->belongsTo('App\Models\Customer');
     }
-    public function issues()
-    {
-        return $this->belongsToMany('App\Models\Issue');
-    }
     public function shipment()
     {
         return $this->belongsTo('App\Models\Shipment');
     }
 
-    public function doMake($order, $orderGallon)
+    public function doMake($order_data, $gallon_data, $customer_id)
     {
-
-        $this->order_id = $order->id;
+        $this->order_id = $order_data->id;
+        $this->customer_id = $customer_id;
+        $this->empty_gallon_quantity = 0;
+        if($gallon_data->empty_gallon){
+            $this->empty_gallon_quantity = $gallon_data->quantity;
+        }
+        $this->delivery_at = $gallon_data->delivery_at;
+        $this->status = "Draft";
         return ($this->save());
     }
 
-    public function doUpdate($orderGallon)
+    public function doUpdate($data)
     {
+        $this->order->quantity = $data->quantity;
+        $this->empty_gallon_quantity = $data->empty_gallon_quantity;
+        $this->delivery_at = $data->delivery_at;
+        $this->status = $data->status;
+        $this->customer_id = $data->customer_id;
 
-        $this->outsourcing_driver_id = $orderGallon->outsourcing;
-
+        if(!$this->order->save()){
+            return false;
+        }
         return ($this->save());
     }
 }

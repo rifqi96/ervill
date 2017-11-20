@@ -15,6 +15,7 @@ class OverviewController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('SuperadminAndAdmin');
         $this->data['module'] = 'overview';
     }
 

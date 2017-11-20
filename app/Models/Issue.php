@@ -6,13 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Issue extends Model
 {
-    public function orderWaters()
+    /*
+     * Types of Refund:
+     * 1. Customer:
+     *  a. "Refund Gallon" : Kesalahan driver, ganti gallonnya customer
+     *  b. "Refund Cash" : Kesalahan driver, ganti uang customer
+     *  c. "Kesalahan Customer" : Kesalahan customer, customer bayar ke ERVILL
+     */
+
+    public function order()
     {
-        return $this->belongsToMany('App\Models\OrderWater');
-    }
-    public function orderCustomers()
-    {
-        return $this->belongsToMany('App\Models\OrderCustomer');
+        return $this->belongsTo('App\Models\Order');
     }
     public function inventory()
     {

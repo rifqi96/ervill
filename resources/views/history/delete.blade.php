@@ -13,8 +13,9 @@
                         {{csrf_field()}}
                         <div id="ids-list"></div>
                         <input type="hidden" name="delete_id" val="">
-                        <button type="submit" name="submit_btn" value="force_delete" class="btn btn-danger" id="mass-delete">Hapus Data Permanen</button>
-                        <button type="submit" name="submit_btn" value="restore" class="btn btn-success" id="mass-restore">Kembalikan Data</button>
+                        <input type="hidden" name="submit_btn" value="">
+                        <button type="submit" class="btn btn-danger force_delete" id="mass-delete">Hapus Data Permanen</button>
+                        <button type="submit" class="btn btn-success restore" id="mass-restore">Kembalikan Data</button>
                     </form>
                 </div>
             </div>
@@ -70,8 +71,9 @@
                     <div class="modal-footer">
                         {{csrf_field()}}
                         <input type="hidden" name="delete_id" id="delete-id-input">
-                        <button type="submit" name="submit_btn" value="force_delete" class="btn btn-danger">Hapus Data Permanen</button>
-                        <button type="submit" name="submit_btn" value="restore" class="btn btn-success">Kembalikan Data</button>
+                        <input type="hidden" name="submit_btn" value="">
+                        <button type="submit" class="btn btn-danger force_delete">Hapus Data Permanen</button>
+                        <button type="submit" class="btn btn-success restore">Kembalikan Data</button>
                     </div>
                 </form>
 
@@ -197,6 +199,14 @@
                         }
                     }
                 ]
+            });
+
+            $('.force_delete').on('click', function () {
+                $(this).siblings('input[name=submit_btn]').val('force_delete');
+            });
+
+            $('.restore').on('click', function () {
+                $(this).siblings('input[name=submit_btn]').val('restore');
             });
         });
     </script>

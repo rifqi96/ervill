@@ -13,6 +13,7 @@ class OrderGallonController extends OrderController
 {
     public function __construct(){
         parent::__construct();
+        $this->middleware('SuperadminAndAdmin');
         $this->data['slug'] = 'gallon';
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeleteHistory;
+use App\Models\OrderCustomer;
 use Illuminate\Http\Request;
 use App\Models\EditHistory;
 use App\Models\User;
@@ -28,7 +29,7 @@ class HistoryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('superadmin');
         $this->data['module'] = 'history';
     }
 
@@ -166,13 +167,35 @@ class HistoryController extends Controller
 
             return $order;
         }
+        else if($dh->module_name == "Order Customer"){
+            $order_customer = OrderCustomer::with(['order' => function($query){
+                $query->onlyTrashed();
+            }])
+                ->where('order_id', $dh->data_id)
+                ->first();
+
+            $order = Order::onlyTrashed()
+                ->with('user')
+                ->find($dh->data_id);
+
+            if($mode == '' || empty($mode)){
+                $new_attributes = array(
+                    'Admin' => $order->user->full_name
+                );
+                $order->fill($new_attributes);
+                $order->setAttribute('id', $order_customer->id);
+                $order->makeHidden(['inventory_id', 'user']);
+            }
+
+            return $order;
+        }
     }
 
     /*======= Do Methods =======*/
     public function doRestore(Request $request){
         $object = $this->getTrashedObject($request, 'restore');
 
-        return ($object->restore() && DeleteHistory::destroy($request->delete_id));
+        return ($object->doRestore() && DeleteHistory::destroy($request->delete_id));
     }
 
     public function doForceDelete(Request $request){
