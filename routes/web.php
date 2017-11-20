@@ -241,6 +241,14 @@ Route::prefix('setting')->group(function(){
                 'uses' => 'OutsourcingController@doUpdateDriver',
                 'as' => 'setting.outsourcing.do.updateDriver'
             ]);
+            Route::post('deleteWater', [
+                'uses' => 'OutsourcingController@doDeleteWater',
+                'as' => 'setting.outsourcing.do.deleteWater'
+            ]);
+            Route::post('deleteDriver', [
+                'uses' => 'OutsourcingController@doDeleteDriver',
+                'as' => 'setting.outsourcing.do.deleteDriver'
+            ]);
         });
     });
 

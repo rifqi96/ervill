@@ -338,7 +338,7 @@ List Pesanan Air
                 scrollX: true,     
                 fixedHeader: true,       
                 processing: true,
-                'order':[6, 'desc'],
+                'order':[7, 'desc'],
                 ajax: {
                     url: '/getOrderWaters',
                     dataSrc: ''
@@ -358,27 +358,65 @@ List Pesanan Air
                     },
                     {data: 'id'},
                     {data: 'order.user.full_name'},
-                    {data: 'outsourcing_water.name'},
-                    {data: 'outsourcing_driver.name'},
-                    {data: 'driver_name'},
+                    {
+                        data: 'outsourcing_water',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data.name;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },
+                    {
+                        data: 'outsourcing_driver',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data.name;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },                
+                    {
+                        data: 'driver_name',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },                  
                     {data: 'order.quantity'},
                     {data: 'order.created_at'},
                     {data: 'delivery_at'},
-                    {data: 'order.accepted_at'},
+                    {
+                        data: 'order.accepted_at',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },  
                     {
                         data: null, 
-                        render: function ( data, type, row, meta ) {
-                            orderWaters.push({
-                                'id': row.id,
-                                'status': row.status,
-                                'outsourcing_water': row.outsourcing_water.id,
-                                'outsourcing_driver': row.outsourcing_driver.id,
-                                'driver_name': row.driver_name,
-                                'quantity': row.order.quantity,
-                                'order_at': row.order.created_at,
-                                'delivery_at': row.delivery_at,
-                                'accepted_at': row.order.accepted_at                            
-                            });
+                        render: function ( data, type, row, meta ) {                            
+                            //if(row.outsourcing_water!=null){
+                                orderWaters.push({
+                                    'id': row.id,
+                                    'status': row.status,   
+                                    'outsourcing_water': row.outsourcing_water!=null?row.outsourcing_water.id:null, 
+                                    'outsourcing_driver': row.outsourcing_driver!=null?row.outsourcing_driver.id:null,
+                                    'driver_name': row.driver_name,
+                                    'quantity': row.order.quantity,
+                                    'order_at': row.order.created_at,
+                                    'delivery_at': row.delivery_at,
+                                    'accepted_at': row.order.accepted_at                            
+                                });
+                            //}
 
                             if(row.status == "proses"){
                                 return '<button class="btn btn-sm btn-success confirm-btn" type="button" data-toggle="modal" data-target="#confirmModal" data-index="' + row.id + '">Terima Stock</button>'+ 

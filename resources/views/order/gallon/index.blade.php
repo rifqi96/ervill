@@ -246,18 +246,45 @@ List Pesanan Galon
                 columns: [
                     {data: 'id'},
                     {data: 'order.user.full_name'},
-                    {data: 'outsourcing_driver.name'},
-                    {data: 'driver_name'},
+                    {
+                        data: 'outsourcing_driver',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data.name;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    }, 
+                    {
+                        data: 'driver_name',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },    
                     {data: 'order.quantity'},
                     {data: 'order.created_at'},
-                    {data: 'order.accepted_at'},
+                    {
+                        data: 'order.accepted_at',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },  
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {
                             orderGallons.push({
                                 'id': row.id,
                                 'admin': row.order.user.full_name,                               
-                                'outsourcing': row.outsourcing_driver.id,
+                                'outsourcing': row.outsourcing_driver!=null?row.outsourcing_driver.id:null,
                                 'driver_name': row.driver_name,
                                 'quantity': row.order.quantity,
                                 'order_at': row.order.created_at,

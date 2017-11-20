@@ -270,7 +270,7 @@ class OrderWaterController extends OrderController
     public function getAll()
     {
         $orderWaters = OrderWater::has('order')->with('outsourcingWater','outsourcingDriver','order','order.user')->get();
-       
+    
         return json_encode($orderWaters);
     }
 }
