@@ -152,6 +152,7 @@ class OrderWaterController extends OrderController
         $new_value_obj['outsourcing_water'] = OutsourcingWater::find($new_value_obj['outsourcing_water'])->name;
         $new_value_obj['outsourcing_driver'] = OutsourcingDriver::find($new_value_obj['outsourcing_driver'])->name;
         unset($new_value_obj['id']);
+        unset($new_value_obj['max_quantity']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
