@@ -108,7 +108,7 @@ class OrderGallonController extends OrderController
             'user_id' => auth()->id()
         );
 
-        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdateOrderGallon($request) && EditHistory::create($edit_data)){
+        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdate($request) && EditHistory::create($edit_data)){
             //dd($orderGallon->id . $request->id);
             return back()
             ->with('success', 'Data telah berhasil diupdate');

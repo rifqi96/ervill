@@ -102,7 +102,7 @@ List Pesanan Air
                 <div class="form-group">
                     <label for="name"><strong>Nama Pengemudi</strong></label>
                     <p class="form-control-static">
-                        <input type="text" class="form-control" name="driver_name" placeholder="Nama Pengemudi">
+                        <input id="driver_name" type="text" class="form-control" name="driver_name" placeholder="Nama Pengemudi">
                     </p> 
                 </div>             
               </div>
@@ -177,6 +177,7 @@ List Pesanan Air
             <form action="{{route('order.water.do.update')}}" method="POST">
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="" id="input_id">
+                <input type="hidden" name="max_quantity" id="max_quantity">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
@@ -184,25 +185,34 @@ List Pesanan Air
 
                 <div class="modal-body">                                           
                     <div class="form-group">
-                        <label for="outsourcing"><strong>Outsourcing</strong></label>
-                        <select id="outsourcing" name="outsourcing" class="form-control">
+                        <label for="outsourcing_water"><strong>Outsourcing Pabrik Air</strong></label>
+                        <select id="outsourcing_water" name="outsourcing_water" class="form-control">
                             <option value=""></option>
-                            <option value="1">Outsourcing 1</option>
-                            <option value="2">Outsourcing 2</option>
-                            <option value="3">Outsourcing 3</option>
+                            @foreach($outsourcingWaters as $outsourcingWater)
+                                <option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           
+                            @endforeach
                         </select>
                     </div>  
                     <div class="form-group">
+                        <label for="outsourcing_driver"><strong>Outsourcing Pabrik Air</strong></label>
+                        <select id="outsourcing_driver" name="outsourcing_driver" class="form-control">
+                            <option value=""></option>
+                            @foreach($outsourcingDrivers as $outsourcingDriver)
+                                <option value="{{$outsourcingDriver->id}}">{{$outsourcingDriver->name}}</option>           
+                            @endforeach
+                        </select>
+                    </div>  
+                    <div id="driver_name_div" class="form-group">
                         <label for="driver_name"><strong>Nama Pengemudi</strong></label>
-                        <input type="text" class="form-control" name="driver_name">
+                        <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
                     </div>                     
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="text" class="form-control" name="quantity">
+                        <input id="quantity" type="number" class="form-control" name="quantity" min="1">
                     </div>                                           
                     <div class="form-group">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
-                        <input type="text" class="form-control" name="delivery_at">
+                        <input id="delivery_at" type="text" class="form-control" name="delivery_at">
                     </div>                                   
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
@@ -264,11 +274,18 @@ List Pesanan Air
                     if(orderWaters[i].id==index){
                         if(orderWaters[i].accepted_at==null){
                             $('#cancel-btn').css('display','none');
+                            $('#driver_name_div').css('display','none');
                         }else{
                             $('#cancel-btn').css('display','inline-block');
-                        }                        
-                        $('#outsourcing').val(orderWaters[i].outsourcing);
+                            $('#driver_name_div').css('display','block');
+                        }          
+                        $('#outsourcing_water').val(orderWaters[i].outsourcing_water);
+                        $('#outsourcing_driver').val(orderWaters[i].outsourcing_driver);
+                        $('#driver_name_edit').val(orderWaters[i].driver_name);
                         $('#quantity').val(orderWaters[i].quantity);
+                        $('#quantity').attr('max',{{$max_quantity}}+orderWaters[i].quantity);
+                        $('#max_quantity').val({{$max_quantity}}+orderWaters[i].quantity);
+                        $('#delivery_at').val(orderWaters[i].delivery_at);
                         $('#input_id').val(orderWaters[i].id);
 
                     }
@@ -280,7 +297,7 @@ List Pesanan Air
                             if(orderWaters[i].accepted_at!=null){
                                $.ajax({
                                   method: "POST",
-                                  url: "{{route('order.gallon.do.cancel')}}",
+                                  url: "{{route('order.water.do.cancel')}}",
                                   data: {id: orderWaters[i].id},
                                   headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

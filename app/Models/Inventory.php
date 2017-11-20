@@ -27,14 +27,14 @@ class Inventory extends Model
         return $this->save();
     }
 
-    public function addEmptyGallon($quantity)
+    public function add($quantity)
     {    	
         $this->quantity += $quantity;
         
         return $this->save();
     }
 
-    public function removeEmptyGallon($quantity)
+    public function subtract($quantity)
     {    	
         $this->quantity -= $quantity;
         
