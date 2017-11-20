@@ -120,6 +120,34 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderWaterController@createIssue',
             'as' => 'order.water.issue'
         ]);
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'OrderWaterController@doMake',
+                'as' => 'order.water.do.make'
+            ]);
+
+            Route::post('update', [
+                'uses' => 'OrderWaterController@doUpdate',
+                'as' => 'order.water.do.update'
+            ]);
+
+            Route::post('delete', [
+                'uses' => 'OrderWaterController@doDelete',
+                'as' => 'order.water.do.delete'
+            ]);
+
+            Route::post('confirm', [
+                'uses' => 'OrderWaterController@doConfirm',
+                'as' => 'order.water.do.confirm'
+            ]);
+
+            Route::post('cancel', [
+                'uses' => 'OrderWaterController@doCancel',
+                'as' => 'order.water.do.cancel'
+            ]);
+        });
+
     });
     Route::prefix('customer')->group(function(){
         Route::get('/', [
@@ -277,6 +305,7 @@ Route::get('/getOutsourcingDrivers', 'OutsourcingController@getOutsourcingDriver
 Route::get('/getEditHistories', 'HistoryController@getEditHistories');
 Route::get('/getOrderGallons', 'OrderGallonController@getOrderGallons');
 Route::get('/getInventories', 'InventoryController@getInventories');
+Route::get('/getOrderWaters', 'OrderWaterController@getAll');
 
 Route::get('/getCustomers', 'CustomerController@getAll');
 

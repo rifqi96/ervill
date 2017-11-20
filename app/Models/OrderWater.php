@@ -14,6 +14,16 @@ class OrderWater extends Model
     public $timestamps = false;
 
     protected $guarded = [];
+
+    public function doMake($order, $orderWater)
+    {        
+        $this->outsourcing_water_id = $orderWater->outsourcing_water;
+        $this->outsourcing_driver_id = $orderWater->outsourcing_driver;
+        $this->order_id = $order->id;
+        $this->delivery_at = $orderWater->delivery_at;
+        $this->status = 'proses';
+        return ($this->save());
+    }
     
     public function order()
     {

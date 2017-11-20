@@ -14,22 +14,17 @@ Pesan Air
             </header>
 
             <section class="box-typical box-typical-padding">
-                {{--<h5 class="m-t-lg with-border">Input New Task Data</h5>--}}
-                {{--<check if="{{@SESSION.addtasksuccess}}">--}}
-                    {{--<h4><span class="label label-success">{{@SESSION.addtasksuccess}}</span></h4>--}}
-                {{--</check>--}}
-
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{{route('order.water.do.make')}}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Outsourcing Pabrik</label>
+                        <label class="col-sm-2 form-control-label">Outsourcing Pabrik Air</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">                 
-                                <select id="outsourcing_factory" name="outsourcing_factory" class="form-control">
+                                <select id="outsourcing_water" name="outsourcing_water" class="form-control">
                                     <option value=""></option>
-                                    <option value="1">Outsourcing Pabrik 1</option>
-                                    <option value="2">Outsourcing Pabrik 2</option>
-                                    <option value="3">Outsourcing Pabrik 3</option>
+                                    @foreach($outsourcingWaters as $outsourcingWater)
+                                        <option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           
+                                    @endforeach
                                 </select>
                             </p>
                         </div>
@@ -41,9 +36,9 @@ Pesan Air
                             <p class="form-control-static">                 
                                 <select id="outsourcing_driver" name="outsourcing_driver" class="form-control">
                                     <option value=""></option>
-                                    <option value="1">Outsourcing Pengemudi 1</option>
-                                    <option value="2">Outsourcing Pengemudi 2</option>
-                                    <option value="3">Outsourcing Pengemudi 3</option>
+                                    @foreach($outsourcingDrivers as $outsourcingDriver)
+                                        <option value="{{$outsourcingDriver->id}}">{{$outsourcingDriver->name}}</option>           
+                                    @endforeach
                                 </select> 
                             </p>
                         </div>
@@ -52,19 +47,13 @@ Pesan Air
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Max Gallon: 100"></p>
-                            {{--<check if="{{@SESSION.addtaskerror['company_name']}}">--}}
-                                {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['company_name']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
-                            {{--</check>--}}
+                            <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Max Gallon: {{$max_quantity}}" min="1" max="{{$max_quantity}}"></p>        
                         </div>
                     </div> 
                     <!--<div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Retur Galon</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Max Galon yang Rusak: 5"></p>
-                            {{--<check if="{{@SESSION.addtaskerror['company_name']}}">--}}
-                                {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['company_name']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
-                            {{--</check>--}}
                         </div>
                     </div>-->                   
                     <div class="form-group row">
@@ -73,9 +62,6 @@ Pesan Air
                             <p class="form-control-static">
                                 <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman">
                             </p>
-                            {{--<check if="{{@SESSION.addtaskerror['status']}}">--}}
-                                {{--<small class="text-muted"><repeat group="{{@SESSION.addtaskerror['status']}}" value="{{@text}}">{{@text}} ;</repeat></small>--}}
-                            {{--</check>--}}
                         </div>
                     </div>
                     <div class="form-group row">
@@ -85,6 +71,7 @@ Pesan Air
                             <input type="reset" value="Reset" class="btn btn-info">
                         </div>
                     </div>
+                    
                 </form>
             </section><!--.box-typical-->
             
