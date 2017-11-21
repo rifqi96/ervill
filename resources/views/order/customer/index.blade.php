@@ -191,9 +191,27 @@ List Pesanan Customer
                                     }
                                 }},
                             {data: 'id'},
-                            {data: 'customer.name'},
-                            {data: 'customer.phone'},
-                            {data: 'customer.address'},
+                            {data: null,
+                            render: function(data){
+                                if(data.customer){
+                                    return data.customer.name;
+                                }
+                                return '<i>Data customer tidak ditemukan</i>';
+                            }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.customer){
+                                        return data.customer.phone;
+                                    }
+                                    return '<i>Data customer tidak ditemukan</i>';
+                            }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.customer){
+                                        return data.customer.address;
+                                    }
+                                    return '<i>Data customer tidak ditemukan</i>';
+                            }},
                             {data: null,
                                 render: function(data){
                                     if(data.shipment){
@@ -218,7 +236,13 @@ List Pesanan Customer
                                     }
                                     return '-';
                                 }},
-                            {data: 'order.user.full_name'},
+                            {data: null,
+                            render: function(data){
+                                if(data.order.user){
+                                    return data.order.user.full_name;
+                                }
+                                return '<i>Data admin tidak ditemukan</i>';
+                            }},
                             {data: null,
                                 render: function(data, type, row, meta){
                                     var result = "";

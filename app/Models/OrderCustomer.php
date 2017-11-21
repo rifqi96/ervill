@@ -59,13 +59,7 @@ class OrderCustomer extends Model
         $this->status = $data->status;
         $this->customer_id = $data->customer_id;
 
-        if(!$empty_gallon->save()){
-            return false;
-        }
-        else if(!$filled_gallon->save()){
-            return false;
-        }
-        else if(!$this->order->save()){
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save()){
             return false;
         }
         return ($this->save());
