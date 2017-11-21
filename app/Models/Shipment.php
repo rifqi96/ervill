@@ -130,6 +130,13 @@ class Shipment extends Model
             return false;
         }
 
+        foreach($this->orderCustomers as $oc){
+            $oc->shipment_id = null;
+            if(!$oc->save()){
+                return false;
+            }
+        }
+
         return true;
     }
 
