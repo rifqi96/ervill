@@ -97,57 +97,22 @@ class Shipment extends Model
             return false;
         }
 
-        //set old values
-        $old_value_obj = $this->toArray();
-        unset($old_value_obj['id']);
-        unset($old_value_obj['track_data']);
-        unset($old_value_obj['created_at']);
-        unset($old_value_obj['updated_at']);
-        unset($old_value_obj['deleted_at']);
-        $old_value_obj['delivery_at'] = Carbon::parse($old_value_obj['delivery_at'])->format('Y-n-d');
-        $old_value = '';
-        $i=0;
-        foreach ($old_value_obj as $row) {
-            if($i == count($old_value_obj)-1){
-                $old_value .= $row;
-            }else{
-                $old_value .= $row.';';
-            }
-            $i++;
-        }
-
-
-        //set new values
-        $new_value_obj = $data->toArray();
-        unset($new_value_obj['id']);
-        unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
-        $new_value = '';
-        $i=0;
-        foreach ($new_value_obj as $row) {
-            if($i == count($new_value_obj)-1){
-                $new_value .= $row;
-            }else{
-                $new_value .= $row.';';
-            }
-            $i++;
-        }
-
-        $edit_data = array(
-            'module_name' => 'Shipment',
-            'data_id' => $data->shipment_id,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-            'description' => $data->description,
-            'user_id' => auth()->id()
-        );
+        $old_data = $this->toArray();
 
         $this->user_id = $data->driver_id;
         $this->delivery_at = $data->delivery_at;
         $this->status = $data->status;
 
-        if(!$this->save() || !EditHistory::create($edit_data)){
+        if(!$this->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
+        }
+
+        foreach($this->orderCustomers as $oc){
+            $oc->delivery_at = $this->delivery_at;
+            $oc->status = $this->status;
+            if(!$oc->save()){
+                return false;
+            }
         }
 
         return true;
@@ -174,5 +139,53 @@ class Shipment extends Model
 
     public function doRestore(){
         return $this->restore();
+    }
+
+    public function doAddToEditHistory($old_data, $data){
+        //set old values
+        unset($old_data['id']);
+        unset($old_data['track_data']);
+        unset($old_data['created_at']);
+        unset($old_data['updated_at']);
+        unset($old_data['deleted_at']);
+        $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
+        $old_value = '';
+        $i=0;
+        foreach ($old_data as $row) {
+            if($i == count($old_data)-1){
+                $old_value .= $row;
+            }else{
+                $old_value .= $row.';';
+            }
+            $i++;
+        }
+
+
+        //set new values
+        $new_value_obj = $data->toArray();
+        unset($new_value_obj['shipment_id']);
+        unset($new_value_obj['_token']);
+        unset($new_value_obj['description']);
+        $new_value = '';
+        $i=0;
+        foreach ($new_value_obj as $row) {
+            if($i == count($new_value_obj)-1){
+                $new_value .= $row;
+            }else{
+                $new_value .= $row.';';
+            }
+            $i++;
+        }
+
+        $edit_data = array(
+            'module_name' => 'Shipment',
+            'data_id' => $data->shipment_id,
+            'old_value' => $old_value,
+            'new_value' => $new_value,
+            'description' => $data->description,
+            'user_id' => auth()->id()
+        );
+
+        return EditHistory::create($edit_data);
     }
 }

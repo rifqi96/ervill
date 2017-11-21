@@ -92,7 +92,7 @@ List Pesanan Customer
                     </div>
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1">
+                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="1">
                     </div>
                     <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
@@ -309,6 +309,9 @@ List Pesanan Customer
                             }
                         }
 
+                        var inventory = JSON.parse('{!! $inventory !!}');
+                        $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity))
+                        $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                         $('#edit-qty').val(order_data.order.quantity);
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
                         $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-M-D'));
