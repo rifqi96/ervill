@@ -8,6 +8,7 @@ class RoleController extends SettingController
 {
     public function __construct(){
         parent::__construct();
+        $this->middleware('superadmin');
         $this->data['slug'] = 'user_role';
     }
 

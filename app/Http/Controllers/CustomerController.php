@@ -11,6 +11,7 @@ class CustomerController extends SettingController
 {
     public function __construct(){
         parent::__construct();
+        $this->middleware('SuperadminAndAdmin');
         $this->data['slug'] = 'customers';
     }
 
@@ -121,18 +122,6 @@ class CustomerController extends SettingController
         );
 
         if($customer->doDelete() && DeleteHistory::create($data)){
-            return back()
-                ->with('success', 'Data telah berhasil dihapus');
-        }else{
-            return back()
-                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
-        }
-    }
-
-    public function doForceDelete(Request $request){
-        $customer = Customer::onlyTrashed()->find($request->user_id);
-
-        if($customer->doForceDelete() && DeleteHistory::destroy($request->data_id)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
         }else{

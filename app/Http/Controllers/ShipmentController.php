@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Shipment;
 
 class ShipmentController extends Controller
 {
@@ -14,11 +15,12 @@ class ShipmentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('SuperadminAndAdmin');
         $this->data['module'] = 'shipment';
         $this->data['slug'] = '';
     }
 
+    /*======= Page Methods =======*/
     public function index()
     {
         $this->data['breadcrumb'] = "Shipment";
@@ -39,4 +41,27 @@ class ShipmentController extends Controller
 
         return view('shipment.track', $this->data);
     }
+
+    /*======= Get Methods =======*/
+    public function getAllFinished(){
+        return Shipment::with([
+            'user',
+            'orderCustomers'=> function($query){
+                $query->with('order');
+            }])
+            ->where('status', '=', 'Selesai')
+            ->get();
+    }
+
+    public function getAllUnfinished(){
+        return Shipment::with([
+            'user',
+            'orderCustomers'=> function($query){
+                $query->with('order');
+            }])
+            ->whereIn('status', ['Draft', 'Proses'])
+            ->get();
+    }
+
+    /*======= Do Methods =======*/
 }

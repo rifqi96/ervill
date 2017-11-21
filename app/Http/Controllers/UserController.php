@@ -13,6 +13,7 @@ class UserController extends SettingController
 {
     public function __construct(){
         parent::__construct();
+        $this->middleware('SuperadminAndAdmin');
         $this->data['slug'] = 'user_management';
     }
 

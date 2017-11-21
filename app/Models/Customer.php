@@ -48,6 +48,10 @@ class Customer extends Model
         return ($this->save());
     }
 
+    public function doRestore(){
+        return $this->restore();
+    }
+
     public function doDelete(){
         return $this->delete();
     }

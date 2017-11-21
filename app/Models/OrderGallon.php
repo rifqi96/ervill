@@ -28,6 +28,7 @@ class OrderGallon extends Model
         if($this->order->accepted_at != null){
             $this->driver_name = $orderGallon->driver_name;
         }     
+
         return ($this->save());
     }
 

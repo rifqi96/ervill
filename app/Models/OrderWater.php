@@ -61,8 +61,4 @@ class OrderWater extends Model
     {
         return $this->belongsTo('App\Models\OutsourcingDriver');
     }
-    public function issues()
-    {
-        return $this->belongsToMany('App\Models\Issue');
-    }
 }

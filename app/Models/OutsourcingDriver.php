@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OutsourcingDriver extends Model
 {
+    use SoftDeletes;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     use SoftDeletes;
 
@@ -28,6 +36,10 @@ class OutsourcingDriver extends Model
     {
         $this->name = $outsourcingDriver->name;
         return ($this->save());
+    }
+
+    public function doRestore(){
+        return $this->restore();
     }
 
     public function doDelete(){
