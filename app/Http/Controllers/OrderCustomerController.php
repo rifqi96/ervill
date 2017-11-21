@@ -49,7 +49,29 @@ class OrderCustomerController extends OrderController
             }
             ])
             ->has('order')
-            ->get()->toJson();
+            ->get();
+    }
+
+    public function getUnshippedOrders(Request $request){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->where([
+                ['delivery_at','=',$request->delivery_at],
+                ['status','=','draft'],
+                ['shipment_id', null]
+            ])
+            ->whereHas('order', function ($query){
+                $query->where('accepted_at', null);
+            })
+            ->has('customer')
+            ->get();
     }
 
     /*======= Do Methods =======*/
@@ -84,7 +106,7 @@ class OrderCustomerController extends OrderController
         else{
             // If existing customer //
             $this->validate($request, [
-                'customer_id' => 'required',
+                'customer_id' => 'required|integer|exists:customers,id',
                 'quantity' => 'required|integer|min:1',
                 'delivery_at' => 'required|date|after_or_equal:today'
             ]);
@@ -116,59 +138,14 @@ class OrderCustomerController extends OrderController
 
         ]);
 
-        $order_customer = OrderCustomer::with('customer', 'order')->find($request->id);
+        $order_customer = OrderCustomer::with(['customer', 'order'])->find($request->id);
 
-        //set old values
-        $old_value_obj = $order_customer->toArray();
-
-        $old_value_obj['customer_name'] = $old_value_obj['customer']['name'];
-        $old_value_obj['quantity'] = $old_value_obj['order']['quantity'];
-
-        unset($old_value_obj['id']);
-        unset($old_value_obj['shipment_id']);
-        unset($old_value_obj['customer_id']);
-        unset($old_value_obj['order_id']);
-        unset($old_value_obj['order']);
-        unset($old_value_obj['customer']);
-
-        $old_value = '';
-        $old_value .= $old_value_obj['quantity'] . ';';
-        $old_value .= $old_value_obj['empty_gallon_quantity']. ';';
-        $old_value .= $old_value_obj['delivery_at']. ';';
-        $old_value .= $old_value_obj['customer_name']. ';';
-        $old_value .= $old_value_obj['status'];
-
-        //set new values
-        $new_value_obj = $request->toArray();
-        $new_customer = Customer::find($request->customer_id);
-        $new_value_obj['customer_name'] = $new_customer->name;
-        unset($new_value_obj['id']);
-        unset($new_value_obj['customer-table_length']);
-        unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
-        $new_value = '';
-        $new_value .= $new_value_obj['quantity'] . ';';
-        $new_value .= $new_value_obj['empty_gallon_quantity']. ';';
-        $new_value .= $new_value_obj['delivery_at']. ';';
-        $new_value .= $new_value_obj['customer_name']. ';';
-        $new_value .= $new_value_obj['status'];
-
-        $edit_data = array(
-            'module_name' => 'Order Customer',
-            'data_id' => $request->id,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-            'description' => $request->description,
-            'user_id' => auth()->id()
-        );
-
-        if($order_customer->doUpdate($request) && EditHistory::create($edit_data)){
-            return back()
-                ->with('success', 'Data telah berhasil diupdate');
-        }else{
+        if(!$order_customer->doUpdate($request)){
             return back()
                 ->withErrors(['message' => 'There is something wrong, please contact admin']);
         }
+        return back()
+            ->with('success', 'Data telah berhasil diupdate');
     }
 
     public function doDelete(Request $request){
@@ -178,14 +155,7 @@ class OrderCustomerController extends OrderController
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
-        $data = array(
-            'module_name' => 'Order Customer',
-            'description' => $request->description,
-            'data_id' => $order_customer->order_id,
-            'user_id' => auth()->user()->id
-        );
-
-        if($order_customer->order->doDelete() && DeleteHistory::create($data)){
+        if($order_customer->doDelete($request->description, auth()->user()->id)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
         }else{

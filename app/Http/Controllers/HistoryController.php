@@ -11,6 +11,7 @@ use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\OrderGallon;
 use App\Models\Customer;
+use App\Models\Shipment;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
 
@@ -25,6 +26,7 @@ class HistoryController extends Controller
      * 5. Order Water
      * 6. Order Customer
      * 7. Customers
+     * 8. Shipment
      */
 
     public function __construct()
@@ -202,6 +204,10 @@ class HistoryController extends Controller
             }
 
             return $order;
+        }
+        else if($dh->module_name == "Shipment"){
+            return Shipment::onlyTrashed()
+                ->find($dh->data_id);
         }
     }
 
