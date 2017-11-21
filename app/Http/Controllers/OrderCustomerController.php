@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderCustomerIssue;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderCustomer;
@@ -23,6 +22,8 @@ class OrderCustomerController extends OrderController
      public function index()
     {
         $this->data['breadcrumb'] = "Order - Customer Order";
+
+        $this->data['inventory'] = Inventory::find(2);
 
         return view('order.customer.index', $this->data);
     }
@@ -48,7 +49,6 @@ class OrderCustomerController extends OrderController
             }
             ])
             ->has('order')
-            ->has('customer')
             ->get()->toJson();
     }
 
@@ -154,7 +154,7 @@ class OrderCustomerController extends OrderController
         $new_value .= $new_value_obj['status'];
 
         $edit_data = array(
-            'module_name' => 'Order Gallon',
+            'module_name' => 'Order Customer',
             'data_id' => $request->id,
             'old_value' => $old_value,
             'new_value' => $new_value,

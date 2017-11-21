@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Order;
-use App\Models\OrderCustomerIssue;
+use App\Models\Inventory;
 
 class OrderCustomer extends Model
 {
@@ -44,13 +43,23 @@ class OrderCustomer extends Model
 
     public function doUpdate($data)
     {
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+
+        if($filled_gallon->quantity < $data->quantity){
+            return false;
+        }
+
+        $empty_gallon->quantity = ($empty_gallon->quantity - $this->empty_gallon_quantity) + $data->empty_gallon_quantity;
+        $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
+
         $this->order->quantity = $data->quantity;
         $this->empty_gallon_quantity = $data->empty_gallon_quantity;
         $this->delivery_at = $data->delivery_at;
         $this->status = $data->status;
         $this->customer_id = $data->customer_id;
 
-        if(!$this->order->save()){
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save()){
             return false;
         }
         return ($this->save());

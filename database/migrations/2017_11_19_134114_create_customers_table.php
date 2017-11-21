@@ -25,10 +25,10 @@ class CreateCustomersTable extends Migration
         Schema::table('order_customers', function (Blueprint $table){
             $table->dropColumn('customer_name');
             $table->dropColumn('customer_address');
-            $table->integer('customer_id')->unsigned()->after('shipment_id');
+            $table->integer('customer_id')->unsigned()->nullable()->after('shipment_id');
 
             $table->foreign('customer_id')->references('id')->on('customers')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('null');
         });
     }
 

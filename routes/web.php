@@ -61,6 +61,23 @@ Route::prefix('shipment')->group(function(){
         'uses' => 'ShipmentController@track',
         'as' => 'shipment.track'
     ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('make', [
+            'uses' => 'ShipmentController@doMake',
+            'as' => 'shipment.do.make'
+        ]);
+
+        Route::post('update', [
+            'uses' => 'ShipmentController@doUpdate',
+            'as' => 'shipment.do.update'
+        ]);
+
+        Route::post('delete', [
+            'uses' => 'ShipmentController@doDelete',
+            'as' => 'shipment.do.delete'
+        ]);
+    });
 });
 
 Route::prefix('order')->group(function(){
@@ -280,6 +297,8 @@ Route::get('/getInventories', 'InventoryController@getInventories');
 
 Route::get('/getCustomers', 'CustomerController@getAll');
 Route::get('/getOrderCustomers', 'OrderCustomerController@getAll');
+Route::get('/getFinishedShipments', 'ShipmentController@getAllFinished');
+Route::get('/getUnfinishedShipments', 'ShipmentController@getAllUnfinished');
 
 
 /**

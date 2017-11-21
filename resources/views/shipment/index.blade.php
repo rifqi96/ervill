@@ -14,7 +14,7 @@ Pengiriman
 
             <h4>Pengiriman yang Belum Selesai</h4>
 
-            <table class="table table-hover" id="unfinished_shipment">
+            <table class="table table-hover" id="unfinished-shipment">
                 <thead>
                 <th>Status</th>
                 <th>ID</th>
@@ -25,44 +25,12 @@ Pengiriman
                 <th>Tgl Update</th>
                 <th>Action</th>
                 </thead>
-                <tbody>
-	                <tr>
-	                    <td><span class="label label-warning">Proses</span></td>
-	                    <td>2</td>
-	                    <td>Driver 1</td>
-	                    <td>180</td>
-	                    <td>8/11/2017</td>
-	                    <td>7/11/2017 08:20:55</td>
-	                    <td>7/11/2017 08:20:55</td>
-	                    <td>
-	                    	<a class="btn btn-sm" href="{{route('shipment.track','200')}}">Detail</a>
-	                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-	                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td><span class="label label-info">Draft</span></td>
-	                    <td>3</td>
-	                    <td>Driver 2</td>
-	                    <td>180</td>                
-	                    <td>9/11/2017</td>
-	                    <td>7/11/2017 11:20:55</td>
-	                    <td>7/11/2017 11:20:55</td>
-	                    <td>
-	                    	<a class="btn btn-sm" href="{{route('shipment.track','200')}}">Detail</a>
-	                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-	                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-	                    </td>
-	                </tr>
-
-
-                </tbody>
             </table>
 
 
             <h4>Pengiriman yang Sudah Selesai</h4>
 
-            <table class="table table-hover" id="finished_shipment">
+            <table class="table table-hover" id="finished-shipment">
                 <thead>
                 <th>Status</th>
                 <th>ID</th>
@@ -73,51 +41,6 @@ Pengiriman
                 <th>Tgl Update</th>
                 <th>Action</th>
                 </thead>
-                <tbody>
-                	<tr>
-	                    <td><span class="label label-success">Selesai</span></td>
-	                    <td>4</td>
-	                    <td>Driver 1</td>
-	                    <td>180</td>   
-	                    <td>8/10/2017</td>
-	                    <td>6/10/2017 08:20:55</td>
-	                    <td>6/10/2017 08:20:55</td>
-	                    <td>
-	                    	<a class="btn btn-sm" href="{{route('shipment.track','200')}}">Detail</a>
-	                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-	                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td><span class="label label-success">Selesai</span></td>
-	                    <td>5</td>
-	                    <td>Driver 1</td>
-	                    <td>180</td>
-	                    <td>8/10/2017</td>
-	                    <td>7/10/2017 08:20:55</td>
-	                    <td>7/10/2017 08:20:55</td>
-	                    <td>
-	                    	<a class="btn btn-sm" href="{{route('shipment.track','200')}}">Detail</a>
-	                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-	                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td><span class="label label-success">Selesai</span></td>
-	                    <td>6</td>
-	                    <td>Driver 2</td>
-	                    <td>180</td>         
-	                    <td>9/10/2017</td>
-	                    <td>7/10/2017 11:20:55</td>
-	                    <td>7/10/2017 11:20:55</td>
-	                    <td>
-	                    	<a class="btn btn-sm" href="{{route('shipment.track','200')}}">Detail</a>
-	                    	<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-	                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-	                    </td>
-	                </tr>
-
-                </tbody>
             </table>
 
 
@@ -194,18 +117,112 @@ Pengiriman
 
     <script>
         $(document).ready(function () {
-            $('#unfinished_shipment').dataTable({
-                scrollX: true,
-                fixedHeader: true,
-                processing: true,
-                'order':[4, 'asc']
+            $.ajax({
+                url:'/getUnfinishedShipments',
+                type:'GET',
+                dataType:'json',
+                success: function(result){
+                    $('#unfinished-shipment').dataTable({
+                        scrollX: true,
+                        fixedHeader: true,
+                        processing: true,
+                        'order':[4, 'desc'],
+                        data:result,
+                        columns:[
+                            {data: null,
+                                render: function(data, type, row, meta){
+                                    if(data.status == "Selesai"){
+                                        return '<span class="label label-success">Selesai</span>';
+                                    }
+                                    else if(data.status == "Proses"){
+                                        return '<span class="label label-warning">Proses</span>';
+                                    }
+                                    else if(data.status == "Bermasalah"){
+                                        return '<span class="label label-danger">Bermasalah</span>';
+                                    }
+                                    else{
+                                        return '<span class="label label-info">Draft</span>';
+                                    }
+                                }},
+                            {data:'id'},
+                            {data:'user.full_name'},
+                            {data:null,
+                            render: function(data){
+                                var gallon_total = 0;
+                                for(var i in data.orderCustomers){
+                                    gallon_total += data.orderCustomers[i].order.quantity;
+                                }
+
+                                return gallon_total;
+                            }},
+                            {data:'delivery_at'},
+                            {data:'created_at'},
+                            {data:'updated_at'},
+                            {data: null,
+                            render: function(data){
+                                var shipment_url = "{{route("shipment.track", ":id")}}";
+                                shipment_url = shipment_url.replace(':id', data.id);
+                                return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
+                                    '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                    '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+                            }}
+                        ]
+                    });
+                }
             });
 
-            $('#finished_shipment').dataTable({
-                scrollX: true,
-                fixedHeader: true,
-                processing: true,
-                'order':[4, 'desc']
+            $.ajax({
+                url:'/getFinishedShipments',
+                type:'GET',
+                dataType:'json',
+                success: function(result){
+                    $('#finished-shipment').dataTable({
+                        scrollX: true,
+                        fixedHeader: true,
+                        processing: true,
+                        'order':[4, 'desc'],
+                        data:result,
+                        columns:[
+                            {data: null,
+                                render: function(data, type, row, meta){
+                                    if(data.status == "Selesai"){
+                                        return '<span class="label label-success">Selesai</span>';
+                                    }
+                                    else if(data.status == "Proses"){
+                                        return '<span class="label label-warning">Proses</span>';
+                                    }
+                                    else if(data.status == "Bermasalah"){
+                                        return '<span class="label label-danger">Bermasalah</span>';
+                                    }
+                                    else{
+                                        return '<span class="label label-info">Draft</span>';
+                                    }
+                                }},
+                            {data:'id'},
+                            {data:'user.full_name'},
+                            {data:null,
+                                render: function(data){
+                                    var gallon_total = 0;
+                                    for(var i in data.orderCustomers){
+                                        gallon_total += data.orderCustomers[i].order.quantity;
+                                    }
+
+                                    return gallon_total;
+                                }},
+                            {data:'delivery_at'},
+                            {data:'created_at'},
+                            {data:'updated_at'},
+                            {data: null,
+                                render: function(data){
+                                    var shipment_url = "{{route("shipment.track", ":id")}}";
+                                    shipment_url = shipment_url.replace(':id', data.id);
+                                    return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
+                                        '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                        '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+                                }}
+                        ]
+                    });
+                }
             });
         });
     </script>
