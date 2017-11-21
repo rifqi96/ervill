@@ -212,13 +212,6 @@ class OrderGallonController extends OrderController
         }
     }
 
-    public function showInventory(){
-        $this->data['breadcrumb'] = 'Order - Inventory Gallon';
-
-        return view('order.gallon.inventory', $this->data);
-
-    }
-
     public function getOrderGallons()
     {
         $orderGallons = OrderGallon::has('order')->with('outsourcingDriver','order','order.user')->get();

@@ -92,11 +92,6 @@ Route::prefix('order')->group(function(){
             'as' => 'order.gallon.make'
         ]);
 
-        Route::get('inventory', [
-            'uses' => 'OrderGallonController@showInventory',
-            'as' => 'order.gallon.inventory'
-        ]);
-
         Route::prefix('do')->group(function(){
             Route::post('make', [
                 'uses' => 'OrderGallonController@doMake',
@@ -201,6 +196,11 @@ Route::prefix('order')->group(function(){
 });
 
 Route::prefix('inventory')->group(function(){
+    Route::get('/', [
+            'uses' => 'InventoryController@index',
+            'as' => 'inventory.index'
+        ]);
+
     Route::prefix('do')->group(function(){
         Route::post('update', [
             'uses' => 'InventoryController@doUpdate',

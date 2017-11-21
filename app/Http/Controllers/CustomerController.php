@@ -56,6 +56,7 @@ class CustomerController extends SettingController
             'name' => 'required|string',
             'phone' => 'required|string|digits_between:3,14',
             'address' => 'required|string',
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
         //set old values

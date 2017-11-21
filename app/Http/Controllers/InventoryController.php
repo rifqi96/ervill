@@ -11,6 +11,15 @@ class InventoryController extends Controller
 	public function __construct()
     {
         $this->middleware('SuperadminAndAdmin');
+        $this->data['module'] = 'inventory';
+        $this->data['slug'] = '';
+    }
+
+    public function index(){
+        $this->data['breadcrumb'] = 'Inventory';
+
+        return view('inventory', $this->data);
+
     }
 
     public function getInventories()

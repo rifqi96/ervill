@@ -7,7 +7,6 @@ Pesan Gallon
 @section('content')
     <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
         <a href="{{route('order.gallon.index')}}"><button class="btn btn-primary">Lihat Pesanan Gallon</button></a>
-        <a href="{{route('order.gallon.inventory')}}"><button class="btn btn-primary">Stock Gudang</button></a>
     </header>
 
     <section class="box-typical box-typical-padding">
