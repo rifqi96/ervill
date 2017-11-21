@@ -28,7 +28,7 @@ class CreateCustomersTable extends Migration
             $table->integer('customer_id')->unsigned()->nullable()->after('shipment_id');
 
             $table->foreign('customer_id')->references('id')->on('customers')
-                ->onUpdate('cascade')->onDelete('null');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

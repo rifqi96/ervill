@@ -16,15 +16,6 @@ class OutsourcingDriver extends Model
      */
     protected $dates = ['deleted_at'];
 
-    use SoftDeletes;
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['deleted_at'];
-
 	public function doUpdate($outsourcingDriver)
     {   
         $this->name = $outsourcingDriver->name;
