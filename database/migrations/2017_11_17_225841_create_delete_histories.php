@@ -18,11 +18,11 @@ class CreateDeleteHistories extends Migration
             $table->string('module_name');
             $table->string('description');
             $table->integer('data_id')->length(10)->unsigned();
-            $table->integer('user_id')->length(10)->unsigned();
+            $table->integer('user_id')->length(10)->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

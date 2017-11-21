@@ -14,10 +14,10 @@ class AddUserIdToEditHistories extends Migration
     public function up()
     {
         Schema::table('edit_histories', function(Blueprint $table){
-            $table->integer('user_id')->length(10)->unsigned()->after('description');
+            $table->integer('user_id')->length(10)->unsigned()->nullable()->after('description');
 
             $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 
