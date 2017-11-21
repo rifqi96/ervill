@@ -226,8 +226,7 @@ List Pesanan Customer
                             {data: 'order.created_at'},
                             {data: null,
                                 render: function(data){
-                                    var date = new Date(data.delivery_at);
-                                    return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+                                    return moment(data.delivery_at).format('DD-MM-YYYY');
                                 }},
                             {data: null,
                                 render: function(data){
@@ -309,11 +308,10 @@ List Pesanan Customer
                                 order_data = result[i];
                             }
                         }
-                        var delivery_at = new Date(order_data.delivery_at);
 
                         $('#edit-qty').val(order_data.order.quantity);
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                        $('#edit-delivery-at').val(delivery_at.getFullYear() + '-' + (delivery_at.getMonth()+1) + '-' + delivery_at.getDate());
+                        $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-M-D'));
                         $('#edit-status').val(order_data.status);
 
                         $('#customer-table').DataTable().destroy();

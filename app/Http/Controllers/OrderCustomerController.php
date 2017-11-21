@@ -49,7 +49,29 @@ class OrderCustomerController extends OrderController
             }
             ])
             ->has('order')
-            ->get()->toJson();
+            ->get();
+    }
+
+    public function getUnshippedOrders(Request $request){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->where([
+                ['delivery_at','=',$request->delivery_at],
+                ['status','=','draft'],
+                ['shipment_id', null]
+            ])
+            ->whereHas('order', function ($query){
+                $query->where('accepted_at', null);
+            })
+            ->has('customer')
+            ->get();
     }
 
     /*======= Do Methods =======*/
@@ -84,7 +106,7 @@ class OrderCustomerController extends OrderController
         else{
             // If existing customer //
             $this->validate($request, [
-                'customer_id' => 'required',
+                'customer_id' => 'required|integer|exists:customers,id',
                 'quantity' => 'required|integer|min:1',
                 'delivery_at' => 'required|date|after_or_equal:today'
             ]);

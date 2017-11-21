@@ -17,6 +17,7 @@ class UserController extends SettingController
         $this->data['slug'] = 'user_management';
     }
 
+    /*======= Page Methods =======*/
      public function index()
     {
         $this->data['breadcrumb'] = "Setting - User Management";
@@ -52,6 +53,22 @@ class UserController extends SettingController
         return view('profile', $this->data);
     }
 
+    /*======= Get Methods =======*/
+    public function getUsers()
+    {
+        $users = User::with('role')->get();
+        return json_encode($users);
+    }
+
+    public function getAllDrivers(){
+        return User::with('role')
+            ->whereHas('role', function($query){
+                $query->where('name', 'driver');
+            })
+            ->get();
+    }
+
+    /*======= Do Methods =======*/
     public function doUpdateProfile(Request $request)
     {
         $user = auth()->user();
@@ -202,12 +219,6 @@ class UserController extends SettingController
             return back()
                 ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
         }
-    }
-
-    public function getUsers()
-    {
-        $users = User::with('role')->get();
-        return json_encode($users);
     }
     
 }
