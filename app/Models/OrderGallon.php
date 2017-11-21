@@ -23,11 +23,25 @@ class OrderGallon extends Model
     }
 
     public function doUpdate($orderGallon)
-    {
-        $this->outsourcing_driver_id = $orderGallon->outsourcing;
-        
+    {              
+        $this->outsourcing_driver_id = $orderGallon->outsourcing;   
+        if($this->order->accepted_at != null){
+            $this->driver_name = $orderGallon->driver_name;
+        }     
+
         return ($this->save());
     }
+
+    public function doConfirm($driver_name){
+        $this->driver_name = $driver_name;
+        return ($this->save()); 
+    }
+
+    public function doCancel(){
+        $this->driver_name = null;
+        return ($this->save()); 
+    }
+    
 
     public function order()
     {

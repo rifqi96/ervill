@@ -8,7 +8,6 @@ List Outsourcing
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                {{--<h3 class="panel-title"></h3>--}}
                 <a href="{{route('setting.outsourcing.make')}}"><button class="btn btn-primary">Tambah Outsourcing</button></a>               
             </header>
 
@@ -79,7 +78,9 @@ List Outsourcing
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form id="deleteForm" action="" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="id" value="" id="delete_id"> 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -108,15 +109,22 @@ List Outsourcing
 
             var outsourcingWaters = [];
             $('#setting_outsourcing_water').on('click','.detail-btn',function(){
-                
                 for(var i in outsourcingWaters){
-                    if(outsourcingWaters[i].id==$(this).data('index')){                        
+                    if(outsourcingWaters[i].id==$(this).data('index')){
                         $('#name').val(outsourcingWaters[i].name);   
                         $('#input_id').val(outsourcingWaters[i].id);                    
                     }
                 }
-
                 $('#editForm').attr('action','{{route('setting.outsourcing.do.updateWater')}}');
+            });
+
+            $('#setting_outsourcing_water').on('click','.delete-btn',function(){
+                for(var i in outsourcingWaters){
+                    if(outsourcingWaters[i].id==$(this).data('index')){
+                        $('#delete_id').val(outsourcingWaters[i].id);
+                    }
+                }
+                $('#deleteForm').attr('action','{{route('setting.outsourcing.do.deleteWater')}}');
             });
 
             var outsourcingDrivers = [];
@@ -130,6 +138,15 @@ List Outsourcing
                 }
 
                 $('#editForm').attr('action','{{route('setting.outsourcing.do.updateDriver')}}');
+            });
+
+            $('#setting_outsourcing_driver').on('click','.delete-btn',function(){
+                for(var i in outsourcingDrivers){
+                    if(outsourcingDrivers[i].id==$(this).data('index')){
+                        $('#delete_id').val(outsourcingDrivers[i].id);
+                    }
+                }
+                $('#deleteForm').attr('action','{{route('setting.outsourcing.do.deleteDriver')}}');
             });
 
             $('#setting_outsourcing_water').dataTable({
@@ -154,7 +171,7 @@ List Outsourcing
                                 'name': row.name                            
                             });
                             return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-outsourcing="water">Edit</button>'+
-                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
+                                '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
                         }
                     }                   
                 ]
@@ -182,7 +199,7 @@ List Outsourcing
                                 'name': row.name                            
                             });
                             return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-outsourcing="driver">Edit</button>'+
-                                '<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>';
+                                '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
                         }
                     }                   
                 ]

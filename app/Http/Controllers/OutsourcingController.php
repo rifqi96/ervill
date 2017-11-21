@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\OutsourcingWater;
 use App\Models\OutsourcingDriver;
 use App\Models\EditHistory;
+use App\Models\DeleteHistory;
 
 class OutsourcingController extends SettingController
 {
@@ -172,6 +173,52 @@ class OutsourcingController extends SettingController
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
+    public function doDeleteWater(Request $request){
+        $outsourcingWater = OutsourcingWater::find($request->id);
+
+        $this->validate($request, [
+            'description' => 'required|string|regex:/^[^;]+$/'
+        ]);
+
+        $data = array(
+            'module_name' => 'Outsourcing Water',
+            'description' => $request->description,
+            'data_id' => $outsourcingWater->id,
+            'user_id' => auth()->user()->id
+        );
+
+        if($outsourcingWater->doDelete() && DeleteHistory::create($data)){
+            return back()
+                ->with('success', 'Data telah berhasil dihapus');
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
+        }
+    }
+
+    public function doDeleteDriver(Request $request){
+        $outsourcingDriver = OutsourcingDriver::find($request->id);
+
+        $this->validate($request, [
+            'description' => 'required|string|regex:/^[^;]+$/'
+        ]);
+
+        $data = array(
+            'module_name' => 'Outsourcing Driver',
+            'description' => $request->description,
+            'data_id' => $outsourcingDriver->id,
+            'user_id' => auth()->user()->id
+        );
+
+        if($outsourcingDriver->doDelete() && DeleteHistory::create($data)){
+            return back()
+                ->with('success', 'Data telah berhasil dihapus');
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
         }
     }
 

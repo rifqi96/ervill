@@ -40,20 +40,20 @@ class ChangeErOutsourcings extends Migration
         });
 
         Schema::table('order_waters', function (Blueprint $table){
-            $table->integer('outsourcing_water_id')->unsigned()->after('id');
-            $table->integer('outsourcing_driver_id')->unsigned()->after('outsourcing_water_id');
+            $table->integer('outsourcing_water_id')->unsigned()->nullable()->after('id');
+            $table->integer('outsourcing_driver_id')->unsigned()->nullable()->after('outsourcing_water_id');
 
             $table->foreign('outsourcing_water_id')->references('id')->on('outsourcing_waters')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
             $table->foreign('outsourcing_driver_id')->references('id')->on('outsourcing_drivers')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
 
         Schema::table('order_gallons', function (Blueprint $table){
-            $table->integer('outsourcing_driver_id')->unsigned()->after('id');
+            $table->integer('outsourcing_driver_id')->unsigned()->nullable()->after('id');
 
             $table->foreign('outsourcing_driver_id')->references('id')->on('outsourcing_drivers')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

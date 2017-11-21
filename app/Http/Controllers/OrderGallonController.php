@@ -8,6 +8,7 @@ use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
+use App\Models\Inventory;
 
 class OrderGallonController extends OrderController
 {
@@ -56,15 +57,29 @@ class OrderGallonController extends OrderController
 
     public function doUpdate(Request $request)
     {        
-        $this->validate($request, [           
-            'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
-            'quantity' => 'required|integer|min:1',
-            'description' => 'required|string|regex:/^[^;]+$/'
-            
-        ]);   
-        
+
         $orderGallon = OrderGallon::with('outsourcingDriver','order')->find($request->id);
-        
+
+        //check if driver_name is filled  or not
+        if($orderGallon->order->accepted_at == null){
+            if($request->driver_name!=null){
+                return back()
+                ->withErrors(['message' => 'Terjadi kesalahan, nama pengemudi tidak boleh dirubah!']);
+            }
+            $this->validate($request, [           
+                'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
+                'quantity' => 'required|integer|min:1',
+                'description' => 'required|string|regex:/^[^;]+$/'                
+            ]);          
+        }else{
+            $this->validate($request, [           
+                'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
+                'quantity' => 'required|integer|min:1',
+                'driver_name' => 'required|string',
+                'description' => 'required|string|regex:/^[^;]+$/'                
+            ]);             
+        } 
+      
         //set old values
         $old_value_obj = $orderGallon->toArray();
      
@@ -73,12 +88,18 @@ class OrderGallonController extends OrderController
         unset($old_value_obj['order_id']);  
         $old_value = '';
         $i=0;
-        foreach ($old_value_obj as $row) { 
-            if($i == 0){
-                $old_value .= $row['name'].';';
-            }else if($i == 1){
-                $old_value .= $row['quantity'];
-            }      
+        foreach ($old_value_obj as $key => $value) { 
+            if($key == 'outsourcing_driver'){
+                $old_value .= $value['name'].';';
+            }else if($key == 'order'){
+                $old_value .= $value['quantity'];
+            }else{
+                if($i == count($old_value_obj)-1){
+                    $old_value .= $value;
+                }else{
+                    $old_value .= $value.';';
+                }               
+            }         
             $i++;
         }
 
@@ -108,7 +129,13 @@ class OrderGallonController extends OrderController
             'user_id' => auth()->id()
         );
 
-        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdateOrderGallon($request) && EditHistory::create($edit_data)){
+        //recalculate inventory if order is finished
+        if($orderGallon->order->accepted_at != null){
+            $inventory_empty_gallon = Inventory::find(1);
+            $inventory_empty_gallon->add($request->quantity - $orderGallon->order->quantity);         
+        }
+
+        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdate($request) && EditHistory::create($edit_data)){
             //dd($orderGallon->id . $request->id);
             return back()
             ->with('success', 'Data telah berhasil diupdate');
@@ -132,6 +159,12 @@ class OrderGallonController extends OrderController
             'user_id' => auth()->user()->id
         );
 
+        //recalculate inventory if order is finished
+        if($orderGallon->order->accepted_at != null){
+            $inventory_empty_gallon = Inventory::find(1);
+            $inventory_empty_gallon->subtract($orderGallon->order->quantity);         
+        }
+
         if($orderGallon->order->doDelete() && DeleteHistory::create($data)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
@@ -143,9 +176,17 @@ class OrderGallonController extends OrderController
 
     public function doConfirm(Request $request)
     {
-        $orderGallon = OrderGallon::find($request->id);
+        $this->validate($request, [
+            'driver_name' => 'required|string'
+        ]);
+
+        $orderGallon = OrderGallon::with('order')->find($request->id);
+        $inventory = Inventory::find(1);
         
-        if($orderGallon->order->doConfirm()){
+        if($orderGallon->doConfirm($request->driver_name) && 
+            $orderGallon->order->doConfirm() && 
+            $inventory->add($orderGallon->order->quantity)){
+
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{
@@ -156,9 +197,13 @@ class OrderGallonController extends OrderController
 
     public function doCancel(Request $request)
     {
-        $orderGallon = OrderGallon::find($request->id);
+        $orderGallon = OrderGallon::with('order')->find($request->id);
+        $inventory = Inventory::find(1);
         
-        if($orderGallon->order->doCancel()){
+        if($orderGallon->doCancel() && 
+            $orderGallon->order->doCancel() && 
+            $inventory->subtract($orderGallon->order->quantity)){
+
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{

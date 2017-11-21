@@ -29,6 +29,14 @@ class Order extends Model
         return ($this->save());
     }
 
+    public function doMakeOrderWater($order)
+    {        
+        $this->inventory_id = 2;
+        $this->user_id = auth()->id();
+        $this->quantity = $order->quantity;
+        return ($this->save());
+    }
+
     public function doMakeOrderCustomer($data){
         $this->inventory_id = 2;
         $this->user_id = auth()->id();
@@ -51,12 +59,8 @@ class Order extends Model
         return $this->save();
     }
 
-    public function doUpdateOrderGallon($order){
+    public function doUpdate($order){
         $this->quantity = $order->quantity;
-        return $this->save();
-    }
-
-    public function doUpdateOrderCustomer($data){
         return $this->save();
     }
 

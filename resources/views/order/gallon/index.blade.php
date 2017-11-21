@@ -15,7 +15,8 @@ List Pesanan Galon
                 <thead>
                 <th>ID</th>
                 <th>Admin</th>
-                <th>Outsourcing</th>
+                <th>Outsourcing Pengemudi</th>
+                <th>Pengemudi</th>
                 <th>Jumlah (Gallon)</th>
                 <th align="center">Tgl Order</th>
                 <th align="center">Tgl Penerimaan</th>
@@ -66,6 +67,15 @@ List Pesanan Galon
                 <form action="{{route('order.gallon.do.confirm')}}" method="POST">
                     {{csrf_field()}}
                     <input type="hidden" name="id" value="" id="confirm_id">
+                    <div class="modal-body">       
+                        <div class="form-group">
+                            <label for="name"><strong>Nama Pengemudi</strong></label>
+                            <p class="form-control-static">
+                                <input id="driver_name" type="text" class="form-control" name="driver_name" placeholder="Nama Pengemudi">
+                            </p> 
+                        </div>             
+                    </div>
+                
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
                     </div>
@@ -98,6 +108,10 @@ List Pesanan Galon
                                 <option value="{{$outsourcingDriver->id}}">{{$outsourcingDriver->name}}</option>           
                             @endforeach
                         </select> 
+                    </div>     
+                    <div id="driver_name_div" class="form-group">
+                        <label for="driver_name_edit"><strong>Nama Pengemudi</strong></label>
+                        <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
                     </div>                      
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
@@ -162,10 +176,13 @@ List Pesanan Galon
                     if(orderGallons[i].id==index){
                         if(orderGallons[i].accepted_at==null){
                             $('#cancel-btn').css('display','none');
+                            $('#driver_name_div').css('display','none');
                         }else{
                             $('#cancel-btn').css('display','inline-block');
+                            $('#driver_name_div').css('display','block');
                         }                        
                         $('#outsourcing').val(orderGallons[i].outsourcing);
+                        $('#driver_name_edit').val(orderGallons[i].driver_name);
                         $('#quantity').val(orderGallons[i].quantity);
                         $('#input_id').val(orderGallons[i].id);
 
@@ -229,17 +246,46 @@ List Pesanan Galon
                 columns: [
                     {data: 'id'},
                     {data: 'order.user.full_name'},
-                    {data: 'outsourcing_driver.name'},
+                    {
+                        data: 'outsourcing_driver',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data.name;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    }, 
+                    {
+                        data: 'driver_name',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },    
                     {data: 'order.quantity'},
                     {data: 'order.created_at'},
-                    {data: 'order.accepted_at'},
+                    {
+                        data: 'order.accepted_at',
+                        render: function ( data ){           
+                            if(data!=null){
+                                return data;
+                            }else{
+                                return '-';
+                            }
+                        }
+                    },  
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {
                             orderGallons.push({
                                 'id': row.id,
                                 'admin': row.order.user.full_name,                               
-                                'outsourcing': row.outsourcing_driver.id,
+                                'outsourcing': row.outsourcing_driver!=null?row.outsourcing_driver.id:null,
+                                'driver_name': row.driver_name,
                                 'quantity': row.order.quantity,
                                 'order_at': row.order.created_at,
                                 'accepted_at': row.order.accepted_at                            
