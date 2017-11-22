@@ -33,6 +33,23 @@ class OrderCustomer extends Model
         return $this->belongsTo('App\Models\Shipment');
     }
 
+    public function getRecentOrders(){
+        return $this->with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->whereHas('order', function ($query){
+                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
+            })
+            ->has('order')
+            ->get();
+    }
+
     public function doMake($order_data, $gallon_data, $customer_id)
     {
         $this->order_id = $order_data->id;
@@ -126,29 +143,25 @@ class OrderCustomer extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
-        if($this->order->inventory_id == 2){
-            // If delete order customer
-
-            if($this->order->issues){
-                foreach($this->order->issues as $issue){
-                    if($issue->order->type == "Refund Gallon"){
-                        $broken_gallon->quantity -= $issue->quantity;
-                        $filled_gallon->quantity += $issue->quantity;
-                    }
-                    else{
-                        $broken_gallon->quantity -= $issue->quantity;
-                    }
+        if($this->order->issues){
+            foreach($this->order->issues as $issue){
+                if($issue->order->type == "Refund Gallon"){
+                    $broken_gallon->quantity -= $issue->quantity;
+                    $filled_gallon->quantity += $issue->quantity;
+                }
+                else{
+                    $broken_gallon->quantity -= $issue->quantity;
                 }
             }
-            $filled_gallon->quantity += $this->order->quantity;
-            $empty_gallon->quantity -= $this->empty_gallon_quantity;
-            if($empty_gallon->quantity<0){
-                $empty_gallon->quantity = 0;
-            }
+        }
+        $filled_gallon->quantity += $this->order->quantity;
+        $empty_gallon->quantity -= $this->empty_gallon_quantity;
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
 
-            if(!$filled_gallon->save() || !$empty_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
-                return false;
-            }
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
+            return false;
         }
         return $this->order->doDelete();
     }

@@ -28,7 +28,8 @@
 
 <script src="{{asset('assets/js/lib/datatables-net/datatables.min.js')}}"></script>
 
-<script src="{{asset('assets/bower_components/moment/moment.js')}}"></script>
+{{--<script src="{{asset('assets/bower_components/moment/moment.js')}}"></script>--}}
+<script src="{{asset('assets/js/lib/moment/moment-with-locales.js')}}"></script>
 
 <script src="{{asset('assets/js/app.js')}}"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/fh-3.1.3/r-2.2.0/datatables.min.js"></script>

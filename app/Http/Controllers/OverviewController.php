@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Issue;
+use App\Models\OrderCustomer;
 use Illuminate\Http\Request;
 
 class OverviewController extends Controller
@@ -27,9 +29,19 @@ class OverviewController extends Controller
     public function index()
     {
 //        abort(401, 'This action is unauthorized');
+        $this->data['recent_orders'] = $this->getRecentOrders();
+        $this->data['recent_issues'] = $this->getRecentIssues();
         $this->data['slug'] = "";
         $this->data['breadcrumb'] = "Home - Overview";
 
         return view('overview.index', $this->data);
+    }
+
+    public function getRecentOrders(){
+        return (new OrderCustomer())->getRecentOrders();
+    }
+
+    public function getRecentIssues(){
+        return (new Issue())->getRecentIssues();
     }
 }
