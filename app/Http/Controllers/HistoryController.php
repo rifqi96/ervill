@@ -120,6 +120,14 @@ class HistoryController extends Controller
                 $new_value_arr['Tgl Pengiriman'] = $new_value[2];
                 $new_value_arr['Nama Customer'] = $new_value[3];
                 $new_value_arr['Status'] = $new_value[4];
+            }else if($edit_history->module_name == "Shipment"){   
+                $old_value_arr['Nama Pengemudi'] = $old_value[0];          
+                $old_value_arr['Tgl Pengiriman'] = $old_value[1];
+                $old_value_arr['Status'] = $old_value[2];
+
+                $new_value_arr['Nama Pengemudi'] = $new_value[0];          
+                $new_value_arr['Tgl Pengiriman'] = $new_value[1];
+                $new_value_arr['Status'] = $new_value[2];
             }
 
             $edit_history->old_value = $old_value_arr;
