@@ -109,7 +109,7 @@ List Pesanan Air
 
               <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
-                <a class="btn btn-danger" href="{{route('order.water.issue',['id' => 3])}}">Ada masalah</a>
+                <a id="issue-btn" class="btn btn-danger" href="{{route('order.water.issue',['id' => 3])}}">Ada masalah</a>
               </div>
           </form>
 
@@ -136,27 +136,31 @@ List Pesanan Air
                           <th>Tipe Masalah</th>
                           <th>Deskripsi Masalah</th>
                           <th>Jumlah</th>
+                          <th>Action</th>
                       </thead>
                       <tbody>
                           <tr>
                               <td>Tipe 1</td>
                               <td>Saat angkat galon, galon pecah</td>
                               <td>1</td>
+                              <td>a</td>
                           </tr>
                           <tr>
                               <td>Tipe 2</td>
                               <td>Tisu kurang</td>
                               <td>2</td>
+                              <td>b</td>
                           </tr>
                           <tr>
                               <td>Tipe 3</td>
                               <td>Segel terbuka</td>
                               <td>2</td>
+                              <td>c</td>
                           </tr>
                       </tbody>
                   </table>  
 
-                  <p>Jumlah Galon yang bermasalah: 5</p>   
+                  <p>Jumlah Barang yang bermasalah: <span id="issuesTotalQuantity"></span></p>   
               </div>
 
               <div class="modal-footer">
@@ -330,6 +334,8 @@ List Pesanan Air
                 for(var i in orderWaters){
                     if(orderWaters[i].id==$(this).data('index')){
                         $('#confirm_id').val(orderWaters[i].id);
+
+                        $('#issue-btn').attr('href','/order/water/issue/' + orderWaters[i].id);
                     }
                 }
             });
@@ -414,7 +420,8 @@ List Pesanan Air
                                     'quantity': row.order.quantity,
                                     'order_at': row.order.created_at,
                                     'delivery_at': row.delivery_at,
-                                    'accepted_at': row.order.accepted_at                            
+                                    'accepted_at': row.order.accepted_at,
+                                    'issues': row.order.issues                            
                                 });
                             //}
 
@@ -423,7 +430,7 @@ List Pesanan Air
                                 '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';   
                             }else if(row.status == "bermasalah"){
-                                return '<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#issueModal" data-index="' + row.id + '">Lihat Masalah</button>  '+ 
+                                return '<button class="btn btn-sm btn-warning issue-detail-btn" data-toggle="modal" data-target="#issueModal" data-index="' + row.id + '">Lihat Masalah</button>  '+ 
                                 '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';   
                             }else if(row.status == "selesai"){
@@ -435,10 +442,70 @@ List Pesanan Air
                 ]
             });
 
-            $('#issues').dataTable({               
-                fixedHeader: true,       
-                processing: true
+            var issue_detail=[];
+            $('#water_order').on('click','.issue-detail-btn',function(){
+                issue_detail = [];
+                var issuesTotalQuantity = 0;
+                $('#issues').dataTable().fnDestroy();
+
+                for(var i in orderWaters){
+                    if(orderWaters[i].id==$(this).data('index')){
+                        for( var j in orderWaters[i].issues){
+                            issue_detail[j] = {
+                                'id':orderWaters[i].issues[j].id,
+                                'type':orderWaters[i].issues[j].type,
+                                'description': orderWaters[i].issues[j].description,
+                                'quantity': orderWaters[i].issues[j].quantity
+                            };
+                            issuesTotalQuantity += orderWaters[i].issues[j].quantity;
+                        }
+                       
+                        $('#issuesTotalQuantity').text(issuesTotalQuantity);
+                        //$('#confirm_id').val(orderWaters[i].id);
+
+                        //$('#issue-btn').attr('href','/order/water/issue/' + orderWaters[i].id);
+                        break;
+                    }
+                }console.log(issue_detail);
+
+                $('#issues').dataTable({               
+                    fixedHeader: true,       
+                    processing: true,
+                    'order': [0, 'asc'],
+                    data: issue_detail,
+                    columns: [
+                        {data: 'type'},
+                        {data: 'description'},
+                        {data: 'quantity'},
+                        {
+                            data: null, 
+                            render: function ( data, type, row, meta ) {
+                                return '<button type="button" class="btn btn-sm btn-danger delete-issue-btn" data-index="' + row.id + '">Delete</button>';    
+                            }
+                        }                   
+                    ]
+                });
             });
+
+            $('#issues').on('click','.delete-issue-btn',function(){
+                var id = $(this).data('index');
+  
+                $.ajax({
+                  method: "POST",
+                  url: "{{route('issue.do.delete')}}",
+                  data: {id: id},
+                  headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  }
+                })
+                .done(function(data){                              
+                    location.reload();                               
+                })
+                .fail(function(data){
+                    alert('Terjadi kesalahan!');                  
+                });        
+            });
+
         });
     </script>
 

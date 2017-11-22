@@ -128,7 +128,7 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderWaterController@showMake',
             'as' => 'order.water.make'
         ]);
-        Route::get('issue/{id}', [
+        Route::get('issue/{orderWater}', [
             'uses' => 'OrderWaterController@createIssue',
             'as' => 'order.water.issue'
         ]);
@@ -157,6 +157,11 @@ Route::prefix('order')->group(function(){
             Route::post('cancel', [
                 'uses' => 'OrderWaterController@doCancel',
                 'as' => 'order.water.do.cancel'
+            ]);
+
+            Route::post('makeIssue', [
+                'uses' => 'OrderWaterController@doMakeIssue',
+                'as' => 'order.water.do.makeIssue'
             ]);
         });
 
@@ -321,6 +326,15 @@ Route::prefix('setting')->group(function(){
             ]);
         });
 
+    });
+});
+
+Route::prefix('issue')->group(function(){
+    Route::prefix('do')->group(function(){
+        Route::post('delete', [
+            'uses' => 'IssueController@doDelete',
+            'as' => 'issue.do.delete'
+        ]);            
     });
 });
 

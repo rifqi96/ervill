@@ -48,6 +48,12 @@ class OrderWater extends Model
         $this->driver_name = null;
         return ($this->save()); 
     }
+
+    public function doConfirmWithIssue($driver_name){
+        $this->status = 'bermasalah';
+        $this->driver_name = $driver_name;
+        return ($this->save()); 
+    }
     
     public function order()
     {
