@@ -16,15 +16,7 @@ class IssueController extends Controller
     public function doDelete(Request $request){
     	$issue = Issue::find($request->id);
 
-    	$empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-
-    	if($issue->type=="Kesalahan Pabrik Air"){
-
-    	}
-
-        if( $issue->delete() ){
+        if( $issue->doDelete() ){
             return 'Data telah berhasil dihapus';
         }else{
             return 'There is something wrong, please contact admin';
