@@ -59,10 +59,6 @@ class Order extends Model
         return $this->save();
     }
 
-    public function doUpdate($order){
-        $this->quantity = $order->quantity;
-        return $this->save();
-    }
 
     public function doDelete(){
         return $this->delete();
