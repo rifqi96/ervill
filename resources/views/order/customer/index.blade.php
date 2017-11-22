@@ -92,7 +92,7 @@ List Pesanan Customer
                     </div>
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1">
+                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="1">
                     </div>
                     <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
@@ -226,8 +226,7 @@ List Pesanan Customer
                             {data: 'order.created_at'},
                             {data: null,
                                 render: function(data){
-                                    var date = new Date(data.delivery_at);
-                                    return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+                                    return moment(data.delivery_at).format('DD-MM-YYYY');
                                 }},
                             {data: null,
                                 render: function(data){
@@ -309,11 +308,13 @@ List Pesanan Customer
                                 order_data = result[i];
                             }
                         }
-                        var delivery_at = new Date(order_data.delivery_at);
 
+                        var inventory = JSON.parse('{!! $inventory !!}');
+                        $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity))
+                        $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                         $('#edit-qty').val(order_data.order.quantity);
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                        $('#edit-delivery-at').val(delivery_at.getFullYear() + '-' + (delivery_at.getMonth()+1) + '-' + delivery_at.getDate());
+                        $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-M-D'));
                         $('#edit-status').val(order_data.status);
 
                         $('#customer-table').DataTable().destroy();

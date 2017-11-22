@@ -350,6 +350,10 @@ Route::get('/getCustomers', 'CustomerController@getAll');
 Route::get('/getOrderCustomers', 'OrderCustomerController@getAll');
 Route::get('/getFinishedShipments', 'ShipmentController@getAllFinished');
 Route::get('/getUnfinishedShipments', 'ShipmentController@getAllUnfinished');
+Route::post('/getAvailableShipmentsByDate', 'ShipmentController@getAvailableShipmentsByDate');
+Route::post('/getUnshippedOrders', 'OrderCustomerController@getUnshippedOrders');
+Route::get('/getAllDrivers', 'UserController@getAllDrivers');
+Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById');
 
 
 /**

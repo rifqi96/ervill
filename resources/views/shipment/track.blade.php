@@ -13,26 +13,41 @@ Track Pesanan
             	<button class="btn btn-info" data-toggle="modal" data-target="#detailModal">Lihat Detil Pesanan</button>
             </header>
 
-            <section class="box-typical box-typical-padding">                        
-                
+            <section class="box-typical box-typical-padding">
+				<div class="form-group row">
+					<label class="col-sm-2 form-control-label">Status</label>
+					<div class="col-sm-10">
+						<p class="form-control-static">
+							@if($shipment->status == "Draft")
+								<span class="label label-info">Draft</span>
+							@elseif($shipment->status == "Proses")
+								<span class="label label-warning">Proses</span>
+							@elseif($shipment->status == "Selesai")
+								<span class="label label-success">Selesai</span>
+							@else
+								Status tidak ditemukan
+							@endif
+						</p>
+					</div>
+				</div>
                 <div class="form-group row">
-                    <label class="col-sm-2 form-control-label">Order ID</label>
+                    <label class="col-sm-2 form-control-label">Shipment ID</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static">3</p>                      
+                        <p class="form-control-static">{{$shipment->id}}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 form-control-label">Nama Pengemudi</label>
                     <div class="col-sm-10">                     
                     	<p class="form-control-static" data-toggle="modal" data-target="#driverModal">
-                    		<a href="#"><u>Ervill Driver</u></a>
+                    		<a href="#"><u>{{$shipment->user->full_name}}</u></a>
                     	</p>                                          
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static">20/10/2017</p>                     
+                        <p class="form-control-static">{{Carbon\Carbon::parse($shipment->delivery_at)->format('d-m-Y')}}</p>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -68,19 +83,19 @@ Track Pesanan
 	      	<div class="form-group">
 				<label for="name"><strong>Nama</strong></label>
 				<p class="form-control-static">
-                    Ervil Driver
+                    {{$shipment->user->full_name}}
                 </p> 
 			</div>
 	        <div class="form-group">
 				<label for="phone"><strong>Nomor Telepon</strong></label>
 				<p class="form-control-static">
-                    08348738742
+					{{$shipment->user->phone}}
                 </p>
 			</div>
 			<div class="form-group">
 				<label for="email"><strong>E-mail</strong></label>
 				<p class="form-control-static">
-                    driver@gmail.com
+					<a href="mailto:{{$shipment->user->email}}">{{$shipment->user->email}}</a>
                 </p>
 			</div>		
 	      </div>
@@ -104,116 +119,21 @@ Track Pesanan
 	      </div>
 
 	      <div class="modal-body">
-			  <table class="table table-hover" id="customer_order">
+			  <table class="table table-hover" id="customer-order">
 				  <thead>
 				  <th>Status</th>
 				  <th>ID</th>
-				  <th>Admin</th>
-				  <th>Nama Pengemudi</th>
-				  <th>Customer</th>
+				  <th>Nama Customer</th>
+				  <th>No. Telepon</th>
 				  <th>Alamat Customer</th>
 				  <th>Jumlah (Galon)</th>
 				  <th>Jumlah Galon Kosong (Galon)</th>
 				  <th>Tgl Order</th>
 				  <th>Tgl Pengiriman</th>
 				  <th>Tgl Penerimaan</th>
+				  <th>Admin</th>
 				  </thead>
-				  <tbody>
-				  <tr>
-					  <td><span class="label label-success">Selesai</span></td>
-					  <td>1</td>
-					  <td>Abi</td>
-					  <td>Ervill Driver 1</td>
-					  <td>Customer 1</td>
-					  <td>Cimone Raya blok C4 nomor 4, Cimone, Tangerang</td>
-					  <td>3</td>
-					  <td>3</td>
-					  <td>20/10/2017 08:20:55</td>
-					  <td>20/10/2017</td>
-					  <td>20/10/2017 12:20:55</td>
-				  </tr>
-				  <tr>
-					  <td><span class="label label-danger">Bermasalah</span></td>
-					  <td>2</td>
-					  <td>Abi</td>
-					  <td>Ervill Driver 1</td>
-					  <td>Customer 2</td>
-					  <td>Serpong Paradise blok G4 nomor 43, Serpong, Tangerang</td>
-					  <td>4</td>
-					  <td>4</td>
-					  <td>20/10/2017 09:20:55</td>
-					  <td>20/10/2017</td>
-					  <td>20/10/2017 12:20:55</td>
-				  </tr>
-				  <tr>
-					  <td><span class="label label-warning">Proses</span></td>
-					  <td>3</td>
-					  <td>Charlie</td>
-					  <td>Ervill Driver 2</td>
-					  <td>Customer 2</td>
-					  <td>Serpong Paradise blok G4 nomor 43, Serpong, Tangerang</td>
-					  <td>4</td>
-					  <td>0</td>
-					  <td>20/10/2017 11:25:32</td>
-					  <td>20/10/2017</td>
-					  <td>-</td>
-				  </tr>
-				  </tbody>
 			  </table>
-	      	{{--<div class="form-group">--}}
-				{{--<label for="status"><strong>Status</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--<span class="label label-warning">Proses</span>--}}
-                {{--</p> --}}
-			{{--</div>--}}
-	        {{--<div class="form-group">--}}
-				{{--<label for="id"><strong>ID</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--3--}}
-                {{--</p>--}}
-			{{--</div>--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="admin"><strong>Admin</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--Charlie--}}
-                {{--</p>--}}
-			{{--</div>				--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="customer"><strong>Customer</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--Customer 2--}}
-                {{--</p>--}}
-			{{--</div>		      --}}
-	      	{{--<div class="form-group">--}}
-				{{--<label for="customer_address"><strong>Alamat Customer</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--Serpong Paradise blok G4 nomor 43, Serpong, Tangerang--}}
-                {{--</p>--}}
-			{{--</div>--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="quantity"><strong>Jumlah</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--4--}}
-                {{--</p>--}}
-			{{--</div>--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="gallon_empty_quantity"><strong>Jumlah Galon Kosong</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--0--}}
-                {{--</p>--}}
-			{{--</div>--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="created_at"><strong>Tanggal Order</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--20/10/2017 11:25:32--}}
-                {{--</p>--}}
-			{{--</div>--}}
-			{{--<div class="form-group">--}}
-				{{--<label for="delivery_at"><strong>Tanggal Pengiriman</strong></label>--}}
-				{{--<p class="form-control-static">--}}
-                    {{--20/10/2017--}}
-                {{--</p>--}}
-			{{--</div>--}}
 		  </div>
 
 
@@ -227,12 +147,81 @@ Track Pesanan
 
 	<script>
         $(document).ready(function () {
-            $('#customer_order').dataTable({
-                scrollX: true,
-                fixedHeader: true,
-                processing: true,
-                'order':[8, 'desc']
-            });
+            $.ajax({
+				url:'/getShipmentById/{{$shipment->id}}',
+				type:'get',
+				dataType:'json',
+				success:function (result) {
+                    $('#customer-order').dataTable({
+                        scrollX: true,
+                        fixedHeader: true,
+                        processing: true,
+                        order:[8, 'desc'],
+                        data:result.order_customers,
+                        columns:[
+                            {data: null,
+                                render: function(data, type, row, meta){
+                                    if(data.status == "Selesai"){
+                                        return '<span class="label label-success">Selesai</span>';
+                                    }
+                                    else if(data.status == "Proses"){
+                                        return '<span class="label label-warning">Proses</span>';
+                                    }
+                                    else if(data.status == "Bermasalah"){
+                                        return '<span class="label label-danger">Bermasalah</span>';
+                                    }
+                                    else{
+                                        return '<span class="label label-info">Draft</span>';
+                                    }
+                                }},
+                            {data: 'id'},
+                            {data: null,
+                                render: function(data){
+                                    if(data.customer){
+                                        return data.customer.name;
+                                    }
+                                    return '<i>Data customer tidak ditemukan</i>';
+                                }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.customer){
+                                        return data.customer.phone;
+                                    }
+                                    return '<i>Data customer tidak ditemukan</i>';
+                                }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.customer){
+                                        return data.customer.address;
+                                    }
+                                    return '<i>Data customer tidak ditemukan</i>';
+                                }},
+                            {data: 'order.quantity'},
+                            {data: 'empty_gallon_quantity'},
+                            {data: 'order.created_at'},
+                            {data: null,
+                                render: function(data){
+                                    var date = new Date(data.delivery_at);
+                                    return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+                                }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.order.accepted_at){
+                                        return data.order.accepted_at;
+                                    }
+                                    return '-';
+                                }},
+                            {data: null,
+                                render: function(data){
+                                    if(data.order.user){
+                                        return data.order.user.full_name;
+                                    }
+                                    return '<i>Data admin tidak ditemukan</i>';
+                                }},
+                        ]
+                    });
+                }
+			});
         });
 	</script>
 

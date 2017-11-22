@@ -52,7 +52,9 @@ Pengiriman
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('shipment.do.update')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="shipment_id" class="shipment-id">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
@@ -60,16 +62,28 @@ Pengiriman
 
                 <div class="modal-body">                                         
                     <div class="form-group">
-                        <label for="driver_name"><strong>Nama Pengemudi</strong></label>
-                        <input type="text" class="form-control" name="driver_name">
+                        <label for="driver-id"><strong>Nama Pengemudi</strong></label>
+                        <p class="form-control-static">
+                            <select id="driver-id" name="driver_id" class="form-control"></select>
+                        </p>
                     </div>                                                                          
                     <div class="form-group">
-                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
-                        <input type="date" class="form-control" name="delivery_at">
-                    </div>   
+                        <label for="delivery-at"><strong>Tgl Pengiriman</strong></label>
+                        <input type="date" class="form-control" name="delivery_at" id="delivery-at">
+                    </div>
                     <div class="form-group">
-                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <label for="status"><strong>Status</strong></label>
+                        <p class="form-control-static">
+                            <select id="status" name="status" class="form-control">
+                                <option value="Draft">Draft</option>
+                                <option value="Proses">Proses</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-description"><strong>Alasan Mengubah Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3" id="edit-description"></textarea>
                     </div>                 
                 </div>
 
@@ -89,7 +103,9 @@ Pengiriman
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="{{route('shipment.do.delete')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="shipment_id" class="shipment-id">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -97,8 +113,8 @@ Pengiriman
 
                 <div class="modal-body">                                           
                     <div class="form-group">
-                        <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <label for="delete-description"><strong>Alasan Menghapus Data</strong></label>
+                        <textarea class="form-control" name="description" rows="3" id="delete-description"></textarea>
                     </div>
                 </div>
 
@@ -117,6 +133,7 @@ Pengiriman
 
     <script>
         $(document).ready(function () {
+            // Get Unfinished Shipments //
             $.ajax({
                 url:'/getUnfinishedShipments',
                 type:'GET',
@@ -126,7 +143,7 @@ Pengiriman
                         scrollX: true,
                         fixedHeader: true,
                         processing: true,
-                        'order':[4, 'desc'],
+                        'order':[4, 'asc'],
                         data:result,
                         columns:[
                             {data: null,
@@ -149,8 +166,8 @@ Pengiriman
                             {data:null,
                             render: function(data){
                                 var gallon_total = 0;
-                                for(var i in data.orderCustomers){
-                                    gallon_total += data.orderCustomers[i].order.quantity;
+                                for(var i in data.order_customers){
+                                    gallon_total += data.order_customers[i].order.quantity;
                                 }
 
                                 return gallon_total;
@@ -171,6 +188,7 @@ Pengiriman
                 }
             });
 
+            // Get Finished Shipments //
             $.ajax({
                 url:'/getFinishedShipments',
                 type:'GET',
@@ -203,8 +221,8 @@ Pengiriman
                             {data:null,
                                 render: function(data){
                                     var gallon_total = 0;
-                                    for(var i in data.orderCustomers){
-                                        gallon_total += data.orderCustomers[i].order.quantity;
+                                    for(var i in data.order_customers){
+                                        gallon_total += data.order_customers[i].order.quantity;
                                     }
 
                                     return gallon_total;
@@ -223,6 +241,40 @@ Pengiriman
                         ]
                     });
                 }
+            });
+
+            // Get All Drivers for Select Input //
+            $.ajax({
+                url:'/getAllDrivers',
+                type:'get',
+                dataType:'json',
+                success:function (result) {
+                    for(var i in result){
+                        $('#driver-id').append('<option value="'+result[i].id+'">'+result[i].full_name+'</option>');
+                    }
+                }
+            });
+            
+            var editModal = function ($elem) {
+                $.ajax({
+                    url:'/getShipmentById/' + $elem.data('index'),
+                    type:'get',
+                    dataType:'json',
+                    success:function (result) {
+                        $('#driver-id').val(result.user.id);
+                        $('#delivery-at').val(moment(result.delivery_at).format('YYYY-M-D'));
+                        $('.shipment-id').val($elem.data('index'));
+                        $('#status').val(result.status);
+                    }
+                });
+            }
+
+            // On Edit Button //
+            $('#unfinished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                editModal($(this));
+            });
+            $('#finished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                editModal($(this));
             });
         });
     </script>

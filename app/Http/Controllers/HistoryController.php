@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditHistory;
 use App\Models\DeleteHistory;
 use App\Models\OrderCustomer;
+use App\Models\OrderWater;
+use App\Models\OutsourcingWater;
 use Illuminate\Http\Request;
-use App\Models\EditHistory;
 use App\Models\User;
 use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\OrderGallon;
 use App\Models\Customer;
+use App\Models\Shipment;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
 
@@ -25,6 +28,7 @@ class HistoryController extends Controller
      * 5. Order Water
      * 6. Order Customer
      * 7. Customers
+     * 8. Shipment
      */
 
     public function __construct()
@@ -171,6 +175,10 @@ class HistoryController extends Controller
             return OutsourcingDriver::onlyTrashed()
                 ->find($dh->data_id);
         }
+        else if($dh->module_name == "Outsourcing Water"){
+            return OutsourcingWater::onlyTrashed()
+                ->find($dh->data_id);
+        }
         else if($dh->module_name == "Order Gallon"){
             $order_gallon = OrderGallon::with(['order' => function($query){
                 $query->onlyTrashed();
@@ -214,6 +222,32 @@ class HistoryController extends Controller
             }
 
             return $order;
+        }
+        else if($dh->module_name == "Order Water"){
+            $order_water = OrderWater::with(['order' => function($query){
+                $query->onlyTrashed();
+            }])
+                ->where('order_id', $dh->data_id)
+                ->first();
+
+            $order = Order::onlyTrashed()
+                ->with('user')
+                ->find($dh->data_id);
+
+            if($mode == '' || empty($mode)){
+                $new_attributes = array(
+                    'Admin' => $order->user->full_name
+                );
+                $order->fill($new_attributes);
+                $order->setAttribute('id', $order_water->id);
+                $order->makeHidden(['inventory_id', 'user']);
+            }
+
+            return $order;
+        }
+        else if($dh->module_name == "Shipment"){
+            return Shipment::onlyTrashed()
+                ->find($dh->data_id);
         }
     }
 

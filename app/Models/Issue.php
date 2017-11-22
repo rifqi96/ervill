@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Issue extends Model
 {
@@ -36,5 +37,21 @@ class Issue extends Model
     public function inventory()
     {
         return $this->belongsTo('App\Models\Inventory');
+    }
+
+    public function getRecentIssues(){
+        return $this->with(['order' => function($query){
+                $query->with(['orderCustomer' => function($query){
+                    $query->with(['customer', 'shipment' =>function($query){
+                        $query->with('user');
+                    }]);
+                }]);
+            }])
+            ->whereDate('created_at', '=', Carbon::today()->toDateString())
+            ->whereHas('order', function($query){
+                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
+                $query->has('orderCustomer');
+            })
+            ->get();
     }
 }
