@@ -258,7 +258,7 @@ List Pesanan Air
                                     location.reload();                               
                                 })
                                 .fail(function(data){
-                                    alert('Terjadi kesalahan!');                  
+                                    alert('Terjadi kesalahan! Harap cek stok / hubungi admin');                  
                                 });
                             }
                             break;

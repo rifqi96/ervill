@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class OrderWater extends Model
 {
@@ -25,16 +26,87 @@ class OrderWater extends Model
         return ($this->save());
     }
 
-    public function doUpdate($orderWater)
+    public function doUpdate($data)
     {      
-        $this->outsourcing_water_id = $orderWater->outsourcing_water;
-        $this->outsourcing_driver_id = $orderWater->outsourcing_driver;
+
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $old_data = $this->toArray();
+
+        //recalculate inventory if order is finished
         if($this->order->accepted_at != null){
-            $this->driver_name = $orderWater->driver_name;
+            $empty_gallon->quantity -= ($data->quantity - $this->order->quantity);
+            $filled_gallon->quantity += ($data->quantity - $this->order->quantity);
+
+            //set driver name
+            $this->driver_name = $data->driver_name;
         }
-        $this->delivery_at = $orderWater->delivery_at;
+
+        //update order water and order data
+        $this->outsourcing_water_id = $data->outsourcing_water;
+        $this->outsourcing_driver_id = $data->outsourcing_driver;
+        $this->delivery_at = $data->delivery_at;
+        $this->order->quantity = $data->quantity;
+
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
+            return false;
+        }
 
         return ($this->save());
+    }
+
+    public function doAddToEditHistory($old_data, $data){
+
+        //set old values
+        $old_data['outsourcing_water_name'] = $old_data['outsourcing_water']['name'];
+        $old_data['outsourcing_driver_name'] = $old_data['outsourcing_driver']['name'];
+        $old_data['quantity'] = $old_data['order']['quantity'];
+        $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
+     
+        unset($old_data['id']); 
+        unset($old_data['outsourcing_water_id']);   
+        unset($old_data['outsourcing_driver_id']);
+        unset($old_data['order_id']);  
+        unset($old_data['status']);
+        unset($old_data['outsourcing_water']);
+        unset($old_data['outsourcing_driver']);
+        unset($old_data['order']);
+
+        $old_value = '';
+        $old_value .= $old_data['outsourcing_water_name'] . ';';
+        $old_value .= $old_data['outsourcing_driver_name'] . ';';
+        $old_value .= $old_data['driver_name'] . ';';
+        $old_value .= $old_data['quantity'] . ';';
+        $old_value .= $old_data['delivery_at'];
+
+
+        //set new values
+        $new_value_obj = $data->toArray(); 
+        $new_value_obj['outsourcing_water'] = OutsourcingWater::find($new_value_obj['outsourcing_water'])->name;
+        $new_value_obj['outsourcing_driver'] = OutsourcingDriver::find($new_value_obj['outsourcing_driver'])->name;
+        
+        unset($new_value_obj['id']);
+        unset($new_value_obj['_token']);
+        unset($new_value_obj['description']);
+        unset($new_value_obj['max_quantity']);
+
+        $new_value = '';
+        $new_value .= $new_value_obj['outsourcing_water'] . ';';
+        $new_value .= $new_value_obj['outsourcing_driver'] . ';';
+        $new_value .= $new_value_obj['driver_name'] . ';';
+        $new_value .= $new_value_obj['quantity'] . ';';
+        $new_value .= $new_value_obj['delivery_at'];
+
+        $edit_data = array(
+            'module_name' => 'Order Water',
+            'data_id' => $data->id,
+            'old_value' => $old_value,
+            'new_value' => $new_value,
+            'description' => $data->description,
+            'user_id' => auth()->id()
+        );
+
+        return EditHistory::create($edit_data);
     }
 
     public function doConfirm($driver_name){
@@ -59,6 +131,9 @@ class OrderWater extends Model
 
         //check if the order is on process
         if($this->status=='proses'){
+            if(!$this->doAddToDeleteHistory($description, $author_id)){
+                return false;
+            }
             return $this->order->doDelete();
         }
 
