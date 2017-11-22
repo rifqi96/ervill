@@ -78,7 +78,13 @@ class OrderWater extends Model
         $filled_gallon->quantity -= $this->order->quantity;
         $empty_gallon->quantity += $this->order->quantity;
 
-        if($filled_gallon->quantity<0){
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+        else if($broken_gallon->quantity<0){
+            $broken_gallon->quantity = 0;
+        }
+        else if($filled_gallon->quantity<0){
             $filled_gallon->quantity = 0;
         }
 

@@ -31,6 +31,7 @@ class OverviewController extends Controller
 //        abort(401, 'This action is unauthorized');
         $this->data['recent_orders'] = $this->getRecentOrders();
         $this->data['recent_issues'] = $this->getRecentIssues();
+        $this->data['process_orders'] = $this->getRecentOrders()->where('status', 'Proses');
         $this->data['slug'] = "";
         $this->data['breadcrumb'] = "Home - Overview";
 

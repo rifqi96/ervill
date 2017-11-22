@@ -28,7 +28,7 @@ Overview
                 <div class="col-sm-6">
                     <article class="statistic-box yellow">
                         <div>
-                            <div class="number">{{$recent_orders->count()}}</div>
+                            <div class="number">{{$process_orders->count()}}</div>
                             <div class="caption"><div>Order Berlangsung</div></div>
                         </div>
                     </article>
@@ -52,6 +52,7 @@ Overview
                 <th>Jumlah</th>
                 <th>Galon Ditukar</th>
                 <th align="center">Waktu</th>
+                <th>Admin</th>
                 <th>Action</th>
                 </thead>
             </table>
@@ -118,7 +119,7 @@ Overview
                 scrollX: true,
                 fixedHeader: true,
                 processing: true,
-                order:[3, 'asc'],
+                order:[7, 'desc'],
                 data:recent_orders,
                 columns:[
                     {data: null,
@@ -174,6 +175,13 @@ Overview
                         date.locale('id');
                         return date.calendar();
                     }},
+                    {data:null,
+                    render: function (data) {
+                        if(data.order.user){
+                            return data.order.user.full_name;
+                        }
+                        return '-';
+                    }},
                     {data: null,
                         render: function(data, type, row, meta){
                             var result = "";
@@ -199,7 +207,7 @@ Overview
                 scrollX: true,
                 fixedHeader: true,
                 processing: true,
-                order:[3, 'asc'],
+                order:[4, 'desc'],
                 data:recent_issues,
                 columns:[
                     {data: null,
