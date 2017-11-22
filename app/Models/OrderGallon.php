@@ -122,12 +122,38 @@ class OrderGallon extends Model
     }
 
     public function doConfirm($driver_name){
+
+        $empty_gallon = Inventory::find(1);
+
+        //recalculate inventory
+        $empty_gallon->quantity += ($this->order->quantity);
+
+        //update order gallon and order data
         $this->driver_name = $driver_name;
+        $this->order->accepted_at = Carbon::now();
+
+        if(!$this->order->save() || !$empty_gallon->save() ){
+            return false;
+        }
+
         return ($this->save()); 
     }
 
     public function doCancel(){
+
+        $empty_gallon = Inventory::find(1);
+
+        //recalculate inventory
+        $empty_gallon->quantity -= ($this->order->quantity);
+
+        //update order gallon and order data
         $this->driver_name = null;
+        $this->order->accepted_at = null;
+
+        if(!$this->order->save() || !$empty_gallon->save() ){
+            return false;
+        }
+
         return ($this->save()); 
     }
     

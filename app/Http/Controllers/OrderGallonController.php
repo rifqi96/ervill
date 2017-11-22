@@ -112,12 +112,8 @@ class OrderGallonController extends OrderController
         ]);
 
         $orderGallon = OrderGallon::with('order')->find($request->id);
-        $inventory = Inventory::find(1);
         
-        if($orderGallon->doConfirm($request->driver_name) && 
-            $orderGallon->order->doConfirm() && 
-            $inventory->add($orderGallon->order->quantity)){
-
+        if($orderGallon->doConfirm($request->driver_name) ){
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{
@@ -128,13 +124,9 @@ class OrderGallonController extends OrderController
 
     public function doCancel(Request $request)
     {
-        $orderGallon = OrderGallon::with('order')->find($request->id);
-        $inventory = Inventory::find(1);
+        $orderGallon = OrderGallon::with('order')->find($request->id);   
         
-        if($orderGallon->doCancel() && 
-            $orderGallon->order->doCancel() && 
-            $inventory->subtract($orderGallon->order->quantity)){
-
+        if( $orderGallon->doCancel() ){
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{

@@ -157,14 +157,8 @@ class OrderWaterController extends OrderController
         ]);
 
         $orderWater = OrderWater::with('order')->find($request->id);
-        $inventory_empty_gallon = Inventory::find(1);
-        $inventory_filled_gallon = Inventory::find(2);
-        
-        if( $orderWater->doConfirm($request->driver_name) && 
-            $orderWater->order->doConfirm() && 
-            $inventory_empty_gallon->subtract($orderWater->order->quantity) && 
-            $inventory_filled_gallon->add($orderWater->order->quantity)){
 
+        if( $orderWater->doConfirm($request->driver_name) ){
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{
@@ -176,14 +170,8 @@ class OrderWaterController extends OrderController
     public function doCancel(Request $request)
     {
         $orderWater = OrderWater::with('order')->find($request->id);
-        $inventory_empty_gallon = Inventory::find(1);
-        $inventory_filled_gallon = Inventory::find(2);
         
-        if( $orderWater->doCancel() && 
-            $orderWater->order->doCancel() && 
-            $inventory_empty_gallon->add($orderWater->order->quantity) && 
-            $inventory_filled_gallon->subtract($orderWater->order->quantity)){
-
+        if( $orderWater->doCancel() ){
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{
@@ -193,52 +181,6 @@ class OrderWaterController extends OrderController
     }
 
     public function doMakeIssue(Request $request){
-        //dd($request);
-
-        ///////////////////use for looop/////////////////////////
-
-        // //validate driver_name
-        // $this->validate($request, [
-        //     'driver_name' => 'required|string'
-        // ]); 
-
-        // ////check if no type is selected
-        // if(count($request->type) == 0){
-        //     return back()
-        //     ->withErrors(['message' => 'Tipe masalah belum dipilih!']);
-        // }
-        // //dd($request);
-        // //$quantity_arr = (array_filter($request->quantity, function($var){return !is_null($var);} ) );
-        // //dd($request->quantity[0]);
-
-        // foreach ($request->quantity as $key => $value) {
-        //     if($value){
-        //         $this->validate($request, [                
-        //             'quantity[]' => 'required|integer|min:1|max:'.$request->max_quantity
-        //         ]);
-        //     }
-        // }
-
-        // dd('pass');
-
-
-        // foreach ($request->type as $key => $value) {
-
-
-
-        //     if($value=='gallon'){
-        //         $this->validate($request, [                
-        //         'quantity['.$key.']' => 'required|integer|min:1|max:'.$request->max_quantity,
-        //         'description_gallon' => 'required|string'
-        //         ]); 
-        //     }else if($value=='seal'){
-
-        //     }else if($value=='tissue'){
-
-        //     }
-        // }
-
-        /////////////////manual///////////////
 
         $orderWater = OrderWater::find($request->id);
 
