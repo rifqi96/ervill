@@ -47,7 +47,7 @@ class OrderGallonController extends OrderController
         $orderGallon = new OrderGallon();
         
         if($order->doMakeOrderGallon($request) && $orderGallon->doMake($order, $request)){
-            return back()
+            return redirect(route('order.gallon.index'))
             ->with('success', 'Data telah berhasil dibuat');
         }else{
             return back()
