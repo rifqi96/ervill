@@ -56,7 +56,7 @@ List Pesanan Air
 
               <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
-                <a id="issue-btn" class="btn btn-danger" href="{{route('order.water.issue',['id' => 3])}}">Ada masalah</a>
+                <a id="issue-btn" class="btn btn-danger" href="#">Ada masalah</a>
               </div>
           </form>
 
