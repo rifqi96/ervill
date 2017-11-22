@@ -87,7 +87,7 @@ class OrderWaterController extends OrderController
         $orderWater = new OrderWater();
         
         if($order->doMakeOrderWater($request) && $orderWater->doMake($order, $request)){
-            return back()
+            return redirect(route('order.water.index'))
             ->with('success', 'Data telah berhasil dibuat');
         }else{
             return back()
@@ -201,25 +201,9 @@ class OrderWaterController extends OrderController
 
         $this->validate($request, [
             'description' => 'required|string|regex:/^[^;]+$/'
-        ]);
+        ]);        
 
-        $data = array(
-            'module_name' => 'Order Water',
-            'description' => $request->description,
-            'data_id' => $orderWater->order_id,
-            'user_id' => auth()->user()->id
-        );
-
-        //recalculate inventory if order is finished
-        if($orderWater->order->accepted_at != null){
-            $inventory_empty_gallon = Inventory::find(1);
-            $inventory_filled_gallon = Inventory::find(2);
-            $inventory_empty_gallon->add($orderWater->order->quantity);
-            $inventory_filled_gallon->subtract($orderWater->order->quantity);
-        }
-        
-
-        if($orderWater->order->doDelete() && DeleteHistory::create($data)){
+        if($orderWater->doDelete($request->description, auth()->user()->id)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
         }else{
@@ -400,7 +384,7 @@ class OrderWaterController extends OrderController
             $inventory_filled_gallon->add($filled_gallon_quantity) &&
             $inventory_broken_gallon->add($broken_gallon_quantity)){
 
-            return back()
+            return redirect(route('order.water.index'))
             ->with('success', 'Data telah berhasil diupdate');
         }else{
             return back()

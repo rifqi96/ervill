@@ -25,61 +25,8 @@ List Pesanan Air
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
                 <th>Action</th>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><span class="label label-danger">Bermasalah</span></td>
-                    <td>2</td>
-                    <td>Abi</td>
-                    <td>Outsourcing 1</td>
-                    <td>Delta</td>
-                    <td>160 (-5)</td>
-                    <td>20/10/2017 08:20:55</td>
-                    <td>21/10/2017</td>
-                    <td>22/10/2017 08:20:55</td>
-                    <td>               
-                        <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#issueModal">Lihat Masalah</button>      	
-                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span class="label label-success">Selesai</span></td>
-                    <td>1</td>
-                    <td>Beta</td>
-                    <td>Outsourcing 2</td>
-                    <td>Eko</td>
-                    <td>160</td>
-                    <td>18/10/2017 08:20:55</td>
-                    <td>19/10/2017</td>
-                    <td>20/10/2017 08:20:55</td>
-                    <td>                    	
-                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>
-                </tr>
-               <tr>
-                    <td><span class="label label-warning">Proses</span></td>
-                    <td>3</td>
-                    <td>Charlie</td>
-                    <td>Outsourcing 1</td>
-                    <td>Delta</td>
-                    <td>160</td>
-                    <td>21/10/2017 08:20:55</td>
-                    <td>22/10/2017</td>
-                    <td>-</td>
-                    <td>
-                    	<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
-                    	<button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                    	<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>
-                </tr>
-                </tbody>
+                </thead>                
             </table>
-
-
-
-
             
         </div>
     </div>
