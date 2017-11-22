@@ -8,9 +8,6 @@ Inventory Gallon
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                {{--<h3 class="panel-title"></h3>--}}
-                <a href="{{route('order.gallon.index')}}"><button class="btn btn-primary">Lihat Pesanan Gallon</button></a>
-                <a href="{{route('order.gallon.inventory')}}"><button class="btn btn-primary">Pesan Galon</button></a>
             </header>
             <table class="table table-hover" id="gallon_inventory">
                 <thead>

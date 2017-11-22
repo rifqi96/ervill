@@ -47,7 +47,7 @@ class OrderGallonController extends OrderController
         $orderGallon = new OrderGallon();
         
         if($order->doMakeOrderGallon($request) && $orderGallon->doMake($order, $request)){
-            return back()
+            return redirect(route('order.gallon.index'))
             ->with('success', 'Data telah berhasil dibuat');
         }else{
             return back()
@@ -210,13 +210,6 @@ class OrderGallonController extends OrderController
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);
         }
-    }
-
-    public function showInventory(){
-        $this->data['breadcrumb'] = 'Order - Inventory Gallon';
-
-        return view('order.gallon.inventory', $this->data);
-
     }
 
     public function getOrderGallons()
