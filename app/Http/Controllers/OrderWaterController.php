@@ -123,71 +123,9 @@ class OrderWaterController extends OrderController
                 'description' => 'required|string|regex:/^[^;]+$/'
                 
             ]);
-        } 
-        
-        //set old values
-        $old_value_obj = $orderWater->toArray();
-        unset($old_value_obj['id']);    
-        unset($old_value_obj['outsourcing_water_id']);
-        unset($old_value_obj['outsourcing_driver_id']);
-        unset($old_value_obj['order_id']);  
-        unset($old_value_obj['status']);  
-        $old_value = '';
-        $i=0;
+        }   
 
-        foreach ($old_value_obj as $key => $value) { 
-            if($key == 'outsourcing_water' || $key == 'outsourcing_driver'){
-                $old_value .= $value['name'].';';
-            }else if($key == 'order'){
-                $old_value .= $value['quantity'];
-            }else{
-                if($i == count($old_value_obj)-1){
-                    $old_value .= $value;
-                }else{
-                    $old_value .= $value.';';
-                }               
-            }     
-            $i++;
-        }
-
-        //set new values
-        $new_value_obj = $request->toArray();
-        $new_value_obj['outsourcing_water'] = OutsourcingWater::find($new_value_obj['outsourcing_water'])->name;
-        $new_value_obj['outsourcing_driver'] = OutsourcingDriver::find($new_value_obj['outsourcing_driver'])->name;
-        unset($new_value_obj['id']);
-        unset($new_value_obj['max_quantity']);
-        unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
-        $new_value = '';
-        $i=0;
-        foreach ($new_value_obj as $row) {
-            if($i == count($new_value_obj)-1){
-                $new_value .= $row;
-            }else{
-                $new_value .= $row.';';
-            }
-            $i++;
-        }
-        
-        $edit_data = array(
-            'module_name' => 'Order Water',
-            'data_id' => $request->id,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-            'description' => $request->description,
-            'user_id' => auth()->id()
-        );
-
-        //recalculate inventory if order is finished
-        if($orderWater->order->accepted_at != null){
-            $inventory_empty_gallon = Inventory::find(1);
-            $inventory_filled_gallon = Inventory::find(2);
-            $inventory_empty_gallon->subtract($request->quantity - $orderWater->order->quantity);
-            $inventory_filled_gallon->add($request->quantity - $orderWater->order->quantity);
-        }
-
-        if($orderWater->doUpdate($request) && $orderWater->order->doUpdate($request) && EditHistory::create($edit_data)){
-            //dd($orderWater->id . $request->id);
+        if($orderWater->doUpdate($request)){
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{

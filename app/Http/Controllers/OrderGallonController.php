@@ -80,63 +80,7 @@ class OrderGallonController extends OrderController
             ]);             
         } 
       
-        //set old values
-        $old_value_obj = $orderGallon->toArray();
-     
-        unset($old_value_obj['id']);    
-        unset($old_value_obj['outsourcing_driver_id']);
-        unset($old_value_obj['order_id']);  
-        $old_value = '';
-        $i=0;
-        foreach ($old_value_obj as $key => $value) { 
-            if($key == 'outsourcing_driver'){
-                $old_value .= $value['name'].';';
-            }else if($key == 'order'){
-                $old_value .= $value['quantity'];
-            }else{
-                if($i == count($old_value_obj)-1){
-                    $old_value .= $value;
-                }else{
-                    $old_value .= $value.';';
-                }               
-            }         
-            $i++;
-        }
-
-        //set new values
-        $new_value_obj = $request->toArray();
-        $new_value_obj['outsourcing'] = OutsourcingDriver::find($new_value_obj['outsourcing'])->name;
-        unset($new_value_obj['id']);
-        unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
-        $new_value = '';
-        $i=0;
-        foreach ($new_value_obj as $row) {
-            if($i == count($new_value_obj)-1){
-                $new_value .= $row;
-            }else{
-                $new_value .= $row.';';
-            }
-            $i++;
-        }
-        
-        $edit_data = array(
-            'module_name' => 'Order Gallon',
-            'data_id' => $request->id,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-            'description' => $request->description,
-            'user_id' => auth()->id()
-        );
-
-        //recalculate inventory if order is finished
-        if($orderGallon->order->accepted_at != null){
-            $inventory_empty_gallon = Inventory::find(1);
-            $inventory_empty_gallon->add($request->quantity - $orderGallon->order->quantity);         
-        }
-
-        if($orderGallon->doUpdate($request) && $orderGallon->order->doUpdate($request) && EditHistory::create($edit_data)){
-            //dd($orderGallon->id . $request->id);
+        if($orderGallon->doUpdate($request)){           
             return back()
             ->with('success', 'Data telah berhasil diupdate');
         }else{
@@ -152,20 +96,7 @@ class OrderGallonController extends OrderController
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
-        $data = array(
-            'module_name' => 'Order Gallon',
-            'description' => $request->description,
-            'data_id' => $orderGallon->order_id,
-            'user_id' => auth()->user()->id
-        );
-
-        //recalculate inventory if order is finished
-        if($orderGallon->order->accepted_at != null){
-            $inventory_empty_gallon = Inventory::find(1);
-            $inventory_empty_gallon->subtract($orderGallon->order->quantity);         
-        }
-
-        if($orderGallon->order->doDelete() && DeleteHistory::create($data)){
+        if($orderGallon->doDelete($request->description, auth()->user()->id)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
         }else{
