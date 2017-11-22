@@ -72,7 +72,8 @@ class Order extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
-        if($this->inventory_id == 2){
+
+        if($this->orderCustomer){
             // If restore order customer
 
             if($this->issues){
