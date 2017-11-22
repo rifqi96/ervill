@@ -15,7 +15,7 @@ Order Water Issue
 
             <section class="box-typical box-typical-padding">              
 
-                <form action="{{route('order.water.do.makeIssue')}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('order.water.do.confirmWithIssue')}}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" value="{{$orderWater->id}}">
                     <input type="hidden" name="order_id" value="{{$orderWater->order->id}}">

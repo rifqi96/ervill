@@ -127,11 +127,9 @@ class OrderGallonController extends OrderController
         $orderGallon = OrderGallon::with('order')->find($request->id);   
         
         if( $orderGallon->doCancel() ){
-            return back()
-            ->with('success', 'Data telah berhasil diupdate');
+            return 'Data telah berhasil diupdate';
         }else{
-            return back()
-            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            return 'There is something wrong, please contact admin';
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class OrderGallon extends Model
 {
@@ -149,6 +150,10 @@ class OrderGallon extends Model
         //update order gallon and order data
         $this->driver_name = null;
         $this->order->accepted_at = null;
+
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
 
         if(!$this->order->save() || !$empty_gallon->save() ){
             return false;

@@ -172,29 +172,22 @@ class OrderWaterController extends OrderController
         $orderWater = OrderWater::with('order')->find($request->id);
         
         if( $orderWater->doCancel() ){
-            return back()
-            ->with('success', 'Data telah berhasil diupdate');
+            return 'Data telah berhasil diupdate';
         }else{
-            return back()
-            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            return 'There is something wrong, please contact admin';
         }
     }
 
-    public function doMakeIssue(Request $request){
+    public function doConfirmWithIssue(Request $request){
 
         $orderWater = OrderWater::find($request->id);
-
-        $inventory_empty_gallon = Inventory::find(1);
-        $inventory_filled_gallon = Inventory::find(2);
-        $inventory_broken_gallon = Inventory::find(3);
 
         // check if no type is selected
         if(!$request->typeGallon && !$request->typeSeal && !$request->typeTissue){
             return back()
             ->withErrors(['message' => 'Tipe masalah belum dipilih!']);
         }
-
-        
+      
         $this->validate($request, [
             'driver_name' => 'required|string'
         ]); 
@@ -203,7 +196,7 @@ class OrderWaterController extends OrderController
         $issueSeal = new Issue();
         $issueTissue = new Issue();
         
-        //validate request according to the types checked
+        //validate request and make issue object according to the types checked
         if($request->typeGallon){
             $this->validate($request, [   
                 'type' => 'required',             
@@ -240,30 +233,7 @@ class OrderWaterController extends OrderController
             $issueTissue->doMakeIssueOrderWater($request,$data);  
         }
 
-
-        //set quantity for recalculating inventory
-        $empty_gallon_quantity = $orderWater->order->quantity;
-        $filled_gallon_quantity = $orderWater->order->quantity;
-        $broken_gallon_quantity = 0;
-
-        if($request->typeGallon){
-            $issueGallon->save();                    
-            $filled_gallon_quantity -= $issueGallon->quantity;
-            $broken_gallon_quantity = $issueGallon->quantity;
-        }
-        if($request->typeSeal){
-            $issueSeal->save();
-        }
-        if($request->typeTissue){
-            $issueTissue->save();    
-        }
-
-        if( $orderWater->doConfirmWithIssue($request->driver_name) && 
-            $orderWater->order->doConfirm() && 
-            $inventory_empty_gallon->subtract($empty_gallon_quantity) && 
-            $inventory_filled_gallon->add($filled_gallon_quantity) &&
-            $inventory_broken_gallon->add($broken_gallon_quantity)){
-
+        if( $orderWater->doConfirmWithIssue($request,$issueGallon,$issueSeal,$issueTissue) ){
             return redirect(route('order.water.index'))
             ->with('success', 'Data telah berhasil diupdate');
         }else{

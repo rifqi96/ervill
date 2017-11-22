@@ -48,6 +48,10 @@ class OrderWater extends Model
         $this->delivery_at = $data->delivery_at;
         $this->order->quantity = $data->quantity;
 
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
         }
@@ -123,6 +127,10 @@ class OrderWater extends Model
         $this->driver_name = $driver_name;
         $this->order->accepted_at = Carbon::now();
 
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
             return false;
         }
@@ -144,6 +152,10 @@ class OrderWater extends Model
         $this->driver_name = null;
         $this->order->accepted_at = null;
 
+        if($filled_gallon->quantity<0){
+            $filled_gallon->quantity = 0;
+        }
+
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
             return false;
         }
@@ -151,9 +163,48 @@ class OrderWater extends Model
         return ($this->save()); 
     }
 
-    public function doConfirmWithIssue($driver_name){
+    public function doConfirmWithIssue($data,$issueGallon,$issueSeal,$issueTissue){
+
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+
+        //set quantity for recalculating inventory and save issues
+        $empty_gallon_quantity_change = $this->order->quantity;
+        $filled_gallon_quantity_change = $this->order->quantity;
+        $broken_gallon_quantity_change = 0;
+
+        if($data->typeGallon){
+            $issueGallon->save();                    
+            $filled_gallon_quantity_change -= $issueGallon->quantity;
+            $broken_gallon_quantity_change = $issueGallon->quantity;
+        }
+        if($data->typeSeal){
+            $issueSeal->save();
+        }
+        if($data->typeTissue){
+            $issueTissue->save();    
+        }
+
+        //recalculate inventory
+        $empty_gallon->quantity -= $empty_gallon_quantity_change; 
+        $filled_gallon->quantity += $filled_gallon_quantity_change;
+        $broken_gallon->quantity += $broken_gallon_quantity_change;
+
+        //update order water and order data
         $this->status = 'bermasalah';
-        $this->driver_name = $driver_name;
+        $this->driver_name = $data->driver_name;
+        $this->order->accepted_at = Carbon::now();
+
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+
+
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save()){
+            return false;
+        }
+
         return ($this->save()); 
     }
 
@@ -185,6 +236,9 @@ class OrderWater extends Model
 
         if($filled_gallon->quantity<0){
             $filled_gallon->quantity = 0;
+        }
+        if($broken_gallon->quantity<0){
+            $broken_gallon->quantity = 0;
         }
 
         if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){

@@ -20,6 +20,8 @@ class Issue extends Model
     {        
         $this->inventory_id = 2;
         $this->order_id = $issue->order_id;
+
+        //check if has issue type
         if(count($data) ==3 && $data['type']){
             $this->type = $data['type'];
         }else{
