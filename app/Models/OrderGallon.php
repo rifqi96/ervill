@@ -161,7 +161,25 @@ class OrderGallon extends Model
 
         return ($this->save()); 
     }
-    
+
+    public function doRestore(){
+
+        $empty_gallon = Inventory::find(1);
+
+        //recalculate inventory if order is finished
+        if($this->order->accepted_at != null){
+            $empty_gallon->quantity += ($this->order->quantity);
+        }
+
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+
+        if(!$empty_gallon->save()){
+            return false;
+        }
+        return $this->order->doDelete();
+    }
 
     public function order()
     {

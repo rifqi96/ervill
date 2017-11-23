@@ -114,17 +114,14 @@ class OrderCustomerController extends OrderController
             $customer_id = $request->customer_id;
         }
 
-        $order = new Order();
-        $orderCustomer = new OrderCustomer();
 
-
-        if($order->doMakeOrderCustomer($request) && $orderCustomer->doMake($order, $request, $customer_id)){
-            return back()
-                ->with('success', 'Data telah berhasil dibuat');
-        }else{
+        if(!(new OrderCustomer())->doMake($request, $customer_id, auth()->id())){
             return back()
                 ->withErrors(['message' => 'There is something wrong, please contact admin']);
         }
+
+        return back()
+            ->with('success', 'Data telah berhasil dibuat');
     }
 
     public function doUpdate(Request $request)
