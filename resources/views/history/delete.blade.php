@@ -92,7 +92,7 @@
             var values_template = "";
             var changeSelect = function(elem){
                 if(elem.checked){
-                    var index = 'id_' + $(elem).val();
+                    var index = $(elem).val();
 
                     $(elem).attr('checked', true);
                     $('#ids-list').append($('<input>', {
@@ -102,11 +102,12 @@
                     }));
                 }
                 else{
+                    var index = $(elem).val();
                     $(elem).removeAttr('checked');
-                    $('#ids-list').find('input').attr('data-index',index).remove();
+                    $('#ids-list input[data-index='+index+']').remove();
                 }
 
-                if(typeof $('.ids').attr('checked') !== typeof undefined && $('.ids').attr('checked').length > 0){
+                if($('.ids:checked').length > 0){
                     $('#mass-restore').attr('disabled', false);
                     $('#mass-delete').attr('disabled', false);
                 }
