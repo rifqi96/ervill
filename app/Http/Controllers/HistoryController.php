@@ -161,7 +161,7 @@ class HistoryController extends Controller
         return json_encode($editHistories);
     }
 
-    public function getTrashedObject($request, $mode = ""){
+    public function getTrashedObject($request){
         if($request->delete_id){
            $delete_id = $request->delete_id;
         }
@@ -248,7 +248,7 @@ class HistoryController extends Controller
                     $new_attributes[$key] = $val;
             }
             $new_attributes['Admin'] = $order_water->order->user->full_name;
-            $order_water->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+            $order_water->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id', 'outsourcing_water_id', 'outsourcing_driver_id']);
             $order_water->fill($new_attributes);
 
             return $order_water;
