@@ -179,6 +179,40 @@ class OrderWater extends Model
 
         return DeleteHistory::create($data);
     }
+
+    public function doRestore(){
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+
+        if($this->order->issues){
+            foreach($this->order->issues as $issue){
+                if($issue->type == "Kesalahan Pabrik Air"){
+                    $broken_gallon->quantity += $issue->quantity;
+                    $filled_gallon->quantity -= $issue->quantity;
+                }
+            }
+        }
+
+        $filled_gallon->quantity += $this->order->quantity;
+        $empty_gallon->quantity -= $this->order->quantity;
+
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+        else if($broken_gallon->quantity<0){
+            $broken_gallon->quantity = 0;
+        }
+        else if($filled_gallon->quantity<0){
+            $filled_gallon->quantity = 0;
+        }
+
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save()){
+            return false;
+        }
+
+        return $this->order->doRestore();
+    }
     
     public function order()
     {

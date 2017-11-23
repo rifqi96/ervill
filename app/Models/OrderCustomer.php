@@ -50,8 +50,14 @@ class OrderCustomer extends Model
             ->get();
     }
 
-    public function doMake($order_data, $gallon_data, $customer_id)
+    public function doMake($gallon_data, $customer_id, $author_id)
     {
+        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
+
+        if(!$order_data){
+            return false;
+        }
+
         $this->order_id = $order_data->id;
         $this->customer_id = $customer_id;
         $this->empty_gallon_quantity = 0;
@@ -60,7 +66,8 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
-        return ($this->save());
+
+        return $this->save();
     }
 
     public function doUpdate($data)

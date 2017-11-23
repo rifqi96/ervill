@@ -21,10 +21,10 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function doMakeOrderGallon($data)
+    public function doMakeOrderGallon($data, $author_id)
     {        
         $this->inventory_id = 1;
-        $this->user_id = auth()->id();
+        $this->user_id = $author_id;
         $this->quantity = $data->quantity;
         return ($this->save());
     }
@@ -56,7 +56,8 @@ class Order extends Model
             }
         }
 
-        return $this->save();
+        $this->save();
+        return $this;
     }
 
 
