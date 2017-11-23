@@ -21,10 +21,10 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function doMakeOrderGallon($data)
+    public function doMakeOrderGallon($data, $author_id)
     {        
         $this->inventory_id = 1;
-        $this->user_id = auth()->id();
+        $this->user_id = $author_id;
         $this->quantity = $data->quantity;
         return ($this->save());
     }
@@ -56,7 +56,8 @@ class Order extends Model
             }
         }
 
-        return $this->save();
+        $this->save();
+        return $this;
     }
 
 
@@ -65,35 +66,6 @@ class Order extends Model
     }
 
     public function doRestore(){
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-
-        if($this->orderCustomer){
-            // If restore order customer
-
-            if($this->issues){
-                foreach($this->issues as $issue){
-                    if($issue->type == "Refund Gallon"){
-                        $broken_gallon->quantity += $issue->quantity;
-                        $filled_gallon->quantity -= $issue->quantity;
-                    }
-                    else{
-                        $broken_gallon->quantity += $issue->quantity;
-                    }
-                }
-            }
-            $filled_gallon->quantity -= $this->quantity;
-            $empty_gallon->quantity += $this->orderCustomer->empty_gallon_quantity;
-
-            if(!$filled_gallon->save()){
-                return false;
-            }
-            else if(!$empty_gallon->save()){
-                return false;
-            }
-        }
-
         return $this->restore();
     }
 

@@ -156,6 +156,7 @@ class Shipment extends Model
         unset($old_data['updated_at']);
         unset($old_data['deleted_at']);
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
+        $old_data['user_id'] = User::find($old_data['user_id'])->full_name;
         $old_value = '';
         $i=0;
         foreach ($old_data as $row) {
@@ -173,6 +174,7 @@ class Shipment extends Model
         unset($new_value_obj['shipment_id']);
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
+        $new_value_obj['driver_id'] = User::find($new_value_obj['driver_id'])->full_name;
         $new_value = '';
         $i=0;
         foreach ($new_value_obj as $row) {

@@ -50,8 +50,14 @@ class OrderCustomer extends Model
             ->get();
     }
 
-    public function doMake($order_data, $gallon_data, $customer_id)
+    public function doMake($gallon_data, $customer_id, $author_id)
     {
+        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
+
+        if(!$order_data){
+            return false;
+        }
+
         $this->order_id = $order_data->id;
         $this->customer_id = $customer_id;
         $this->empty_gallon_quantity = 0;
@@ -60,7 +66,8 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
-        return ($this->save());
+
+        return $this->save();
     }
 
     public function doUpdate($data)
@@ -145,7 +152,7 @@ class OrderCustomer extends Model
         $broken_gallon = Inventory::find(3);
         if($this->order->issues){
             foreach($this->order->issues as $issue){
-                if($issue->order->type == "Refund Gallon"){
+                if($issue->type == "Refund Gallon"){
                     $broken_gallon->quantity -= $issue->quantity;
                     $filled_gallon->quantity += $issue->quantity;
                 }
@@ -154,13 +161,21 @@ class OrderCustomer extends Model
                 }
             }
         }
+
         $filled_gallon->quantity += $this->order->quantity;
         $empty_gallon->quantity -= $this->empty_gallon_quantity;
+
         if($empty_gallon->quantity<0){
             $empty_gallon->quantity = 0;
         }
+        else if($broken_gallon->quantity<0){
+            $broken_gallon->quantity = 0;
+        }
+        else if($filled_gallon->quantity<0){
+            $filled_gallon->quantity = 0;
+        }
 
-        if(!$filled_gallon->save() || !$empty_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
             return false;
         }
         return $this->order->doDelete();
@@ -175,5 +190,41 @@ class OrderCustomer extends Model
         );
 
         return DeleteHistory::create($data);
+    }
+
+    public function doRestore(){
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+
+        if($this->order->issues){
+            foreach($this->order->issues as $issue){
+                if($issue->type == "Refund Gallon"){
+                    $broken_gallon->quantity += $issue->quantity;
+                    $filled_gallon->quantity -= $issue->quantity;
+                }
+                else{
+                    $broken_gallon->quantity += $issue->quantity;
+                }
+            }
+        }
+        $filled_gallon->quantity -= $this->order->quantity;
+        $empty_gallon->quantity += $this->empty_gallon_quantity;
+
+        if($empty_gallon->quantity<0){
+            $empty_gallon->quantity = 0;
+        }
+        else if($broken_gallon->quantity<0){
+            $broken_gallon->quantity = 0;
+        }
+        else if($filled_gallon->quantity<0){
+            $filled_gallon->quantity = 0;
+        }
+
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save()){
+            return false;
+        }
+
+        return $this->order->doRestore();
     }
 }

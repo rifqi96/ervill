@@ -190,68 +190,69 @@ class HistoryController extends Controller
         else if($dh->module_name == "Order Gallon"){
             $order_gallon = OrderGallon::with(['order' => function($query){
                 $query->onlyTrashed();
+                $query->with('user');
             }])
-                ->where('order_id', $dh->data_id)
+                ->whereHas('order', function ($query) use($dh){
+                    $query->onlyTrashed();
+                    $query->where('id', $dh->data_id);
+                })
                 ->first();
 
-            $order = Order::onlyTrashed()
-                ->with('user')
-                ->find($dh->data_id);
-
-            if($mode == '' || empty($mode)){
-                $new_attributes = array(
-                    'Admin' => $order->user->full_name
-                );
-                $order->fill($new_attributes);
-                $order->setAttribute('id', $order_gallon->id);
-                $order->makeHidden(['inventory_id', 'user']);
+            $new_attributes = array();
+            foreach($order_gallon->order->toArray() as $key => $val){
+                if($key != 'id' && $key != 'user' && $key != 'user_id')
+                    $new_attributes[$key] = $val;
             }
+            $new_attributes['Admin'] = $order_gallon->order->user->full_name;
+            $order_gallon->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+            $order_gallon->fill($new_attributes);
 
-            return $order;
+            return $order_gallon;
         }
         else if($dh->module_name == "Order Customer"){
             $order_customer = OrderCustomer::with(['order' => function($query){
-                $query->onlyTrashed();
-            }])
-                ->where('order_id', $dh->data_id)
+                    $query->onlyTrashed();
+                    $query->with('user');
+                }])
+                ->whereHas('order', function ($query) use($dh){
+                    $query->onlyTrashed();
+                    $query->where('id', $dh->data_id);
+                })
                 ->first();
 
-            $order = Order::onlyTrashed()
-                ->with('user')
-                ->find($dh->data_id);
-
-            if($mode == '' || empty($mode)){
-                $new_attributes = array(
-                    'Admin' => $order->user->full_name
-                );
-                $order->fill($new_attributes);
-                $order->setAttribute('id', $order_customer->id);
-                $order->makeHidden(['inventory_id', 'user']);
+            $new_attributes = array();
+            foreach($order_customer->order->toArray() as $key => $val){
+                if($key != 'id' && $key != 'user' && $key != 'user_id')
+                    $new_attributes[$key] = $val;
             }
+            $new_attributes['Admin'] = $order_customer->order->user->full_name;
+            $order_customer->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+            $order_customer->fill($new_attributes);
 
-            return $order;
+            return $order_customer;
         }
         else if($dh->module_name == "Order Water"){
             $order_water = OrderWater::with(['order' => function($query){
                 $query->onlyTrashed();
-            }])
-                ->where('order_id', $dh->data_id)
+                $query->with('user');
+                }])
+                ->whereHas('order', function ($query) use($dh){
+                    $query->onlyTrashed();
+                    $query->where('id', $dh->data_id);
+                })
                 ->first();
 
-            $order = Order::onlyTrashed()
-                ->with('user')
-                ->find($dh->data_id);
-
-            if($mode == '' || empty($mode)){
-                $new_attributes = array(
-                    'Admin' => $order->user->full_name
-                );
-                $order->fill($new_attributes);
-                $order->setAttribute('id', $order_water->id);
-                $order->makeHidden(['inventory_id', 'user']);
+            $new_attributes = array();
+            foreach($order_water->order->toArray() as $key => $val){
+                if($key != 'id' && $key != 'user' && $key != 'user_id')
+                    $new_attributes[$key] = $val;
             }
+            $new_attributes['Admin'] = $order_water->order->user->full_name;
+            $order_water->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+            $order_water->fill($new_attributes);
 
-            return $order;
+            return $order_water;
+
         }
         else if($dh->module_name == "Shipment"){
             return Shipment::onlyTrashed()
@@ -261,13 +262,13 @@ class HistoryController extends Controller
 
     /*======= Do Methods =======*/
     public function doRestore(Request $request){
-        $object = $this->getTrashedObject($request, 'restore');
+        $object = $this->getTrashedObject($request);
 
         return ($object->doRestore() && DeleteHistory::destroy($request->delete_id));
     }
 
     public function doForceDelete(Request $request){
-        $object = $this->getTrashedObject($request, 'delete');
+        $object = $this->getTrashedObject($request);
 
         return ($object->doForceDelete() && DeleteHistory::destroy($request->delete_id));
     }
