@@ -81,12 +81,9 @@ class OrderWaterController extends OrderController
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
             'quantity' => 'required|integer|min:1|max:'.$max_quantity,
             'delivery_at' => 'required|date|after_or_equal:today'
-        ]);           
-
-        $order = new Order();
-        $orderWater = new OrderWater();
+        ]);
         
-        if($order->doMakeOrderWater($request) && $orderWater->doMake($order, $request)){
+        if((new OrderWater())->doMake($request, auth()->id())){
             return redirect(route('order.water.index'))
             ->with('success', 'Data telah berhasil dibuat');
         }else{

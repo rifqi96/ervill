@@ -227,4 +227,12 @@ class OrderCustomer extends Model
 
         return $this->order->doRestore();
     }
+
+    public function doForceDelete(){
+        if(!$this->delete()){
+            return false;
+        }
+
+        return $this->order->forceDelete();
+    }
 }
