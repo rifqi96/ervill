@@ -77,16 +77,6 @@ class Order extends Model
         return $this->forceDelete();
     }
 
-    public function doConfirm(){
-        $this->accepted_at = Carbon::now();
-        return ($this->save()); 
-    }
-
-    public function doCancel(){
-        $this->accepted_at = null;
-        return ($this->save()); 
-    }
-
     public function user()
     {
         return $this->belongsTo('App\Models\User');

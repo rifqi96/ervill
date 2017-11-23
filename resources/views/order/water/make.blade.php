@@ -60,7 +60,7 @@ Pesan Air
                         <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">
-                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman">
+                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}" min="{{\Carbon\Carbon::now()->toDateString()}}">
                             </p>
                         </div>
                     </div>

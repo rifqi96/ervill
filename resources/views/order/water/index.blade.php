@@ -56,7 +56,7 @@ List Pesanan Air
 
               <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Konfirmasi terima stok</button>
-                <a id="issue-btn" class="btn btn-danger" href="{{route('order.water.issue',['id' => 3])}}">Ada masalah</a>
+                <a id="issue-btn" class="btn btn-danger" href="#">Ada masalah</a>
               </div>
           </form>
 
@@ -244,8 +244,8 @@ List Pesanan Air
 
                 $('#cancel-btn').on('click',function(){
                     for(var i in orderWaters){
-                        if(orderWaters[i].id==index){
-                            if(orderWaters[i].accepted_at!=null){
+                        if(orderWaters[i].id==index){                            
+                            if(orderWaters[i].accepted_at!=null){                               
                                $.ajax({
                                   method: "POST",
                                   url: "{{route('order.water.do.cancel')}}",

@@ -159,9 +159,9 @@ Route::prefix('order')->group(function(){
                 'as' => 'order.water.do.cancel'
             ]);
 
-            Route::post('makeIssue', [
-                'uses' => 'OrderWaterController@doMakeIssue',
-                'as' => 'order.water.do.makeIssue'
+            Route::post('confirmWithIssue', [
+                'uses' => 'OrderWaterController@doConfirmWithIssue',
+                'as' => 'order.water.do.confirmWithIssue'
             ]);
         });
 
