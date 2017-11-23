@@ -196,7 +196,7 @@ class OrderWater extends Model
                     }
                 }
             }
-            
+
             $filled_gallon->quantity += $this->order->quantity;
             $empty_gallon->quantity -= $this->order->quantity;
 
