@@ -38,6 +38,10 @@ class OutsourcingWater extends Model
         return $this->forceDelete();
     }
 
+    public function doRestore(){
+        return $this->restore();
+    }
+
     public function orderWaters()
     {
         return $this->hasMany('App\Models\OrderWater');
