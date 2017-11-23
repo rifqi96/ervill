@@ -26,20 +26,24 @@ class Order extends Model
         $this->inventory_id = 1;
         $this->user_id = $author_id;
         $this->quantity = $data->quantity;
-        return ($this->save());
+        $this->save();
+
+        return $this;
     }
 
-    public function doMakeOrderWater($order)
+    public function doMakeOrderWater($data, $author_id)
     {        
         $this->inventory_id = 2;
-        $this->user_id = auth()->id();
-        $this->quantity = $order->quantity;
-        return ($this->save());
+        $this->user_id = $author_id;
+        $this->quantity = $data->quantity;
+        $this->save();
+
+        return $this;
     }
 
-    public function doMakeOrderCustomer($data){
+    public function doMakeOrderCustomer($data, $author_id){
         $this->inventory_id = 2;
-        $this->user_id = auth()->id();
+        $this->user_id = $author_id;
         $this->quantity = $data->quantity;
 
         $filled_gallon = Inventory::find(2);
@@ -55,8 +59,8 @@ class Order extends Model
                 return false;
             }
         }
-
         $this->save();
+
         return $this;
     }
 

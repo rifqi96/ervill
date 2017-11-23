@@ -16,11 +16,13 @@ class OrderGallon extends Model
 
     protected $guarded = [];
 
-	public function doMake($order, $orderGallon)
-    {        
+	public function doMake($orderGallon, $author_id)
+    {
+        $order = (new Order)->doMakeOrderGallon($orderGallon, $author_id);
+
         $this->outsourcing_driver_id = $orderGallon->outsourcing_driver;
         $this->order_id = $order->id;
-        return ($this->save());
+        return $this->save();
     }
 
     public function doUpdate($data)
@@ -179,6 +181,14 @@ class OrderGallon extends Model
             return false;
         }
         return $this->order->doDelete();
+    }
+
+    public function doForceDelete(){
+        if(!$this->delete()){
+            return false;
+        }
+
+        return $this->order->forceDelete();
     }
 
     public function order()

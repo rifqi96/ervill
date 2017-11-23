@@ -41,12 +41,9 @@ class OrderGallonController extends OrderController
         $this->validate($request, [
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
             'quantity' => 'required|integer|min:1'
-        ]);   
-
-        $order = new Order();
-        $orderGallon = new OrderGallon();
+        ]);
         
-        if($order->doMakeOrderGallon($request) && $orderGallon->doMake($order, $request)){
+        if((new OrderGallon())->doMake($request, auth()->id())){
             return redirect(route('order.gallon.index'))
             ->with('success', 'Data telah berhasil dibuat');
         }else{
