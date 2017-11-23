@@ -244,8 +244,8 @@ List Pesanan Air
 
                 $('#cancel-btn').on('click',function(){
                     for(var i in orderWaters){
-                        if(orderWaters[i].id==index){
-                            if(orderWaters[i].accepted_at!=null){
+                        if(orderWaters[i].id==index){                            
+                            if(orderWaters[i].accepted_at!=null){                               
                                $.ajax({
                                   method: "POST",
                                   url: "{{route('order.water.do.cancel')}}",

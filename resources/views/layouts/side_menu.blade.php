@@ -5,12 +5,6 @@
             <span class="lbl">Overview</span>
         </a>
     </li>
-    <li class="{{$module=="inventory"?"opened":""}}">
-        <a href="{{route('inventory.index')}}">
-            <i class="font-icon font-icon-archive"></i>
-            <span class="lbl">Stock</span>
-        </a>
-    </li>
     <li class="with-sub {{$module=="order"?"opened":""}}">
                 <span>
                     <i class="font-icon font-icon-wallet"></i>
@@ -32,6 +26,12 @@
         <a href="{{route('shipment.index')}}">
             <i class="font-icon font-icon-calend"></i>
             <span class="lbl">Pengiriman</span>
+        </a>
+    </li>
+    <li class="{{$module=="inventory"?"opened":""}}">
+        <a href="{{route('inventory.index')}}">
+            <i class="font-icon font-icon-archive"></i>
+            <span class="lbl">Stock</span>
         </a>
     </li>
     @if(auth()->user()->role->name == 'superadmin')

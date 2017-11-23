@@ -180,7 +180,7 @@ class OrderGallon extends Model
         if(!$empty_gallon->save()){
             return false;
         }
-        return $this->order->doDelete();
+        return $this->order->doRestore();
     }
 
     public function doForceDelete(){
