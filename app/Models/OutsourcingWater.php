@@ -18,7 +18,7 @@ class OutsourcingWater extends Model
     protected $dates = ['deleted_at'];
 
 
-	public function doUpdate($outsourcingWater)
+    public function doUpdate($outsourcingWater)
     {   
         $this->name = $outsourcingWater->name;
         return ($this->save());
@@ -36,6 +36,10 @@ class OutsourcingWater extends Model
 
     public function doForceDelete(){
         return $this->forceDelete();
+    }
+
+    public function doRestore(){
+        return $this->restore();
     }
 
     public function orderWaters()
