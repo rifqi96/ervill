@@ -49,4 +49,22 @@
             </a>
         </form>
     </div>
+
+    <script>
+        $(document).ready(function () {
+           $.ajax({
+               url:'/api',
+               type:'post',
+               dataType:'json',
+               data:{
+                   keyword:'login',
+                   username:'driver',
+                   password:'driver'
+               },
+               success:function (result) {
+                   alert(result.message);
+               }
+           });
+        });
+    </script>
 @endsection

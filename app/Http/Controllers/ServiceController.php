@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
@@ -12,30 +13,35 @@ class ServiceController extends Controller
 		if($request->keyword){
 			switch($request->keyword){
 				case 'login':
-					login($request);
+					return $this->login($request);
 					break;
 
-				default: 
+				default:
 					return $this->apiResponse(0,'keyword salah','keyword salah');
 					break;
 			}
 		}else{
-			return $this->$this->apiResponse(0,'mohon isi keyword','mohon isi keyword');
+			return $this->apiResponse(0,'mohon isi keyword','mohon isi keyword');
 		}
 		
 	}
 
     public function login($request){
-    	$user = User::where([['username',$request->username],['password', bcrypt($request->password)]])->get();
-		$token = str_random(60);
-		$data = array(
-			'token' => $token,
-			'user' => $user
-		);
+    	$user = User::with('role')
+        ->where('username', $request->username)->first();
 
-		$user->doUpdateApiToken($token);
+    	if($user && Hash::check($request->password, $user->password)){
+            $token = str_random(60);
+            $data = array(
+                'token' => $token,
+                'user' => $user->toArray()
+            );
 
-		return $this->apiResponse(1,'berhasil login','',$data);
+            $user->doUpdateApiToken($token);
+
+            return $this->apiResponse(1,'berhasil login','',$data);
+        }
+        return $this->apiResponse(0,'gagal login','');
     }
 
     public function apiResponse($status,$message='',$error='',$data=array()){
