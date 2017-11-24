@@ -147,8 +147,8 @@
                         for(var j in delete_histories_json[i].data_id){
                             values_template +=
                                 '<div class="form-group row">' +
-                                '<label class="col-sm-3"><strong>'+j+'</strong></label>' +
-                                '<div class="col-sm-9">' +
+                                '<label class="col-sm-5"><strong>'+j+'</strong></label>' +
+                                '<div class="col-sm-7">' +
                                 '<p class="form-control-static">' +
                                 delete_histories_json[i].data_id[j] +
                                 '</p>' +
