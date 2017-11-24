@@ -235,4 +235,10 @@ class OrderCustomer extends Model
 
         return $this->order->forceDelete();
     }
+
+    //test
+    public function doUpdateStatus($status){
+        $this->status = $status;
+        return $this->save();
+    }
 }
