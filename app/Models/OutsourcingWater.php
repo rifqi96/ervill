@@ -18,7 +18,7 @@ class OutsourcingWater extends Model
     protected $dates = ['deleted_at'];
 
 
-	public function doUpdate($outsourcingWater)
+    public function doUpdate($outsourcingWater)
     {   
         $this->name = $outsourcingWater->name;
         return ($this->save());

@@ -271,7 +271,7 @@ class OrderWater extends Model
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
 
-        if($this->status=='proses'){
+        if($this->status!='proses'){
             if($this->order->issues){
                 foreach($this->order->issues as $issue){
                     if($issue->type == "Kesalahan Pabrik Air"){
