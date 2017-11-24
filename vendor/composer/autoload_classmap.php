@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddDataIdToEditHistories' => $baseDir . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
+    'AddErvillTokenToUsers' => $baseDir . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
     'AddRoleIdToUsers' => $baseDir . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
     'AddSoftDeletesToTables' => $baseDir . '/database/migrations/2017_11_15_205738_add_soft_deletes_to_tables.php',
     'AddStatusToOrderCustomersAndWaters' => $baseDir . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
@@ -135,7 +136,6 @@ return array(
     'Dotenv\\Exception\\ValidationException' => $vendorDir . '/vlucas/phpdotenv/src/Exception/ValidationException.php',
     'Dotenv\\Loader' => $vendorDir . '/vlucas/phpdotenv/src/Loader.php',
     'Dotenv\\Validator' => $vendorDir . '/vlucas/phpdotenv/src/Validator.php',
-    'EditOutsourcingWaterAndDriverNullable' => $baseDir . '/database/migrations/2017_11_21_000815_edit_outsourcing_water_and_driver_nullable.php',
     'Faker\\Calculator\\Iban' => $vendorDir . '/fzaninotto/faker/src/Faker/Calculator/Iban.php',
     'Faker\\Calculator\\Inn' => $vendorDir . '/fzaninotto/faker/src/Faker/Calculator/Inn.php',
     'Faker\\Calculator\\Luhn' => $vendorDir . '/fzaninotto/faker/src/Faker/Calculator/Luhn.php',
