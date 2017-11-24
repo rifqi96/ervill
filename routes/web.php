@@ -338,7 +338,7 @@ Route::prefix('issue')->group(function(){
     });
 });
 
-Route::get('api','ServiceController@api');
+Route::post('api','ServiceController@api');
 
 Route::get('/getUsers', 'UserController@getUsers');
 Route::get('/getOutsourcingWaters', 'OutsourcingController@getOutsourcingWaters');

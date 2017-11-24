@@ -224,7 +224,8 @@ class HistoryController extends Controller
                 if($key != 'id' && $key != 'user' && $key != 'user_id')
                     $new_attributes[$key] = $val;
             }
-            $order_customer->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+
+            $order_customer->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id', 'outsourcing_driver_id']);
             $order_customer->fill($new_attributes);
 
             return $order_customer;
@@ -245,7 +246,8 @@ class HistoryController extends Controller
                 if($key != 'id' && $key != 'user' && $key != 'user_id')
                     $new_attributes[$key] = $val;
             }
-            $order_water->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id']);
+
+            $order_water->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id', 'outsourcing_water_id', 'outsourcing_driver_id']);
             $order_water->fill($new_attributes);
 
             return $order_water;
