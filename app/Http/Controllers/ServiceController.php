@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\OrderCustomer;
+use App\Models\Shipment;
 
 class ServiceController extends Controller
 {
@@ -20,12 +21,16 @@ class ServiceController extends Controller
 				//////////////this part below needs to be login first//////////////
 				default:
 					if( !$this->isLogin($request->user_id,$request->token) ){
-						return $this->apiResponse(2,'Login gagal, silahkan login kembali','Invalid Ervill token');
+						return $this->apiResponse(2,'Maaf, anda harus login ulang','Invalid Ervill token');
 					}
 
 					switch($request->keyword){
 						case 'test':
 							return $this->test($request);
+							break;
+
+						case 'today-shipments':
+							return $this->getTodayShipments($request);
 							break;
 
 						case 'logout':
@@ -62,7 +67,7 @@ class ServiceController extends Controller
 
             return $this->apiResponse(1,'berhasil login','',$data);
         }
-        return $this->apiResponse(0,'gagal login','gagal login');
+        return $this->apiResponse(0,'akun tidak ditemukan','akun tidak ditemukan');
     }
 
     public function logout($request){
@@ -79,6 +84,36 @@ class ServiceController extends Controller
             return $this->apiResponse(1,'berhasil logout','',$data);
         }
         return $this->apiResponse(0,'gagal logout','gagal logout');
+    }
+
+    public function getTodayShipments($request){
+    	$shipments = Shipment::with('orderCustomers')->where('user_id', $request->user_id)->get();
+    	
+    	if( count($shipments) > 0 ){
+	    	$data = array();
+
+	    	$order_quantity = 0;
+	    	$gallon_quantity = 0;
+	    	foreach($shipments as $shipment){
+	    		$order_quantity = count($shipment->orderCustomers);
+	 			$gallon_quantity = 0; 
+	    		foreach ($shipment->orderCustomers as $orderCustomer) {
+	    			$gallon_quantity += $orderCustomer->order->quantity;
+
+	    		}
+	    		array_push($data,[
+	    			'id' => $shipment->id,
+	    			'delivery_at' => $shipment->delivery_at,
+	    			'status' => $shipment->status,
+	    			'order_qty' => $order_quantity,
+	    			'gallon_qty' => $gallon_quantity
+	    		]);
+	    	}
+    	
+    	
+    		return $this->apiResponse(1,'berhasil memuat data shipment','berhasil memuat data shipment', $data);
+    	}
+    	return $this->apiResponse(0,'gagal memuat data shipment','gagal memuat data shipment');
     }
 
     ///////////change OC status, for testing only////////////
