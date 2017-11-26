@@ -37,6 +37,10 @@ class ServiceController extends Controller
 							return $this->getOrdersByShipment($request);
 							break;
 
+						case 'orders-history-by-shipment':
+							return $this->getOrdersHistoryByShipment($request);
+							break;
+
 						case 'signout':
 							return $this->logout($request);
 							break;
@@ -130,7 +134,10 @@ class ServiceController extends Controller
 
     	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
     		$query->where('user_id', $request->user_id);
-    	})->where('shipment_id', $request->shipment_id)->get();
+    	})->where([
+    		['shipment_id', $request->shipment_id],
+    		['status','Proses']])
+    	->get();
     
     	if( count($orderCustomers) > 0 ){
 	    	$data = array();
@@ -148,6 +155,39 @@ class ServiceController extends Controller
     		return $this->apiResponse(1,'berhasil memuat data order','berhasil memuat data order', $data);
     	}
     	return $this->apiResponse(1,'tidak ada order pada pengiriman ini');
+    }
+
+    public function getOrdersHistoryByShipment($request){
+
+    	if( !$request->shipment_id ){
+    		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
+    	}    	
+
+    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+    		$query->where('user_id', $request->user_id);
+		})->where([
+    		['shipment_id', $request->shipment_id],
+    		['status','!=','Proses'],
+    		['status','!=','Draft']])
+		->get();
+    
+    	if( count($orderCustomers) > 0 ){
+	    	$data = array();
+
+	    	foreach($orderCustomers as $orderCustomer){	    		
+	    		array_push($data,[
+	    			'id' => $orderCustomer->id,
+	    			'customer_name' => $orderCustomer->customer->name,
+	    			'customer_address' => $orderCustomer->customer->address,
+	    			'customer_phone' => $orderCustomer->customer->phone,
+	    			'status' => $orderCustomer->status	    	
+	    		]);
+	    	}
+    	
+    	
+    		return $this->apiResponse(1,'berhasil memuat data order yang telah selesai','berhasil memuat data order yang telah selesai', $data);
+    	}
+    	return $this->apiResponse(1,'tidak ada order yang selesai pada pengiriman ini');
     }
 
     ///////////change OC status, for testing only////////////
