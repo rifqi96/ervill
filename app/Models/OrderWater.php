@@ -145,6 +145,11 @@ class OrderWater extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
 
+        //for handling the weird ajax error
+        if($this->status =='proses'){
+            return false;
+        }
+
         //recalculate inventory
         $empty_gallon->quantity += ($this->order->quantity);
         $filled_gallon->quantity -= ($this->order->quantity);
