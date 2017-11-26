@@ -33,7 +33,11 @@ class ServiceController extends Controller
 							return $this->getTodayShipments($request);
 							break;
 
-						case 'logout':
+						case 'orders-by-shipment':
+							return $this->getOrdersByShipment($request);
+							break;
+
+						case 'signout':
 							return $this->logout($request);
 							break;
 
@@ -87,7 +91,7 @@ class ServiceController extends Controller
     }
 
     public function getTodayShipments($request){
-    	$shipments = Shipment::with('orderCustomers')->where('user_id', $request->user_id)->get();
+    	$shipments = Shipment::where('user_id', $request->user_id)->get();
     	
     	if( count($shipments) > 0 ){
 	    	$data = array();
@@ -95,9 +99,11 @@ class ServiceController extends Controller
 	    	$order_quantity = 0;
 	    	$gallon_quantity = 0;
 	    	foreach($shipments as $shipment){
+	    		//calculate amount of orders in a shipment
 	    		$order_quantity = count($shipment->orderCustomers);
 	 			$gallon_quantity = 0; 
 	    		foreach ($shipment->orderCustomers as $orderCustomer) {
+	    			//calculate amount of gallons in an order
 	    			$gallon_quantity += $orderCustomer->order->quantity;
 
 	    		}
@@ -113,7 +119,35 @@ class ServiceController extends Controller
     	
     		return $this->apiResponse(1,'berhasil memuat data shipment','berhasil memuat data shipment', $data);
     	}
-    	return $this->apiResponse(0,'gagal memuat data shipment','gagal memuat data shipment');
+    	return $this->apiResponse(1,'tidak ada pengiriman hari ini');
+    }
+
+    public function getOrdersByShipment($request){
+
+    	if( !$request->shipment_id ){
+    		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
+    	}    	
+
+    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+    		$query->where('user_id', $request->user_id);
+    	})->where('shipment_id', $request->shipment_id)->get();
+    
+    	if( count($orderCustomers) > 0 ){
+	    	$data = array();
+
+	    	foreach($orderCustomers as $orderCustomer){	    		
+	    		array_push($data,[
+	    			'id' => $orderCustomer->id,
+	    			'customer_name' => $orderCustomer->customer->name,
+	    			'customer_address' => $orderCustomer->customer->address,
+	    			'customer_phone' => $orderCustomer->customer->phone	    	
+	    		]);
+	    	}
+    	
+    	
+    		return $this->apiResponse(1,'berhasil memuat data order','berhasil memuat data order', $data);
+    	}
+    	return $this->apiResponse(1,'tidak ada order pada pengiriman ini');
     }
 
     ///////////change OC status, for testing only////////////
