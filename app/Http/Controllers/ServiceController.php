@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\OrderCustomer;
 use App\Models\Shipment;
+use Carbon\Carbon;
 
 class ServiceController extends Controller
 {
@@ -39,6 +40,10 @@ class ServiceController extends Controller
 
 						case 'orders-history-by-shipment':
 							return $this->getOrdersHistoryByShipment($request);
+							break;
+
+						case 'order-details':
+							return $this->getOrderDetail($request);
 							break;
 
 						case 'signout':
@@ -95,17 +100,33 @@ class ServiceController extends Controller
     }
 
     public function getTodayShipments($request){
-    	$shipments = Shipment::where('user_id', $request->user_id)->get();
-    	
+    	$today = Carbon::today();
+    	$shipments = Shipment::where([
+    		['user_id', $request->user_id],
+    		['delivery_at',$today],
+    		['status','!=','Selesai']])->get();
+    
     	if( count($shipments) > 0 ){
 	    	$data = array();
 
 	    	$order_quantity = 0;
 	    	$gallon_quantity = 0;
-	    	foreach($shipments as $shipment){
+
+	    	//sort proses shipment then draft shipment
+	    	$shipments_sorted = array();
+	    	foreach ($shipments as $shipment) {
+	    		if($shipment->status=="Draft"){
+	    			array_push($shipments_sorted,$shipment);
+	    		}else if($shipment->status=="Proses"){
+	    			array_unshift($shipments_sorted,$shipment);
+	    		}
+	    	}
+	   
+
+	    	foreach($shipments_sorted as $shipment){
 	    		//calculate amount of orders in a shipment
 	    		$order_quantity = count($shipment->orderCustomers);
-	 			$gallon_quantity = 0; 
+	 			$gallon_quantity = 0;
 	    		foreach ($shipment->orderCustomers as $orderCustomer) {
 	    			//calculate amount of gallons in an order
 	    			$gallon_quantity += $orderCustomer->order->quantity;
@@ -188,6 +209,34 @@ class ServiceController extends Controller
     		return $this->apiResponse(1,'berhasil memuat data order yang telah selesai','berhasil memuat data order yang telah selesai', $data);
     	}
     	return $this->apiResponse(1,'tidak ada order yang selesai pada pengiriman ini');
+    }
+
+    public function getOrderDetail($request){
+
+    	if( !$request->order_id ){
+    		return $this->apiResponse(0,'gagal memuat data detail order','gagal memuat data detail order, order customer id tidak ditemukan');
+    	}    	
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+    		$query->where('user_id', $request->user_id);
+    	})->where('id', $request->order_id)->first();
+    
+    	if( $orderCustomer ){
+	    	$data = array();
+
+	    	// foreach($orderCustomers as $orderCustomer){	    		
+	    	// 	array_push($data,[
+	    	// 		'id' => $orderCustomer->id,
+	    	// 		'customer_name' => $orderCustomer->customer->name,
+	    	// 		'customer_address' => $orderCustomer->customer->address,
+	    	// 		'customer_phone' => $orderCustomer->customer->phone	    	
+	    	// 	]);
+	    	// }
+    	
+    	
+    		return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
+    	}
+    	return $this->apiResponse(0,'gagal memuat rincian order','gagal memuat rincian order');
     }
 
     ///////////change OC status, for testing only////////////
