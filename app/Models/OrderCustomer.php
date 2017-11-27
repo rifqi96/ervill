@@ -236,6 +236,11 @@ class OrderCustomer extends Model
         return $this->order->forceDelete();
     }
 
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
+    }
+
     //test
     public function doUpdateStatus($status){
         $this->status = $status;

@@ -140,6 +140,38 @@ class Shipment extends Model
         return true;
     }
 
+    public function doStartShipment($user_id){
+
+        $today = Carbon::today();
+
+        //get any ongoing shipment
+        $shipment_process = Shipment::where([
+            ['user_id', $user_id],
+            ['delivery_at',$today],
+            ['status','Proses']])->first();
+
+        //fail starting the shipment, because there is ongoing shipment
+        if($shipment_process){
+            return false;
+        }
+
+        $this->status = 'Proses';
+        return $this->save();
+    }
+
+    public function doFinishShipment(){
+
+        //check if there are still any ongoing shipment
+        foreach($this->orderCustomers as $orderCustomer){
+            if($orderCustomer->status == 'Proses'){
+                return false;
+            }
+        }
+
+        $this->status = 'Selesai';
+        return $this->save();
+    }
+
     public function doForceDelete(){
         return $this->forceDelete();
     }
