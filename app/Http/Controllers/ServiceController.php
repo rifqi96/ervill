@@ -54,6 +54,10 @@ class ServiceController extends Controller
 							return $this->finishShipment($request);
 							break;
 
+						case 'drop-gallon':
+							return $this->dropGallon($request);
+							break;
+
 						case 'signout':
 							return $this->logout($request);
 							break;
@@ -161,8 +165,12 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
     	}    	
 
-    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
-    		$query->where('user_id', $request->user_id);
+    	$today = Carbon::today();
+
+    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today]]);
     	})->where([
     		['shipment_id', $request->shipment_id],
     		['status','Proses']])
@@ -192,8 +200,12 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
     	}    	
 
-    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
-    		$query->where('user_id', $request->user_id);
+    	$today = Carbon::today();
+
+    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today]]);
 		})->where([
     		['shipment_id', $request->shipment_id],
     		['status','!=','Proses'],
@@ -225,8 +237,12 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal memuat data detail order','gagal memuat data detail order, order customer id tidak ditemukan');
     	}    	
 
-    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request) {
-    		$query->where('user_id', $request->user_id);
+    	$today = Carbon::today();
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today]]);
     	})->where('id', $request->order_id)->first();
     
     	if( $orderCustomer ){
@@ -325,6 +341,40 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal mengakhiri pengiriman, masih ada order yang belum dikirim','gagal mengakhiri pengiriman, masih ada order yang belum dikirim');
     	}
     	return $this->apiResponse(0,'gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya','gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya');	
+    	
+    }
+
+    public function dropGallon($request){
+
+    	if( !$request->order_id ){
+    		return $this->apiResponse(0,'gagal memproses order','gagal memproses order, order customer id tidak ditemukan');
+    	}    
+
+    	$today = Carbon::today();
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today],
+    			['status','Proses']]);
+    	})->where([
+    		['id', $request->order_id],
+    		['status','Proses']])
+    	->first();
+    
+    	if( $orderCustomer ){
+    		if($orderCustomer->doDropGallon()){	    
+
+    			$data = array([
+		    		'success' => 'true'
+		    	]);
+
+    			return $this->apiResponse(1,'berhasil memproses order','berhasil memproses order', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal memproses order, status order tidak dapat dirubah','gagal memproses order, status order tidak dapat dirubah');
+    	}
+    	return $this->apiResponse(0,'gagal memproses order, order ini tidak bisa diproses','gagal memproses order, order ini tidak bisa diproses');	
     	
     }
 

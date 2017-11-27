@@ -241,6 +241,11 @@ class OrderCustomer extends Model
         return $this->save();
     }
 
+    public function doDropGallon(){
+        $this->status = 'Selesai';
+        return $this->save();
+    }
+
     //test
     public function doUpdateStatus($status){
         $this->status = $status;
