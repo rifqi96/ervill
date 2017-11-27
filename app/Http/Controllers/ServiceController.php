@@ -46,6 +46,14 @@ class ServiceController extends Controller
 							return $this->getOrderDetail($request);
 							break;
 
+						case 'start-shipment':
+							return $this->startShipment($request);
+							break;
+
+						case 'finish-shipment':
+							return $this->finishShipment($request);
+							break;
+
 						case 'signout':
 							return $this->logout($request);
 							break;
@@ -253,6 +261,71 @@ class ServiceController extends Controller
     		return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
     	}
     	return $this->apiResponse(0,'gagal memuat rincian order','gagal memuat rincian order');
+    }
+
+    public function startShipment($request){
+
+    	if( !$request->shipment_id ){
+    		return $this->apiResponse(0,'gagal memulai pengiriman','gagal memulai pengiriman, shipment id tidak ditemukan');
+    	}    	
+
+    	$today = Carbon::today();
+
+		$shipment = Shipment::where([
+    		['id', $request->shipment_id],
+    		['user_id', $request->user_id],
+    		['delivery_at',$today],
+    		['status','Draft']])->first();
+    
+    	if( $shipment ){
+    		if($shipment->doStartShipment($request->user_id)){
+    			foreach($shipment->orderCustomers as $orderCustomer){
+    				if(!$orderCustomer->doStartShipment()){
+    					return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status order customer','terjadi kesalahan, tidak dapat merubah status order customer');
+    				}
+    			}
+
+    			$data = array([
+		    		'success' => 'true'
+		    	]);
+
+    			return $this->apiResponse(1,'berhasil memulai pengiriman','berhasil memulai pengiriman', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal memulai pengiriman, sedang ada pengiriman yang berlangsung','gagal memulai pengiriman, sedang ada pengiriman yang berlangsung');
+    	}
+    	return $this->apiResponse(0,'gagal memulai pengiriman, shipment ini tidak bisa dimulai pengirimannya','gagal memulai pengiriman, shipment ini tidak bisa dimulai pengirimannya');
+    	
+    }
+
+    public function finishShipment($request){
+
+    	if( !$request->shipment_id ){
+    		return $this->apiResponse(0,'gagal mengakhiri pengiriman','gagal mengakhiri pengiriman, shipment id tidak ditemukan');
+    	}    
+
+    	$today = Carbon::today();
+
+		$shipment = Shipment::where([
+    		['id', $request->shipment_id],
+    		['user_id', $request->user_id],
+    		['delivery_at',$today],
+    		['status','Proses']])->first();
+    
+    	if( $shipment ){
+    		if($shipment->doFinishShipment()){	    
+
+    			$data = array([
+			    		'success' => 'true'
+			    	]);
+
+    			return $this->apiResponse(1,'berhasil mengakhiri pengiriman','berhasil mengakhiri pengiriman', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal mengakhiri pengiriman, masih ada order yang belum dikirim','gagal mengakhiri pengiriman, masih ada order yang belum dikirim');
+    	}
+    	return $this->apiResponse(0,'gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya','gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya');	
+    	
     }
 
     ///////////change OC status, for testing only////////////
