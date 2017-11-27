@@ -222,16 +222,32 @@ class ServiceController extends Controller
     	})->where('id', $request->order_id)->first();
     
     	if( $orderCustomer ){
-	    	$data = array();
+	    	$order_issues = array();
 
-	    	// foreach($orderCustomers as $orderCustomer){	    		
-	    	// 	array_push($data,[
-	    	// 		'id' => $orderCustomer->id,
-	    	// 		'customer_name' => $orderCustomer->customer->name,
-	    	// 		'customer_address' => $orderCustomer->customer->address,
-	    	// 		'customer_phone' => $orderCustomer->customer->phone	    	
-	    	// 	]);
-	    	// }
+	    	//set order detail
+	    	$order_detail = array([
+	    		'id' => $orderCustomer->id,
+	    		'customer_name' => $orderCustomer->customer->name,
+	    		'customer_address' => $orderCustomer->customer->address,
+	    		'customer_phone' => $orderCustomer->customer->phone,
+	    		'gallon_qty' => $orderCustomer->order->quantity,
+	    		'empty_gallon_qty' => $orderCustomer->empty_gallon_qty
+	    	]);
+
+	    	//set order issues to an array
+	    	foreach($orderCustomer->order->issues as $issue){
+	    		array_push($order_issues,[
+	    			'id' => $issue->id,
+	    			'description' => $issue->description,
+	    			'type' => $issue->type,
+	    			'quantity' => $issue->quantity
+	    		]);
+	    	}
+
+	    	$data = array([
+	    		'order' => $order_detail,
+	    		'issues' => $order_issues
+	    	]);
     	
     	
     		return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
