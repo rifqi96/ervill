@@ -33,6 +33,53 @@ class Issue extends Model
         
     }
 
+    public function doMakeIssueOrderCustomer($order, $data)
+    {        
+        //check if input field is empty or not
+        if(!$data->type || !$data->description || !$data->quantity){
+            return false;
+        }
+
+        //check if quantity is integer or not
+        if( !filter_var($data->quantity, FILTER_VALIDATE_INT) ){
+            return false;
+        }
+
+        // //check if issue exceeds max quantity in an order
+        // foreach($order->issues as $issue){
+        // }
+        // if(filter_var($data->quantity, FILTER_VALIDATE_INT) > $order->quantity){
+        //     return false;
+        // }
+
+        $this->inventory_id = 2;
+        $this->order_id = $order->id;
+        $this->type = $data->type;    
+        $this->description = $data->description;
+        $this->quantity = $data->quantity;
+
+        //recalculate inventory
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+
+        if($data->type == "Refund Gallon"){
+            $broken_gallon->quantity += $data->quantity;
+            $filled_gallon->quantity -= $data->quantity;
+        }
+        else{
+            $broken_gallon->quantity += $data->quantity;
+            $empty_gallon->quantity -= $data->quantity;
+        }
+
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() ){
+            return false;
+        }
+
+        return $this->save();
+        
+    }
+
     public function doDelete(){
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);

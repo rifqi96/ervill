@@ -158,6 +158,7 @@ class OrderCustomer extends Model
                 }
                 else{
                     $broken_gallon->quantity -= $issue->quantity;
+                    $empty_gallon->quantity += $data->quantity;
                 }
             }
         }
