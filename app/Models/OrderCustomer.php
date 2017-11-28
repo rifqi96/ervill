@@ -159,6 +159,9 @@ class OrderCustomer extends Model
                 else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity -= $issue->quantity;
                     $empty_gallon->quantity += $issue->quantity;
+                }else if($issue->type == "Cancel Transaction"){
+                    $empty_gallon->quantity += $this->empty_gallon_quantity;
+                    $filled_gallon->quantity -= $issue->quantity;
                 }
             }
         }
@@ -207,6 +210,9 @@ class OrderCustomer extends Model
                 else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity += $issue->quantity;
                     $empty_gallon->quantity -= $issue->quantity;
+                }else if($issue->type == "Cancel Transaction"){
+                    $empty_gallon->quantity -= $this->empty_gallon_quantity;
+                    $filled_gallon->quantity += $issue->quantity;
                 }
             }
         }
