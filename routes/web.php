@@ -338,11 +338,12 @@ Route::prefix('issue')->group(function(){
     });
 });
 
-//Route::group(['middleware' => ['cors']], function() {
-//    Route::post('api','ServiceController@api');
-//});
 
+// Route::group(['middleware' => ['cors']], function() {
+//     Route::post('api','ServiceController@api');
+// });
 Route::post('api','ServiceController@api');
+
 
 Route::get('/getUsers', 'UserController@getUsers');
 Route::get('/getOutsourcingWaters', 'OutsourcingController@getOutsourcingWaters');
