@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Models\Inventory;
+use App\Models\Order;
 
 class Issue extends Model
 {
@@ -67,12 +68,17 @@ class Issue extends Model
             $broken_gallon->quantity += $data->quantity;
             $filled_gallon->quantity -= $data->quantity;
         }
-        else{
+        else if($data->type == "Refund Cash" || $data->type == "Kesalahan Customer" ){
             $broken_gallon->quantity += $data->quantity;
             $empty_gallon->quantity -= $data->quantity;
         }
 
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() ){
+        //if the order is finished, change to bermasalah     
+        if($order->orderCustomer->status == 'Selesai'){
+            $order->orderCustomer->status = 'Bermasalah';
+        }
+
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$order->orderCustomer->save() ){
             return false;
         }
 
@@ -81,6 +87,7 @@ class Issue extends Model
     }
 
     public function doDelete(){
+        $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
 
@@ -88,6 +95,13 @@ class Issue extends Model
         if($this->type=="Kesalahan Pabrik Air"){
             $broken_gallon->quantity -= $this->quantity;
             $filled_gallon->quantity += $this->quantity;
+        }else if($this->type == "Refund Gallon"){
+            $broken_gallon->quantity -= $this->quantity;
+            $filled_gallon->quantity += $this->quantity;
+        }
+        else if($this->type == "Refund Cash" || $this->type == "Kesalahan Customer" ){
+            $broken_gallon->quantity -= $this->quantity;
+            $empty_gallon->quantity += $this->quantity;
         }
 
         //check if it is the last issue in the order
@@ -99,10 +113,17 @@ class Issue extends Model
                 if( !$this->order->orderWater->save() ){
                     return false;
                 }             
+            }else if($this->order->orderCustomer){//check if it is orderCustomer
+                if($this->order->orderCustomer->status == 'Bermasalah'){
+                    $this->order->orderCustomer->status = 'Selesai';
+                    if( !$this->order->orderCustomer->save() ){
+                        return false;
+                    }  
+                }
             }            
         }
 
-        if( !$filled_gallon->save() || !$broken_gallon->save() ){
+        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
             return false;
         }
 
