@@ -86,6 +86,35 @@ class Issue extends Model
         
     }
 
+
+    public function doCancelTransaction($order)
+    {        
+     
+        $this->inventory_id = 2;
+        $this->order_id = $order->id;
+        $this->type = 'Cancel Transaction';    
+        $this->description = 'Transaksi Dibatalkan. Silahkan hubungi driver yang bersangkutan';
+        $this->quantity = $order->quantity;
+
+        //recalculate inventory
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+
+        $empty_gallon->quantity -= $order->orderCustomer->empty_gallon_quantity;
+        $filled_gallon->quantity += $order->quantity;
+    
+        //change status to bermasalah
+        $order->orderCustomer->status = 'Bermasalah';
+        
+
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$order->orderCustomer->save() ){
+            return false;
+        }
+
+        return $this->save();
+        
+    }
+
     public function doDelete(){
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
@@ -102,7 +131,19 @@ class Issue extends Model
         else if($this->type == "Refund Cash" || $this->type == "Kesalahan Customer" ){
             $broken_gallon->quantity -= $this->quantity;
             $empty_gallon->quantity += $this->quantity;
+        }else if($this->type == "Cancel Transaction"){
+            $empty_gallon->quantity += $this->order->orderCustomer->empty_gallon_quantity;
+            $filled_gallon->quantity -= $this->quantity;
+
+            //change status to proses
+            $this->order->orderCustomer->status = 'Proses';
+
+            if( !$this->order->orderCustomer->save() ){
+                return false;
+            }
+
         }
+
 
         //check if it is the last issue in the order
         if(count($this->order->issues) == 1){

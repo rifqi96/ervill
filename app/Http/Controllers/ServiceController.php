@@ -67,6 +67,10 @@ class ServiceController extends Controller
 							return $this->removeIssue($request);
 							break;
 
+						case 'Cancel Transaction':
+							return $this->cancelTransaction($request);
+							break;
+
 						case 'signout':
 							return $this->logout($request);
 							break;
@@ -454,6 +458,39 @@ class ServiceController extends Controller
     	}
     	return $this->apiResponse(0,'gagal menghapus masalah, masalah ini tidak bisa diproses','gagal menghapus masalah, masalah ini tidak bisa diproses');	
 
+    }
+
+    public function cancelTransaction($request){
+    	if( !$request->order_id ){
+    		return $this->apiResponse(0,'gagal membatalkan order','gagal membatalkan order, order customer id tidak ditemukan');
+    	}    
+
+    	$today = Carbon::today();
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today],
+    			['status','Proses']]);
+    	})->where([
+    		['id', $request->order_id],
+    		['status','Proses']])
+    	->first();
+    
+    	if( $orderCustomer ){
+    		$issue = new Issue();
+    		if($issue->doCancelTransaction($orderCustomer->order)){	    
+
+    			$data = array(
+		    		'success' => 'true'
+		    	);
+
+    			return $this->apiResponse(1,'berhasil membatalkan order','berhasil membatalkan order', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal membatalkan order, terjadi kesalahan di sistem','gagal membatalkan order, terjadi kesalahan di sistem');
+    	}
+    	return $this->apiResponse(0,'gagal membatalkan order, order ini tidak bisa diproses','gagal membatalkan order, order ini tidak bisa diproses');	
     }
 
     ///////////change OC status, for testing only////////////
