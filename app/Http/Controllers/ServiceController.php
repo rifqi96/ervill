@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class ServiceController extends Controller
 {
-	public function api(Request $request){
+    public function api(Request $request){
 		if($request->keyword){
 			switch($request->keyword){
 				case 'login':
