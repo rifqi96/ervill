@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Models\Inventory;
+use App\Models\Order;
 
 class Issue extends Model
 {
@@ -33,7 +34,60 @@ class Issue extends Model
         
     }
 
+    public function doMakeIssueOrderCustomer($order, $data)
+    {        
+        //check if input field is empty or not
+        if(!$data->type || !$data->description || !$data->quantity){
+            return false;
+        }
+
+        //check if quantity is integer or not
+        if( !filter_var($data->quantity, FILTER_VALIDATE_INT) ){
+            return false;
+        }
+
+        // //check if issue exceeds max quantity in an order
+        // foreach($order->issues as $issue){
+        // }
+        // if(filter_var($data->quantity, FILTER_VALIDATE_INT) > $order->quantity){
+        //     return false;
+        // }
+
+        $this->inventory_id = 2;
+        $this->order_id = $order->id;
+        $this->type = $data->type;    
+        $this->description = $data->description;
+        $this->quantity = $data->quantity;
+
+        //recalculate inventory
+        $empty_gallon = Inventory::find(1);
+        $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
+
+        if($data->type == "Refund Gallon"){
+            $broken_gallon->quantity += $data->quantity;
+            $filled_gallon->quantity -= $data->quantity;
+        }
+        else if($data->type == "Refund Cash" || $data->type == "Kesalahan Customer" ){
+            $broken_gallon->quantity += $data->quantity;
+            $empty_gallon->quantity -= $data->quantity;
+        }
+
+        //if the order is finished, change to bermasalah     
+        if($order->orderCustomer->status == 'Selesai'){
+            $order->orderCustomer->status = 'Bermasalah';
+        }
+
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$order->orderCustomer->save() ){
+            return false;
+        }
+
+        return $this->save();
+        
+    }
+
     public function doDelete(){
+        $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
 
@@ -41,6 +95,13 @@ class Issue extends Model
         if($this->type=="Kesalahan Pabrik Air"){
             $broken_gallon->quantity -= $this->quantity;
             $filled_gallon->quantity += $this->quantity;
+        }else if($this->type == "Refund Gallon"){
+            $broken_gallon->quantity -= $this->quantity;
+            $filled_gallon->quantity += $this->quantity;
+        }
+        else if($this->type == "Refund Cash" || $this->type == "Kesalahan Customer" ){
+            $broken_gallon->quantity -= $this->quantity;
+            $empty_gallon->quantity += $this->quantity;
         }
 
         //check if it is the last issue in the order
@@ -52,10 +113,17 @@ class Issue extends Model
                 if( !$this->order->orderWater->save() ){
                     return false;
                 }             
+            }else if($this->order->orderCustomer){//check if it is orderCustomer
+                if($this->order->orderCustomer->status == 'Bermasalah'){
+                    $this->order->orderCustomer->status = 'Selesai';
+                    if( !$this->order->orderCustomer->save() ){
+                        return false;
+                    }  
+                }
             }            
         }
 
-        if( !$filled_gallon->save() || !$broken_gallon->save() ){
+        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
             return false;
         }
 

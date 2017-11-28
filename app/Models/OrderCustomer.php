@@ -156,8 +156,9 @@ class OrderCustomer extends Model
                     $broken_gallon->quantity -= $issue->quantity;
                     $filled_gallon->quantity += $issue->quantity;
                 }
-                else{
+                else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity -= $issue->quantity;
+                    $empty_gallon->quantity += $issue->quantity;
                 }
             }
         }
@@ -203,8 +204,9 @@ class OrderCustomer extends Model
                     $broken_gallon->quantity += $issue->quantity;
                     $filled_gallon->quantity -= $issue->quantity;
                 }
-                else{
+                else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity += $issue->quantity;
+                    $empty_gallon->quantity -= $issue->quantity;
                 }
             }
         }
@@ -242,7 +244,12 @@ class OrderCustomer extends Model
     }
 
     public function doDropGallon(){
-        $this->status = 'Selesai';
+
+        if( count($this->order->issues) > 0 ){
+            $this->status = 'Bermasalah';
+        }else{
+            $this->status = 'Selesai';
+        }        
         return $this->save();
     }
 

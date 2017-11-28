@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\OrderCustomer;
 use App\Models\Shipment;
 use Carbon\Carbon;
+use App\Models\Issue;
 
 class ServiceController extends Controller
 {
@@ -56,6 +57,14 @@ class ServiceController extends Controller
 
 						case 'drop-gallon':
 							return $this->dropGallon($request);
+							break;
+
+						case 'add-issue':
+							return $this->addIssue($request);
+							break;
+
+						case 'remove-issue':
+							return $this->removeIssue($request);
 							break;
 
 						case 'signout':
@@ -255,7 +264,7 @@ class ServiceController extends Controller
 	    		'customer_address' => $orderCustomer->customer->address,
 	    		'customer_phone' => $orderCustomer->customer->phone,
 	    		'gallon_qty' => $orderCustomer->order->quantity,
-	    		'empty_gallon_qty' => $orderCustomer->empty_gallon_qty,
+	    		'empty_gallon_qty' => $orderCustomer->empty_gallon_quantity,
 	    		'status' => $orderCustomer->status
 	    	);
 
@@ -379,6 +388,72 @@ class ServiceController extends Controller
     	}
     	return $this->apiResponse(0,'gagal memproses order, order ini tidak bisa diproses','gagal memproses order, order ini tidak bisa diproses');	
     	
+    }
+
+    public function addIssue($request){
+    	if( !$request->order_id ){
+    		return $this->apiResponse(0,'gagal menambahkan masalah','gagal menambahkan masalah, order customer id tidak ditemukan');
+    	}   
+
+    	$today = Carbon::today();
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today],
+    			['status','Proses']]);
+    	})->where('id', $request->order_id)
+    	->first();    	
+
+
+    	if( $orderCustomer ){
+    		$issue = new Issue();
+    		if($issue->doMakeIssueOrderCustomer($orderCustomer->order, $request)){	   
+
+    			$data = array(
+		    		'success' => 'true'
+		    	);
+
+    			return $this->apiResponse(1,'berhasil menambahkan masalah','berhasil menambahkan masalah', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal menambahkan masalah, terjadi kesalahan di sistem','gagal menambahkan masalah, terjadi kesalahan di sistem');
+    	}
+    	return $this->apiResponse(0,'gagal menambahkan masalah, order ini tidak bisa diproses','gagal menambahkan masalah, order ini tidak bisa diproses');	
+
+    }
+
+    public function removeIssue($request){
+    	if( !$request->issue_id ){
+    		return $this->apiResponse(0,'gagal menghapus masalah','gagal menghapus masalah, issue id tidak ditemukan');
+    	}   
+
+    	$today = Carbon::today();
+
+    	$issue = Issue::whereHas('order.orderCustomer.shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today],
+    			['status','Proses']]);
+    	})->where('id', $request->issue_id)
+    	->first();  
+
+    	//$issue = Issue::find($request->issue_id);	
+
+    	if( $issue ){    		
+    		if( $issue->doDelete() ){	    
+
+    			$data = array(
+		    		'success' => 'true'
+		    	);
+
+    			return $this->apiResponse(1,'berhasil menghapus masalah','berhasil menghapus masalah', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal menghapus masalah, terjadi kesalahan di sistem','gagal menghapus masalah, terjadi kesalahan di sistem');
+    	}
+    	return $this->apiResponse(0,'gagal menghapus masalah, masalah ini tidak bisa diproses','gagal menghapus masalah, masalah ini tidak bisa diproses');	
+
     }
 
     ///////////change OC status, for testing only////////////
