@@ -249,14 +249,17 @@ class ServiceController extends Controller
 	    	$order_issues = array();
 
 	    	//set order detail
-	    	$order_detail = array([
+	    	$order_detail = (object) array(
 	    		'id' => $orderCustomer->id,
 	    		'customer_name' => $orderCustomer->customer->name,
 	    		'customer_address' => $orderCustomer->customer->address,
 	    		'customer_phone' => $orderCustomer->customer->phone,
 	    		'gallon_qty' => $orderCustomer->order->quantity,
-	    		'empty_gallon_qty' => $orderCustomer->empty_gallon_qty
-	    	]);
+	    		'empty_gallon_qty' => $orderCustomer->empty_gallon_qty,
+	    		'status' => $orderCustomer->status
+	    	);
+
+
 
 	    	//set order issues to an array
 	    	foreach($orderCustomer->order->issues as $issue){
@@ -268,10 +271,10 @@ class ServiceController extends Controller
 	    		]);
 	    	}
 
-	    	$data = array([
+	    	$data = array(
 	    		'order' => $order_detail,
 	    		'issues' => $order_issues
-	    	]);
+	    	);
     	
     	
     		return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
@@ -301,9 +304,9 @@ class ServiceController extends Controller
     				}
     			}
 
-    			$data = array([
+    			$data = array(
 		    		'success' => 'true'
-		    	]);
+		    	);
 
     			return $this->apiResponse(1,'berhasil memulai pengiriman','berhasil memulai pengiriman', $data);    			
     		}	    	
@@ -331,9 +334,9 @@ class ServiceController extends Controller
     	if( $shipment ){
     		if($shipment->doFinishShipment()){	    
 
-    			$data = array([
-			    		'success' => 'true'
-			    	]);
+    			$data = array(
+		    		'success' => 'true'
+		    	);
 
     			return $this->apiResponse(1,'berhasil mengakhiri pengiriman','berhasil mengakhiri pengiriman', $data);    			
     		}	    	
@@ -365,9 +368,9 @@ class ServiceController extends Controller
     	if( $orderCustomer ){
     		if($orderCustomer->doDropGallon()){	    
 
-    			$data = array([
+    			$data = array(
 		    		'success' => 'true'
-		    	]);
+		    	);
 
     			return $this->apiResponse(1,'berhasil memproses order','berhasil memproses order', $data);    			
     		}	    	
