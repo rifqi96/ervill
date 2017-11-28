@@ -401,8 +401,7 @@ class ServiceController extends Controller
     	})->where([
     		['id', $request->order_id],
     		['status','Proses']])
-    	->first();
-    	
+    	->first();    	
 
 
     	if( $orderCustomer ){

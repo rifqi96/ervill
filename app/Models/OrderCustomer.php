@@ -243,7 +243,12 @@ class OrderCustomer extends Model
     }
 
     public function doDropGallon(){
-        $this->status = 'Selesai';
+
+        if( count($this->order->issues) > 0 ){
+            $this->status = 'Bermasalah';
+        }else{
+            $this->status = 'Selesai';
+        }        
         return $this->save();
     }
 
