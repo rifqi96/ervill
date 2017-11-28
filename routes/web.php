@@ -338,6 +338,7 @@ Route::prefix('issue')->group(function(){
     });
 });
 
+
 // Route::group(['middleware' => ['cors']], function() {
 //     Route::post('api','ServiceController@api');
 // });
