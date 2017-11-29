@@ -89,6 +89,13 @@ class Issue extends Model
 
     public function doCancelTransaction($order)
     {        
+
+        //delete all existing issues in this order
+        foreach($order->issues as $issue){
+            if( !$issue->doDelete() ){
+                return false;
+            }
+        }
      
         $this->inventory_id = 2;
         $this->order_id = $order->id;
