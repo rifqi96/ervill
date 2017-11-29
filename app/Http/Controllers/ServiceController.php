@@ -67,7 +67,7 @@ class ServiceController extends Controller
 							return $this->removeIssue($request);
 							break;
 
-						case 'Cancel Transaction':
+						case 'cancel-transaction':
 							return $this->cancelTransaction($request);
 							break;
 
@@ -213,12 +213,9 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
     	}    	
 
-    	$today = Carbon::today();
 
-    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
-    		$query->where([
-    			['user_id', $request->user_id],
-    			['delivery_at',$today]]);
+    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+    		$query->where('user_id', $request->user_id);
 		})->where([
     		['shipment_id', $request->shipment_id],
     		['status','!=','Proses'],
@@ -250,12 +247,9 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal memuat data detail order','gagal memuat data detail order, order customer id tidak ditemukan');
     	}    	
 
-    	$today = Carbon::today();
 
-    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
-    		$query->where([
-    			['user_id', $request->user_id],
-    			['delivery_at',$today]]);
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+    		$query->where('user_id', $request->user_id);
     	})->where('id', $request->order_id)->first();
     
     	if( $orderCustomer ){

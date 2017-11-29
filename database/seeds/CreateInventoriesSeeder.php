@@ -35,6 +35,13 @@ class CreateInventoriesSeeder extends Seeder
             'price' => 33000
         ));
 
+        array_push($data, array(
+            'id'=>4,
+            'name'=>'Galon Beredar',
+            'quantity' => 0,
+            'price' => 43000
+        ));
+
         foreach($data as $key=>$val){
             Inventory::create($data[$key]);
         }
