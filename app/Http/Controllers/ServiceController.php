@@ -27,9 +27,9 @@ class ServiceController extends Controller
 					}
 
 					switch($request->keyword){
-						case 'test':
-							return $this->test($request);
-							break;
+						// case 'test':
+						// 	return $this->test($request);
+						// 	break;
 
 						case 'today-shipments':
 							return $this->getTodayShipments($request);
@@ -69,6 +69,14 @@ class ServiceController extends Controller
 
 						case 'cancel-transaction':
 							return $this->cancelTransaction($request);
+							break;
+
+						case 'shipments-history':
+							return $this->getFinishedShipments($request);
+							break;
+
+						case 'edit-order':
+							return $this->editOrder($request);
 							break;
 
 						case 'signout':
@@ -167,7 +175,7 @@ class ServiceController extends Controller
 	    	}
     	
     	
-    		return $this->apiResponse(1,'berhasil memuat data shipment','berhasil memuat data shipment', $data);
+    		return $this->apiResponse(1,'berhasil memuat data pengiriman','berhasil memuat data pengiriman', $data);
     	}
     	return $this->apiResponse(1,'tidak ada pengiriman hari ini');
     }
@@ -487,17 +495,102 @@ class ServiceController extends Controller
     	return $this->apiResponse(0,'gagal membatalkan order, order ini tidak bisa diproses','gagal membatalkan order, order ini tidak bisa diproses');	
     }
 
-    ///////////change OC status, for testing only////////////
-    public function test($request){
-    	$orderCustomer = OrderCustomer::first();
+    public function getFinishedShipments($request){
+    	
+    	if($request->date){    		
+    		$shipments = Shipment::where([
+	    		['user_id', $request->user_id],
+	    		['delivery_at',Carbon::parse($request->date)],
+	    		['status','Selesai']])->get();
+    	}else{
+    		$today = Carbon::today();
+    		$shipments = Shipment::where([
+	    		['user_id', $request->user_id],
+	    		['delivery_at',$today],
+	    		['status','Selesai']])->get();
+    	}
+    	
+    
+    	if( count($shipments) > 0 ){
+	    	$data = array();
 
-    	if( $orderCustomer ){
-    		$orderCustomer->doUpdateStatus($request->status);         
+	    	$order_quantity = 0;
+	    	$gallon_quantity = 0;	    	
+	   
 
-            return $this->apiResponse(1,'berhasil mengubah data','');
-        }
-        return $this->apiResponse(0,'gagal mengubah data','gagal mengubah data');
+	    	foreach($shipments as $shipment){
+	    		//calculate amount of orders in a shipment
+	    		$order_quantity = count($shipment->orderCustomers);
+	 			$gallon_quantity = 0;
+	    		foreach ($shipment->orderCustomers as $orderCustomer) {
+	    			//calculate amount of gallons in an order
+	    			$gallon_quantity += $orderCustomer->order->quantity;
+
+	    		}
+	    		array_push($data,[
+	    			'id' => $shipment->id,
+	    			'delivery_at' => $shipment->delivery_at,
+	    			'status' => $shipment->status,
+	    			'order_qty' => $order_quantity,
+	    			'gallon_qty' => $gallon_quantity
+	    		]);
+	    	}
+    	
+    	
+    		return $this->apiResponse(1,'berhasil memuat data pengiriman','berhasil memuat data pengiriman', $data);
+    	}
+    	return $this->apiResponse(1,'tidak ada pengiriman yang selesai hari ini');
     }
+    
+    public function editOrder($request){
+
+    	if( !$request->order_id ){
+    		return $this->apiResponse(0,'gagal merubah data order','gagal merubah data order, order customer id tidak ditemukan');
+    	}    
+
+    	if( !$request->gallon_qty || !$request->empty_gallon_qty || !$request->description){
+    		return $this->apiResponse(0,'gagal merubah data order, data belum lengkap','gagal merubah data order, data belum lengkap'); 
+    	}
+
+    	$today = Carbon::today();
+
+    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    		$query->where([
+    			['user_id', $request->user_id],
+    			['delivery_at',$today],
+    			['status','Proses']]);
+    	})->where([
+    		['id', $request->order_id],
+    		['status','Proses']])
+    	->first();
+    
+    	if( $orderCustomer ){
+    		if($orderCustomer->doEditOrder($request)){	    
+
+    			$data = array(
+		    		'success' => 'true'
+		    	);
+
+    			return $this->apiResponse(1,'berhasil merubah data order','berhasil merubah data order', $data);    			
+    		}	    	
+    	
+    		return $this->apiResponse(0,'gagal merubah data order, terjadi kesalahan di sistem','gagal merubah data order, terjadi kesalahan di sistem');
+    	}
+    	return $this->apiResponse(0,'gagal merubah data order, order ini tidak bisa diproses','gagal merubah data order, order ini tidak bisa diproses');	
+    	
+    }
+
+    ///////////change OC status, for testing only////////////
+    // public function test($request){
+    // 	$orderCustomer = OrderCustomer::first();
+
+    // 	if( $orderCustomer ){
+    // 		$orderCustomer->doUpdateStatus($request->status);         
+
+    //         return $this->apiResponse(1,'berhasil mengubah data','');
+    //     }
+    //     return $this->apiResponse(0,'gagal mengubah data','gagal mengubah data');
+    // }
 
     public function apiResponse($status,$message='',$error='',$data=array()){
     	return json_encode(array(
