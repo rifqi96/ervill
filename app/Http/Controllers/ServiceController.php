@@ -27,9 +27,9 @@ class ServiceController extends Controller
 					}
 
 					switch($request->keyword){
-						case 'test':
-							return $this->test($request);
-							break;
+						// case 'test':
+						// 	return $this->test($request);
+						// 	break;
 
 						case 'today-shipments':
 							return $this->getTodayShipments($request);
@@ -581,16 +581,16 @@ class ServiceController extends Controller
     }
 
     ///////////change OC status, for testing only////////////
-    public function test($request){
-    	$orderCustomer = OrderCustomer::first();
+    // public function test($request){
+    // 	$orderCustomer = OrderCustomer::first();
 
-    	if( $orderCustomer ){
-    		$orderCustomer->doUpdateStatus($request->status);         
+    // 	if( $orderCustomer ){
+    // 		$orderCustomer->doUpdateStatus($request->status);         
 
-            return $this->apiResponse(1,'berhasil mengubah data','');
-        }
-        return $this->apiResponse(0,'gagal mengubah data','gagal mengubah data');
-    }
+    //         return $this->apiResponse(1,'berhasil mengubah data','');
+    //     }
+    //     return $this->apiResponse(0,'gagal mengubah data','gagal mengubah data');
+    // }
 
     public function apiResponse($status,$message='',$error='',$data=array()){
     	return json_encode(array(
