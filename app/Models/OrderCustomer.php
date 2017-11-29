@@ -74,6 +74,7 @@ class OrderCustomer extends Model
     {
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
+        $outgoing_gallon = Inventory::find(4);
 
         $filled_stock = (integer)$filled_gallon->quantity+$this->order->quantity;
 
@@ -84,6 +85,9 @@ class OrderCustomer extends Model
         $empty_gallon->quantity = ($empty_gallon->quantity - $this->empty_gallon_quantity) + $data->empty_gallon_quantity;
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
+        $outgoing_gallon_change = ($data->quantity - $this->order->quantity) - ($data->empty_gallon_quantity - $this->empty_gallon_quantity);
+        $outgoing_gallon->quantity += $outgoing_gallon_change;
+
         $old_data = $this->toArray();
 
         $this->order->quantity = $data->quantity;
@@ -92,7 +96,7 @@ class OrderCustomer extends Model
         $this->status = $data->status;
         $this->customer_id = $data->customer_id;
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
         }
         return ($this->save());
@@ -150,24 +154,28 @@ class OrderCustomer extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(4);
+
         if($this->order->issues){
             foreach($this->order->issues as $issue){
                 if($issue->type == "Refund Gallon"){
                     $broken_gallon->quantity -= $issue->quantity;
                     $filled_gallon->quantity += $issue->quantity;
                 }
-                else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
+                else if($issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity -= $issue->quantity;
                     $empty_gallon->quantity += $issue->quantity;
                 }else if($issue->type == "Cancel Transaction"){
                     $empty_gallon->quantity += $this->empty_gallon_quantity;
                     $filled_gallon->quantity -= $issue->quantity;
+                    $outgoing_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
                 }
             }
         }
 
         $filled_gallon->quantity += $this->order->quantity;
         $empty_gallon->quantity -= $this->empty_gallon_quantity;
+        $outgoing_gallon->quantity -= ($this->order->quantity - $this->empty_gallon_quantity);
 
         if($empty_gallon->quantity<0){
             $empty_gallon->quantity = 0;
@@ -179,7 +187,7 @@ class OrderCustomer extends Model
             $filled_gallon->quantity = 0;
         }
 
-        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
             return false;
         }
         return $this->order->doDelete();
@@ -200,6 +208,7 @@ class OrderCustomer extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(4);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -207,17 +216,19 @@ class OrderCustomer extends Model
                     $broken_gallon->quantity += $issue->quantity;
                     $filled_gallon->quantity -= $issue->quantity;
                 }
-                else if($issue->type == "Refund Cash" || $issue->type == "Kesalahan Customer" ){
+                else if($issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity += $issue->quantity;
                     $empty_gallon->quantity -= $issue->quantity;
                 }else if($issue->type == "Cancel Transaction"){
                     $empty_gallon->quantity -= $this->empty_gallon_quantity;
                     $filled_gallon->quantity += $issue->quantity;
+                    $outgoing_gallon->quantity -= ($issue->quantity - $this->empty_gallon_quantity);
                 }
             }
         }
         $filled_gallon->quantity -= $this->order->quantity;
         $empty_gallon->quantity += $this->empty_gallon_quantity;
+        $outgoing_gallon->quantity += ($this->order->quantity - $this->empty_gallon_quantity);
 
         if($empty_gallon->quantity<0){
             $empty_gallon->quantity = 0;
@@ -229,7 +240,7 @@ class OrderCustomer extends Model
             $filled_gallon->quantity = 0;
         }
 
-        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save()){
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ){
             return false;
         }
 

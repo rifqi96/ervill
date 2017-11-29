@@ -52,13 +52,20 @@ class Order extends Model
             return false;
         }
 
-        if($data->empty_gallon){
+        if($data->empty_gallon){//if customer have gallon
             $empty_gallon = Inventory::find(1);
             $empty_gallon->quantity += $data->quantity;
             if(!$empty_gallon->save()){
                 return false;
             }
+        }else{//if customer doesnt have any gallon
+            $outgoing_gallon = Inventory::find(4);
+            $outgoing_gallon->quantity += $data->quantity;  
+            if(!$outgoing_gallon->save()){
+                return false;
+            }  
         }
+
         $this->save();
 
         return $this;

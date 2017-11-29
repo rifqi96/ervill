@@ -68,7 +68,7 @@ class Issue extends Model
             $broken_gallon->quantity += $data->quantity;
             $filled_gallon->quantity -= $data->quantity;
         }
-        else if($data->type == "Refund Cash" || $data->type == "Kesalahan Customer" ){
+        else if($data->type == "Kesalahan Customer" ){
             $broken_gallon->quantity += $data->quantity;
             $empty_gallon->quantity -= $data->quantity;
         }
@@ -89,6 +89,13 @@ class Issue extends Model
 
     public function doCancelTransaction($order)
     {        
+
+        //delete all existing issues in this order
+        foreach($order->issues as $issue){
+            if( !$issue->doDelete() ){
+                return false;
+            }
+        }
      
         $this->inventory_id = 2;
         $this->order_id = $order->id;
@@ -99,15 +106,17 @@ class Issue extends Model
         //recalculate inventory
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
+        $outgoing_gallon = Inventory::find(4);
 
         $empty_gallon->quantity -= $order->orderCustomer->empty_gallon_quantity;
         $filled_gallon->quantity += $order->quantity;
+        $outgoing_gallon->quantity -= ($order->quantity - $order->orderCustomer->empty_gallon_quantity);
     
         //change status to bermasalah
         $order->orderCustomer->status = 'Bermasalah';
         
 
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$order->orderCustomer->save() ){
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$outgoing_gallon->save() || !$order->orderCustomer->save() ){
             return false;
         }
 
@@ -119,6 +128,7 @@ class Issue extends Model
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
         $broken_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(4);
 
         //recalculate inventory
         if($this->type=="Kesalahan Pabrik Air"){
@@ -128,12 +138,13 @@ class Issue extends Model
             $broken_gallon->quantity -= $this->quantity;
             $filled_gallon->quantity += $this->quantity;
         }
-        else if($this->type == "Refund Cash" || $this->type == "Kesalahan Customer" ){
+        else if($this->type == "Kesalahan Customer" ){
             $broken_gallon->quantity -= $this->quantity;
             $empty_gallon->quantity += $this->quantity;
         }else if($this->type == "Cancel Transaction"){
             $empty_gallon->quantity += $this->order->orderCustomer->empty_gallon_quantity;
             $filled_gallon->quantity -= $this->quantity;
+            $outgoing_gallon->quantity += ($this->quantity - $this->order->orderCustomer->empty_gallon_quantity);
 
             //change status to proses
             $this->order->orderCustomer->status = 'Proses';
@@ -164,7 +175,7 @@ class Issue extends Model
             }            
         }
 
-        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
+        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ){
             return false;
         }
 
