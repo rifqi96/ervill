@@ -50,14 +50,14 @@ Track Pesanan
                         <p class="form-control-static">{{Carbon\Carbon::parse($shipment->delivery_at)->format('d-m-Y')}}</p>
                     </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                     <label class="col-sm-2 form-control-label">Map</label>
                     <div class="col-sm-10">
                         <p class="form-control-static">
                             <img src="https://cdn.elegantthemes.com/blog/wp-content/uploads/2016/09/Divi-Google-Maps.png" width="100%" >
                         </p>                        
                     </div>
-                </div>
+                </div> --}}
                   
                 
             </section><!--.box-typical-->
