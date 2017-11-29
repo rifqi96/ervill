@@ -84,27 +84,7 @@ List Pesanan Air
                           <th>Deskripsi Masalah</th>
                           <th>Jumlah</th>
                           <th>Action</th>
-                      </thead>
-                      <tbody>
-                          <tr>
-                              <td>Tipe 1</td>
-                              <td>Saat angkat galon, galon pecah</td>
-                              <td>1</td>
-                              <td>a</td>
-                          </tr>
-                          <tr>
-                              <td>Tipe 2</td>
-                              <td>Tisu kurang</td>
-                              <td>2</td>
-                              <td>b</td>
-                          </tr>
-                          <tr>
-                              <td>Tipe 3</td>
-                              <td>Segel terbuka</td>
-                              <td>2</td>
-                              <td>c</td>
-                          </tr>
-                      </tbody>
+                      </thead>                      
                   </table>  
 
                   <p>Jumlah Barang yang bermasalah: <span id="issuesTotalQuantity"></span></p>   
@@ -413,7 +393,7 @@ List Pesanan Air
                         //$('#issue-btn').attr('href','/order/water/issue/' + orderWaters[i].id);
                         break;
                     }
-                }console.log(issue_detail);
+                }
 
                 $('#issues').dataTable({               
                     fixedHeader: true,       
