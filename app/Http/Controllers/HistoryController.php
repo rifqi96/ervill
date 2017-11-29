@@ -128,6 +128,12 @@ class HistoryController extends Controller
                 $new_value_arr['Nama Pengemudi'] = $new_value[0];          
                 $new_value_arr['Tgl Pengiriman'] = $new_value[1];
                 $new_value_arr['Status'] = $new_value[2];
+            }else if($edit_history->module_name == "Order Customer by Driver"){   
+                $old_value_arr['Jumlah (Galon)'] = $old_value[0];          
+                $old_value_arr['Jumlah Galon Kosong (Galon)'] = $old_value[1];               
+
+                $new_value_arr['Jumlah (Galon)'] = $new_value[0];          
+                $new_value_arr['Jumlah Galon Kosong (Galon)'] = $new_value[1];            
             }
 
             $edit_history->old_value = $old_value_arr;
