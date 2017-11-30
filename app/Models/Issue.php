@@ -46,6 +46,20 @@ class Issue extends Model
             return false;
         }
 
+        //count kesalahan customer quantity
+        $kc_quantity = 0;
+        foreach ($order->issues as $issue) {
+            if($issue->type=="Kesalahan Customer"){
+                $kc_quantity += $issue->quantity;
+            }
+        }
+
+        $available_empty_gallon_quantity = $order->orderCustomer->empty_gallon_quantity - $kc_quantity;
+
+        if($data->type=="Kesalahan Customer" && $data->quantity > $available_empty_gallon_quantity){
+            return false;
+        }
+
         // //check if issue exceeds max quantity in an order
         // foreach($order->issues as $issue){
         // }
