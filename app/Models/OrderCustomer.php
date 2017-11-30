@@ -82,6 +82,11 @@ class OrderCustomer extends Model
             return false;
         }
 
+        //check if empty_gallon_qty exceeds gallon_qty
+        if($data->empty_gallon_quantity > $data->quantity){
+            return false;
+        }
+
         $empty_gallon->quantity = ($empty_gallon->quantity - $this->empty_gallon_quantity) + $data->empty_gallon_quantity;
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
@@ -273,7 +278,17 @@ class OrderCustomer extends Model
     public function doEditOrder($data)
     {
         //check if quantity is integer or not
-        if( !filter_var($data->gallon_qty, FILTER_VALIDATE_INT) || !filter_var($data->empty_gallon_qty, FILTER_VALIDATE_INT) ){
+        if( filter_var($data->gallon_qty, FILTER_VALIDATE_INT)===false || filter_var($data->empty_gallon_qty, FILTER_VALIDATE_INT)===false ){
+            return false;
+        }
+
+        //check if quantity less than 0 or not
+        if( filter_var($data->gallon_qty, FILTER_VALIDATE_INT)<0 || filter_var($data->empty_gallon_qty, FILTER_VALIDATE_INT)<0 ){
+            return false;
+        }
+
+        //check if empty_gallon_qty exceeds gallon_qty
+        if($data->empty_gallon_qty > $data->gallon_qty){
             return false;
         }
 

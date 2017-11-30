@@ -548,7 +548,7 @@ class ServiceController extends Controller
     		return $this->apiResponse(0,'gagal merubah data order','gagal merubah data order, order customer id tidak ditemukan');
     	}    
 
-    	if( !$request->gallon_qty || !$request->empty_gallon_qty || !$request->description){
+    	if( $request->gallon_qty===null || $request->empty_gallon_qty===null || $request->description===null){
     		return $this->apiResponse(0,'gagal merubah data order, data belum lengkap','gagal merubah data order, data belum lengkap'); 
     	}
 
