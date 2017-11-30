@@ -40,7 +40,7 @@ class OutsourcingController extends SettingController
         if($request->type==1){
             $outsourcingDriver = new OutsourcingDriver();
             if($outsourcingDriver->doMake($request)){
-                return back();
+                return back()->with('success','Berhasil menambahkan outsourcing pengemudi baru');
             }else{
                 return back()
                 ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -49,7 +49,7 @@ class OutsourcingController extends SettingController
         }else if($request->type==2){
             $outsourcingWaters = new OutsourcingWater();
             if($outsourcingWaters->doMake($request)){
-                return back();
+                return back()->with('success','Berhasil menambahkan outsourcing pabrik air baru');
             }else{
                 return back()
                 ->withErrors(['message' => 'There is something wrong, please contact admin']);
