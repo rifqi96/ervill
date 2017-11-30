@@ -103,9 +103,9 @@ class OrderGallon extends Model
         }
 
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
 
         if( !$empty_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
             return false;
@@ -153,9 +153,9 @@ class OrderGallon extends Model
         $this->driver_name = null;
         $this->order->accepted_at = null;
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
 
         if(!$this->order->save() || !$empty_gallon->save() ){
             return false;
@@ -173,9 +173,9 @@ class OrderGallon extends Model
             $empty_gallon->quantity += ($this->order->quantity);
         }
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
 
         if(!$empty_gallon->save()){
             return false;
