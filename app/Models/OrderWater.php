@@ -129,9 +129,9 @@ class OrderWater extends Model
         $this->driver_name = $driver_name;
         $this->order->accepted_at = Carbon::now();
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
             return false;
@@ -159,9 +159,9 @@ class OrderWater extends Model
         $this->driver_name = null;
         $this->order->accepted_at = null;
 
-        if($filled_gallon->quantity<0){
-            $filled_gallon->quantity = 0;
-        }
+        // if($filled_gallon->quantity<0){
+        //     $filled_gallon->quantity = 0;
+        // }
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
             return false;
@@ -203,9 +203,9 @@ class OrderWater extends Model
         $this->driver_name = $data->driver_name;
         $this->order->accepted_at = Carbon::now();
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
 
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save()){
@@ -241,18 +241,18 @@ class OrderWater extends Model
         $filled_gallon->quantity -= $this->order->quantity;
         $empty_gallon->quantity += $this->order->quantity;
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
-        else if($broken_gallon->quantity<0){
-            $broken_gallon->quantity = 0;
-        }
-        else if($filled_gallon->quantity<0){
-            $filled_gallon->quantity = 0;
-        }
-        if($broken_gallon->quantity<0){
-            $broken_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
+        // else if($broken_gallon->quantity<0){
+        //     $broken_gallon->quantity = 0;
+        // }
+        // else if($filled_gallon->quantity<0){
+        //     $filled_gallon->quantity = 0;
+        // }
+        // if($broken_gallon->quantity<0){
+        //     $broken_gallon->quantity = 0;
+        // }
 
         if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
             return false;
@@ -289,15 +289,15 @@ class OrderWater extends Model
             $filled_gallon->quantity += $this->order->quantity;
             $empty_gallon->quantity -= $this->order->quantity;
 
-            if($empty_gallon->quantity<0){
-                $empty_gallon->quantity = 0;
-            }
-            else if($broken_gallon->quantity<0){
-                $broken_gallon->quantity = 0;
-            }
-            else if($filled_gallon->quantity<0){
-                $filled_gallon->quantity = 0;
-            }
+            // if($empty_gallon->quantity<0){
+            //     $empty_gallon->quantity = 0;
+            // }
+            // else if($broken_gallon->quantity<0){
+            //     $broken_gallon->quantity = 0;
+            // }
+            // else if($filled_gallon->quantity<0){
+            //     $filled_gallon->quantity = 0;
+            // }
 
             if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save()){
                 return false;

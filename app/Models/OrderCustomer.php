@@ -183,15 +183,15 @@ class OrderCustomer extends Model
         $empty_gallon->quantity -= $this->empty_gallon_quantity;
         $outgoing_gallon->quantity -= ($this->order->quantity - $this->empty_gallon_quantity);
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
-        else if($broken_gallon->quantity<0){
-            $broken_gallon->quantity = 0;
-        }
-        else if($filled_gallon->quantity<0){
-            $filled_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
+        // else if($broken_gallon->quantity<0){
+        //     $broken_gallon->quantity = 0;
+        // }
+        // else if($filled_gallon->quantity<0){
+        //     $filled_gallon->quantity = 0;
+        // }
 
         if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
             return false;
@@ -236,15 +236,15 @@ class OrderCustomer extends Model
         $empty_gallon->quantity += $this->empty_gallon_quantity;
         $outgoing_gallon->quantity += ($this->order->quantity - $this->empty_gallon_quantity);
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
-        }
-        else if($broken_gallon->quantity<0){
-            $broken_gallon->quantity = 0;
-        }
-        else if($filled_gallon->quantity<0){
-            $filled_gallon->quantity = 0;
-        }
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
+        // else if($broken_gallon->quantity<0){
+        //     $broken_gallon->quantity = 0;
+        // }
+        // else if($filled_gallon->quantity<0){
+        //     $filled_gallon->quantity = 0;
+        // }
 
         if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ){
             return false;
