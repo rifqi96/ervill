@@ -210,12 +210,12 @@ class Issue extends Model
                 $query->with(['orderCustomer' => function($query){
                     $query->with(['customer', 'shipment' =>function($query){
                         $query->with('user');
+                        $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
                     }]);
                 }]);
             }])
-            ->whereDate('created_at', '=', Carbon::today()->toDateString())
             ->whereHas('order', function($query){
-                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
+//                $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
                 $query->has('orderCustomer');
             })
             ->get();
