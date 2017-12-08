@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\OrderCustomer;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
+use App\Models\UserThirdParty;
+use App\Events\ShipmentUpdated as ShipmentUpdated;
 
 class ShipmentController extends Controller
 {
@@ -136,6 +138,18 @@ class ShipmentController extends Controller
             return back()->withErrors(['Mohon maaf, tipe submit salah']);
         }
 
+        event(new ShipmentUpdated($shipment->user));
+        // $third_party = UserThirdParty::where('user_id', $shipment->user->id)->first();
+        // if($third_party) {
+        //     $message = array(
+        //         'notification' => array(
+        //             'body' => $shipment->user->full_name . ', anda mendapatkan pengiriman baru. Silahkan cek menu Pengiriman Hari Ini.',
+        //             'title' => 'Pengiriman Baru Ervill'
+        //         )
+        //     );
+        //     $third_party->send_fcm_notification($message);
+        // }
+
         return back()->with('success', 'Berhasil membuat pengiriman');
     }
 
@@ -153,6 +167,18 @@ class ShipmentController extends Controller
             return back()->withErrors(['Mohon maaf, telah terjadi kesalahan']);
         }
 
+        event(new ShipmentUpdated($shipment->user));
+        // $third_party = UserThirdParty::where('user_id', $shipment->user->id)->first();
+        // if($third_party) {
+        //     $message = array(
+        //         'notification' => array(
+        //             'body' => $shipment->user->full_name . ', anda mendapatkan pengiriman baru. Silahkan cek menu Pengiriman Hari Ini.',
+        //             'title' => 'Pengiriman Baru Ervill'
+        //         )
+        //     );
+        //     $third_party->send_fcm_notification($message);
+        // }
+
         return back()->with('success', 'Data telah berhasil diupdate');
     }
 
@@ -166,6 +192,18 @@ class ShipmentController extends Controller
         if(!$shipment->doDelete($request)){
             return back()->withErrors(['Mohon maaf, telah terjadi kesalahan']);
         }
+
+        event(new ShipmentUpdated($shipment->user));
+        // $third_party = UserThirdParty::where('user_id', $shipment->user->id)->first();
+        // if($third_party) {
+        //     $message = array(
+        //         'notification' => array(
+        //             'body' => $shipment->user->full_name . ', anda mendapatkan pengiriman baru. Silahkan cek menu Pengiriman Hari Ini.',
+        //             'title' => 'Pengiriman Baru Ervill'
+        //         )
+        //     );
+        //     $third_party->send_fcm_notification($message);
+        // }
 
         return back()->with('success', 'Data telah berhasil diupdate');
     }

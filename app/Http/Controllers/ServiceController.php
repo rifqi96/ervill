@@ -10,6 +10,7 @@ use App\Models\OrderCustomer;
 use App\Models\Shipment;
 use Carbon\Carbon;
 use App\Models\Issue;
+use App\Models\UserThirdParty;
 
 class ServiceController extends Controller
 {
@@ -79,6 +80,10 @@ class ServiceController extends Controller
 							return $this->editOrder($request);
 							break;
 
+						case 'add-fcm-token':
+							return $this->addFcmToken($request);
+							break;
+
 						case 'signout':
 							return $this->logout($request);
 							break;
@@ -98,14 +103,17 @@ class ServiceController extends Controller
 
     public function login($request){
     	$user = User::with('role')
-        ->where('username', $request->username)->first();
+		->where('username', $request->username)->first();
+		
+		$third_party = UserThirdParty::where('user_id', $user->id)->first();
 
         //check if username and password is correct
     	if($user && Hash::check($request->password, $user->password)){
             $token = str_random(60);
             $data = array(
                 'token' => $token,
-                'user' => $user->toArray()
+				'user' => $user->toArray(),
+				'fcm_token' => $third_party ? $third_party->fcm_token : null
             );
 
             //set token to random string
@@ -578,7 +586,27 @@ class ServiceController extends Controller
     	}
     	return $this->apiResponse(0,'gagal merubah data order, order ini tidak bisa diproses','gagal merubah data order, order ini tidak bisa diproses');	
     	
-    }
+	}
+	
+	public function addFcmToken($request) {
+		$third_party = UserThirdParty::where('user_id', $request->user_id)->first();
+
+		if(!$third_party){
+			if((new UserThirdParty())->addFcmToken($request->user_id, $request->fcm_token)){
+				return $this->apiResponse(1,'Berhasil','Berhasil menambahkan fcm token', array( 'success' => true ));
+			}
+			return $this->apiResponse(0,'Gagal','Gagal menambahkan fcm token');
+		}
+		else if($third_party->fcm_token != $request->fcm_token){
+			if($third_party->updateFcmToken($request->fcm_token)) {
+				return $this->apiResponse(1,'Berhasil','Berhasil mengupdate fcm token', array( 'success' => true ));
+			}
+			return $this->apiResponse(0,'Gagal','Gagal menambahkan fcm token');
+		}
+		else{
+			return $this->apiResponse(0,'Gagal','Gagal menambahkan fcm token');
+		}
+	}
 
     ///////////change OC status, for testing only////////////
     // public function test($request){
