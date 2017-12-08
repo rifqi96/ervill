@@ -89,10 +89,6 @@ class User extends Authenticatable
         return $this->forceDelete();
     }
 
-    public function doUpdateApiToken($token){
-        $this->ervill_token = $token;
-        return $this->save();
-    }
 
     public function role()
     {

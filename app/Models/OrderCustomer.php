@@ -171,10 +171,6 @@ class OrderCustomer extends Model
                 else if($issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity -= $issue->quantity;
                     $empty_gallon->quantity += $issue->quantity;
-                }else if($issue->type == "Cancel Transaction"){
-                    $empty_gallon->quantity += $this->empty_gallon_quantity;
-                    $filled_gallon->quantity -= $issue->quantity;
-                    $outgoing_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
                 }
             }
         }
@@ -225,10 +221,6 @@ class OrderCustomer extends Model
                 else if($issue->type == "Kesalahan Customer" ){
                     $broken_gallon->quantity += $issue->quantity;
                     $empty_gallon->quantity -= $issue->quantity;
-                }else if($issue->type == "Cancel Transaction"){
-                    $empty_gallon->quantity -= $this->empty_gallon_quantity;
-                    $filled_gallon->quantity += $issue->quantity;
-                    $outgoing_gallon->quantity -= ($issue->quantity - $this->empty_gallon_quantity);
                 }
             }
         }
@@ -261,111 +253,4 @@ class OrderCustomer extends Model
         return $this->order->forceDelete();
     }
 
-    public function doStartShipment(){
-        $this->status = 'Proses';
-        return $this->save();
-    }
-
-    public function doDropGallon(){
-
-        if( count($this->order->issues) > 0 ){
-            $this->status = 'Bermasalah';
-        }else{
-            $this->status = 'Selesai';
-        }        
-        return $this->save();
-    }
-
-    public function doEditOrder($data)
-    {
-        //check if quantity is integer or not
-        if( filter_var($data->gallon_qty, FILTER_VALIDATE_INT)===false || filter_var($data->empty_gallon_qty, FILTER_VALIDATE_INT)===false ){
-            return false;
-        }
-
-        //check if quantity less than 0 or not
-        if( filter_var($data->gallon_qty, FILTER_VALIDATE_INT)<0 || filter_var($data->empty_gallon_qty, FILTER_VALIDATE_INT)<0 ){
-            return false;
-        }
-
-        //check if empty_gallon_qty exceeds gallon_qty
-        if($data->empty_gallon_qty > $data->gallon_qty){
-            return false;
-        }
-
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $outgoing_gallon = Inventory::find(4);
-
-        $filled_stock = (integer)$filled_gallon->quantity+$this->order->quantity;
-
-        if($filled_stock < $data->gallon_qty){
-            return false;
-        }
-
-        $empty_gallon->quantity = ($empty_gallon->quantity - $this->empty_gallon_quantity) + $data->empty_gallon_qty;
-        $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->gallon_qty;
-
-        $outgoing_gallon_change = ($data->gallon_qty - $this->order->quantity) - ($data->empty_gallon_qty - $this->empty_gallon_quantity);
-        $outgoing_gallon->quantity += $outgoing_gallon_change;
-
-        $old_data = $this->toArray();
-
-        $this->order->quantity = $data->gallon_qty;
-        $this->empty_gallon_quantity = $data->empty_gallon_qty;
-
-
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$this->doAddToEditHistoryApi($old_data, $data, $this->id)){
-            return false;
-        }
-        return ($this->save());
-    }
-
-    public function doAddToEditHistoryApi($old_data, $data, $order_customer_id){
-        //set old values
-
-        $old_data['quantity'] = $old_data['order']['quantity'];
-
-        unset($old_data['id']);
-        unset($old_data['shipment_id']);
-        unset($old_data['customer_id']);
-        unset($old_data['order_id']);
-        unset($old_data['order']);
-        unset($old_data['customer']);
-
-        $old_value = '';
-        $old_value .= $old_data['quantity'] . ';';
-        $old_value .= $old_data['empty_gallon_quantity'];
-      
-
-        //set new values
-        $new_value_obj = $data->toArray();
-
-        unset($new_value_obj['id']);
-        unset($new_value_obj['customer-table_length']);
-        unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
-
-        $new_value = '';
-        $new_value .= $new_value_obj['gallon_qty'] . ';';
-        $new_value .= $new_value_obj['empty_gallon_qty'];
-       
-
-        $edit_data = array(
-            'module_name' => 'Order Customer by Driver',
-            'data_id' => $order_customer_id,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-            'description' => $data->description,
-            'user_id' => $data->user_id
-        );
-
-        return EditHistory::create($edit_data);
-    }
-
-    //test
-    public function doUpdateStatus($status){
-        $this->status = $status;
-        return $this->save();
-    }
 }

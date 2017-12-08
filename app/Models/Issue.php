@@ -34,109 +34,7 @@ class Issue extends Model
         
     }
 
-    public function doMakeIssueOrderCustomer($order, $data)
-    {        
-        //check if input field is empty or not
-        if(!$data->type || !$data->description || !$data->quantity){
-            return false;
-        }
 
-        //check if quantity is integer or not
-        if( !filter_var($data->quantity, FILTER_VALIDATE_INT) ){
-            return false;
-        }
-
-        //count kesalahan customer quantity
-        $kc_quantity = 0;
-        foreach ($order->issues as $issue) {
-            if($issue->type=="Kesalahan Customer"){
-                $kc_quantity += $issue->quantity;
-            }
-        }
-
-        $available_empty_gallon_quantity = $order->orderCustomer->empty_gallon_quantity - $kc_quantity;
-
-        if($data->type=="Kesalahan Customer" && $data->quantity > $available_empty_gallon_quantity){
-            return false;
-        }
-
-        // //check if issue exceeds max quantity in an order
-        // foreach($order->issues as $issue){
-        // }
-        // if(filter_var($data->quantity, FILTER_VALIDATE_INT) > $order->quantity){
-        //     return false;
-        // }
-
-        $this->inventory_id = 2;
-        $this->order_id = $order->id;
-        $this->type = $data->type;    
-        $this->description = $data->description;
-        $this->quantity = $data->quantity;
-
-        //recalculate inventory
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-
-        if($data->type == "Refund Gallon"){
-            $broken_gallon->quantity += $data->quantity;
-            $filled_gallon->quantity -= $data->quantity;
-        }
-        else if($data->type == "Kesalahan Customer" ){
-            $broken_gallon->quantity += $data->quantity;
-            $empty_gallon->quantity -= $data->quantity;
-        }
-
-        //if the order is finished, change to bermasalah     
-        if($order->orderCustomer->status == 'Selesai'){
-            $order->orderCustomer->status = 'Bermasalah';
-        }
-
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$order->orderCustomer->save() ){
-            return false;
-        }
-
-        return $this->save();
-        
-    }
-
-
-    public function doCancelTransaction($order)
-    {        
-
-        //delete all existing issues in this order
-        foreach($order->issues as $issue){
-            if( !$issue->doDelete() ){
-                return false;
-            }
-        }
-     
-        $this->inventory_id = 2;
-        $this->order_id = $order->id;
-        $this->type = 'Cancel Transaction';    
-        $this->description = 'Transaksi Dibatalkan. Silahkan hubungi driver yang bersangkutan';
-        $this->quantity = $order->quantity;
-
-        //recalculate inventory
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $outgoing_gallon = Inventory::find(4);
-
-        $empty_gallon->quantity -= $order->orderCustomer->empty_gallon_quantity;
-        $filled_gallon->quantity += $order->quantity;
-        $outgoing_gallon->quantity -= ($order->quantity - $order->orderCustomer->empty_gallon_quantity);
-    
-        //change status to bermasalah
-        $order->orderCustomer->status = 'Bermasalah';
-        
-
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$outgoing_gallon->save() || !$order->orderCustomer->save() ){
-            return false;
-        }
-
-        return $this->save();
-        
-    }
 
     public function doDelete(){
         $empty_gallon = Inventory::find(1);
@@ -155,18 +53,6 @@ class Issue extends Model
         else if($this->type == "Kesalahan Customer" ){
             $broken_gallon->quantity -= $this->quantity;
             $empty_gallon->quantity += $this->quantity;
-        }else if($this->type == "Cancel Transaction"){
-            $empty_gallon->quantity += $this->order->orderCustomer->empty_gallon_quantity;
-            $filled_gallon->quantity -= $this->quantity;
-            $outgoing_gallon->quantity += ($this->quantity - $this->order->orderCustomer->empty_gallon_quantity);
-
-            //change status to proses
-            $this->order->orderCustomer->status = 'Proses';
-
-            if( !$this->order->orderCustomer->save() ){
-                return false;
-            }
-
         }
 
 
