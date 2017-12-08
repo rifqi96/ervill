@@ -114,5 +114,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\EditHistory');
     }
+    public function userThirdParty() {
+        return $this->hasOne('App\Models\UserThirdParty');
+    }
 
 }
