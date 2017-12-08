@@ -15,7 +15,15 @@ class CreateShipmentsTable extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->string('track_data')->nullable();
+            $table->datetime('delivery_at')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -26,6 +34,9 @@ class CreateShipmentsTable extends Migration
      */
     public function down()
     {
+        Schema::table('shipments', function (Blueprint $table) {
+            $table->dropForeign('shipments_user_id_foreign');
+        });
         Schema::dropIfExists('shipments');
     }
 }

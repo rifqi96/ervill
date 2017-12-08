@@ -1,0 +1,22 @@
+{
+  "name": "Ervill",
+  "authors": [
+    "Rifqi <rifqi96@yahoo.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "^2.19.1",
+    "popper.js": "^1.12.6",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"
+  }
+}
