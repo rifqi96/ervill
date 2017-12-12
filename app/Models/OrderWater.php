@@ -144,10 +144,24 @@ class OrderWater extends Model
 
         $empty_gallon = Inventory::find(1);
         $filled_gallon = Inventory::find(2);
+        $broken_gallon = Inventory::find(3);
 
         //for handling the weird ajax error
         if($this->status =='proses'){
             return false;
+        }
+
+        //recalculate inventory from issues
+        if($this->order->issues){
+            foreach($this->order->issues as $issue){
+                if($issue->type == "Kesalahan Pabrik Air"){
+                    $broken_gallon->quantity -= $issue->quantity;
+                    $filled_gallon->quantity += $issue->quantity;
+                }
+
+                //delete issue
+                $issue->delete();
+            }
         }
 
         //recalculate inventory
@@ -163,7 +177,7 @@ class OrderWater extends Model
         //     $filled_gallon->quantity = 0;
         // }
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
             return false;
         }
 
