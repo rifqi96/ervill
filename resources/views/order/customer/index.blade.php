@@ -99,11 +99,15 @@ List Pesanan Customer
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
                         <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group remove-shipment">
+                        <label for="remove-shipment"><strong>Hapus dari pengiriman</strong></label>
+                        <input type="checkbox" class="form-control" name="remove_shipment" id="remove-shipment">
+                    </div>
+                    <!-- <div class="form-group">
                         <label for="status"><strong>Status</strong></label>
                         <select name="status" id="edit-status" class="form-control">
                             <option value="Draft">Draft</option>
@@ -111,7 +115,7 @@ List Pesanan Customer
                             <option value="Bermasalah">Bermasalah</option>
                             <option value="Selesai">Selesai</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
@@ -341,8 +345,18 @@ List Pesanan Customer
                         $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                         $('#edit-qty').val(order_data.order.quantity);
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                        $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-M-D'));
-                        $('#edit-status').val(order_data.status);
+                        if(order_data.shipment_id){
+                            $('.edit-delivery-at').hide();
+                            $('.remove-shipment').show();
+                            $('#remove-shipment').attr('checked', false);
+                        }
+                        else{
+                            $('.edit-delivery-at').show();
+                            $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
+
+                            $('.remove-shipment').hide();
+                        }
+                        // $('#edit-status').val(order_data.status);
 
                         $('#customer-table').DataTable().destroy();
                         $('#customer-table').dataTable({

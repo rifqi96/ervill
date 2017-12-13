@@ -130,9 +130,8 @@ class OrderCustomerController extends OrderController
             'customer_id' => 'required|integer|exists:customers,id',
             'quantity' => 'required|integer|min:1',
             'empty_gallon_quantity' => 'required|integer|min:0',
-            'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
+            // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
-
         ]);
 
         $order_customer = OrderCustomer::with(['customer', 'order'])->find($request->id);
