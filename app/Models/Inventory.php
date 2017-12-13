@@ -27,19 +27,19 @@ class Inventory extends Model
         return $this->save();
     }
 
-    public function add($quantity)
-    {    	
-        $this->quantity += $quantity;
+    // public function add($quantity)
+    // {    	
+    //     $this->quantity += $quantity;
         
-        return $this->save();
-    }
+    //     return $this->save();
+    // }
 
-    public function subtract($quantity)
-    {    	
-        $this->quantity -= $quantity;
+    // public function subtract($quantity)
+    // {    	
+    //     $this->quantity -= $quantity;
         
-        return $this->save();
-    }
+    //     return $this->save();
+    // }
 
     public function orders()
     {
