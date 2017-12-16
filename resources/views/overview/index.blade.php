@@ -53,7 +53,7 @@ Overview
                 <th>Galon Ditukar</th>
                 <th align="center">Waktu</th>
                 <th>Admin</th>
-                <th>Action</th>
+                <!-- <th>Action</th> -->
                 </thead>
             </table>
         </div>
@@ -182,24 +182,24 @@ Overview
                         }
                         return '-';
                     }},
-                    {data: null,
-                        render: function(data, type, row, meta){
-                            var result = "";
-                            if(data.status != "Draft"){
-                                if(data.shipment){
-                                    var shipment_url = "{{route("shipment.track", ":id")}}";
-                                    shipment_url = shipment_url.replace(':id', data.shipment.id);
-                                    if(data.status == "Proses"){
-                                        result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
-                                    }
-                                    else if(data.status == "Bermasalah" || data.status == "Selesai"){
-                                        result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
-                                    }
-                                }
-                            }
+                    // {data: null,
+                    //     render: function(data, type, row, meta){
+                    //         var result = "";
+                    //         if(data.status != "Draft"){
+                    //             if(data.shipment){
+                    //                 var shipment_url = "{{route("shipment.track", ":id")}}";
+                    //                 shipment_url = shipment_url.replace(':id', data.shipment.id);
+                    //                 if(data.status == "Proses"){
+                    //                     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
+                    //                 }
+                    //                 else if(data.status == "Bermasalah" || data.status == "Selesai"){
+                    //                     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
+                    //                 }
+                    //             }
+                    //         }
 
-                            return result;
-                        }}
+                    //         return result;
+                    //     }}
                 ]
             });
 

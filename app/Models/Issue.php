@@ -101,8 +101,10 @@ class Issue extends Model
                 }]);
             }])
             ->whereHas('order', function($query){
-//                $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
-                $query->has('orderCustomer');
+                // $query->has('orderCustomer');
+                $query->whereHas('orderCustomer', function($query){
+                    $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
+                });
             })
             ->get();
     }
