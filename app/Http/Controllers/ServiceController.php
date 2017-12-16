@@ -104,11 +104,10 @@ class ServiceController extends Controller
     public function login($request){
     	$user = User::with('role')
 		->where('username', $request->username)->first();
-		
-		$third_party = UserThirdParty::where('user_id', $user->id)->first();
 
         //check if username and password is correct
     	if($user && Hash::check($request->password, $user->password)){
+			$third_party = UserThirdParty::where('user_id', $user->id)->first();
             $token = str_random(60);
             $data = array(
                 'token' => $token,
