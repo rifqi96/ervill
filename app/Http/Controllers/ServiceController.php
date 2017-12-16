@@ -166,19 +166,21 @@ class ServiceController extends Controller
 	    	foreach($shipments_sorted as $shipment){
 	    		//calculate amount of orders in a shipment
 	    		$order_quantity = count($shipment->orderCustomers);
-	 			$gallon_quantity = 0;
-	    		foreach ($shipment->orderCustomers as $orderCustomer) {
-	    			//calculate amount of gallons in an order
-	    			$gallon_quantity += $orderCustomer->order->quantity;
+				$gallon_quantity = 0;
 
-	    		}
-	    		array_push($data,[
-	    			'id' => $shipment->id,
-	    			'delivery_at' => $shipment->delivery_at,
-	    			'status' => $shipment->status,
-	    			'order_qty' => $order_quantity,
-	    			'gallon_qty' => $gallon_quantity
-	    		]);
+				if($shipment->orderCustomers){
+					foreach ($shipment->orderCustomers as $orderCustomer) {
+						//calculate amount of gallons in an order
+						$gallon_quantity += $orderCustomer->order->quantity;
+					}
+					array_push($data,[
+						'id' => $shipment->id,
+						'delivery_at' => $shipment->delivery_at,
+						'status' => $shipment->status,
+						'order_qty' => $order_quantity,
+						'gallon_qty' => $gallon_quantity
+					]);
+				}
 	    	}
     	
     	
