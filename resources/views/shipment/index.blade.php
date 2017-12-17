@@ -262,7 +262,7 @@ Pengiriman
                     dataType:'json',
                     success:function (result) {
                         $('#driver-id').val(result.user.id);
-                        $('#delivery-at').val(moment(result.delivery_at).format('YYYY-M-D'));
+                        $('#delivery-at').val(moment(result.delivery_at).format('YYYY-MM-DD'));
                         $('.shipment-id').val($elem.data('index'));
                         $('#status').val(result.status);
                     }

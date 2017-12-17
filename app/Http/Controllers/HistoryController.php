@@ -111,15 +111,26 @@ class HistoryController extends Controller
             }else if($edit_history->module_name == "Order Customer"){   
                 $old_value_arr['Jumlah (Galon)'] = $old_value[0];          
                 $old_value_arr['Jumlah Galon Kosong (Galon)'] = $old_value[1];
-                $old_value_arr['Tgl Pengiriman'] = $old_value[2];
-                $old_value_arr['Nama Customer'] = $old_value[3];
-                $old_value_arr['Status'] = $old_value[4];
+                if(array_key_exists(3, $old_value)){
+                    $old_value_arr['Tgl Pengiriman'] = $old_value[2];
+                    $old_value_arr['Nama Customer'] = $old_value[3];
+                }
+                else{
+                    $old_value_arr['Nama Customer'] = $old_value[2];
+                }
+                // $old_value_arr['Status'] = $old_value[4];
 
                 $new_value_arr['Jumlah (Galon)'] = $new_value[0];          
                 $new_value_arr['Jumlah Galon Kosong (Galon)'] = $new_value[1];
-                $new_value_arr['Tgl Pengiriman'] = $new_value[2];
-                $new_value_arr['Nama Customer'] = $new_value[3];
-                $new_value_arr['Status'] = $new_value[4];
+                if(array_key_exists(3, $new_value)){
+                    $new_value_arr['Tgl Pengiriman'] = $new_value[2];
+                    $new_value_arr['Nama Customer'] = $new_value[3];
+                }
+                else{
+                    $new_value_arr['Nama Customer'] = $new_value[2];
+                }
+                
+                // $new_value_arr['Status'] = $new_value[4];
             }else if($edit_history->module_name == "Shipment"){   
                 $old_value_arr['Nama Pengemudi'] = $old_value[0];          
                 $old_value_arr['Tgl Pengiriman'] = $old_value[1];

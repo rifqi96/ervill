@@ -98,8 +98,13 @@ class OrderCustomer extends Model
 
         $this->order->quantity = $data->quantity;
         $this->empty_gallon_quantity = $data->empty_gallon_quantity;
-        $this->delivery_at = $data->delivery_at;
-        $this->status = $data->status;
+        if(!$this->shipment_id){
+            $this->delivery_at = $data->delivery_at;
+        }
+        else if($data->remove_shipment){
+            $this->shipment_id = null;
+        }
+        // $this->status = $data->status;
         $this->customer_id = $data->customer_id;
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
@@ -115,6 +120,11 @@ class OrderCustomer extends Model
         $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
 
+        $isShipped = false;
+        if($old_data['shipment_id']){
+            $isShipped = true;
+        }
+
         unset($old_data['id']);
         unset($old_data['shipment_id']);
         unset($old_data['customer_id']);
@@ -125,9 +135,13 @@ class OrderCustomer extends Model
         $old_value = '';
         $old_value .= $old_data['quantity'] . ';';
         $old_value .= $old_data['empty_gallon_quantity']. ';';
-        $old_value .= $old_data['delivery_at']. ';';
-        $old_value .= $old_data['customer_name']. ';';
-        $old_value .= $old_data['status'];
+        if($isShipped){
+            $old_value .= $old_data['customer_name'];
+        }
+        else{
+            $old_value .= $old_data['delivery_at']. ';';
+            $old_value .= $old_data['customer_name'];
+        }
 
         //set new values
         $new_value_obj = $data->toArray();
@@ -140,9 +154,13 @@ class OrderCustomer extends Model
         $new_value = '';
         $new_value .= $new_value_obj['quantity'] . ';';
         $new_value .= $new_value_obj['empty_gallon_quantity']. ';';
-        $new_value .= $new_value_obj['delivery_at']. ';';
-        $new_value .= $new_value_obj['customer_name']. ';';
-        $new_value .= $new_value_obj['status'];
+        if($isShipped){
+            $new_value .= $new_value_obj['customer_name'];
+        }
+        else{
+            $new_value .= $new_value_obj['delivery_at']. ';';
+            $new_value .= $new_value_obj['customer_name'];
+        }
 
         $edit_data = array(
             'module_name' => 'Order Customer',
