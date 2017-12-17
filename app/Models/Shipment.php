@@ -55,14 +55,18 @@ class Shipment extends Model
         $this->status = 'Draft';
 
         if($data->order_ids){
-            if(!$this->save()){
+            if(!$this->save() || !$this->doAddOrderToShipment($data)){
                 return false;
             }
 
-            return $this->doAddOrderToShipment($data);
+            return $this;
         }
 
-        return $this->save();
+        if(!$this->save()){
+            return false;
+        }
+
+        return $this;
     }
 
     public function doAddOrderToShipment($data){
