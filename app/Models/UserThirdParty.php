@@ -19,17 +19,16 @@ class UserThirdParty extends Model
     }
 
     public function send_fcm_notification($msg) {
-        $APIKEY = "AIzaSyCXWFd--vx5D8x-IkgX6u8ji7ximzYc-wc";
+        $APIKEY = "AAAA_O6I6XM:APA91bGySAqR_UWRhDkIpA1hqXim7qeiTG8IxE9vi0Q2xrHVxZttZirI7speBUrmOZac6X9xXRyvb0uL9vlZoCEZoZ8o_20-VK9fAQzM3vstwsKimsK18B8UvD1JIm2yliplZYmLozBx";
 
         $headers = array(
-            'Authorization: key='.$APIKEY,
-            'Content-Type: application/json'
+            'Content-Type: application/json',
+            'Authorization: key='.$APIKEY
         );
 
-        $i = 0;
         $msg['token'] = $this->fcm_token;
         $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/ervill-2017/messages:send' );
+        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
         curl_setopt( $ch,CURLOPT_POST, true );
         curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
@@ -39,8 +38,6 @@ class UserThirdParty extends Model
         curl_close( $ch );
 
         $gcmResult = json_decode($result);
-
-        // dd($gcmResult);
 
         return $gcmResult;
     }
