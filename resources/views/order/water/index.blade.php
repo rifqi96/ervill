@@ -322,18 +322,30 @@ List Pesanan Air
                         }
                     },                  
                     {data: 'order.quantity'},
-                    {data: 'order.created_at'},
-                    {data: 'delivery_at'},
-                    {
-                        data: 'order.accepted_at',
-                        render: function ( data ){           
-                            if(data!=null){
-                                return data;
-                            }else{
-                                return '-';
+                    {data: null,
+                        render: function (data) {
+                            if(data.order.created_at){
+                                return moment(data.order.created_at).format('DD-MM-YYYY hh:mm:ss');
                             }
+                            return '-';
                         }
-                    },  
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.delivery_at){
+                                return moment(data.delivery_at).format('DD-MM-YYYY');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.order.accepted_at){
+                                return moment(data.order.accepted_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {                            

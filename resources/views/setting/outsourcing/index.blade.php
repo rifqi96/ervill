@@ -161,8 +161,22 @@ List Outsourcing
                 columns: [
                     {data: 'id'},
                     {data: 'name'},
-                    {data: 'created_at'},
-                    {data: 'updated_at'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {
@@ -189,8 +203,22 @@ List Outsourcing
                 columns: [
                     {data: 'id'},
                     {data: 'name'},
-                    {data: 'created_at'},
-                    {data: 'updated_at'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {

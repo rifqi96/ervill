@@ -132,8 +132,15 @@
                     {data: 'module_name'},    
                     {data: 'data_id'},
                     {data: 'user_id'},  
-                    {data: 'user.full_name'},            
-                    {data: 'updated_at'},
+                    {data: 'user.full_name'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {   

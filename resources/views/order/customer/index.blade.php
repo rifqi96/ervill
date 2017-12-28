@@ -228,7 +228,14 @@ List Pesanan Customer
                                 }},
                             {data: 'order.quantity'},
                             {data: 'empty_gallon_quantity'},
-                            {data: 'order.created_at'},
+                            {data: null,
+                                render: function (data) {
+                                    if(data.order.created_at){
+                                        return moment(data.order.created_at).format('DD-MM-YYYY hh:mm:ss');
+                                    }
+                                    return '-';
+                                }
+                            },
                             {data: null,
                                 render: function(data){
                                     return moment(data.delivery_at).format('DD-MM-YYYY');
@@ -236,7 +243,7 @@ List Pesanan Customer
                             {data: null,
                                 render: function(data){
                                     if(data.order.accepted_at){
-                                        return data.order.accepted_at;
+                                        return moment(data.order.accepted_at).format('DD-MM-YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }},

@@ -191,7 +191,14 @@
                         data: 'user',
                         render: 'full_name'
                     },
-                    {data: 'created_at'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).format('DD-MM-YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null,
                         render: function ( data, type, row, meta ) {

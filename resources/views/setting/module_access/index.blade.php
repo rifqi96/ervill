@@ -22,23 +22,23 @@ Modul Akses
                 <tr>
                     <td>1</td>
                     <td>Pesan Galon</td>
-                    <td>Owner, Admin</td>                              
+                    <td>Owner, Admin</td>
                     <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>                                 
+                    <td>20/10/2017 08:20:55</td>
                 </tr>
                 <tr>
                     <td>2</td>
                     <td>Pesan Air</td>
-                    <td>Owner, Admin</td>                              
+                    <td>Owner, Admin</td>
                     <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>                            
+                    <td>20/10/2017 08:20:55</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Tambah Admin</td>
-                    <td>Owner</td>                              
+                    <td>Owner</td>
                     <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 08:20:55</td>                                 
+                    <td>20/10/2017 08:20:55</td>
                 </tr>
                 </tbody>
             </table>

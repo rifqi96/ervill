@@ -198,19 +198,30 @@ Track Pesanan
                                 }},
                             {data: 'order.quantity'},
                             {data: 'empty_gallon_quantity'},
-                            {data: 'order.created_at'},
                             {data: null,
-                                render: function(data){
-                                    var date = new Date(data.delivery_at);
-                                    return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
-                                }},
-                            {data: null,
-                                render: function(data){
-                                    if(data.order.accepted_at){
-                                        return data.order.accepted_at;
+                                render: function (data) {
+                                    if(data.order.created_at){
+                                        return moment(data.order.created_at).format('DD-MM-YYYY hh:mm:ss');
                                     }
                                     return '-';
-                                }},
+                                }
+                            },
+                            {data: null,
+                                render: function (data) {
+                                    if(data.delivery_at){
+                                        return moment(data.delivery_at).format('DD-MM-YYYY');
+                                    }
+                                    return '-';
+                                }
+                            },
+                            {data: null,
+                                render: function (data) {
+                                    if(data.order.accepted_at){
+                                        return moment(data.order.accepted_at).format('DD-MM-YYYY hh:mm:ss');
+                                    }
+                                    return '-';
+                                }
+                            },
                             {data: null,
                                 render: function(data){
                                     if(data.order.user){
