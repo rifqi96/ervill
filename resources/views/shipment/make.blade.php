@@ -154,7 +154,14 @@ Buat Pengiriman
 									}
 									return '-';
 								}},
-								{data:'order.created_at'}
+                                {data: null,
+                                    render: function (data) {
+                                        if(data.order.created_at){
+                                            return moment(data.order.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                                        }
+                                        return '-';
+                                    }
+                                },
 							]
                         });
 
@@ -190,7 +197,14 @@ Buat Pengiriman
 								}},
 								{data:'id'},
 								{data:'user.full_name'},
-								{data:'delivery_at'}
+                                {data: null,
+                                    render: function (data) {
+                                        if(data.delivery_at){
+                                            return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                        }
+                                        return '-';
+                                    }
+                                },
 							]
                         });
                     }

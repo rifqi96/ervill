@@ -140,7 +140,7 @@ List Customer
                     {data: null,
                         render: function (data) {
                             if(data.created_at){
-                                return moment(data.created_at).format('DD-MM-YYYY hh:mm:ss');
+                                return moment(data.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                             }
                             return '-';
                         }
@@ -148,7 +148,7 @@ List Customer
                     {data: null,
                         render: function (data) {
                             if(data.updated_at){
-                                return moment(data.updated_at).format('DD-MM-YYYY hh:mm:ss');
+                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                             }
                             return '-';
                         }

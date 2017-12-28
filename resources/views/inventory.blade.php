@@ -132,8 +132,22 @@ Inventory Gallon
                     {data: 'name'},
                     {data: 'quantity'},
                     {data: 'price'},
-                    {data: 'created_at'},
-                    {data: 'updated_at'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {

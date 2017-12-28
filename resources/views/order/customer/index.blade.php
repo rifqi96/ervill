@@ -231,19 +231,19 @@ List Pesanan Customer
                             {data: null,
                                 render: function (data) {
                                     if(data.order.created_at){
-                                        return moment(data.order.created_at).format('DD-MM-YYYY hh:mm:ss');
+                                        return moment(data.order.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }
                             },
                             {data: null,
                                 render: function(data){
-                                    return moment(data.delivery_at).format('DD-MM-YYYY');
+                                    return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
                                 }},
                             {data: null,
                                 render: function(data){
                                     if(data.order.accepted_at){
-                                        return moment(data.order.accepted_at).format('DD-MM-YYYY hh:mm:ss');
+                                        return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }},

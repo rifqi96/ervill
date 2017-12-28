@@ -37,7 +37,7 @@ class CreateUsersSeeder extends Seeder
                     'username' => 'superadmin',
                     'password' => bcrypt('superadmin'),
                     'full_name' => 'Sulhan Syadeli',
-                    'email' => 'owner@ervill.com',
+                    'email' => 'owner@ervill.net',
                     'phone' => '081314151818'
                 ));
             }
@@ -48,7 +48,7 @@ class CreateUsersSeeder extends Seeder
                     'username' => 'admin',
                     'password' => bcrypt('admin'),
                     'full_name' => 'Ervill Admin',
-                    'email' => 'admin@ervill.com',
+                    'email' => 'admin@ervill.net',
                     'phone' => '08129380921'
                 ));
             }
@@ -59,7 +59,7 @@ class CreateUsersSeeder extends Seeder
                     'username' => 'driver',
                     'password' => bcrypt('driver'),
                     'full_name' => 'Ervill Driver',
-                    'email' => 'driver@ervill.com',
+                    'email' => 'driver@ervill.net',
                     'phone' => '085882738190'
                 ));
             }

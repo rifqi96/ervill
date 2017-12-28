@@ -47,7 +47,7 @@ Track Pesanan
                 <div class="form-group row">
                     <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static">{{Carbon\Carbon::parse($shipment->delivery_at)->format('d-m-Y')}}</p>
+                        <p class="form-control-static delivery_at">{{Carbon\Carbon::parse($shipment->delivery_at)->format('Y-m-d')}}</p>
                     </div>
                 </div>
                 {{-- <div class="form-group row">
@@ -129,7 +129,6 @@ Track Pesanan
 				  <th>Jumlah (Galon)</th>
 				  <th>Jumlah Galon Kosong (Galon)</th>
 				  <th>Tgl Order</th>
-				  <th>Tgl Pengiriman</th>
 				  <th>Tgl Penerimaan</th>
 				  <th>Admin</th>
 				  </thead>
@@ -201,15 +200,7 @@ Track Pesanan
                             {data: null,
                                 render: function (data) {
                                     if(data.order.created_at){
-                                        return moment(data.order.created_at).format('DD-MM-YYYY hh:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.delivery_at){
-                                        return moment(data.delivery_at).format('DD-MM-YYYY');
+                                        return moment(data.order.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -217,7 +208,7 @@ Track Pesanan
                             {data: null,
                                 render: function (data) {
                                     if(data.order.accepted_at){
-                                        return moment(data.order.accepted_at).format('DD-MM-YYYY hh:mm:ss');
+                                        return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -233,6 +224,9 @@ Track Pesanan
                     });
                 }
 			});
+
+            var delivery_at = $('.delivery_at').text();
+            $('.delivery_at').text(moment(delivery_at).locale('id').format('DD MMMM YYYY'));
         });
 	</script>
 
