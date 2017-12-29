@@ -14,6 +14,15 @@ Tambah Customer Baru
         <form action="{{route('setting.customers.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Jenis</label>
+                <div class="col-sm-10">
+                    <select class="form-control" name="type" id="type">
+                        <option value="end_customer">End Customer</option>
+                        <option value="agent">Agen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Nama</label>
                 <div class="col-sm-10">
                     <p class="form-control-static"><input type="text" class="form-control" name="name" placeholder="Nama"></p>

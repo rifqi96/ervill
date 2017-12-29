@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\OrderWater;
-use App\Models\OutsourcingWater;
+//use App\Models\OutsourcingWater;
 use App\Models\OutsourcingDriver;
 use App\Models\Inventory;
 use App\Models\Order;
@@ -26,12 +26,14 @@ class OrderWaterController extends OrderController
     {
         $this->data['breadcrumb'] = "Order - Water Order";
 
-        $outsourcingWaters = OutsourcingWater::all();
+//        $outsourcingWaters = OutsourcingWater::all();
         $outsourcingDrivers = OutsourcingDriver::all();
-        $max_quantity = $this->countMaxQuantity();
+        $max_buffer_qty = $this->countMaxBufferQuantity();
+        $max_warehouse_qty = $this->countMaxWarehouseQuantity();
         $this->data['outsourcingDrivers'] = $outsourcingDrivers;
-        $this->data['outsourcingWaters'] = $outsourcingWaters;
-        $this->data['max_quantity'] = $max_quantity;
+//        $this->data['outsourcingWaters'] = $outsourcingWaters;
+        $this->data['max_buffer_qty'] = $max_buffer_qty;
+        $this->data['max_warehouse_qty'] = $max_warehouse_qty;
 
         return view('order.water.index', $this->data);
     }
@@ -40,18 +42,20 @@ class OrderWaterController extends OrderController
     {
         $this->data['breadcrumb'] = "Order - Water Order - Create";
 
-        $outsourcingWaters = OutsourcingWater::all();
+//        $outsourcingWaters = OutsourcingWater::all();
         $outsourcingDrivers = OutsourcingDriver::all();
-        $max_quantity = $this->countMaxQuantity();
+        $max_buffer_qty = $this->countMaxBufferQuantity();
+        $max_warehouse_qty = $this->countMaxWarehouseQuantity();
         $this->data['outsourcingDrivers'] = $outsourcingDrivers;
-        $this->data['outsourcingWaters'] = $outsourcingWaters;
-        $this->data['max_quantity'] = $max_quantity;
+//        $this->data['outsourcingWaters'] = $outsourcingWaters;
+        $this->data['max_buffer_qty'] = $max_buffer_qty;
+        $this->data['max_warehouse_qty'] = $max_warehouse_qty;
 
 
         return view('order.water.make', $this->data);
     }
 
-    public function countMaxQuantity(){
+    public function countMaxBufferQuantity(){
         $inventory_quantity = Inventory::find(1)->quantity;
         $orderWatersActive = OrderWater::whereHas('order',function($query){
             $query->where('accepted_at',null);
@@ -59,7 +63,22 @@ class OrderWaterController extends OrderController
 
         $orderWater_quantity = 0;
         foreach ($orderWatersActive as $row) {
-            $orderWater_quantity += $row->order->quantity;
+            $orderWater_quantity += $row->buffer_qty;
+        }
+
+        $max_quantity = $inventory_quantity - $orderWater_quantity;
+        return $max_quantity;
+    }
+
+    public function countMaxWarehouseQuantity(){
+        $inventory_quantity = Inventory::find(2)->quantity;
+        $orderWatersActive = OrderWater::whereHas('order',function($query){
+            $query->where('accepted_at',null);
+        })->get();
+
+        $orderWater_quantity = 0;
+        foreach ($orderWatersActive as $row) {
+            $orderWater_quantity += $row->warehouse_qty;
         }
 
         $max_quantity = $inventory_quantity - $orderWater_quantity;
@@ -75,13 +94,20 @@ class OrderWaterController extends OrderController
 
     public function doMake(Request $request)
     {
-        $max_quantity = $this->countMaxQuantity();
+        $max_buffer_qty = $this->countMaxBufferQuantity();
+        $max_warehouse_qty = $this->countMaxWarehouseQuantity();
         $this->validate($request, [
-            'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+//            'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
-            'quantity' => 'required|integer|min:1|max:'.$max_quantity,
+            'buffer_qty' => 'required|integer|min:0|max:'.$max_buffer_qty,
+            'warehouse_qty' => 'required|integer|min:0|max:'.$max_warehouse_qty,
             'delivery_at' => 'required|date|after_or_equal:today'
         ]);
+
+        if($request->buffer_qty < 1 && $request->warehouse_qty < 1){
+            return back()
+                ->withErrors(['message' => 'Jumlah salah satu galon minimal harus diisi']);
+        }
         
         if((new OrderWater())->doMake($request, auth()->id())){
             return redirect(route('order.water.index'))
@@ -94,33 +120,40 @@ class OrderWaterController extends OrderController
 
     public function doUpdate(Request $request)
     {        
-        $orderWater = OrderWater::with('outsourcingWater','outsourcingDriver','order')->find($request->id);
+        $orderWater = OrderWater::with('outsourcingDriver','order')->find($request->id);
 
         //check if driver_name is filled  or not
         if($orderWater->order->accepted_at == null){
             if($request->driver_name!=null){
                 return back()
-                ->withErrors(['message' => 'Terjadi kesalahan, nama pengemudi tidak boleh dirubah!']);
+                ->withErrors(['message' => 'Terjadi kesalahan, nama pengemudi tidak boleh diubah!']);
             }
             $this->validate($request, [           
-                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+//                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
                 'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
-                'quantity' => 'required|integer|min:1|max:'.$request->max_quantity,
+                'buffer_qty' => 'required|integer|min:0|max:'.$request->max_buffer_qty,
+                'warehouse_qty' => 'required|integer|min:0|max:'.$request->max_warehouse_qty,
                 'delivery_at' => 'required|date',
                 'description' => 'required|string|regex:/^[^;]+$/'
                 
             ]);          
         }else{
             $this->validate($request, [           
-                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+//                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
                 'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
                 'driver_name' => 'required|string',
-                'quantity' => 'required|integer|min:1|max:'.$request->max_quantity,
+                'buffer_qty' => 'required|integer|min:0|max:'.$request->max_buffer_qty,
+                'warehouse_qty' => 'required|integer|min:0|max:'.$request->max_warehouse_qty,
                 'delivery_at' => 'required|date',
                 'description' => 'required|string|regex:/^[^;]+$/'
                 
             ]);
-        }   
+        }
+
+        if($request->buffer_qty < 1 && $request->warehouse_qty < 1){
+            return back()
+                ->withErrors(['message' => 'Jumlah salah satu galon minimal harus diisi']);
+        }
 
         if($orderWater->doUpdate($request)){
             return back()
@@ -242,7 +275,7 @@ class OrderWaterController extends OrderController
 
     public function getAll()
     {
-        $orderWaters = OrderWater::has('order')->with('outsourcingWater','outsourcingDriver','order','order.user','order.issues')->get();
+        $orderWaters = OrderWater::has('order')->with('outsourcingDriver','order','order.user','order.issues')->get();
     
         return json_encode($orderWaters);
     }

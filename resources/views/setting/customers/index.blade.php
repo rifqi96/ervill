@@ -16,7 +16,8 @@ List Customer
                 <th>ID</th>
                 <th>Nama</th>
                 <th>Alamat</th>
-                <th>No. Telepon</th>   
+                <th>No. Telepon</th>
+                <th>Jenis</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Update</th>     
                 <th>Action</th>    
@@ -137,6 +138,16 @@ List Customer
                     {data: 'name'},
                     {data: 'address'},
                     {data: 'phone'},
+                    {data: 'type',
+                        render: function(data) {
+                            if(data == "end_customer")
+                                return "End Customer";
+                            else if(data == "agent")
+                                return "Agen";
+
+                            return "-";
+                        }
+                    },
                     {data: null,
                         render: function (data) {
                             if(data.created_at){

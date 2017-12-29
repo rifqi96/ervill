@@ -19,7 +19,7 @@ class Issue extends Model
 
     public function doMakeIssueOrderWater($issue,$data)
     {        
-        $this->inventory_id = 2;
+        $this->inventory_id = 3;
         $this->order_id = $issue->order_id;
 
         //check if has issue type
@@ -74,9 +74,9 @@ class Issue extends Model
         $this->quantity = $data->quantity;
 
         //recalculate inventory
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
 
         if($data->type == "Refund Gallon"){
             $broken_gallon->quantity += $data->quantity;
@@ -139,10 +139,10 @@ class Issue extends Model
     }
 
     public function doDelete(){
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
+        $outgoing_gallon = Inventory::find(5);
 
         //recalculate inventory
         if($this->type=="Kesalahan Pabrik Air"){

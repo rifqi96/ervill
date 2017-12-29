@@ -16,7 +16,9 @@ class CreateOutsourcingDriversSeeder extends Seeder
 
         array_push($data, array(
             'id' => 1,
-            'name' => 'Ervill\'s Driver'
+            'name' => 'Ervill\'s Driver',
+            'phone' => '08128392130',
+            'address' => 'Jalan Imam Bonjol Tangerang'
         ));
 
         foreach($data as $key=>$val){

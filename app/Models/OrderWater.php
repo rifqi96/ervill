@@ -20,41 +20,50 @@ class OrderWater extends Model
     {
         $order = (new Order)->doMakeOrderWater($data, $author_id);
 
-        $this->outsourcing_water_id = $data->outsourcing_water;
+//        $this->outsourcing_water_id = $data->outsourcing_water;
         $this->outsourcing_driver_id = $data->outsourcing_driver;
         $this->order_id = $order->id;
+        $this->buffer_qty = $data->buffer_qty;
+        $this->warehouse_qty = $data->warehouse_qty;
         $this->delivery_at = $data->delivery_at;
         $this->status = 'proses';
         return ($this->save());
     }
 
     public function doUpdate($data)
-    {      
+    {
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
         $old_data = $this->toArray();
 
         //recalculate inventory if order is finished
         if($this->order->accepted_at != null){
-            $empty_gallon->quantity -= ($data->quantity - $this->order->quantity);
-            $filled_gallon->quantity += ($data->quantity - $this->order->quantity);
+            $empty_buffer_gallon->quantity -= ($data->buffer_qty - $this->buffer_qty);
+            $empty_warehouse_gallon->quantity -= ($data->warehouse_qty - $this->warehouse_qty);
+            $filled_gallon->quantity += (($data->buffer_qty + $data->warehouse_qty) - $this->order->quantity);
 
             //set driver name
             $this->driver_name = $data->driver_name;
         }
 
         //update order water and order data
-        $this->outsourcing_water_id = $data->outsourcing_water;
+//        $this->outsourcing_water_id = $data->outsourcing_water;
         $this->outsourcing_driver_id = $data->outsourcing_driver;
         $this->delivery_at = $data->delivery_at;
-        $this->order->quantity = $data->quantity;
+        $this->order->quantity = $data->buffer_qty + $data->warehouse_qty;
+        $this->buffer_qty = $data->buffer_qty;
+        $this->warehouse_qty = $data->warehouse_qty;
 
-        if($empty_gallon->quantity<0){
-            $empty_gallon->quantity = 0;
+        if($empty_buffer_gallon->quantity<0){
+            $empty_buffer_gallon->quantity = 0;
+        }
+        else if($empty_warehouse_gallon->quantity<0){
+            $empty_warehouse_gallon->quantity = 0;
         }
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
+        if(!$this->order->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$filled_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
         }
 
@@ -64,31 +73,32 @@ class OrderWater extends Model
     public function doAddToEditHistory($old_data, $data){
 
         //set old values
-        $old_data['outsourcing_water_name'] = $old_data['outsourcing_water']['name'];
+//        $old_data['outsourcing_water_name'] = $old_data['outsourcing_water']['name'];
         $old_data['outsourcing_driver_name'] = $old_data['outsourcing_driver']['name'];
-        $old_data['quantity'] = $old_data['order']['quantity'];
+//        $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
      
         unset($old_data['id']); 
-        unset($old_data['outsourcing_water_id']);   
+//        unset($old_data['outsourcing_water_id']);
         unset($old_data['outsourcing_driver_id']);
         unset($old_data['order_id']);  
         unset($old_data['status']);
-        unset($old_data['outsourcing_water']);
+//        unset($old_data['outsourcing_water']);
         unset($old_data['outsourcing_driver']);
         unset($old_data['order']);
 
         $old_value = '';
-        $old_value .= $old_data['outsourcing_water_name'] . ';';
+//        $old_value .= $old_data['outsourcing_water_name'] . ';';
         $old_value .= $old_data['outsourcing_driver_name'] . ';';
         $old_value .= $old_data['driver_name'] . ';';
-        $old_value .= $old_data['quantity'] . ';';
+        $old_value .= $old_data['buffer_qty'] . ';';
+        $old_value .= $old_data['warehouse_qty'] . ';';
         $old_value .= $old_data['delivery_at'];
 
 
         //set new values
         $new_value_obj = $data->toArray(); 
-        $new_value_obj['outsourcing_water'] = OutsourcingWater::find($new_value_obj['outsourcing_water'])->name;
+//        $new_value_obj['outsourcing_water'] = OutsourcingWater::find($new_value_obj['outsourcing_water'])->name;
         $new_value_obj['outsourcing_driver'] = OutsourcingDriver::find($new_value_obj['outsourcing_driver'])->name;
         
         unset($new_value_obj['id']);
@@ -97,10 +107,11 @@ class OrderWater extends Model
         unset($new_value_obj['max_quantity']);
 
         $new_value = '';
-        $new_value .= $new_value_obj['outsourcing_water'] . ';';
+//        $new_value .= $new_value_obj['outsourcing_water'] . ';';
         $new_value .= $new_value_obj['outsourcing_driver'] . ';';
         $new_value .= $new_value_obj['driver_name'] . ';';
-        $new_value .= $new_value_obj['quantity'] . ';';
+        $new_value .= $new_value_obj['buffer_qty'] . ';';
+        $new_value .= $new_value_obj['warehouse_qty'] . ';';
         $new_value .= $new_value_obj['delivery_at'];
 
         $edit_data = array(
@@ -117,11 +128,13 @@ class OrderWater extends Model
 
     public function doConfirm($driver_name){
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
 
         //recalculate inventory
-        $empty_gallon->quantity -= ($this->order->quantity);
+        $empty_buffer_gallon->quantity -= ($this->buffer_qty);
+        $empty_warehouse_gallon->quantity -= ($this->warehouse_qty);
         $filled_gallon->quantity += ($this->order->quantity);
 
         //update order water and order data
@@ -133,7 +146,7 @@ class OrderWater extends Model
         //     $empty_gallon->quantity = 0;
         // }
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() ){
+        if(!$this->order->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$filled_gallon->save() ){
             return false;
         }
 
@@ -142,9 +155,10 @@ class OrderWater extends Model
 
     public function doCancel(){
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
 
         //for handling the weird ajax error
         if($this->status =='proses'){
@@ -165,7 +179,8 @@ class OrderWater extends Model
         }
 
         //recalculate inventory
-        $empty_gallon->quantity += ($this->order->quantity);
+        $empty_buffer_gallon->quantity += ($this->buffer_qty);
+        $empty_warehouse_gallon->quantity += ($this->warehouse_qty);
         $filled_gallon->quantity -= ($this->order->quantity);
 
         //update order water and order data
@@ -177,7 +192,7 @@ class OrderWater extends Model
         //     $filled_gallon->quantity = 0;
         // }
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
+        if(!$this->order->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() ){
             return false;
         }
 
@@ -186,12 +201,13 @@ class OrderWater extends Model
 
     public function doConfirmWithIssue($data,$issueGallon,$issueSeal,$issueTissue){
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
 
         //set quantity for recalculating inventory and save issues
-        $empty_gallon_quantity_change = $this->order->quantity;
+//        $empty_gallon_quantity_change = $this->order->quantity;
         $filled_gallon_quantity_change = $this->order->quantity;
         $broken_gallon_quantity_change = 0;
 
@@ -208,7 +224,8 @@ class OrderWater extends Model
         }
 
         //recalculate inventory
-        $empty_gallon->quantity -= $empty_gallon_quantity_change; 
+        $empty_buffer_gallon->quantity -= ($this->buffer_qty);
+        $empty_warehouse_gallon->quantity -= ($this->warehouse_qty);
         $filled_gallon->quantity += $filled_gallon_quantity_change;
         $broken_gallon->quantity += $broken_gallon_quantity_change;
 
@@ -222,7 +239,7 @@ class OrderWater extends Model
         // }
 
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save()){
+        if(!$this->order->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save()){
             return false;
         }
 
@@ -239,9 +256,10 @@ class OrderWater extends Model
             return $this->order->doDelete();
         }
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -253,7 +271,8 @@ class OrderWater extends Model
         }
 
         $filled_gallon->quantity -= $this->order->quantity;
-        $empty_gallon->quantity += $this->order->quantity;
+        $empty_buffer_gallon->quantity += $this->buffer_qty;
+        $empty_warehouse_gallon->quantity += $this->warehouse_qty;
 
         // if($empty_gallon->quantity<0){
         //     $empty_gallon->quantity = 0;
@@ -268,7 +287,7 @@ class OrderWater extends Model
         //     $broken_gallon->quantity = 0;
         // }
 
-        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
+        if(!$filled_gallon->save() || !$broken_gallon->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$this->doAddToDeleteHistory($description, $author_id)){
             return false;
         }
         return $this->order->doDelete();
@@ -286,9 +305,10 @@ class OrderWater extends Model
     }
 
     public function doRestore(){
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
+        $empty_buffer_gallon = Inventory::find(1);
+        $empty_warehouse_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
 
         if($this->status!='proses'){
             if($this->order->issues){
@@ -301,7 +321,8 @@ class OrderWater extends Model
             }
 
             $filled_gallon->quantity += $this->order->quantity;
-            $empty_gallon->quantity -= $this->order->quantity;
+            $empty_buffer_gallon->quantity -= $this->buffer_qty;
+            $empty_warehouse_gallon->quantity -= $this->warehouse_qty;
 
             // if($empty_gallon->quantity<0){
             //     $empty_gallon->quantity = 0;
@@ -313,7 +334,7 @@ class OrderWater extends Model
             //     $filled_gallon->quantity = 0;
             // }
 
-            if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save()){
+            if(!$filled_gallon->save() || !$empty_buffer_gallon->save() || !$empty_warehouse_gallon->save() || !$broken_gallon->save()){
                 return false;
             }
         }

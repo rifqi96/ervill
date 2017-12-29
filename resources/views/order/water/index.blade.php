@@ -17,10 +17,11 @@ List Pesanan Air
                 <th>Status</th>
                 <th>ID</th>
                 <th>Admin</th>
-                <th>Outsourcing Air</th>
+                {{--<th>Outsourcing Air</th>--}}
                 <th>Outsourcing Pengemudi</th>
                 <th>Pengemudi</th>
-                <th>Jumlah (Galon)</th>                
+                <th>Jumlah Galon Buffer</th>
+                <th>Jumlah Galon Gudang</th>
                 <th>Tgl Order</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
@@ -108,24 +109,25 @@ List Pesanan Air
             <form action="{{route('order.water.do.update')}}" method="POST">
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="" id="input_id">
-                <input type="hidden" name="max_quantity" id="max_quantity">
+                <input type="hidden" name="max_buffer_qty" id="max_buffer_qty">
+                <input type="hidden" name="max_warehouse_qty" id="max_warehouse_qty">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
                 </div>
 
                 <div class="modal-body">                                           
+                    {{--<div class="form-group">--}}
+                        {{--<label for="outsourcing_water"><strong>Outsourcing Pabrik Air</strong></label>--}}
+                        {{--<select id="outsourcing_water" name="outsourcing_water" class="form-control">--}}
+                            {{--<option value=""></option>--}}
+                            {{--@foreach($outsourcingWaters as $outsourcingWater)--}}
+                                {{--<option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           --}}
+                            {{--@endforeach--}}
+                        {{--</select>--}}
+                    {{--</div>  --}}
                     <div class="form-group">
-                        <label for="outsourcing_water"><strong>Outsourcing Pabrik Air</strong></label>
-                        <select id="outsourcing_water" name="outsourcing_water" class="form-control">
-                            <option value=""></option>
-                            @foreach($outsourcingWaters as $outsourcingWater)
-                                <option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           
-                            @endforeach
-                        </select>
-                    </div>  
-                    <div class="form-group">
-                        <label for="outsourcing_driver"><strong>Outsourcing Pabrik Air</strong></label>
+                        <label for="outsourcing_driver"><strong>Outsourcing Driver</strong></label>
                         <select id="outsourcing_driver" name="outsourcing_driver" class="form-control">
                             <option value=""></option>
                             @foreach($outsourcingDrivers as $outsourcingDriver)
@@ -138,12 +140,16 @@ List Pesanan Air
                         <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
                     </div>                     
                     <div class="form-group">
-                        <label for="quantity"><strong>Jumlah Galon</strong></label>
-                        <input id="quantity" type="number" class="form-control" name="quantity" min="1">
-                    </div>                                           
+                        <label for="buffer_qty"><strong>Jumlah Galon Buffer</strong></label>
+                        <input id="buffer_qty" type="number" class="form-control" name="buffer_qty" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="warehouse_qty"><strong>Jumlah Galon Gudang</strong></label>
+                        <input id="warehouse_qty" type="number" class="form-control" name="warehouse_qty" min="1">
+                    </div>
                     <div class="form-group">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
-                        <input id="delivery_at" type="text" class="form-control" name="delivery_at">
+                        <input id="delivery_at" type="date" class="form-control" name="delivery_at">
                     </div>                                   
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
@@ -210,13 +216,16 @@ List Pesanan Air
                             $('#cancel-btn').css('display','inline-block');
                             $('#driver_name_div').css('display','block');
                         }          
-                        $('#outsourcing_water').val(orderWaters[i].outsourcing_water);
+//                        $('#outsourcing_water').val(orderWaters[i].outsourcing_water);
                         $('#outsourcing_driver').val(orderWaters[i].outsourcing_driver);
                         $('#driver_name_edit').val(orderWaters[i].driver_name);
-                        $('#quantity').val(orderWaters[i].quantity);
-                        $('#quantity').attr('max',{{$max_quantity}}+orderWaters[i].quantity);
-                        $('#max_quantity').val({{$max_quantity}}+orderWaters[i].quantity);
-                        $('#delivery_at').val(orderWaters[i].delivery_at);
+                        $('#buffer_qty').val(orderWaters[i].buffer_qty);
+                        $('#buffer_qty').attr('max',{{$max_buffer_qty}}+orderWaters[i].buffer_qty);
+                        $('#max_buffer_qty').val({{$max_buffer_qty}}+orderWaters[i].buffer_qty);
+                        $('#warehouse_qty').val(orderWaters[i].warehouse_qty);
+                        $('#warehouse_qty').attr('max',{{$max_warehouse_qty}}+orderWaters[i].warehouse_qty);
+                        $('#max_warehouse_qty').val({{$max_warehouse_qty}}+orderWaters[i].warehouse_qty);
+                        $('#delivery_at').val(moment(orderWaters[i].delivery_at).format('YYYY-MM-DD'));
                         $('#input_id').val(orderWaters[i].id);
 
                     }
@@ -291,16 +300,16 @@ List Pesanan Air
                     },
                     {data: 'id'},
                     {data: 'order.user.full_name'},
-                    {
-                        data: 'outsourcing_water',
-                        render: function ( data ){           
-                            if(data!=null){
-                                return data.name;
-                            }else{
-                                return '-';
-                            }
-                        }
-                    },
+//                    {
+//                        data: 'outsourcing_water',
+//                        render: function ( data ){
+//                            if(data!=null){
+//                                return data.name;
+//                            }else{
+//                                return '-';
+//                            }
+//                        }
+//                    },
                     {
                         data: 'outsourcing_driver',
                         render: function ( data ){           
@@ -321,7 +330,8 @@ List Pesanan Air
                             }
                         }
                     },                  
-                    {data: 'order.quantity'},
+                    {data: 'buffer_qty'},
+                    {data: 'warehouse_qty'},
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
@@ -353,10 +363,11 @@ List Pesanan Air
                                 orderWaters.push({
                                     'id': row.id,
                                     'status': row.status,   
-                                    'outsourcing_water': row.outsourcing_water!=null?row.outsourcing_water.id:null, 
+//                                    'outsourcing_water': row.outsourcing_water!=null?row.outsourcing_water.id:null,
                                     'outsourcing_driver': row.outsourcing_driver!=null?row.outsourcing_driver.id:null,
                                     'driver_name': row.driver_name,
-                                    'quantity': row.order.quantity,
+                                    'buffer_qty': row.buffer_qty,
+                                    'warehouse_qty': row.warehouse_qty,
                                     'order_at': row.order.created_at,
                                     'delivery_at': row.delivery_at,
                                     'accepted_at': row.order.accepted_at,

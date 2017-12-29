@@ -16,19 +16,19 @@ Pesan Air
             <section class="box-typical box-typical-padding">
                 <form action="{{route('order.water.do.make')}}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Outsourcing Pabrik Air</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static">                 
-                                <select id="outsourcing_water" name="outsourcing_water" class="form-control">
-                                    <option value=""></option>
-                                    @foreach($outsourcingWaters as $outsourcingWater)
-                                        <option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           
-                                    @endforeach
-                                </select>
-                            </p>
-                        </div>
-                    </div>      
+                    {{--<div class="form-group row">--}}
+                        {{--<label class="col-sm-2 form-control-label">Outsourcing Pabrik Air</label>--}}
+                        {{--<div class="col-sm-10">--}}
+                            {{--<p class="form-control-static">                 --}}
+                                {{--<select id="outsourcing_water" name="outsourcing_water" class="form-control">--}}
+                                    {{--<option value=""></option>--}}
+                                    {{--@foreach($outsourcingWaters as $outsourcingWater)--}}
+                                        {{--<option value="{{$outsourcingWater->id}}">{{$outsourcingWater->name}}</option>           --}}
+                                    {{--@endforeach--}}
+                                {{--</select>--}}
+                            {{--</p>--}}
+                        {{--</div>--}}
+                    {{--</div>      --}}
 
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Outsourcing Pengemudi</label>
@@ -45,11 +45,17 @@ Pesan Air
                     </div>            
                     
                     <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
+                        <label class="col-sm-2 form-control-label">Jumlah Galon Buffer</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Max Gallon: {{$max_quantity}}" min="1" max="{{$max_quantity}}"></p>        
+                            <p class="form-control-static"><input type="number" class="form-control" name="buffer_qty" placeholder="Maks Galon Buffer: {{$max_buffer_qty}}" min="0" max="{{$max_buffer_qty}}"></p>
                         </div>
-                    </div> 
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Jumlah Galon Gudang</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input type="number" class="form-control" name="warehouse_qty" placeholder="Maks Galon Gudang: {{$max_warehouse_qty}}" min="0" max="{{$max_warehouse_qty}}"></p>
+                        </div>
+                    </div>
                     <!--<div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Retur Galon</label>
                         <div class="col-sm-10">

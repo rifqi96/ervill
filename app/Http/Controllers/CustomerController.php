@@ -32,6 +32,7 @@ class CustomerController extends SettingController
     public function doMake(Request $request)
     {
         $this->validate($request, [
+            'type' => 'required|in:end_customer,agent',
             'name' => 'required|string',
             'phone' => 'required|string|digits_between:3,14',
             'address' => 'required|string',

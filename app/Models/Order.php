@@ -35,7 +35,7 @@ class Order extends Model
     {        
         $this->inventory_id = 2;
         $this->user_id = $author_id;
-        $this->quantity = $data->quantity;
+        $this->quantity = $data->buffer_qty + $data->warehouse_qty;
         $this->save();
 
         return $this;

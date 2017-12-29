@@ -16,30 +16,44 @@ class CreateInventoriesSeeder extends Seeder
 
         array_push($data, array(
             'id'=>1,
-            'name'=>'Galon Kosong',
+            'name'=>'Galon Kosong Buffer',
             'quantity' => 0,
             'price' => 43000
         ));
 
         array_push($data, array(
             'id'=>2,
+            'name'=>'Galon Kosong Gudang',
+            'quantity' => 0,
+            'price' => 43000
+        ));
+
+        array_push($data, array(
+            'id'=>3,
             'name'=>'Galon Isi',
             'quantity' => 0,
             'price' => 51000
         ));
 
         array_push($data, array(
-            'id'=>3,
+            'id'=>4,
             'name'=>'Galon Rusak',
             'quantity' => 0,
             'price' => 33000
         ));
 
         array_push($data, array(
-            'id'=>4,
+            'id'=>5,
             'name'=>'Galon Beredar',
             'quantity' => 0,
             'price' => 43000
+        ));
+
+        array_push($data, array(
+            'id'=>6,
+            'name'=>'Galon Non Ervill',
+            'quantity' => 0,
+            'price' => 25000
         ));
 
         foreach($data as $key=>$val){
