@@ -254,6 +254,22 @@ Overview
                     }
                 }
             });
+            //test rifqi ajax
+            // $.ajax({
+            //     url: 'https://ervill.000webhostapp.com/api',
+            //     method: 'POST',
+            //     dataType: 'json',
+            //     header: {
+            //         accept: 'application/json',
+            //     },
+            //     data: {},
+            //     success: function(res){
+            //         console.log(res);
+            //     },
+            //     error: function(res){
+            //         console.log(res);
+            //     }
+            // });
         });
     </script>
 @endsection

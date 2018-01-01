@@ -13,8 +13,8 @@ class Role extends Model
     {
         return $this->hasMany('App\Models\User');
     }
-    public function modules()
-    {
-        return $this->belongsToMany('App\Models\Module','module_accesses');
-    }
+    // public function modules()
+    // {
+    //     return $this->belongsToMany('App\Models\Module','module_accesses');
+    // }
 }
