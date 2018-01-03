@@ -43,6 +43,10 @@ class User extends Authenticatable
         $this->email = $user->email;
         $this->phone = $user->phone;
 
+        if($user->change_password){
+            $this->password = bcrypt($user->password);
+        }
+
         return ($this->save());
     }
 
@@ -72,6 +76,10 @@ class User extends Authenticatable
         $this->full_name = $user->full_name;
         $this->email = $user->email;
         $this->phone = $user->phone;
+
+        if($user->change_password){
+            $this->password = bcrypt($user->password);
+        }
 
         
         return $this->save();

@@ -38,13 +38,26 @@ Pesan Customer
                             </table>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 form-control-label" for="empty_gallon">Tukar Galon ?</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="empty_gallon" id="empty_gallon" value=""></p>
-                        </div>
-                    </div>
                     <div id="new-customer-input">
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" for="type">Agen ?</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="type" id="type" value="agent"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Jenis Pembelian</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <select id="purchase_type" name="purchase_type" class="form-control">
+                                        <option value="">--</option>
+                                        <option value="rent">Sewa Galon</option>
+                                        <option value="purchase">Beli Galon</option>      
+                                        <option value="non_ervill">Tukar Galon Non-Ervill</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label">Nama Customer</label>
                             <div class="col-sm-10">
@@ -67,14 +80,43 @@ Pesan Customer
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1"></p>
+                            <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Pilih Customer" max="" min="0"></p>
                         </div>
                     </div>
+                    <div class="form-group row" id="add_gallon_div_checkbox">
+                        <label class="col-sm-2 form-control-label" for="add_gallon">Tambah Galon ?</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon"></p>
+                        </div>
+                    </div>
+
+                    <div id="add_gallon_div">
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Jenis Pembelian</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <select id="add_gallon_purchase_type" name="add_gallon_purchase_type" class="form-control">
+                                        <option value="">--</option>
+                                        <option value="rent">Sewa Galon</option>
+                                        <option value="purchase">Beli Galon</option>      
+                                        <option value="non_ervill">Tukar Galon Non-Ervill</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Jumlah Gallon Tambah</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"><input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">
-                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}" min="{{\Carbon\Carbon::now()->toDateString()}}">
+                                <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}">
                             </p>
                         </div>
                     </div>
@@ -94,6 +136,7 @@ Pesan Customer
         $(document).ready(function () {
             // Init
             $('#new-customer-input').hide();
+            $('#add_gallon_div').hide();
             $('#empty_gallon').prop('checked', true);
             $('#empty_gallon').val("1");
 
@@ -119,13 +162,23 @@ Pesan Customer
             });
             
             $('#new-customer').on('change', function () {
+                $('#quantity').val('');                               
                 if(this.checked){
                     $(this).val(1);
                     $('#empty_gallon').val("");
-                    $('#empty_gallon').prop("checked", false);
+                    $('#empty_gallon').prop("checked", false);                    
                     $('#new-customer-input').fadeIn();
                     $('.customer-table-container').fadeOut();
                     $('#customer-table .customer-id').prop('checked', false);
+
+                    //reset fields
+                    $('#quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
+                    $('#quantity').attr('max', {{$inventory->quantity}});
+                    $('#add_gallon_purchase_type').val('');
+                    $('#add_gallon_quantity').val('');
+                    $('#add_gallon').attr('checked',false);
+                    $('#add_gallon_div').fadeOut(); 
+                    $('#add_gallon_div_checkbox').fadeOut(); 
                 }
                 else{
                     $(this).val("");
@@ -135,6 +188,9 @@ Pesan Customer
                     $('.customer-table-container').fadeIn();
                     $('#new-customer-input input').val("");
                     $('#new-customer-input textarea').val("");
+
+                    $('#quantity').attr('placeholder','Pilih Customer');
+                    $('#add_gallon_div_checkbox').fadeIn(); 
                 }
             });
 
@@ -144,6 +200,46 @@ Pesan Customer
                 }
                 else{
                     $(this).val("");
+                }
+            });
+
+            //get max quantity for specific customer
+            $('#customer-table').on('click', '.customer-id', function () {    
+                $.ajax({
+                    url: '/getCustomerGallon',
+                    type: 'GET',
+                    data: {customer_id: $(this).val()},
+                    success: function(result){
+                        $('#quantity').val('');
+                        $('#quantity').attr('placeholder','Jumlah Gallon (Galon Customer: '+result+')');
+                        $('#quantity').attr('max', result);
+
+                        //reset add_gallon fields
+                        $('#add_gallon_quantity').val('');
+                        $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
+                        $('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
+                    }
+                });      
+                
+            });
+
+            $('#quantity').on('change', function () {
+                var max_add_gallon_quantity = {{$inventory->quantity}} - $(this).val();
+                $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_add_gallon_quantity+')');
+                $('#add_gallon_quantity').attr('max', max_add_gallon_quantity);
+            });
+
+            //add more gallon
+            $('#add_gallon').on('change', function () {
+                $('#add_gallon_purchase_type').val('');
+                $('#add_gallon_quantity').val('');
+                $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
+                $('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
+                if(this.checked){
+                    $('#add_gallon_div').fadeIn();                    
+                }
+                else{
+                    $('#add_gallon_div').fadeOut(); 
                 }
             });
         });

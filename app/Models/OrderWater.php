@@ -168,7 +168,7 @@ class OrderWater extends Model
         //recalculate inventory from issues
         if($this->order->issues){
             foreach($this->order->issues as $issue){
-                if($issue->type == "Kesalahan Pabrik Air"){
+                if($issue->type == "Kesalahan Pabrik Air" || $issue->type=="Kesalahan Pengemudi"){
                     $broken_gallon->quantity -= $issue->quantity;
                     $filled_gallon->quantity += $issue->quantity;
                 }
@@ -199,7 +199,7 @@ class OrderWater extends Model
         return ($this->save()); 
     }
 
-    public function doConfirmWithIssue($data,$issueGallon,$issueSeal,$issueTissue){
+    public function doConfirmWithIssue($data,$issueGallonDriver,$issueGallon,$issueSeal,$issueTissue){
 
         $empty_buffer_gallon = Inventory::find(1);
         $empty_warehouse_gallon = Inventory::find(2);
@@ -211,10 +211,15 @@ class OrderWater extends Model
         $filled_gallon_quantity_change = $this->order->quantity;
         $broken_gallon_quantity_change = 0;
 
+        if($data->typeGallonDriver){
+            $issueGallonDriver->save();                    
+            $filled_gallon_quantity_change -= $issueGallonDriver->quantity;
+            $broken_gallon_quantity_change += $issueGallonDriver->quantity;
+        }
         if($data->typeGallon){
             $issueGallon->save();                    
             $filled_gallon_quantity_change -= $issueGallon->quantity;
-            $broken_gallon_quantity_change = $issueGallon->quantity;
+            $broken_gallon_quantity_change += $issueGallon->quantity;
         }
         if($data->typeSeal){
             $issueSeal->save();
@@ -263,7 +268,7 @@ class OrderWater extends Model
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
-                if($issue->type == "Kesalahan Pabrik Air"){
+                if($issue->type == "Kesalahan Pabrik Air" || $issue->type=="Kesalahan Pengemudi"){
                     $broken_gallon->quantity -= $issue->quantity;
                     $filled_gallon->quantity += $issue->quantity;
                 }
@@ -313,7 +318,7 @@ class OrderWater extends Model
         if($this->status!='proses'){
             if($this->order->issues){
                 foreach($this->order->issues as $issue){
-                    if($issue->type == "Kesalahan Pabrik Air"){
+                    if($issue->type == "Kesalahan Pabrik Air" || $issue->type=="Kesalahan Pengemudi"){
                         $broken_gallon->quantity += $issue->quantity;
                         $filled_gallon->quantity -= $issue->quantity;
                     }

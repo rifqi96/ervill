@@ -134,6 +134,6 @@ class CustomerController extends SettingController
 
     public function getAll()
     {
-        return Customer::all()->toJson();
+        return Customer::with('customerGallons')->get()->toJson();
     }
 }

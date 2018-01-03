@@ -213,7 +213,7 @@ class OrderWaterController extends OrderController
         $orderWater = OrderWater::find($request->id);
 
         // check if no type is selected
-        if(!$request->typeGallon && !$request->typeSeal && !$request->typeTissue){
+        if(!$request->typeGallonDriver && !$request->typeGallon && !$request->typeSeal && !$request->typeTissue){
             return back()
             ->withErrors(['message' => 'Tipe masalah belum dipilih!']);
         }
@@ -222,11 +222,25 @@ class OrderWaterController extends OrderController
             'driver_name' => 'required|string'
         ]); 
 
+        $issueGallonDriver = new Issue();
         $issueGallon = new Issue();
         $issueSeal = new Issue();
         $issueTissue = new Issue();
         
         //validate request and make issue object according to the types checked
+        if($request->typeGallonDriver){            
+            $this->validate($request, [    
+                'typeDriver' => 'required',                           
+                'quantity_gallon_driver' => 'required|integer|min:1|max:'.$request->max_quantity,
+                'description_gallon_driver' => 'required|string'
+            ]); 
+            $data = array(   
+                'type' => $request->typeDriver,   
+                'quantity' => $request->quantity_gallon_driver,
+                'description' => $request->description_gallon_driver
+            );
+            $issueGallonDriver->doMakeIssueOrderWater($request,$data);            
+        }
         if($request->typeGallon){
             $this->validate($request, [   
                 'type' => 'required',             
@@ -239,6 +253,13 @@ class OrderWaterController extends OrderController
                 'description' => $request->description_gallon
             );
             $issueGallon->doMakeIssueOrderWater($request,$data);            
+        }
+        if($request->typeGallonDriver && $request->typeGallon){
+            $this->validate($request, [     
+                'quantity_gallon_driver' => 'required|integer|min:1|max:'.($request->max_quantity-$request->quantity_gallon),                   
+                'quantity_gallon' => 'required|integer|min:1|max:'.($request->max_quantity-$request->quantity_gallon_driver),
+                
+            ]); 
         }
         if($request->typeSeal){
             $this->validate($request, [               
@@ -263,7 +284,7 @@ class OrderWaterController extends OrderController
             $issueTissue->doMakeIssueOrderWater($request,$data);  
         }
 
-        if( $orderWater->doConfirmWithIssue($request,$issueGallon,$issueSeal,$issueTissue) ){
+        if( $orderWater->doConfirmWithIssue($request,$issueGallonDriver,$issueGallon,$issueSeal,$issueTissue) ){
             return redirect(route('order.water.index'))
             ->with('success', 'Data telah berhasil diupdate');
         }else{

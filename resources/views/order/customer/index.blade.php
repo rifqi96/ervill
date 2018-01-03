@@ -92,9 +92,39 @@ List Pesanan Customer
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="quantity"><strong>Jumlah Galon</strong></label>
+                        <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
+                        <select id="purchase_type" name="purchase_type" class="form-control">
+                            <option value="">--</option>
+                            <option value="rent">Sewa Galon</option>
+                            <option value="purchase">Beli Galon</option>      
+                            <option value="non_ervill">Tukar Galon Non-Ervill</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity"><strong>Jumlah Galon </strong><span id="edit-qty-max"></span></label>
                         <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="1">
                     </div>
+                    <div class="form-group">
+                        <label for="add_gallon"><strong>Tambah Galon ?</strong></label>
+                        <input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon">
+                    </div>
+
+                    <div id="add_gallon_div">
+                        <div class="form-group">
+                            <label for="add_gallon_purchase_type"><strong>Jenis Pembelian Galon Tambah</strong></label>
+                            <select id="add_gallon_purchase_type" name="add_gallon_purchase_type" class="form-control">
+                                <option value="">--</option>
+                                <option value="rent">Sewa Galon</option>
+                                <option value="purchase">Beli Galon</option>      
+                                <option value="non_ervill">Tukar Galon Non-Ervill</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="add_gallon_quantity"><strong>Jumlah Galon Tambah</strong><span id="add_gallon_quantity_max"></span></label>
+                            <input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="" max="" min="1">
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
                         <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
@@ -226,7 +256,11 @@ List Pesanan Customer
                                         return '-';
                                     }
                                 }},
-                            {data: 'order.quantity'},
+                            {data: null,
+                                render: function (data) {                                    
+                                    return data.additional_quantity+data.order.quantity;
+                                }
+                            },
                             {data: 'empty_gallon_quantity'},
                             {data: null,
                                 render: function (data) {
@@ -348,7 +382,19 @@ List Pesanan Customer
                         }
 
                         var inventory = JSON.parse('{!! $inventory !!}');
-                        $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity))
+                        if(order_data.additional_quantity==0){//doesnt add gallon
+                            $('#add_gallon').prop('checked',false);
+                            $('#add_gallon_div').hide();
+                            $('#add_gallon_purchase_type').val('');
+                            $('#add_gallon_quantity').val('');
+                        }else{
+                            $('#add_gallon').prop('checked',true);
+                            $('#add_gallon_div').show();
+                            $('#add_gallon_purchase_type').val(order_data.purchase_type);
+                            $('#add_gallon_quantity').val(order_data.additional_quantity);
+                        }
+
+                        $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity));
                         $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                         $('#edit-qty').val(order_data.order.quantity);
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);

@@ -32,9 +32,13 @@ Order Water Issue
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jenis Barang yang Bermasalah</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">                                               
+                            <p class="form-control-static">    
+
                                 <label class="checkbox-inline" style="display: inline-block;">
-                                  <input type="checkbox" id="inlineCheckbox1" value="Galon Rusak" name="typeGallon"> Galon Rusak
+                                  <input type="checkbox" id="inlineCheckbox0" value="Galon Rusak Driver" name="typeGallonDriver"> Galon Rusak oleh Pengemudi
+                                </label>                                           
+                                <label class="checkbox-inline" style="display: inline-block;">
+                                  <input type="checkbox" id="inlineCheckbox1" value="Galon Rusak Pabrik" name="typeGallon"> Galon Rusak oleh Pabrik
                                 </label>
                                 <label class="checkbox-inline" style="display: inline-block;">
                                   <input type="checkbox" id="inlineCheckbox2" value="Segel Rusak" name="typeSeal"> Segel Rusak
@@ -47,15 +51,43 @@ Order Water Issue
                     </div> 
 
                     <hr> 
+
+                    <div id="type0" style="display: none;">
+                        <p><strong>Galon Rusak oleh Pengemudi</strong></p>              
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Tipe Masalah</label>
+                            <div class="col-sm-10">
+                                <select name="typeDriver" class="form-control">
+                                    <option value=""></option>
+                                    <option value="Kesalahan Pengemudi" selected="selected">Kesalahan Pengemudi</option>                      
+                                </select>                                                     
+                            </div>
+                        </div>         
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Jumlah Galon yang Bermasalah</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"><input id="quantity_gallon_driver" type="number" class="form-control" name="quantity_gallon_driver" placeholder="Jumlah Galon yang Bermasalah" max="{{$orderWater->order->quantity}}" min="0"></p>
+                               
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Deskripsi Masalah</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"><textarea class="form-control" name="description_gallon_driver" placeholder="Deskripsi Masalah" rows="5">Galon rusak</textarea></p>  
+                            </div>
+                        </div>   
+                    </div>
                     
                     <div id="type1" style="display: none;">
-                        <p><strong>Galon Rusak</strong></p>
+                        <p><strong>Galon Rusak oleh Pabrik</strong></p>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label">Tipe Masalah</label>
                             <div class="col-sm-10">
                                 <select name="type" class="form-control">
                                     <option value=""></option>
-                                    <option value="Kesalahan Pabrik Air">Kesalahan Pabrik Air</option>                      
+                                    <option value="Kesalahan Pabrik Air" selected="selected">Kesalahan Pabrik Air</option>                      
                                 </select>                                                     
                             </div>
                         </div>
@@ -63,7 +95,7 @@ Order Water Issue
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label">Jumlah Galon yang Bermasalah</label>
                             <div class="col-sm-10">
-                                <p class="form-control-static"><input type="number" class="form-control" name="quantity_gallon" placeholder="Jumlah Galon yang Bermasalah" max="{{$orderWater->order->quantity}}"></p>
+                                <p class="form-control-static"><input id="quantity_gallon" type="number" class="form-control" name="quantity_gallon" placeholder="Jumlah Galon yang Bermasalah" max="{{$orderWater->order->quantity}}" min="0"></p>
                                
                             </div>
                         </div>
@@ -130,6 +162,14 @@ Order Water Issue
 
     <script type="text/javascript">
         $(document).ready(function(){
+            $("#inlineCheckbox0").change(function() {
+                if(this.checked)
+                    $('#type0').css('display','block');
+                else
+                    $('#type0').css('display','none');
+
+                $('#type0 input').val('');
+            });
             $("#inlineCheckbox1").change(function() {
                 if(this.checked)
                     $('#type1').css('display','block');
@@ -153,6 +193,17 @@ Order Water Issue
                     $('#type3').css('display','none');
 
                 $('#type3 input').val('');
+            });
+
+            $('#quantity_gallon_driver').on('change',function(){
+                $('#quantity_gallon').attr('max',{{$orderWater->order->quantity}} - $(this).val());
+            });
+            $('#quantity_gallon').on('change',function(){
+                $('#quantity_gallon_driver').attr('max',{{$orderWater->order->quantity}} - $(this).val());
+            });
+            $('#inlineCheckbox0,#inlineCheckbox1').on('click',function(){
+                $('#quantity_gallon').attr('max',{{$orderWater->order->quantity}});
+                $('#quantity_gallon_driver').attr('max',{{$orderWater->order->quantity}});
             });
         });
     </script>

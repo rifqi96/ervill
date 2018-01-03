@@ -145,7 +145,7 @@ class Issue extends Model
         $outgoing_gallon = Inventory::find(5);
 
         //recalculate inventory
-        if($this->type=="Kesalahan Pabrik Air"){
+        if($this->type=="Kesalahan Pabrik Air" || $this->type=="Kesalahan Pengemudi"){
             $broken_gallon->quantity -= $this->quantity;
             $filled_gallon->quantity += $this->quantity;
         }else if($this->type == "Refund Gallon"){

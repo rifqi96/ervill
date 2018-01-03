@@ -53,7 +53,7 @@ class OrderCustomer extends Model
 
     public function doMake($gallon_data, $customer_id, $author_id)
     {
-        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
+        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $customer_id, $author_id);
 
         if(!$order_data){
             return false;
@@ -61,9 +61,15 @@ class OrderCustomer extends Model
 
         $this->order_id = $order_data->id;
         $this->customer_id = $customer_id;
-        $this->empty_gallon_quantity = 0;
-        if($gallon_data->empty_gallon){
+        if($gallon_data->new_customer){
+            $this->empty_gallon_quantity = 0;
+            $this->purchase_type = $gallon_data->purchase_type;
+        }else{
             $this->empty_gallon_quantity = $gallon_data->quantity;
+        }
+        if($gallon_data->add_gallon){
+            $this->additional_quantity = $gallon_data->add_gallon_quantity;
+            $this->purchase_type = $gallon_data->add_gallon_purchase_type;
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
@@ -73,9 +79,9 @@ class OrderCustomer extends Model
 
     public function doUpdate($data)
     {
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(5);
 
         $filled_stock = (integer)$filled_gallon->quantity+$this->order->quantity;
 
@@ -175,10 +181,10 @@ class OrderCustomer extends Model
     }
 
     public function doDelete($description, $author_id){
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
+        $outgoing_gallon = Inventory::find(5);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -229,10 +235,10 @@ class OrderCustomer extends Model
     }
 
     public function doRestore(){
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $broken_gallon = Inventory::find(3);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
+        $outgoing_gallon = Inventory::find(5);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -311,9 +317,9 @@ class OrderCustomer extends Model
             return false;
         }
 
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(5);
 
         $filled_stock = (integer)$filled_gallon->quantity+$this->order->quantity;
 

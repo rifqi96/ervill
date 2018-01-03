@@ -62,7 +62,13 @@ class HistoryController extends Controller
                 $new_value_arr['Nama'] = $new_value[1];
                 $new_value_arr['Email'] = $new_value[2];
                 $new_value_arr['No. Telepon'] = $new_value[3];
-                $new_value_arr['Role'] = $new_value[4];
+                if(count($new_value)==5){
+                    $new_value_arr['Role'] = $new_value[4];
+                }else{
+                    $new_value_arr['Password Baru'] = $new_value[4];
+                    $new_value_arr['Role'] = $new_value[5];
+                }
+                
 
             }
             else if($edit_history->module_name == "Customers"){

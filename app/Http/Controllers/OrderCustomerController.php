@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use App\Models\Customer;
 use App\Models\DeleteHistory;
 use App\Models\EditHistory;
+use App\Models\CustomerGallon;
 
 class OrderCustomerController extends OrderController
 {
@@ -23,7 +24,7 @@ class OrderCustomerController extends OrderController
     {
         $this->data['breadcrumb'] = "Order - Customer Order";
 
-        $this->data['inventory'] = Inventory::find(2);
+        $this->data['inventory'] = Inventory::find(3);
 
         return view('order.customer.index', $this->data);
     }
@@ -32,7 +33,8 @@ class OrderCustomerController extends OrderController
     {
         $this->data['breadcrumb'] = "Order - Customer Order - Create";
 
-        $this->data['inventory'] = Inventory::find(2);
+        $this->data['inventory'] = Inventory::find(3);
+        $this->data['customer_gallons'] = CustomerGallon::all();
 
         return view('order.customer.make', $this->data);
     }
@@ -77,9 +79,10 @@ class OrderCustomerController extends OrderController
     /*======= Do Methods =======*/
     public function doMake(Request $request){
         $customer_id = null;
+        $filled_gallon = Inventory::find(3);
 
-        $inventory = Inventory::find(2);
-        if($inventory->quantity < $request->quantity){
+
+        if($filled_gallon->quantity < $request->quantity){
             return back()
                 ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
         }
@@ -91,13 +94,21 @@ class OrderCustomerController extends OrderController
                 'phone' => 'required|string|digits_between:3,14',
                 'address' => 'required|string',
                 'quantity' => 'required|integer|min:1',
-                'delivery_at' => 'required|date|after_or_equal:today'
+                'delivery_at' => 'required|date',
+                'purchase_type' => 'required'
             ]);
 
             $customer = new Customer;
+            $customerGallon = new CustomerGallon;
 
+            //create customer
             if($customer->doMake($request)){
                 $customer_id = $customer->id;
+                //create customer gallon
+                if(!$customerGallon->doMake($request, $customer_id)){
+                    return back()
+                    ->withErrors(['message' => 'There is something wrong, please contact admin (customer telah dibuat, customergallon error)']);
+                }              
             }else{
                 return back()
                     ->withErrors(['message' => 'There is something wrong, please contact admin']);
@@ -107,9 +118,27 @@ class OrderCustomerController extends OrderController
             // If existing customer //
             $this->validate($request, [
                 'customer_id' => 'required|integer|exists:customers,id',
-                'quantity' => 'required|integer|min:1',
-                'delivery_at' => 'required|date|after_or_equal:today'
+                'delivery_at' => 'required|date'
             ]);
+
+            if($request->add_gallon){
+                $this->validate($request, [
+                    'quantity' => 'required|integer|min:0',
+                    'add_gallon_purchase_type' => 'required',
+                    'add_gallon_quantity' => 'required|integer|min:1'
+                ]);
+
+                if($filled_gallon->quantity < ($request->quantity + $request->add_gallon_quantity)){
+                    return back()
+                        ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
+                }
+            }else{
+                $this->validate($request, [                    
+                    'quantity' => 'required|integer|min:1'           
+                ]);
+            }
+
+            
 
             $customer_id = $request->customer_id;
         }

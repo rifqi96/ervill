@@ -74,11 +74,17 @@ class UserController extends SettingController
         $user = auth()->user();
 
         $this->validate($request, [
-            'username' => 'required|string|min:3|unique:users,username,'.$user->id,
+            'username' => 'required|string|min:3|unique:users,username,'.$user->id,           
             'full_name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string|digits_between:3,14'
         ]);   
+
+        if($request->change_password){
+            $this->validate($request, [                
+                'password' => 'required|string|min:6|confirmed',                
+            ]);  
+        }
 
         if($user->doUpdateProfile($request)){
             return back()
@@ -123,10 +129,17 @@ class UserController extends SettingController
             'phone' => 'required|string|digits_between:3,14',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
+
+        if($request->change_password){
+            $this->validate($request, [                
+                'password' => 'required|string|min:6|confirmed',                
+            ]);  
+        }
         
 
         //set old values
-        $old_value_obj = $user->toArray();        
+        $old_value_obj = $user->toArray();
+        unset($old_value_obj['id']);        
         unset($old_value_obj['role_id']);
         $old_value = '';
         $i=0;
@@ -146,7 +159,12 @@ class UserController extends SettingController
         unset($new_value_obj['id']);
         unset($new_value_obj['role']);
         unset($new_value_obj['_token']);
-        unset($new_value_obj['description']);
+        unset($new_value_obj['description']);        
+        unset($new_value_obj['password_confirmation']);
+        unset($new_value_obj['change_password']);
+        if(!$request->change_password){
+            unset($new_value_obj['password']);
+        }
         $new_value = '';
         $i=0;
         foreach ($new_value_obj as $row) {

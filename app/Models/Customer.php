@@ -29,13 +29,21 @@ class Customer extends Model
     public function order_customers(){
         return $this->hasMany('App\Models\OrderCustomer');
     }
+    public function customerGallons(){
+        return $this->hasMany('App\Models\CustomerGallon');
+    }
 
     public function doMake($data)
     {
         $this->name = $data->name;
         $this->address = $data->address;
         $this->phone = $data->phone;
-        $this->type = $data->type;
+        if($data->type){
+            $this->type = 'agent';
+        }else{
+            $this->type = 'end_customer';
+        }
+        
 
         return ($this->save());
     }

@@ -361,7 +361,7 @@ Route::post('/getAvailableShipmentsByDate', 'ShipmentController@getAvailableShip
 Route::post('/getUnshippedOrders', 'OrderCustomerController@getUnshippedOrders');
 Route::get('/getAllDrivers', 'UserController@getAllDrivers');
 Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById');
-
+Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
 
 /**
  * Auth::routes() are :

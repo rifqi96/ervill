@@ -76,7 +76,22 @@ List User
                     <div class="form-group">
                         <label for="phone"><strong>No. Telepon</strong></label>
                         <input id="phone" type="text" class="form-control" name="phone">
-                    </div>    
+                    </div> 
+                    <div class="form-group">
+                        <label for="change_password"><strong>Ganti Password ?</strong></label>
+                        <input id="change_password" type="checkbox" class="form-control" name="change_password">
+                    </div>   
+                    <div id="change_password_div">
+                        <div class="form-group">
+                            <label for="password"><strong>Password Baru</strong></label>
+                            <input id="password" type="password" class="form-control" name="password">
+                        </div> 
+                        <div class="form-group">
+                            <label for="password_confirmation"><strong>Konfirmasi Password Baru</strong></label>
+                            <input id="password_confirmation" type="password" class="form-control" name="password_confirmation">
+                        </div> 
+                    </div>
+                    
                     <div class="form-group">
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
@@ -129,8 +144,18 @@ List User
 
     <script>
         $(document).ready(function () {
+
             var users = [];
             $('#setting_user_management').on('click','.detail-btn',function(){
+                $('#change_password').prop('checked',false);
+                $('#change_password_div').hide();
+                $("#change_password").change(function() {
+                    $('#change_password_div input').val('');
+                    if(this.checked)
+                        $('#change_password_div').fadeIn();
+                    else
+                        $('#change_password_div').fadeOut();                
+                });
                 for(var i in users){
                     if(users[i].id==$(this).data('index')){
                         $('#role').val(users[i].role_id);

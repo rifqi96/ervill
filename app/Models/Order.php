@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Inventory;
 use App\Models\Issue;
+use App\Models\CustomerGallon;
 
 class Order extends Model
 {
@@ -41,30 +42,78 @@ class Order extends Model
         return $this;
     }
 
-    public function doMakeOrderCustomer($data, $author_id){
-        $this->inventory_id = 2;
+    public function doMakeOrderCustomer($data, $customer_id, $author_id){
+        $this->inventory_id = 3;
         $this->user_id = $author_id;
         $this->quantity = $data->quantity;
 
-        $filled_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);            
         $filled_gallon->quantity -= $data->quantity;
-        if(!$filled_gallon->save()){
-            return false;
-        }
 
-        if($data->empty_gallon){//if customer have gallon
-            $empty_gallon = Inventory::find(1);
+        if($data->new_customer){//new customer            
+            if($data->purchase_type=='rent'){
+                $outgoing_gallon = Inventory::find(5);
+                $outgoing_gallon->quantity += $data->quantity;
+                if( !$outgoing_gallon->save() ){
+                    return false;
+                }  
+            }else if($data->purchase_type=='non_ervill'){
+                $non_ervill_gallon = Inventory::find(6);
+                $non_ervill_gallon->quantity += $data->quantity;
+                if( !$non_ervill_gallon->save() ){
+                    return false;
+                } 
+            }                                           
+        }else{//existing customer
+            $empty_gallon = Inventory::find(2);
             $empty_gallon->quantity += $data->quantity;
+
+            //add gallon
+            if($data->add_gallon){
+                //create or update customerGallon
+                $existingCustomerGallon = CustomerGallon::where([
+                    ['customer_id',$customer_id], 
+                    ['type',$data->add_gallon_purchase_type]])->first();
+
+                if( $existingCustomerGallon ){
+                    $existingCustomerGallon->qty += $data->add_gallon_quantity;
+                    if( !$existingCustomerGallon->save() ){
+                        return false;
+                    } 
+                }else{
+                    $customerGallonAdd = new CustomerGallon;
+                    if(!$customerGallonAdd->doMakeAdd($data, $customer_id)){
+                        return false;
+                    }  
+                }
+
+                //recalculate inventory for more gallon added
+                $filled_gallon->quantity -= $data->add_gallon_quantity;
+                if($data->add_gallon_purchase_type=='rent'){
+                    $outgoing_gallon = Inventory::find(5);
+                    $outgoing_gallon->quantity += $data->add_gallon_quantity;
+                    if( !$outgoing_gallon->save() ){
+                        return false;
+                    }  
+                }else if($data->add_gallon_purchase_type=='non_ervill'){
+                    $non_ervill_gallon = Inventory::find(6);
+                    $non_ervill_gallon->quantity += $data->add_gallon_quantity;
+                    if( !$non_ervill_gallon->save() ){
+                        return false;
+                    } 
+                }    
+                
+                //$this->quantity += $data->add_gallon_quantity;
+            }
+
             if(!$empty_gallon->save()){
                 return false;
             }
-        }else{//if customer doesnt have any gallon
-            $outgoing_gallon = Inventory::find(4);
-            $outgoing_gallon->quantity += $data->quantity;  
-            if(!$outgoing_gallon->save()){
-                return false;
-            }  
         }
+
+        if( !$filled_gallon->save() ){
+            return false;
+        }  
 
         $this->save();
 
