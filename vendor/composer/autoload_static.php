@@ -286,6 +286,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'AddAddressToOutsourcingDriversTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_29_155753_add_address_to_outsourcing_drivers_table.php',
         'AddDataIdToEditHistories' => __DIR__ . '/../..' . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
         'AddErvillTokenToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
+        'AddIsNewToOrderCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_01_03_194143_add_is_new_to_order_customers.php',
         'AddPurchaseTypeToOrderCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_01_03_141255_add_purchase_type_to_order_customers.php',
         'AddRoleIdToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
         'AddSoftDeletesToTables' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_205738_add_soft_deletes_to_tables.php',

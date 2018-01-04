@@ -67,7 +67,7 @@ class Issue extends Model
         //     return false;
         // }
 
-        $this->inventory_id = 2;
+        $this->inventory_id = 3;
         $this->order_id = $order->id;
         $this->type = $data->type;    
         $this->description = $data->description;
@@ -111,26 +111,32 @@ class Issue extends Model
             }
         }
      
-        $this->inventory_id = 2;
+        $this->inventory_id = 3;
         $this->order_id = $order->id;
         $this->type = 'Cancel Transaction';    
         $this->description = 'Transaksi Dibatalkan. Silahkan hubungi driver yang bersangkutan';
-        $this->quantity = $order->quantity;
+        $this->quantity = $order->quantity+$order->orderCustomer->additional_quantity;
 
         //recalculate inventory
-        $empty_gallon = Inventory::find(1);
-        $filled_gallon = Inventory::find(2);
-        $outgoing_gallon = Inventory::find(4);
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(5);
+        $non_ervill_gallon = Inventory::find(6);
 
         $empty_gallon->quantity -= $order->orderCustomer->empty_gallon_quantity;
-        $filled_gallon->quantity += $order->quantity;
-        $outgoing_gallon->quantity -= ($order->quantity - $order->orderCustomer->empty_gallon_quantity);
+        $filled_gallon->quantity += ($order->quantity+$order->orderCustomer->additional_quantity);
+        if($order->orderCustomer->purchase_type=="rent"){
+            $outgoing_gallon->quantity -= ($order->quantity + $order->orderCustomer->additional_quantity - $order->orderCustomer->empty_gallon_quantity);
+        }else if($order->orderCustomer->purchase_type=="non_ervill"){
+            $non_ervill_gallon->quantity -= ($order->quantity + $order->orderCustomer->additional_quantity - $order->orderCustomer->empty_gallon_quantity);
+        }
+        
     
         //change status to bermasalah
         $order->orderCustomer->status = 'Bermasalah';
         
 
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$outgoing_gallon->save() || !$order->orderCustomer->save() ){
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$order->orderCustomer->save() ){
             return false;
         }
 
@@ -143,6 +149,7 @@ class Issue extends Model
         $filled_gallon = Inventory::find(3);
         $broken_gallon = Inventory::find(4);
         $outgoing_gallon = Inventory::find(5);
+        $non_ervill_gallon = Inventory::find(6);
 
         //recalculate inventory
         if($this->type=="Kesalahan Pabrik Air" || $this->type=="Kesalahan Pengemudi"){
@@ -158,7 +165,12 @@ class Issue extends Model
         }else if($this->type == "Cancel Transaction"){
             $empty_gallon->quantity += $this->order->orderCustomer->empty_gallon_quantity;
             $filled_gallon->quantity -= $this->quantity;
-            $outgoing_gallon->quantity += ($this->quantity - $this->order->orderCustomer->empty_gallon_quantity);
+            if($this->order->orderCustomer->purchase_type=="rent"){
+                $outgoing_gallon->quantity += ($this->quantity - $this->order->orderCustomer->empty_gallon_quantity);
+            }else if($this->order->orderCustomer->purchase_type=="non_ervill"){
+                $non_ervill_gallon->quantity += ($this->quantity - $this->order->orderCustomer->empty_gallon_quantity);
+            }
+            
 
             //change status to proses
             $this->order->orderCustomer->status = 'Proses';
@@ -189,7 +201,7 @@ class Issue extends Model
             }            
         }
 
-        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() ){
+        if( !$empty_gallon->save() || !$filled_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() ){
             return false;
         }
 

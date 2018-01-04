@@ -91,7 +91,7 @@ List Pesanan Customer
                             </table>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="purchase_type_div">
                         <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
                         <select id="purchase_type" name="purchase_type" class="form-control">
                             <option value="">--</option>
@@ -104,7 +104,7 @@ List Pesanan Customer
                         <label for="quantity"><strong>Jumlah Galon </strong><span id="edit-qty-max"></span></label>
                         <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="1">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="add_gallon_checkbox_div">
                         <label for="add_gallon"><strong>Tambah Galon ?</strong></label>
                         <input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon">
                     </div>
@@ -125,10 +125,10 @@ List Pesanan Customer
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
                         <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
-                    </div>
+                    </div> --}}
                     <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
@@ -368,11 +368,11 @@ List Pesanan Customer
                         });        
                     });
 
-                    $('.delete-modal').on('click', function(){
+                    $('#customer-order').on('click','.delete-modal', function(){
                         $('#delete-id').val($(this).data('index'));
                     });
 
-                    $('.edit-modal').on('click', function(){
+                    $('#customer-order').on('click','.edit-modal', function(){
                         $('#edit-id').val($(this).data('index'));
                         var order_data = null;
                         for(var i in result){
@@ -382,7 +382,21 @@ List Pesanan Customer
                         }
 
                         var inventory = JSON.parse('{!! $inventory !!}');
-                        if(order_data.additional_quantity==0){//doesnt add gallon
+
+                        //new customer or not
+                        if(order_data.is_new=='true'){
+                            $('#add_gallon').prop('checked',false);
+                            $('#add_gallon_checkbox_div').hide();
+                            $('#purchase_type_div').show();
+                            $('#purchase_type').val(order_data.purchase_type);
+                        }else{
+                            $('#add_gallon_checkbox_div').show();
+                            $('#purchase_type').val('');
+                            $('#purchase_type_div').hide();
+                        }
+
+                        //add gallon or not
+                        if(order_data.additional_quantity==0){
                             $('#add_gallon').prop('checked',false);
                             $('#add_gallon_div').hide();
                             $('#add_gallon_purchase_type').val('');
@@ -394,10 +408,27 @@ List Pesanan Customer
                             $('#add_gallon_quantity').val(order_data.additional_quantity);
                         }
 
+                        //add more gallon
+                        $('#add_gallon').on('change', function () {                            
+                            //$('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
+                            //$('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
+                            if(this.checked){
+                                $('#add_gallon_div').fadeIn();  
+                                $('#add_gallon_purchase_type').val(order_data.purchase_type);
+                                $('#add_gallon_quantity').val(order_data.additional_quantity);
+                            }
+                            else{
+                                $('#add_gallon_div').fadeOut(); 
+                                $('#add_gallon_purchase_type').val('');
+                                $('#add_gallon_quantity').val('');
+                            }
+                        });
+
+                        
                         $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity));
                         $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                         $('#edit-qty').val(order_data.order.quantity);
-                        $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
+                        //$('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
                         if(order_data.shipment_id){
                             $('.edit-delivery-at').hide();
                             $('.remove-shipment').show();

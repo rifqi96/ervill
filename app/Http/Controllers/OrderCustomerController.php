@@ -124,7 +124,7 @@ class OrderCustomerController extends OrderController
             if($request->add_gallon){
                 $this->validate($request, [
                     'quantity' => 'required|integer|min:0',
-                    'add_gallon_purchase_type' => 'required',
+                    'add_gallon_purchase_type' => 'required|string',
                     'add_gallon_quantity' => 'required|integer|min:1'
                 ]);
 
@@ -156,14 +156,35 @@ class OrderCustomerController extends OrderController
     public function doUpdate(Request $request)
     {
         $this->validate($request, [
-            'customer_id' => 'required|integer|exists:customers,id',
-            'quantity' => 'required|integer|min:1',
-            'empty_gallon_quantity' => 'required|integer|min:0',
+            'customer_id' => 'required|integer|exists:customers,id',                     
             // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
+
         $order_customer = OrderCustomer::with(['customer', 'order'])->find($request->id);
+
+        //new customer
+        if($order_customer->is_new=='true'){
+            $this->validate($request, [
+                'quantity' => 'required|integer|min:1',  
+                'purchase_type' => 'required|string'               
+            ]);
+        }else{//existing customer
+
+            //if add more gallon
+            if($request->add_gallon){
+                $this->validate($request, [
+                    'quantity' => 'required|integer|min:0',
+                    'add_gallon_purchase_type' => 'required|string',
+                    'add_gallon_quantity' => 'required|integer|min:1'
+                ]);
+            }else{
+                $this->validate($request, [                    
+                    'quantity' => 'required|integer|min:1'           
+                ]);
+            }
+        }
 
         if(!$order_customer->doUpdate($request)){
             return back()
