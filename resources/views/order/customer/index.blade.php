@@ -77,7 +77,7 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group row customer-table-container">
+                    <div class="form-group row customer-table-container" style="display: none;">
                         <div class="col-sm-12">
                             <h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>
                             <table id="customer-table">

@@ -32,8 +32,10 @@ Pesan Customer
                                     <th></th>
                                     <th>ID</th>
                                     <th>Nama Customer</th>
-                                    <th>No. Telepon</th>
                                     <th>Alamat</th>
+                                    <th>No. Telepon</th>
+                                    <th>Jenis</th>
+                                    <th>Aksi</th>
                                 </thead>
                             </table>
                         </div>
@@ -80,7 +82,7 @@ Pesan Customer
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Pilih Customer" max="" min="0"></p>
+                            <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="" min="0"></p>
                         </div>
                     </div>
                     <div class="form-group row" id="add_gallon_div_checkbox">
@@ -132,13 +134,73 @@ Pesan Customer
         </div>
     </div>
 
+    <!-- Asset Modal -->
+
+    <div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="assetModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+           
+                
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="assetModalLabel">Aset Customer</h4>
+                </div>
+
+                <div class="modal-body">                                           
+                    <div class="form-group">
+                        <label><strong>Galon Sewa</strong></label>
+                        <p class="form-control-static" id="rent"></p>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Galon Beli</strong></label>
+                        <p class="form-control-static" id="purchase"></p>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Galon Tukar Non-Ervill</strong></label>
+                        <p class="form-control-static" id="non_ervill"></p>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">                    
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+           
+
+
+        </div>
+      </div>
+    </div>
+
     <script>
         $(document).ready(function () {
             // Init
+            var customers = [];
+
             $('#new-customer-input').hide();
             $('#add_gallon_div').hide();
             $('#empty_gallon').prop('checked', true);
             $('#empty_gallon').val("1");
+
+            $('#customer-table').on('click','.confirm-btn',function(){
+                $('#rent').text('');
+                $('#purchase').text('');
+                $('#non_ervill').text('');
+                for(var i in customers){
+                    if(customers[i].id==$(this).data('index')){
+                        for(var j in customers[i].customer_gallons){
+                            if(customers[i].customer_gallons[j].type=='rent'){
+                                $('#rent').text(customers[i].customer_gallons[j].qty);
+                            }else if(customers[i].customer_gallons[j].type=='purchase'){
+                                $('#purchase').text(customers[i].customer_gallons[j].qty);
+                            }else if(customers[i].customer_gallons[j].type=='non_ervill'){
+                                $('#non_ervill').text(customers[i].customer_gallons[j].qty);
+                            }
+                        }
+                        
+                    }
+                }
+            });
 
             $('#customer-table').dataTable({
                 scrollX: true,
@@ -155,8 +217,29 @@ Pesan Customer
                     {data: 'id'},
                     {data: 'name'},
                     {data: 'address'},
-                    {data: 'phone'}
-                    ],
+                    {data: 'phone'},
+                    {data: 'type',
+                        render: function(data) {
+                            if(data == "end_customer")
+                                return "End Customer";
+                            else if(data == "agent")
+                                return "Agen";
+
+                            return "-";
+                        }
+                    },   
+                    {data: null,
+                    render: function (data, type, row, meta) {
+                        customers.push({
+                                'id': row.id,
+                                'name': row.name,
+                                'address': row.address,
+                                'phone': row.phone,
+                                'customer_gallons': row.customer_gallons
+                            });
+                        return '<button class="btn btn-sm confirm-btn" type="button" data-toggle="modal" data-target="#assetModal" data-index="' + row.id + '">Lihat Aset</button>';
+                    }},
+                ],
                 processing: true,
                 'order':[1, 'desc']
             });
@@ -189,7 +272,7 @@ Pesan Customer
                     $('#new-customer-input input').val("");
                     $('#new-customer-input textarea').val("");
 
-                    $('#quantity').attr('placeholder','Pilih Customer');
+                    //$('#quantity').attr('placeholder','Pilih Customer');
                     $('#add_gallon_div_checkbox').fadeIn(); 
                 }
             });
@@ -211,8 +294,8 @@ Pesan Customer
                     data: {customer_id: $(this).val()},
                     success: function(result){
                         $('#quantity').val('');
-                        $('#quantity').attr('placeholder','Jumlah Gallon (Galon Customer: '+result+')');
-                        $('#quantity').attr('max', result);
+                        //$('#quantity').attr('placeholder','Jumlah Gallon (Galon Customer: '+result+')');
+                        //$('#quantity').attr('max', result);
 
                         //reset add_gallon fields
                         $('#add_gallon_quantity').val('');
@@ -229,12 +312,19 @@ Pesan Customer
                 $('#add_gallon_quantity').attr('max', max_add_gallon_quantity);
             });
 
+            $('#add_gallon_quantity').on('change', function () {
+                var max_quantity = {{$inventory->quantity}} - $(this).val();
+                $('#quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_quantity+')');
+                $('#quantity').attr('max', max_quantity);
+            });
+
             //add more gallon
             $('#add_gallon').on('change', function () {
+                var max_add_gallon_quantity = {{$inventory->quantity}} - $('#quantity').val();
                 $('#add_gallon_purchase_type').val('');
                 $('#add_gallon_quantity').val('');
-                $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
-                $('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
+                $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_add_gallon_quantity+')');
+                $('#add_gallon_quantity').attr('max', max_add_gallon_quantity);
                 if(this.checked){
                     $('#add_gallon_div').fadeIn();                    
                 }
