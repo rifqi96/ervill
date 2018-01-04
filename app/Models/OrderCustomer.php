@@ -327,7 +327,7 @@ class OrderCustomer extends Model
 
             }else{
                 //no additional gallon
-                $filled_gallon->quantity -= $this->additional_quantity;
+                $filled_gallon->quantity += $this->additional_quantity;
                 $this->purchase_type = null;
                 $this->additional_quantity = 0;
             }
@@ -345,7 +345,7 @@ class OrderCustomer extends Model
             $this->shipment_id = null;
         }
         // $this->status = $data->status;
-        $this->customer_id = $data->customer_id;
+        //$this->customer_id = $data->customer_id;
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
