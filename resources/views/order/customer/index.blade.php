@@ -194,6 +194,47 @@ List Pesanan Customer
       </div>
     </div>
 
+    <!-- Add Issue Modal -->
+
+    <div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="addIssueModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{route('order.customer.do.addIssue')}}" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="addIssueModalLabel">Tambah Masalah</h4>
+                </div>
+
+                <div class="modal-body">  
+                    <div class="form-group">
+                        <label for="type"><strong>Tipe Masalah</strong></label>
+                        <select id="type" name="type" class="form-control">
+                            <option value="">--</option>
+                            <option value="Refund Gallon">Refund Galon</option>
+                            <option value="Kesalahan Customer">Kesalahan Customer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity"><strong>Jumlah</strong></label>
+                        <input type="number" class="form-control" name="quantity" min="0">
+                    </div>                                         
+                    <div class="form-group">
+                        <label for="description"><strong>Alasan Penambahan Masalah</strong></label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    {{csrf_field()}}
+                    <input type="hidden" name="id" value="" id="addIssue_id">
+                    <button type="submit" class="btn btn-confirm">Submit</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
 
     
 
@@ -308,8 +349,11 @@ List Pesanan Customer
                                     if(data.order.issues.length > 0){
                                         result += '<button class="btn btn-sm btn-warning issueModal" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Lihat Masalah</button>';
                                     }
+                                    if(data.status!= "Draft" && data.status != "Proses"){
+                                        result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
+                                    }
 
-                                    result +=
+                                    result +=                                        
                                         '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
                                         '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
 
@@ -466,6 +510,10 @@ List Pesanan Customer
                             processing: true,
                             'order':[1, 'desc']
                         });
+                    });
+
+                    $('#customer-order').on('click','.addIssue-modal', function(){
+                        $('#addIssue_id').val($(this).data('index'));
                     });
                 }
             });

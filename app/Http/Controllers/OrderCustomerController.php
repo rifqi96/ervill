@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\DeleteHistory;
 use App\Models\EditHistory;
 use App\Models\CustomerGallon;
+use App\Models\Issue;
 
 class OrderCustomerController extends OrderController
 {
@@ -207,6 +208,25 @@ class OrderCustomerController extends OrderController
         }else{
             return back()
                 ->withErrors(['message' => 'Terjadi kesalahan pada penghapusan data']);
+        }
+    }
+
+    public function addIssueByAdmin(Request $request){
+        $order_customer = OrderCustomer::find($request->id);
+
+        $this->validate($request, [
+            'quantity' => 'required|integer|min:1',
+            'type' => 'required|string',
+            'description' => 'required|string|regex:/^[^;]+$/'
+        ]);
+
+        $issue = new Issue();
+        if($issue->doMakeIssueOrderCustomer($order_customer->order, $request)){     
+            return back()
+                ->with('success', 'Data telah berhasil ditambahkan masalah');             
+        }else{
+            return back()
+                ->withErrors(['message' => 'Terjadi kesalahan pada penambahan masalah']);
         }
     }
 }

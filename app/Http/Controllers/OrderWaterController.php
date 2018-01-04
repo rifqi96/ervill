@@ -87,7 +87,11 @@ class OrderWaterController extends OrderController
 
     public function createIssue(OrderWater $orderWater){
     	$this->data['breadcrumb'] = "Order - Water Order - Issue";
-        $this->data['orderWater'] = $orderWater;       
+        $this->data['orderWater'] = $orderWater;     
+        if($orderWater->status!="proses"){
+           return back()
+                ->withErrors(['message' => 'Order ini tidak bisa dibuat masalah']); 
+        }  
 
         return view('order.water.issue', $this->data);
     }
