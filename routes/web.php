@@ -196,6 +196,11 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderCustomerController@doConfirm',
                 'as' => 'order.customer.do.confirm'
             ]);
+
+            Route::post('addIssue', [
+                'uses' => 'OrderCustomerController@addIssueByAdmin',
+                'as' => 'order.customer.do.addIssue'
+            ]);
         });
     });
 });
