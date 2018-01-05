@@ -31,7 +31,7 @@
     <li class="{{$module=="inventory"?"opened":""}}">
         <a href="{{route('inventory.index')}}">
             <i class="font-icon font-icon-archive"></i>
-            <span class="lbl">Stock</span>
+            <span class="lbl">Inventori</span>
         </a>
     </li>
     @if(auth()->user()->role->name == 'superadmin')

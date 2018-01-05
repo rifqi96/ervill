@@ -77,7 +77,7 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group row customer-table-container" style="display: none;">
+                    <div class="form-group row customer-table-container" >
                         <div class="col-sm-12">
                             <h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>
                             <table id="customer-table">
@@ -475,6 +475,7 @@ List Pesanan Customer
                         //$('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
                         if(order_data.shipment_id){
                             $('.edit-delivery-at').hide();
+                            $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
                             $('.remove-shipment').show();
                             $('#remove-shipment').attr('checked', false);
                         }
@@ -510,6 +511,12 @@ List Pesanan Customer
                             processing: true,
                             'order':[1, 'desc']
                         });
+                    });
+
+                    $('#customer-table').on('click','.customer-id', function(){
+                        $('#add_gallon_checkbox_div').show();
+                        $('#purchase_type').val('');
+                        $('#purchase_type_div').hide();
                     });
 
                     $('#customer-order').on('click','.addIssue-modal', function(){
