@@ -332,12 +332,12 @@ class OrderCustomer extends Model
                 $this->additional_quantity = 0;
             }
             
-
+            $this->empty_gallon_quantity = $data->quantity;
         }
        
 
         $this->order->quantity = $data->quantity;
-        $this->empty_gallon_quantity = $data->quantity;
+        
         if(!$this->shipment_id){
             $this->delivery_at = $data->delivery_at;
         }
@@ -377,13 +377,13 @@ class OrderCustomer extends Model
         $old_value .= $old_data['additional_quantity']. ';';
         $old_value .= $old_data['purchase_type']. ';';
        
-        if($isShipped){
-            $old_value .= $old_data['customer_name'];
-        }
-        else{
+        // if($isShipped){
+        //     $old_value .= $old_data['customer_name'];
+        // }
+        // else{
             $old_value .= $old_data['delivery_at']. ';';
             $old_value .= $old_data['customer_name'];
-        }
+        //}
 
         //set new values
         $new_value_obj = $data->toArray();
@@ -395,6 +395,9 @@ class OrderCustomer extends Model
         unset($new_value_obj['description']);
         $new_value = '';
         $new_value .= $new_value_obj['quantity'] . ';';    
+        if($new_value_obj['add_gallon_quantity'] == null){
+            $new_value_obj['add_gallon_quantity'] = 0;
+        }
         $new_value .= $new_value_obj['add_gallon_quantity'] . ';';
         if($new_value_obj['purchase_type'] == null){
             $new_value .= $new_value_obj['add_gallon_purchase_type'] . ';';
@@ -402,13 +405,14 @@ class OrderCustomer extends Model
             $new_value .= $new_value_obj['purchase_type'] . ';';
         }
              
-        if($isShipped){
-            $new_value .= $new_value_obj['customer_name'];
-        }
-        else{
+        // if($isShipped){
+        //     $new_value .= $new_value_obj['customer_name'];
+        // }
+        // else{
             $new_value .= $new_value_obj['delivery_at']. ';';
             $new_value .= $new_value_obj['customer_name'];
-        }
+        //}
+        
 
         $edit_data = array(
             'module_name' => 'Order Customer',
@@ -826,6 +830,7 @@ class OrderCustomer extends Model
                 $this->purchase_type = null;
                 $this->additional_quantity = 0;
             }
+            $this->empty_gallon_quantity = $data->gallon_qty;
         }
         
         
@@ -837,7 +842,7 @@ class OrderCustomer extends Model
         
 
         $this->order->quantity = $data->gallon_qty;
-        $this->empty_gallon_quantity = $data->gallon_qty;
+        
         //$this->additional_quantity = $data->add_gallon_quantity;
 
 
