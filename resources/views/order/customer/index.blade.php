@@ -513,6 +513,12 @@ List Pesanan Customer
                         });
                     });
 
+                    $('#customer-table').on('click','.customer-id', function(){
+                        $('#add_gallon_checkbox_div').show();
+                        $('#purchase_type').val('');
+                        $('#purchase_type_div').hide();
+                    });
+
                     $('#customer-order').on('click','.addIssue-modal', function(){
                         $('#addIssue_id').val($(this).data('index'));
                     });

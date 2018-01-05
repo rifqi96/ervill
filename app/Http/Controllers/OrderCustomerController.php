@@ -167,10 +167,26 @@ class OrderCustomerController extends OrderController
 
         //new customer
         if($order_customer->is_new=='true'){
-            $this->validate($request, [
-                'quantity' => 'required|integer|min:1',  
-                'purchase_type' => 'required|string'               
-            ]);
+            if($order_customer->customer_id==$request->customer_id){
+               $this->validate($request, [
+                    'quantity' => 'required|integer|min:1',  
+                    'purchase_type' => 'required|string'               
+                ]); 
+           }else{
+                //if add more gallon
+                if($request->add_gallon){
+                    $this->validate($request, [
+                        'quantity' => 'required|integer|min:0',
+                        'add_gallon_purchase_type' => 'required|string',
+                        'add_gallon_quantity' => 'required|integer|min:1'
+                    ]);
+                }else{
+                    $this->validate($request, [                    
+                        'quantity' => 'required|integer|min:1'           
+                    ]);
+                }
+           }
+            
         }else{//existing customer
 
             //if add more gallon
