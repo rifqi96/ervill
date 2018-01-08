@@ -104,7 +104,7 @@ class ShipmentController extends Controller
             $this->validate($request, [
                 'order_ids' => 'exists:order_customers,id',
                 'driver_id' => 'required|exists:users,id',
-                'delivery_at' => 'required|date|after_or_equal:today'
+                'delivery_at' => 'required|date'
             ]);
 
             $shipment = (new Shipment)->doMake($request);
@@ -117,7 +117,7 @@ class ShipmentController extends Controller
             $this->validate($request, [
                 'order_ids' => 'required|exists:order_customers,id',
                 'shipment_id' => 'required|exists:shipments,id',
-                'delivery_at' => 'required|date|after_or_equal:today'
+                'delivery_at' => 'required|date'
             ]);
 
             $shipment = Shipment::where([
