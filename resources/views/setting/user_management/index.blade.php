@@ -13,7 +13,7 @@ List User
             </header>
             <table class="table table-hover" id="setting_user_management">
                 <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Jenis Role</th>
                 <th>Username</th>   
                 <th>Nama</th>         

@@ -9,7 +9,7 @@
         <div class="col-xl-12 dashboard-column">
             <table class="table table-hover" id="history_edit">
                 <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama Modul</th>
                 <th>Data ID</th>
                 <th>Author ID</th>

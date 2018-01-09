@@ -13,7 +13,7 @@ List Customer
             </header>
             <table class="table table-hover" id="setting_customers">
                 <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama</th>
                 <th>Alamat</th>
                 <th>No. Telepon</th>

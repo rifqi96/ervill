@@ -15,7 +15,7 @@ List Pesanan Customer
             <table class="table table-hover" id="customer-order">
                 <thead>
                 <th>Status</th>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -26,7 +26,7 @@ List Pesanan Customer
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
                 <th>Admin</th>
-                <th>Action</th>
+                <th>Aksi</th>
                 </thead>
             </table>
         </div>
@@ -50,7 +50,7 @@ List Pesanan Customer
                           <th>Tipe Masalah</th>
                           <th>Deskripsi Masalah</th>
                           <th>Jumlah</th>
-                          <th>Action</th>
+                          <th>Aksi</th>
                       </thead>
                   </table>
 
@@ -83,7 +83,7 @@ List Pesanan Customer
                             <table id="customer-table">
                                 <thead>
                                 <th></th>
-                                <th>ID</th>
+                                <th>No</th>
                                 <th>Nama Customer</th>
                                 <th>Alamat</th>
                                 <th>No. Telepon</th>
@@ -249,6 +249,20 @@ List Pesanan Customer
                     $('#customer-order').dataTable({
                         scrollX: true,
                         fixedHeader: true,
+                        select: {
+                            style: 'multi'
+                        },
+                        dom: 'Bfrtip',
+                        buttons: [
+                            { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                        ],
                         data:result,
                         columns: [
                             {data: null,
@@ -364,7 +378,7 @@ List Pesanan Customer
                         'order':[8, 'desc']
                     });
 
-                    $('.issueModal').on('click', function () {
+                    $('#customer-order').on('click', '.issueModal', function () {
                         var issued_gallon_quantity = 0;
                         for(var i in result){
                             if(result[i].id == $(this).data('index')){

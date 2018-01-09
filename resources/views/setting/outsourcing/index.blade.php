@@ -15,7 +15,7 @@ List Outsourcing Pengemudi
 
             {{--<table class="table table-hover" id="setting_outsourcing_water">--}}
                 {{--<thead>--}}
-                {{--<th>ID</th>--}}
+                {{--<th>No</th>--}}
                 {{--<th>Nama</th>               --}}
                 {{--<th>Tgl Pembuatan</th>--}}
                 {{--<th>Tgl Update</th>     --}}
@@ -27,7 +27,7 @@ List Outsourcing Pengemudi
 
             <table class="table table-hover" id="setting_outsourcing_driver">
                 <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama</th>
                 <th>No Telp/HP</th>
                 <th>Alamat</th>

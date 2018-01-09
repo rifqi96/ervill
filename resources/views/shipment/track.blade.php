@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-Track Pesanan
+Detil Pesanan
 @endsection
 
 @section('content')
@@ -31,7 +31,7 @@ Track Pesanan
 					</div>
 				</div>
                 <div class="form-group row">
-                    <label class="col-sm-2 form-control-label">Shipment ID</label>
+                    <label class="col-sm-2 form-control-label">No Pengiriman</label>
                     <div class="col-sm-10">
                         <p class="form-control-static">{{$shipment->id}}</p>
                     </div>
@@ -40,7 +40,7 @@ Track Pesanan
                     <label class="col-sm-2 form-control-label">Nama Pengemudi</label>
                     <div class="col-sm-10">                     
                     	<p class="form-control-static" data-toggle="modal" data-target="#driverModal">
-                    		<a href="#"><u>{{$shipment->user->full_name}}</u></a>
+                    		<a href="#" title="Tekan untuk melihat kontak driver"><u>{{$shipment->user->full_name}}</u></a>
                     	</p>                                          
                     </div>
                 </div>
@@ -89,13 +89,13 @@ Track Pesanan
 	        <div class="form-group">
 				<label for="phone"><strong>Nomor Telepon</strong></label>
 				<p class="form-control-static">
-					{{$shipment->user->phone}}
+                    <a href="tel:{{$shipment->user->phone}}" title="Tekan untuk hubungi driver">{{$shipment->user->phone}}</a>
                 </p>
 			</div>
 			<div class="form-group">
 				<label for="email"><strong>E-mail</strong></label>
 				<p class="form-control-static">
-					<a href="mailto:{{$shipment->user->email}}">{{$shipment->user->email}}</a>
+					<a href="mailto:{{$shipment->user->email}}" title="Tekan untuk kirim email ke driver">{{$shipment->user->email}}</a>
                 </p>
 			</div>		
 	      </div>
@@ -122,7 +122,7 @@ Track Pesanan
 			  <table class="table table-hover" id="customer-order">
 				  <thead>
 				  <th>Status</th>
-				  <th>ID</th>
+				  <th>No</th>
 				  <th>Nama Customer</th>
 				  <th>No. Telepon</th>
 				  <th>Alamat Customer</th>

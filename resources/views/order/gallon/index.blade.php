@@ -12,14 +12,14 @@ List Pesanan Galon
             </header>
             <table class="table table-hover" id="gallon_order">
                 <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Admin</th>
                 <th>Outsourcing Pengemudi</th>
                 <th>Pengemudi</th>
                 <th>Jumlah (Gallon)</th>
                 <th align="center">Tgl Order</th>
                 <th align="center">Tgl Penerimaan</th>
-                <th>Actions</th>
+                <th>Aksi</th>
                 </thead>
                 <tbody>
                 <tr>
@@ -238,6 +238,20 @@ List Pesanan Galon
                 scrollX: true,     
                 fixedHeader: true,       
                 processing: true,
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                ],
                 ajax: {
                     url: '/getOrderGallons',
                     dataSrc: ''

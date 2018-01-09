@@ -31,6 +31,13 @@ class CustomerController extends SettingController
 
     public function doMake(Request $request)
     {
+        if(!$request->phone){
+            if($request->phone != '0'){
+                $request->phone = '0000';
+                $request['phone'] = '0000';
+            }
+        }
+
         $this->validate($request, [
             'type' => 'required|in:end_customer,agent',
             'name' => 'required|string',

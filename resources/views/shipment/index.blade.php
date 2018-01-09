@@ -17,13 +17,13 @@ Pengiriman
             <table class="table table-hover" id="unfinished-shipment">
                 <thead>
                 <th>Status</th>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama Pengemudi</th>
                 <th>Jumlah Galon</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Update</th>
-                <th>Action</th>
+                <th>Aksi</th>
                 </thead>
             </table>
 
@@ -33,13 +33,13 @@ Pengiriman
             <table class="table table-hover" id="finished-shipment">
                 <thead>
                 <th>Status</th>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama Pengemudi</th>
                 <th>Jumlah Galon</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Update</th>
-                <th>Action</th>
+                <th>Aksi</th>
                 </thead>
             </table>
 
@@ -144,6 +144,20 @@ Pengiriman
                         fixedHeader: true,
                         processing: true,
                         'order':[4, 'asc'],
+                        select: {
+                            style: 'multi'
+                        },
+                        dom: 'Bfrtip',
+                        buttons: [
+                            { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                        ],
                         data:result,
                         columns:[
                             {data: null,
@@ -191,7 +205,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.updated_at){
-                                        return moment(data.updated_at).format('DD-MM-YYYY hh:mm:ss');
+                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -220,6 +234,20 @@ Pengiriman
                         fixedHeader: true,
                         processing: true,
                         'order':[4, 'desc'],
+                        select: {
+                            style: 'multi'
+                        },
+                        dom: 'Bfrtip',
+                        buttons: [
+                            { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                                columns: ':visible'
+                            }},
+                            { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                        ],
                         data:result,
                         columns:[
                             {data: null,
@@ -248,9 +276,30 @@ Pengiriman
 
                                     return gallon_total;
                                 }},
-                            {data:'delivery_at'},
-                            {data:'created_at'},
-                            {data:'updated_at'},
+                            {data: null,
+                                render: function (data) {
+                                    if(data.delivery_at){
+                                        return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                    }
+                                    return '-';
+                                }
+                            },
+                            {data: null,
+                                render: function (data) {
+                                    if(data.created_at){
+                                        return moment(data.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                                    }
+                                    return '-';
+                                }
+                            },
+                            {data: null,
+                                render: function (data) {
+                                    if(data.updated_at){
+                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                                    }
+                                    return '-';
+                                }
+                            },
                             {data: null,
                                 render: function(data){
                                     var shipment_url = "{{route("shipment.track", ":id")}}";

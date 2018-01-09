@@ -30,7 +30,7 @@ Pesan Customer
                             <table id="customer-table">
                                 <thead>
                                     <th></th>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Nama Customer</th>
                                     <th>Alamat</th>
                                     <th>No. Telepon</th>

@@ -25,7 +25,7 @@
                     <table class="table table-hover" id="deleteTable">
                         <thead>
                         <th><input type="checkbox" class="checkbox select-all"></th>
-                        <th>ID</th>
+                        <th>No</th>
                         <th>Nama Modul</th>
                         <th>Data ID</th>
                         <th>Author ID</th>

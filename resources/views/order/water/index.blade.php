@@ -15,7 +15,7 @@ List Pesanan Air
             <table class="table table-hover" id="water_order">
                 <thead>
                 <th>Status</th>
-                <th>ID</th>
+                <th>No</th>
                 <th>Admin</th>
                 {{--<th>Outsourcing Air</th>--}}
                 <th>Outsourcing Pengemudi</th>
@@ -25,7 +25,7 @@ List Pesanan Air
                 <th>Tgl Order</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
-                <th>Action</th>
+                <th>Aksi</th>
                 </thead>                
             </table>
             
@@ -84,7 +84,7 @@ List Pesanan Air
                           <th>Tipe Masalah</th>
                           <th>Deskripsi Masalah</th>
                           <th>Jumlah</th>
-                          <th>Action</th>
+                          <th>Aksi</th>
                       </thead>                      
                   </table>  
 
@@ -280,7 +280,21 @@ List Pesanan Air
                 scrollX: true,     
                 fixedHeader: true,       
                 processing: true,
-                'order':[7, 'desc'],
+                order:[7, 'desc'],
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                ],
                 ajax: {
                     url: '/getOrderWaters',
                     dataSrc: ''

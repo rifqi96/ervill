@@ -31,7 +31,7 @@ Buat Pengiriman
 	            <table class="table table-hover" id="customer-order">
 	                <thead>    
 	                	<th><input type="checkbox" class="checkbox" id="select-all"></th>
-		                <th>ID</th>
+		                <th>No</th>
 		                <th>Nama Customer</th>
 		                <th>Alamat Customer</th>
 						<th>No. Telepon</th>
@@ -95,7 +95,7 @@ Buat Pengiriman
 			                <table class="table table-hover" id="shipment">
 				                <thead>    
 				                	<th></th>         
-					                <th>ID</th>
+					                <th>No</th>
 					                <th>Nama Pengemudi</th>	            		             
 					                <th>Tgl Pengiriman</th>	                   
 				                </thead>
