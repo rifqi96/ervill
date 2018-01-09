@@ -100,6 +100,17 @@ class OrderWaterController extends OrderController
     {
         $max_buffer_qty = $this->countMaxBufferQuantity();
         $max_warehouse_qty = $this->countMaxWarehouseQuantity();
+
+        if($request->warehouse_qty && !$request->buffer_qty) {
+            $request->buffer_qty = 0;
+            $request['buffer_qty'] = 0;
+        }
+
+        if($request->buffer_qty && !$request->warehouse_qty) {
+            $request->warehouse_qty = 0;
+            $request['warehouse_qty'] = 0;
+        }
+
         $this->validate($request, [
 //            'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
