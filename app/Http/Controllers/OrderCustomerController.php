@@ -88,6 +88,13 @@ class OrderCustomerController extends OrderController
                 ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
         }
 
+        if(!$request->phone){
+            if($request->phone != '0'){
+                $request->phone = '0000';
+                $request['phone'] = '0000';
+            }
+        }
+
         if($request->new_customer){
             // If new customer //
             $this->validate($request, [

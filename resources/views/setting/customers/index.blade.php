@@ -40,7 +40,7 @@ List Customer
 
                 <div class="modal-body">                                           
                     <div class="form-group">
-                        <label><strong>Galon Sewa</strong></label>
+                        <label><strong>Galon Pinjam</strong></label>
                         <p class="form-control-static" id="rent"></p>
                     </div>
                     <div class="form-group">
@@ -212,7 +212,7 @@ List Customer
                     {data: null,
                         render: function (data) {
                             if(data.created_at){
-                                return moment(data.created_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                                return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
                             }
                             return '-';
                         }
@@ -220,7 +220,7 @@ List Customer
                     {data: null,
                         render: function (data) {
                             if(data.updated_at){
-                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY hh:mm:ss');
+                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
                             }
                             return '-';
                         }

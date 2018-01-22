@@ -53,7 +53,7 @@ Pesan Customer
                                 <p class="form-control-static">
                                     <select id="purchase_type" name="purchase_type" class="form-control">
                                         <option value="">--</option>
-                                        <option value="rent">Sewa Galon</option>
+                                        <option value="rent">Pinjam Galon</option>
                                         <option value="purchase">Beli Galon</option>      
                                         <option value="non_ervill">Tukar Galon Non-Ervill</option>
                                     </select>
@@ -99,7 +99,7 @@ Pesan Customer
                                 <p class="form-control-static">
                                     <select id="add_gallon_purchase_type" name="add_gallon_purchase_type" class="form-control">
                                         <option value="">--</option>
-                                        <option value="rent">Sewa Galon</option>
+                                        <option value="rent">Pinjam Galon</option>
                                         <option value="purchase">Beli Galon</option>      
                                         <option value="non_ervill">Tukar Galon Non-Ervill</option>
                                     </select>
@@ -148,7 +148,7 @@ Pesan Customer
 
                 <div class="modal-body">                                           
                     <div class="form-group">
-                        <label><strong>Galon Sewa</strong></label>
+                        <label><strong>Galon Pinjam</strong></label>
                         <p class="form-control-static" id="rent"></p>
                     </div>
                     <div class="form-group">
