@@ -374,8 +374,7 @@ List Pesanan Customer
                                     return result;
                                 }}
                         ],
-                        processing: true,
-                        'order':[8, 'desc']
+                        processing: true
                     });
 
                     $('#customer-order').on('click', '.issueModal', function () {

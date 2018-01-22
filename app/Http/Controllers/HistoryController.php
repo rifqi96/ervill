@@ -75,10 +75,24 @@ class HistoryController extends Controller
                 $old_value_arr['Nama'] = $old_value[0];
                 $old_value_arr['Alamat'] = $old_value[1];
                 $old_value_arr['No. Telepon'] = $old_value[2];
+                if($old_value[3] == "end_customer"){
+                    $type = "End Customer";
+                }
+                else{
+                    $type = "Agen";
+                }
+                $old_value_arr['Jenis'] = $type;
 
                 $new_value_arr['Nama'] = $new_value[0];
                 $new_value_arr['Alamat'] = $new_value[1];
                 $new_value_arr['No. Telepon'] = $new_value[2];
+                if($new_value[3] == "end_customer"){
+                    $type = "End Customer";
+                }
+                else{
+                    $type = "Agen";
+                }
+                $new_value_arr['Jenis'] = $type;
             }
             else if($edit_history->module_name == "Outsourcing Driver"){
                 $old_value_arr['Nama'] = $old_value[0];

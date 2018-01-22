@@ -53,6 +53,7 @@ class Customer extends Model
         $this->name = $data->name;
         $this->address = $data->address;
         $this->phone = $data->phone;
+        $this->type = $data->type;
 
         return ($this->save());
     }

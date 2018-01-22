@@ -92,7 +92,14 @@ List Customer
                     <div class="form-group">
                         <label for="phone"><strong>No. Telepon</strong></label>
                         <input id="phone" type="text" class="form-control" name="phone">
-                    </div>    
+                    </div>
+                    <div class="form-group">
+                        <label for="type"><strong>Jenis Customer</strong></label>
+                        <select name="type" id="type" class="form-control">
+                            <option value="end_customer">End Customer</option>
+                            <option value="agent">Agen</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
@@ -172,6 +179,7 @@ List Customer
                         $('#name').val(customers[i].name);
                         $('#address').val(customers[i].address);
                         $('#phone').val(customers[i].phone);
+                        $('#type').val(customers[i].type);
                         $('#input_id').val(customers[i].id);
                     }
                 }
@@ -233,7 +241,8 @@ List Customer
                                 'name': row.name,
                                 'address': row.address,
                                 'phone': row.phone,
-                                'customer_gallons': row.customer_gallons
+                                'customer_gallons': row.customer_gallons,
+                                'type': row.type
                             });
                             return '<button class="btn btn-sm confirm-btn" type="button" data-toggle="modal" data-target="#assetModal" data-index="' + row.id + '">Lihat Aset</button>'+
                             '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
