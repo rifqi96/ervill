@@ -80,7 +80,7 @@ Pesan Customer
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Jumlah Gallon</label>
+                        <label class="col-sm-2 form-control-label">Jumlah Galon Refill</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="" min="0"></p>
                         </div>
@@ -257,6 +257,7 @@ Pesan Customer
                     //reset fields
                     $('#quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
                     $('#quantity').attr('max', {{$inventory->quantity}});
+                    $('#quantity').closest('p').closest('div').siblings('label').text('Jumlah Galon')
                     $('#add_gallon_purchase_type').val('');
                     $('#add_gallon_quantity').val('');
                     $('#add_gallon').attr('checked',false);
@@ -273,6 +274,7 @@ Pesan Customer
                     $('#new-customer-input textarea').val("");
 
                     //$('#quantity').attr('placeholder','Pilih Customer');
+                    $('#quantity').closest('p').closest('div').siblings('label').text('Jumlah Galon Refill')
                     $('#add_gallon_div_checkbox').fadeIn(); 
                 }
             });

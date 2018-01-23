@@ -234,8 +234,8 @@ List Pesanan Galon
             });
 
             $('#gallon_order').dataTable({
-                'order':[5, 'desc'],
-                scrollX: true,     
+                order:[5, 'desc'],
+//                scrollX: true,
                 fixedHeader: true,       
                 processing: true,
                 select: {

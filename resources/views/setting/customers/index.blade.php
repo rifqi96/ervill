@@ -7,10 +7,10 @@ List Customer
 @section('content')
     <div class="row">
         <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+            {{--<header class="box-typical-header panel-heading" style="margin-bottom: 30px;">--}}
                 {{--<h3 class="panel-title"></h3>--}}
-                <a href="{{route('setting.customers.make')}}"><button class="btn btn-primary">Tambah Customer Baru</button></a>
-            </header>
+                {{--<a href="{{route('setting.customers.make')}}"><button class="btn btn-primary">Tambah Customer Baru</button></a>--}}
+            {{--</header>--}}
             <table class="table table-hover" id="setting_customers">
                 <thead>
                 <th>No</th>

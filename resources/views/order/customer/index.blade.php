@@ -77,25 +77,25 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group row customer-table-container" >
-                        <div class="col-sm-12">
-                            <h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>
-                            <table id="customer-table">
-                                <thead>
-                                <th></th>
-                                <th>No</th>
-                                <th>Nama Customer</th>
-                                <th>Alamat</th>
-                                <th>No. Telepon</th>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
+                    {{--<div class="form-group row customer-table-container" >--}}
+                        {{--<div class="col-sm-12">--}}
+                            {{--<h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>--}}
+                            {{--<table id="customer-table">--}}
+                                {{--<thead>--}}
+                                {{--<th></th>--}}
+                                {{--<th>No</th>--}}
+                                {{--<th>Nama Customer</th>--}}
+                                {{--<th>Alamat</th>--}}
+                                {{--<th>No. Telepon</th>--}}
+                                {{--</thead>--}}
+                            {{--</table>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                     <div class="form-group" id="purchase_type_div">
                         <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
                         <select id="purchase_type" name="purchase_type" class="form-control">
                             <option value="">--</option>
-                            <option value="rent">Sewa Galon</option>
+                            <option value="rent">Pinjam Galon</option>
                             <option value="purchase">Beli Galon</option>      
                             <option value="non_ervill">Tukar Galon Non-Ervill</option>
                         </select>
@@ -114,7 +114,7 @@ List Pesanan Customer
                             <label for="add_gallon_purchase_type"><strong>Jenis Pembelian Galon Tambah</strong></label>
                             <select id="add_gallon_purchase_type" name="add_gallon_purchase_type" class="form-control">
                                 <option value="">--</option>
-                                <option value="rent">Sewa Galon</option>
+                                <option value="rent">Pinjam Galon</option>
                                 <option value="purchase">Beli Galon</option>      
                                 <option value="non_ervill">Tukar Galon Non-Ervill</option>
                             </select>
@@ -155,6 +155,7 @@ List Pesanan Customer
                 <div class="modal-footer">
                     {{csrf_field()}}
                     <input type="hidden" name="id" value="" id="edit-id">
+                    <input type="hidden" name="customer_id" value="" id="customer-id">
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                 </div>
@@ -247,8 +248,8 @@ List Pesanan Customer
                 dataType: 'json',
                 success: function(result){
                     $('#customer-order').dataTable({
-                        order:[8, 'asc'],
-                        scrollX: true,
+                        order:[1, 'desc'],
+//                        scrollX: true,
                         fixedHeader: true,
                         select: {
                             style: 'multi'
@@ -439,6 +440,8 @@ List Pesanan Customer
                             }
                         }
 
+                        $('#customer-id').val(order_data.customer_id);
+
                         var inventory = JSON.parse('{!! $inventory !!}');
 
                         //new customer or not
@@ -501,30 +504,30 @@ List Pesanan Customer
                         }
                         // $('#edit-status').val(order_data.status);
 
-                        $('#customer-table').DataTable().destroy();
-                        $('#customer-table').dataTable({
-                            scrollX: true,
-                            fixedHeader: true,
-                            ajax: {
-                                url: '/getCustomers',
-                                dataSrc: ''
-                            },
-                            columns: [
-                                {data: null,
-                                    render: function (data, type, row, meta) {
-                                        if(data.id == order_data.customer.id){
-                                            return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'" checked>';
-                                        }
-                                        return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'">';
-                                    }},
-                                {data: 'id'},
-                                {data: 'name'},
-                                {data: 'address'},
-                                {data: 'phone'}
-                            ],
-                            processing: true,
-                            'order':[1, 'desc']
-                        });
+//                        $('#customer-table').DataTable().destroy();
+//                        $('#customer-table').dataTable({
+//                            scrollX: true,
+//                            fixedHeader: true,
+//                            ajax: {
+//                                url: '/getCustomers',
+//                                dataSrc: ''
+//                            },
+//                            columns: [
+//                                {data: null,
+//                                    render: function (data, type, row, meta) {
+//                                        if(data.id == order_data.customer.id){
+//                                            return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'" checked>';
+//                                        }
+//                                        return '<input class="radio customer-id" type="radio" name="customer_id" value="'+data.id+'">';
+//                                    }},
+//                                {data: 'id'},
+//                                {data: 'name'},
+//                                {data: 'address'},
+//                                {data: 'phone'}
+//                            ],
+//                            processing: true,
+//                            'order':[1, 'desc']
+//                        });
                     });
 
                     $('#customer-table').on('click','.customer-id', function(){

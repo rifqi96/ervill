@@ -34,6 +34,12 @@
             <span class="lbl">Inventori</span>
         </a>
     </li>
+    <li class="{{$slug=="customers"?"opened":""}}">
+        <a href="{{route("setting.customers.index")}}">
+            <i class="font-icon font-icon-users"></i>
+            <span class="lbl">Customer</span>
+        </a>
+    </li>
     @if(auth()->user()->role->name == 'superadmin')
     <li class="with-sub {{$module=="history"?"opened":""}}">
                 <span>
@@ -56,9 +62,9 @@
                     <span class="lbl">Pengaturan</span>
                 </span>
         <ul>
-            <li>
-                {!!$slug=="customers"?'<span class="lbl">Customer</span>':'<a href="'.route("setting.customers.index").'"><span class="lbl">Customer</span></a>'!!}
-            </li>
+            {{--<li>--}}
+                {{--{!!$slug=="customers"?'<span class="lbl">Customer</span>':'<a href="'.route("setting.customers.index").'"><span class="lbl">Customer</span></a>'!!}--}}
+            {{--</li>--}}
             <li>
                 {!!$slug=="outsourcing"?'<span class="lbl">Outsourcing</span>':'<a href="'.route("setting.outsourcing.index").'"><span class="lbl">Outsourcing</span></a>'!!}
             </li>

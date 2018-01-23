@@ -12,6 +12,7 @@ class CustomerController extends SettingController
     public function __construct(){
         parent::__construct();
         $this->middleware('SuperadminAndAdmin');
+        $this->data['module'] = '';
         $this->data['slug'] = 'customers';
     }
 

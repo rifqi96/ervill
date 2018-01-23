@@ -277,7 +277,7 @@ List Pesanan Air
             });
 
             $('#water_order').dataTable({
-                scrollX: true,     
+//                scrollX: true,
                 fixedHeader: true,       
                 processing: true,
                 order:[7, 'desc'],
