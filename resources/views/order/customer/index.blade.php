@@ -247,6 +247,7 @@ List Pesanan Customer
                 dataType: 'json',
                 success: function(result){
                     $('#customer-order').dataTable({
+                        order:[8, 'asc'],
                         scrollX: true,
                         fixedHeader: true,
                         select: {

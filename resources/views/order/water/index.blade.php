@@ -141,11 +141,11 @@ List Pesanan Air
                     </div>                     
                     <div class="form-group">
                         <label for="buffer_qty"><strong>Jumlah Galon Buffer</strong></label>
-                        <input id="buffer_qty" type="number" class="form-control" name="buffer_qty" min="1">
+                        <input id="buffer_qty" type="number" class="form-control" name="buffer_qty" min="0">
                     </div>
                     <div class="form-group">
                         <label for="warehouse_qty"><strong>Jumlah Galon Gudang</strong></label>
-                        <input id="warehouse_qty" type="number" class="form-control" name="warehouse_qty" min="1">
+                        <input id="warehouse_qty" type="number" class="form-control" name="warehouse_qty" min="0">
                     </div>
                     <div class="form-group">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>

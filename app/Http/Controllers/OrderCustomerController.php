@@ -52,6 +52,8 @@ class OrderCustomerController extends OrderController
             }
             ])
             ->has('order')
+            ->join('orders', 'orders.id', '=', 'order_customers.order_id')
+            ->orderBy('orders.created_at', 'desc')
             ->get();
     }
 
