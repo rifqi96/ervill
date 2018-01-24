@@ -611,6 +611,102 @@ class OrderCustomer extends Model
         //     $filled_gallon->quantity = 0;
         // }
 
+        if($this->is_new=='false') {
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->additional_quantity;
+
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+
+                            } else {
+                                $customerGallon->save();
+
+                            }
+
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "purchase") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "purchase") {
+                            $customerGallon->qty -= $this->additional_quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "non_ervill") {
+//                        $non_ervill_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->additional_quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }else if($this->is_new=='true'){
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->order->quantity;
+
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+
+                            } else {
+                                $customerGallon->save();
+                                
+                            }
+
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "purchase") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "purchase") {
+                            $customerGallon->qty -= $this->order->quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "non_ervill") {
+//                        $non_ervill_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->order->quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+
         if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
             return false;
         }
