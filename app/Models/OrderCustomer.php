@@ -671,7 +671,7 @@ class OrderCustomer extends Model
 
                             } else {
                                 $customerGallon->save();
-                                
+
                             }
 
                             break;
@@ -770,6 +770,133 @@ class OrderCustomer extends Model
         // else if($filled_gallon->quantity<0){
         //     $filled_gallon->quantity = 0;
         // }
+
+        if($this->is_new=='false') {
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->additional_quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
+                    }
+
+                } else if ($this->purchase_type == "purchase") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "purchase") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->additional_quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="purchase";
+                        $customerGallonNew->save();
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "non_ervill") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->additional_quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="non_ervill";
+                        $customerGallonNew->save();
+                    }
+                }
+
+            }
+        }else if($this->is_new=='true'){
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->order->quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
+                    }
+                } else if ($this->purchase_type == "purchase") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "purchase") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->order->quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    if($this->customer->customerGallons){
+                        foreach ($this->customer->customerGallons as $customerGallon) {
+                            if ($customerGallon->type == "non_ervill") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty += $this->order->quantity;
+
+                                $customerGallon->save();
+
+                                break;
+                            }
+                        }
+                    }else{
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
+                    }
+                }
+
+            }
+        }
 
         if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() ){
             return false;
