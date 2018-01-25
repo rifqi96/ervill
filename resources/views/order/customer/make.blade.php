@@ -80,7 +80,7 @@ Pesan Customer
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row" id="nomor_struk_checkbox_div">
                         <label class="col-sm-2 form-control-label" for="change_nomor_struk">Ganti Nomor Struk ?</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="change_nomor_struk" id="change_nomor_struk" value="change_nomor_struk"></p>
@@ -95,9 +95,21 @@ Pesan Customer
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Galon Refill</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="" min="0"></p>
+                            <p class="form-control-static"><input id="quantity" type="number" class="form-control" name="quantity" placeholder="Pilih customer terlebih dahulu" max="" min="0"></p>
                         </div>
                     </div>
+                    {{-- <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Jumlah Galon Kosong(Ervill)</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input id="empty_quantity" type="number" class="form-control" name="empty_quantity" max="" min="0"></p>
+                        </div>
+                    </div> --}}
+                    {{-- <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Jumlah Galon Kosong(Non-Ervill)</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input id="empty_non_quantity" type="number" class="form-control" name="empty_non_quantity" max="" min="0"></p>
+                        </div>
+                    </div> --}}
                     <div class="form-group row" id="add_gallon_div_checkbox">
                         <label class="col-sm-2 form-control-label" for="add_gallon">Tambah Galon ?</label>
                         <div class="col-sm-10">
@@ -277,6 +289,11 @@ Pesan Customer
                     $('#add_gallon').attr('checked',false);
                     $('#add_gallon_div').fadeOut(); 
                     $('#add_gallon_div_checkbox').fadeOut(); 
+                    $('#nomor_struk').val('');
+                    $('#nomor_struk_div').fadeOut();
+                    $('#change_nomor_struk').attr('checked',false);
+                    $('#nomor_struk_checkbox_div').fadeOut();
+
                 }
                 else{
                     $(this).val("");
@@ -287,9 +304,10 @@ Pesan Customer
                     $('#new-customer-input input').val("");
                     $('#new-customer-input textarea').val("");
 
-                    //$('#quantity').attr('placeholder','Pilih Customer');
+                    $('#quantity').attr('placeholder','Pilih customer terlebih dahulu');
                     $('#quantity').closest('p').closest('div').siblings('label').text('Jumlah Galon Refill')
                     $('#add_gallon_div_checkbox').fadeIn(); 
+                    $('#nomor_struk_checkbox_div').fadeIn();
                 }
             });
 
@@ -310,13 +328,54 @@ Pesan Customer
                     data: {customer_id: $(this).val()},
                     success: function(result){
                         $('#quantity').val('');
-                        //$('#quantity').attr('placeholder','Jumlah Gallon (Galon Customer: '+result+')');
-                        //$('#quantity').attr('max', result);
+                        $('#quantity').attr('placeholder','Jumlah Galon Customer: '+result[0]);
+                        $('#quantity').attr('max', result[0]);
+
+                        // $('#empty_quantity').val('');
+                        // $('#empty_quantity').attr('placeholder','');                 
+                        // $('#empty_non_quantity').val('');
+                        // $('#empty_non_quantity').attr('placeholder','');  
 
                         //reset add_gallon fields
                         $('#add_gallon_quantity').val('');
-                        $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
+                        $('#add_gallon_quantity').attr('placeholder','Jumlah Galon (Stock Gudang: {{$inventory->quantity}})');
                         $('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
+
+                        //placeholder and max listener
+                        // $('#quantity').on('change', function () {
+                        //     //var max_empty_non_quantity = 0;      
+                        //     var max_empty_quantity = 0;                      
+                        //     var empty_quantity = $('#empty_quantity').val();
+                        //     var quantity_val = parseInt($('#quantity').val());
+                        //     var empty_quantity_val = parseInt($('#empty_quantity').val());
+                        //     var max_empty_quantity = quantity_val+result[1];
+                        //     //var empty_non_quantity_val = parseInt($('#empty_non_quantity').val());
+
+                        //     //count max_empty_non_quantity
+                        //     // if($('#empty_quantity').val()==""){
+                        //     //     max_empty_non_quantity = quantity_val+result[1];
+                        //     // }else{
+                        //     //    if(empty_quantity < result[1]){
+                        //     //         max_empty_non_quantity = $('#quantity').val();
+                        //     //     }else{
+                        //     //         max_empty_non_quantity = quantity_val+result[1]-empty_quantity_val;
+                        //     //     } 
+                        //     // }
+                            
+
+                        //     //count max_empty_quantity
+                        //     // if($('#empty_non_quantity').val()==""){
+                        //     //     max_empty_quantity = quantity_val+result[1];
+                        //     // }else{
+                        //     //     max_empty_quantity = result[1] + quantity_val - empty_non_quantity_val;
+                        //     // }
+                            
+
+                        //     $('#empty_quantity').attr('placeholder','Max Jumlah Galon: '+max_empty_quantity);
+                        //     $('#empty_quantity').attr('max',max_empty_quantity);
+                        //     // $('#empty_non_quantity').attr('placeholder','Max Jumlah Galon: '+max_empty_non_quantity);
+                        //     // $('#empty_non_quantity').attr('max', max_empty_non_quantity);
+                        //});
                     }
                 });      
                 
@@ -324,15 +383,17 @@ Pesan Customer
 
             $('#quantity').on('change', function () {
                 var max_add_gallon_quantity = {{$inventory->quantity}} - $(this).val();
-                $('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_add_gallon_quantity+')');
+                $('#add_gallon_quantity').attr('placeholder','Jumlah Galon (Stock Gudang: '+max_add_gallon_quantity+')');
                 $('#add_gallon_quantity').attr('max', max_add_gallon_quantity);
             });
 
-            $('#add_gallon_quantity').on('change', function () {
-                var max_quantity = {{$inventory->quantity}} - $(this).val();
-                $('#quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_quantity+')');
-                $('#quantity').attr('max', max_quantity);
-            });
+            
+
+            // $('#add_gallon_quantity').on('change', function () {
+            //     var max_quantity = {{$inventory->quantity}} - $(this).val();
+            //     $('#quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: '+max_quantity+')');
+            //     $('#quantity').attr('max', max_quantity);
+            // });
 
             //add more gallon
             $('#add_gallon').on('change', function () {

@@ -131,6 +131,8 @@ class OrderCustomerController extends OrderController
             $this->validate($request, [
                 'customer_id' => 'required|integer|exists:customers,id',
                 'delivery_at' => 'required|date'
+                // 'empty_quantity' => 'required|integer'
+                // 'empty_non_quantity' => 'required|integer'
             ]);
 
             //if change nomor_struk

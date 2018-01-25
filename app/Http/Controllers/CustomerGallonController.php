@@ -13,10 +13,15 @@ class CustomerGallonController extends Controller
 
     public function getCustomerGallon(Request $request){
     	$chosenCustomerGalllons = CustomerGallon::where('customer_id',$request->customer_id)->get();
+
     	$gallon_quantity = 0;
+        $gallon_borrow = 0;
     	foreach ($chosenCustomerGalllons as $chosenCustomerGalllon) {
+            if($chosenCustomerGalllon->type=="rent"){
+                $gallon_borrow += $chosenCustomerGalllon->qty;
+            }
     		$gallon_quantity += $chosenCustomerGalllon->qty;
     	}
-    	return $gallon_quantity;
+    	return [$gallon_quantity,$gallon_borrow];
     }
 }

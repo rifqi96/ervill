@@ -14,6 +14,7 @@ List Pesanan Customer
 
             <table class="table table-hover" id="customer-order">
                 <thead>
+                <th>Aksi</th>
                 <th>Status</th>
                 <th>No</th>
                 <th>No Struk</th>
@@ -27,7 +28,7 @@ List Pesanan Customer
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
                 <th>Admin</th>
-                <th>Aksi</th>
+               
                 </thead>
             </table>
         </div>
@@ -249,7 +250,7 @@ List Pesanan Customer
                 dataType: 'json',
                 success: function(result){
                     $('#customer-order').dataTable({
-                        order:[1, 'desc'],
+                        order:[2, 'desc'],
 //                        scrollX: true,
                         fixedHeader: true,
                         select: {
@@ -268,6 +269,37 @@ List Pesanan Customer
                         ],
                         data:result,
                         columns: [
+                            {data: null,
+                                render: function(data, type, row, meta){
+                                    var result = "";
+                                    if(data.status != "Draft"){
+                                        if(data.shipment){
+                                            var shipment_url = "{{route("shipment.track", ":id")}}";
+                                            shipment_url = shipment_url.replace(':id', data.shipment.id);
+                                            result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>';
+                                            // if(data.status == "Proses"){
+                                            //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
+                                            // }
+                                            // else if(data.status == "Bermasalah" || data.status == "Selesai"){
+                                            //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
+                                            // }
+                                        }
+                                    }
+
+                                    if(data.order.issues.length > 0){
+                                        result += '<button class="btn btn-sm btn-warning issueModal" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Lihat Masalah</button>';
+                                    }
+                                    if(data.status!= "Draft" && data.status != "Proses"){
+                                        result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
+                                    }
+
+                                    result +=                                        
+                                        '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                        '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+
+                                    return result;
+                                }
+                            },
                             {data: null,
                                 render: function(data, type, row, meta){
                                     if(data.status == "Selesai"){
@@ -346,37 +378,8 @@ List Pesanan Customer
                                     return data.order.user.full_name;
                                 }
                                 return '<i>Data admin tidak ditemukan</i>';
-                            }},
-                            {data: null,
-                                render: function(data, type, row, meta){
-                                    var result = "";
-                                    if(data.status != "Draft"){
-                                        if(data.shipment){
-                                            var shipment_url = "{{route("shipment.track", ":id")}}";
-                                            shipment_url = shipment_url.replace(':id', data.shipment.id);
-                                            result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>';
-                                            // if(data.status == "Proses"){
-                                            //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
-                                            // }
-                                            // else if(data.status == "Bermasalah" || data.status == "Selesai"){
-                                            //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
-                                            // }
-                                        }
-                                    }
+                            }}
 
-                                    if(data.order.issues.length > 0){
-                                        result += '<button class="btn btn-sm btn-warning issueModal" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Lihat Masalah</button>';
-                                    }
-                                    if(data.status!= "Draft" && data.status != "Proses"){
-                                        result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
-                                    }
-
-                                    result +=                                        
-                                        '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
-                                        '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
-
-                                    return result;
-                                }}
                         ],
                         processing: true
                     });
