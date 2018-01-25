@@ -54,11 +54,41 @@ class OrderCustomer extends Model
 
     public function doMake($gallon_data, $customer_id, $author_id)
     {
+        if($gallon_data->change_nomor_struk){
+            while( strlen($gallon_data->nomor_struk) < 7 ){
+                $gallon_data->nomor_struk = '0'.$gallon_data->nomor_struk;
+            }
+
+            $oc_struk = OrderCustomer::where([
+                ['customer_id',$customer_id],
+                ['nomor_struk','OC'.$gallon_data->nomor_struk]
+            ])->get();
+
+            if(count($oc_struk)==0){
+                return false;
+            }
+            $this->nomor_struk = 'OC'.$gallon_data->nomor_struk;
+        }else{
+            //get latest nomor struk
+            $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
+            if($latest_nomor_struk_str){
+                $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
+                while( strlen($new_nomor_struk) < 7 ){
+                    $new_nomor_struk = '0'.$new_nomor_struk;
+                }
+                $this->nomor_struk = 'OC'.$new_nomor_struk;
+            }else{
+                $this->nomor_struk = 'OC0000001';
+            }
+        }    
+
         $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $customer_id, $author_id);
 
         if(!$order_data){
             return false;
         }
+
+
 
         $this->order_id = $order_data->id;
         $this->customer_id = $customer_id;
@@ -75,6 +105,10 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
+
+        
+        
+
 
         return $this->save();
     }
@@ -774,7 +808,7 @@ class OrderCustomer extends Model
         if($this->is_new=='false') {
             if ($this->purchase_type) {
                 if ($this->purchase_type == "rent") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "rent") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -785,6 +819,11 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
@@ -794,7 +833,7 @@ class OrderCustomer extends Model
                     }
 
                 } else if ($this->purchase_type == "purchase") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "purchase") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -805,6 +844,11 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="purchase";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
@@ -813,7 +857,7 @@ class OrderCustomer extends Model
                         $customerGallonNew->save();
                     }
                 } else if ($this->purchase_type == "non_ervill") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "non_ervill") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -824,6 +868,11 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->additional_quantity;
+                        $customerGallonNew->type="non_ervill";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
@@ -837,7 +886,7 @@ class OrderCustomer extends Model
         }else if($this->is_new=='true'){
             if ($this->purchase_type) {
                 if ($this->purchase_type == "rent") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "rent") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -848,6 +897,11 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="rent";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
@@ -856,7 +910,7 @@ class OrderCustomer extends Model
                         $customerGallonNew->save();
                     }
                 } else if ($this->purchase_type == "purchase") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "purchase") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -867,15 +921,20 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="purchase";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
                         $customerGallonNew->qty=$this->order->quantity;
-                        $customerGallonNew->type="rent";
+                        $customerGallonNew->type="purchase";
                         $customerGallonNew->save();
                     }
                 } else if ($this->purchase_type == "non_ervill") {
-                    if($this->customer->customerGallons){
+                    if(count($this->customer->customerGallons)>0){
                         foreach ($this->customer->customerGallons as $customerGallon) {
                             if ($customerGallon->type == "non_ervill") {
 //                        $outgoing_gallon->quantity -= $this->additional_quantity;
@@ -886,11 +945,16 @@ class OrderCustomer extends Model
                                 break;
                             }
                         }
+                        $customerGallonNew= new CustomerGallon();
+                        $customerGallonNew->customer_id=$this->customer->id;
+                        $customerGallonNew->qty=$this->order->quantity;
+                        $customerGallonNew->type="non_ervill";
+                        $customerGallonNew->save();
                     }else{
                         $customerGallonNew= new CustomerGallon();
                         $customerGallonNew->customer_id=$this->customer->id;
                         $customerGallonNew->qty=$this->order->quantity;
-                        $customerGallonNew->type="rent";
+                        $customerGallonNew->type="non_ervill";
                         $customerGallonNew->save();
                     }
                 }

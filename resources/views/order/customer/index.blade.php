@@ -16,6 +16,7 @@ List Pesanan Customer
                 <thead>
                 <th>Status</th>
                 <th>No</th>
+                <th>No Struk</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -283,6 +284,7 @@ List Pesanan Customer
                                     }
                                 }},
                             {data: 'id'},
+                            {data: 'nomor_struk'},
                             {data: null,
                             render: function(data){
                                 if(data.customer){

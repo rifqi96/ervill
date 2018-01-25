@@ -79,6 +79,19 @@ Pesan Customer
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label" for="change_nomor_struk">Ganti Nomor Struk ?</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="change_nomor_struk" id="change_nomor_struk" value="change_nomor_struk"></p>
+                        </div>
+                    </div>
+                    <div class="form-group row" id="nomor_struk_div">
+                        <label class="col-sm-2 form-control-label">Nomor Struk</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static"><input id="nomor_struk" type="number" class="form-control" name="nomor_struk" min="1" max="{{$latest_nomor_struk}}" ></p>
+                        </div>                        
+                    </div>
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Jumlah Galon Refill</label>
                         <div class="col-sm-10">
@@ -179,6 +192,7 @@ Pesan Customer
 
             $('#new-customer-input').hide();
             $('#add_gallon_div').hide();
+            $('#nomor_struk_div').hide();   
             $('#empty_gallon').prop('checked', true);
             $('#empty_gallon').val("1");
 
@@ -332,6 +346,15 @@ Pesan Customer
                 }
                 else{
                     $('#add_gallon_div').fadeOut(); 
+                }
+            });
+
+            $('#change_nomor_struk').on('change',function(){
+                if(this.checked){
+                    $('#nomor_struk_div').fadeIn();                    
+                }
+                else{
+                    $('#nomor_struk_div').fadeOut(); 
                 }
             });
         });

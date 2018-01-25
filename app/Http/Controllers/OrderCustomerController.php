@@ -37,6 +37,10 @@ class OrderCustomerController extends OrderController
         $this->data['inventory'] = Inventory::find(3);
         $this->data['customer_gallons'] = CustomerGallon::all();
 
+        $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
+        $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
+        $this->data['latest_nomor_struk'] = $new_nomor_struk;
+
         return view('order.customer.make', $this->data);
     }
 
@@ -129,6 +133,13 @@ class OrderCustomerController extends OrderController
                 'delivery_at' => 'required|date'
             ]);
 
+            //if change nomor_struk
+            if($request->change_nomor_struk){
+                $this->validate($request, [               
+                    'nomor_struk' => 'required|integer'
+                ]);             
+            }
+
             if($request->add_gallon){
                 $this->validate($request, [
                     'quantity' => 'required|integer|min:0',
@@ -154,7 +165,7 @@ class OrderCustomerController extends OrderController
 
         if(!(new OrderCustomer())->doMake($request, $customer_id, auth()->id())){
             return back()
-                ->withErrors(['message' => 'There is something wrong, please contact admin']);
+                ->withErrors(['message' => 'Input data salah, harap hubungi admin']);
         }
 
         return back()
