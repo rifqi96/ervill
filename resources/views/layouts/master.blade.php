@@ -44,6 +44,15 @@
     $(".ajax-btn").click(function(){
         $(this).attr('disabled','disabled');
     });
+    //disable scrolling feature in input type number
+    $('form').on('focus', 'input[type=number]', function (e) {
+      $(this).on('mousewheel.disableScroll', function (e) {
+        e.preventDefault()
+      });
+    });
+    $('form').on('blur', 'input[type=number]', function (e) {
+      $(this).off('mousewheel.disableScroll');
+    });
 </script>
 </body>
 </html>

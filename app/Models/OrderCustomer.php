@@ -54,11 +54,41 @@ class OrderCustomer extends Model
 
     public function doMake($gallon_data, $customer_id, $author_id)
     {
+        if($gallon_data->change_nomor_struk){
+            while( strlen($gallon_data->nomor_struk) < 7 ){
+                $gallon_data->nomor_struk = '0'.$gallon_data->nomor_struk;
+            }
+
+            $oc_struk = OrderCustomer::where([
+                ['customer_id',$customer_id],
+                ['nomor_struk','OC'.$gallon_data->nomor_struk]
+            ])->get();
+
+            if(count($oc_struk)==0){
+                return false;
+            }
+            $this->nomor_struk = 'OC'.$gallon_data->nomor_struk;
+        }else{
+            //get latest nomor struk
+            $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
+            if($latest_nomor_struk_str){
+                $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
+                while( strlen($new_nomor_struk) < 7 ){
+                    $new_nomor_struk = '0'.$new_nomor_struk;
+                }
+                $this->nomor_struk = 'OC'.$new_nomor_struk;
+            }else{
+                $this->nomor_struk = 'OC0000001';
+            }
+        }    
+
         $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $customer_id, $author_id);
 
         if(!$order_data){
             return false;
         }
+
+
 
         $this->order_id = $order_data->id;
         $this->customer_id = $customer_id;
@@ -75,6 +105,10 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
+
+        
+        
+
 
         return $this->save();
     }
