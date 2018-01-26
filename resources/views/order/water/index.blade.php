@@ -278,7 +278,9 @@ List Pesanan Air
 
             $('#water_order').dataTable({
 //                scrollX: true,
-                fixedHeader: true,       
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 order:[7, 'desc'],
                 select: {

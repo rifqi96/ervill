@@ -177,8 +177,9 @@ List User
             });
 
             $('#setting_user_management').dataTable({
-                scrollX: true, 
-                fixedHeader: true,       
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 order:[6, 'desc'],
                 ajax: {

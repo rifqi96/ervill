@@ -78,8 +78,9 @@ Persediaan Galon
             });
 
             $('#gallon_inventory').dataTable({
-                scrollX: true,  
-                fixedHeader: true,       
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 'order':[0, 'asc'],
                 select: {

@@ -153,7 +153,8 @@ Detil Pesanan
 				success:function (result) {
                     $('#customer-order').dataTable({
                         scrollX: true,
-                        fixedHeader: true,
+                        scrollY: 400,
+                        scrollCollapse: true,
                         processing: true,
                         order:[8, 'desc'],
                         data:result.order_customers,

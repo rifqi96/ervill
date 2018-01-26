@@ -92,8 +92,9 @@
         $(document).ready(function () {
             $('#return').dataTable({
                 order:[1, 'desc'],
-//                scrollX: true,
-                fixedHeader: true,
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 select: {
                     style: 'multi'

@@ -116,8 +116,9 @@ Overview
             var recent_issues = JSON.parse('{!! $recent_issues !!}');
 
             $('#recent-orders').dataTable({
-                scrollX: true,
-                fixedHeader: true,
+                scrollX:true,
+                scrollY: 250,
+                scrollCollapse:true,
                 processing: true,
                 order:[7, 'desc'],
                 data:recent_orders,
@@ -204,8 +205,9 @@ Overview
             });
 
             $('#recent-issues').dataTable({
-                scrollX: true,
-                fixedHeader: true,
+                scrollX:true,
+                scrollY: 250,
+                scrollCollapse:true,
                 processing: true,
                 order:[4, 'desc'],
                 data:recent_issues,

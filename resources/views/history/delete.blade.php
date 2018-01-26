@@ -165,8 +165,9 @@
             });
 
             $('#deleteTable').dataTable({
-                scrollX: true,
-                fixedHeader: true,
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 'order':[6, 'desc'],
                 data:delete_histories_json,

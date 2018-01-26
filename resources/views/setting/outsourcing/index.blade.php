@@ -204,8 +204,9 @@ List Outsourcing Pengemudi
 //            });
 
             $('#setting_outsourcing_driver').dataTable({
-                scrollX: true,    
-                fixedHeader: true,       
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 'order':[0, 'asc'],
                 ajax: {
