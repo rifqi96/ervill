@@ -119,6 +119,7 @@ class OrderCustomer extends Model
         $filled_gallon = Inventory::find(3);
         $outgoing_gallon = Inventory::find(5);
         $non_ervill_gallon = Inventory::find(6);
+        $sold_gallon = Inventory::find(7);
 
         $filled_stock = (integer)$filled_gallon->quantity+$this->order->quantity;
 
@@ -138,18 +139,18 @@ class OrderCustomer extends Model
         //change customer
         if($this->customer_id != $data->customer_id){
             //remove previoius additional gallon
-            if($this->purchase_type){         
+            if($this->purchase_type){
                 if($this->purchase_type=="rent"){
                     foreach($this->customer->customerGallons as $customerGallon){
                         if($customerGallon->type=="rent"){
                             if($this->is_new=="true"){
                                 $outgoing_gallon->quantity -= $this->order->quantity;
-                                $customerGallon->qty -= $this->order->quantity;       
+                                $customerGallon->qty -= $this->order->quantity;
                             }else{
                                 $outgoing_gallon->quantity -= $this->additional_quantity;
-                                $customerGallon->qty -= $this->additional_quantity; 
+                                $customerGallon->qty -= $this->additional_quantity;
                             }
-                                    
+
                             if($customerGallon->qty==0){
                                 $customerGallon->delete();
                             }else{
@@ -160,13 +161,13 @@ class OrderCustomer extends Model
                     }
                 }else if($this->purchase_type=="purchase"){
                     foreach($this->customer->customerGallons as $customerGallon){
-                        if($customerGallon->type=="purchase"){   
+                        if($customerGallon->type=="purchase"){
                             if($this->is_new=="true"){
                                 $customerGallon->qty -= $this->order->quantity;
                             }else{
                                 $customerGallon->qty -= $this->additional_quantity;
-                            }                         
-                                     
+                            }
+
                             if($customerGallon->qty==0){
                                 $customerGallon->delete();
                             }else{
@@ -177,15 +178,15 @@ class OrderCustomer extends Model
                     }
                 }else if($this->purchase_type=="non_ervill"){
                     foreach($this->customer->customerGallons as $customerGallon){
-                        if($customerGallon->type=="non_ervill"){  
+                        if($customerGallon->type=="non_ervill"){
                             if($this->is_new=="true"){
-                                $non_ervill_gallon->quantity -= $this->order->quantity;    
-                                $customerGallon->qty -= $this->order->quantity; 
+                                $non_ervill_gallon->quantity -= $this->order->quantity;
+                                $customerGallon->qty -= $this->order->quantity;
                             }else{
-                                $non_ervill_gallon->quantity -= $this->additional_quantity;    
-                                $customerGallon->qty -= $this->additional_quantity; 
-                            } 
-                                    
+                                $non_ervill_gallon->quantity -= $this->additional_quantity;
+                                $customerGallon->qty -= $this->additional_quantity;
+                            }
+
                             if($customerGallon->qty==0){
                                 $customerGallon->delete();
                             }else{
@@ -195,7 +196,7 @@ class OrderCustomer extends Model
                         }
                     }
                 }
-                
+
             }
 
             //update new chosen customer
@@ -221,7 +222,7 @@ class OrderCustomer extends Model
                     }
                 }
                 //purchase
-                else if($data->add_gallon_purchase_type=="purchase"){                  
+                else if($data->add_gallon_purchase_type=="purchase"){
 
                     $is_update=false;
                     foreach($chosenCustomerGallons as $customerGallon){
@@ -238,7 +239,7 @@ class OrderCustomer extends Model
                     }
                 }
                 //non_ervill
-                else if($data->add_gallon_purchase_type=="non_ervill"){                  
+                else if($data->add_gallon_purchase_type=="non_ervill"){
                     $non_ervill_gallon->quantity += $data->add_gallon_quantity;
                     $is_update=false;
                     foreach($chosenCustomerGallons as $customerGallon){
@@ -273,7 +274,7 @@ class OrderCustomer extends Model
         }
 
         //new customer
-        else if($this->is_new=='true'){            
+        else if($this->is_new=='true'){
             if($this->purchase_type=="rent"){
                 //rent to rent
                 if($data->purchase_type=="rent"){
@@ -287,7 +288,7 @@ class OrderCustomer extends Model
                     }
                 }
                 //rent to purchase
-                else if($data->purchase_type=="purchase"){                   
+                else if($data->purchase_type=="purchase"){
                     foreach($this->customer->customerGallons as $customerGallon){
                         if($customerGallon->type=="rent"){
                             $outgoing_gallon->quantity -= $customerGallon->qty;   
@@ -408,7 +409,8 @@ class OrderCustomer extends Model
                     }
                 }else if($this->purchase_type=="purchase"){
                     foreach($this->customer->customerGallons as $customerGallon){
-                        if($customerGallon->type=="purchase"){                            
+                        if($customerGallon->type=="purchase"){
+                            $sold_gallon->quantity -= $this->additional_quantity;
                             $customerGallon->qty -= $this->additional_quantity;         
                             if($customerGallon->qty==0){
                                 $customerGallon->delete();
@@ -456,8 +458,8 @@ class OrderCustomer extends Model
                     }
                 }
                 //purchase
-                else if($data->add_gallon_purchase_type=="purchase"){                  
-
+                else if($data->add_gallon_purchase_type=="purchase"){
+                    $sold_gallon->quantity += $data->add_gallon_quantity;
                     $is_update=false;
                     foreach($this->customer->customerGallons as $customerGallon){
                         if($customerGallon->type=="purchase"){
@@ -518,7 +520,7 @@ class OrderCustomer extends Model
         // $this->status = $data->status;
         //$this->customer_id = $data->customer_id;
 
-        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
+        if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$sold_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
         }
         return ($this->save());
@@ -603,6 +605,7 @@ class OrderCustomer extends Model
         $broken_gallon = Inventory::find(4);
         $outgoing_gallon = Inventory::find(5);
         $non_ervill_gallon = Inventory::find(6);
+        $sold_gallon = Inventory::find(7);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -621,6 +624,9 @@ class OrderCustomer extends Model
                     }else if($this->purchase_type=="non_ervill"){
                         $non_ervill_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
                     }
+                    else if($this->purchase_type=="purchase"){
+                        $sold_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
+                    }
                     
                 }
             }
@@ -632,6 +638,8 @@ class OrderCustomer extends Model
             $outgoing_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
         }else if($this->purchase_type=="non_ervill"){
             $non_ervill_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
+        }else if($this->purchase_type=="purchase"){
+            $sold_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
         }
         
 
@@ -741,7 +749,7 @@ class OrderCustomer extends Model
             }
         }
 
-        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$sold_gallon->save() ||!$this->doAddToDeleteHistory($description, $author_id)){
             return false;
         }
         return $this->order->doDelete();
@@ -764,6 +772,7 @@ class OrderCustomer extends Model
         $broken_gallon = Inventory::find(4);
         $outgoing_gallon = Inventory::find(5);
         $non_ervill_gallon = Inventory::find(6);
+        $sold_gallon = Inventory::find(7);
 
         if($this->order->issues){
             foreach($this->order->issues as $issue){
@@ -782,6 +791,9 @@ class OrderCustomer extends Model
                     }else if($this->purchase_type=="non_ervill"){
                         $non_ervill_gallon->quantity -= ($issue->quantity - $this->empty_gallon_quantity);
                     }
+                    else if($this->purchase_type=="purchase"){
+                        $sold_gallon->quantity -= ($issue->quantity - $this->empty_gallon_quantity);
+                    }
                     
                 }
             }
@@ -792,6 +804,9 @@ class OrderCustomer extends Model
             $outgoing_gallon->quantity += ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
         }else if($this->purchase_type=="non_ervill"){
             $non_ervill_gallon->quantity += ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
+        }
+        else if($this->purchase_type=="purchase"){
+            $sold_gallon->quantity += ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
         }
         
 
@@ -962,7 +977,7 @@ class OrderCustomer extends Model
             }
         }
 
-        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() ){
+        if( !$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$sold_gallon->save() || !$non_ervill_gallon->save() ){
             return false;
         }
 
