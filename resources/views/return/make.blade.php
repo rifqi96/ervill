@@ -115,7 +115,9 @@
 
             $('#customer-table').dataTable({
                 scrollX: true,
-                fixedHeader: true,
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 ajax: {
                     url: '/getCustomers',
                     dataSrc: ''
