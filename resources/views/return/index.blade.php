@@ -9,7 +9,7 @@
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <!--<h3 class="panel-title">Pesanan Air</h3>-->
-                <a href="{{route('return.make')}}"><button class="btn btn-primary">Lakukan Retur</button></a>
+                <a href="{{route('return.make')}}"><button class="btn btn-success">Lakukan Retur</button></a>
             </header>
 
             <table class="table table-hover" id="return">

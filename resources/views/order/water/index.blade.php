@@ -9,7 +9,7 @@ List Pesanan Air
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <!--<h3 class="panel-title">Pesanan Air</h3>-->
-                <a href="{{route('order.water.make')}}"><button class="btn btn-primary">Pesan Air</button></a>               
+                <a href="{{route('order.water.make')}}"><button class="btn btn-success">Pesan</button></a>
             </header>
 
             <table class="table table-hover" id="water_order">

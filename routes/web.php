@@ -202,6 +202,31 @@ Route::prefix('order')->group(function(){
                 'as' => 'order.customer.do.addIssue'
             ]);
         });
+
+        Route::prefix('buy')->group(function(){
+            Route::get('/', [
+                'uses' => 'OrderCustomerBuyController@index',
+                'as' => 'order.customer.buy.index'
+            ]);
+
+            Route::get('create', [
+                'uses' => 'OrderCustomerBuyController@showMake',
+                'as' => 'order.customer.buy.make'
+            ]);
+
+            Route::prefix('do')->group(function(){
+                Route::post('make', [
+                    'uses' => 'OrderCustomerBuyController@doMake',
+                    'as' => 'order.customer.buy.do.make'
+                ]);
+
+                Route::post('delete', [
+                    'uses' => 'OrderCustomerBuyController@doDelete',
+                    'as' => 'order.customer.buy.do.delete'
+                ]);
+            });
+
+        });
     });
 });
 
@@ -222,17 +247,12 @@ Route::prefix('return')->group(function(){
             'as' => 'return.do.make'
         ]);
 
-        Route::post('update', [
-            'uses' => 'OrderCustomerReturnController@doUpdate',
-            'as' => 'return.do.update'
-        ]);
-
         Route::post('confirm', [
             'uses' => 'OrderCustomerReturnController@doConfirm',
             'as' => 'return.do.confirm'
         ]);
 
-        Route::post('cance;', [
+        Route::post('cancel', [
             'uses' => 'OrderCustomerReturnController@doCancel',
             'as' => 'return.do.cancel'
         ]);
@@ -404,6 +424,7 @@ Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById
 Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
 
 Route::get('/getReturns', 'OrderCustomerReturnController@getAll');
+Route::get('/getOrderCustomerBuys', 'OrderCustomerBuyController@getAll');
 
 /**
  * Auth::routes() are :

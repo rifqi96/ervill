@@ -9,7 +9,8 @@ List Pesanan Customer
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <!--<h3 class="panel-title">Pesanan Air</h3>-->
-                <a href="{{route('order.customer.make')}}"><button class="btn btn-primary">Pesan Customer</button></a>               
+                <a href="{{route('order.customer.make')}}"><button class="btn btn-success">Pesan</button></a>
+                <a href="{{route('order.customer.buy.index')}}"><button class="btn btn-primary">Pindah Tangan Galon</button></a>
             </header>
 
             <table class="table table-hover" id="customer-order">
