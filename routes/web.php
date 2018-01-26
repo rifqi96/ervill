@@ -205,6 +205,41 @@ Route::prefix('order')->group(function(){
     });
 });
 
+Route::prefix('return')->group(function(){
+    Route::get('/', [
+        'uses' => 'OrderCustomerReturnController@index',
+        'as' => 'return.index'
+    ]);
+
+    Route::get('create', [
+        'uses' => 'OrderCustomerReturnController@showMake',
+        'as' => 'return.make'
+    ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('make', [
+            'uses' => 'OrderCustomerReturnController@doMake',
+            'as' => 'return.do.make'
+        ]);
+
+        Route::post('update', [
+            'uses' => 'OrderCustomerReturnController@doUpdate',
+            'as' => 'return.do.update'
+        ]);
+
+        Route::post('confirm', [
+            'uses' => 'OrderCustomerReturnController@doConfirm',
+            'as' => 'return.do.confirm'
+        ]);
+
+        Route::post('cance;', [
+            'uses' => 'OrderCustomerReturnController@doCancel',
+            'as' => 'return.do.cancel'
+        ]);
+    });
+
+});
+
 Route::prefix('inventory')->group(function(){
     Route::get('/', [
             'uses' => 'InventoryController@index',
@@ -367,6 +402,8 @@ Route::post('/getUnshippedOrders', 'OrderCustomerController@getUnshippedOrders')
 Route::get('/getAllDrivers', 'UserController@getAllDrivers');
 Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById');
 Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
+
+Route::get('/getReturns', 'OrderCustomerReturnController@getAll');
 
 /**
  * Auth::routes() are :
