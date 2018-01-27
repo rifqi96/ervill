@@ -229,7 +229,6 @@ Pesan Customer
             });
 
             $('#customer-table').dataTable({
-                scrollX: true,
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
                 },

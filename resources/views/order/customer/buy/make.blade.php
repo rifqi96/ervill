@@ -112,7 +112,6 @@
             var customers = [];
 
             $('#customer-table').dataTable({
-                scrollX: true,
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
                 },

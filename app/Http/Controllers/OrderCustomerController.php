@@ -105,7 +105,7 @@ class OrderCustomerController extends OrderController
                 'name' => 'required|string',
                 'phone' => 'required|string|digits_between:3,14',
                 'address' => 'required|string',
-                'quantity' => 'required|integer|min:1',
+                'quantity' => 'required|integer|min:0',
                 'delivery_at' => 'required|date',
                 'purchase_type' => 'required'
             ]);
@@ -177,7 +177,8 @@ class OrderCustomerController extends OrderController
     public function doUpdate(Request $request)
     {
         $this->validate($request, [
-            'customer_id' => 'required|integer|exists:customers,id',                     
+            'customer_id' => 'required|integer|exists:customers,id',
+            'nomor_struk' => 'required|integer',
             // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
@@ -225,7 +226,7 @@ class OrderCustomerController extends OrderController
 
         if(!$order_customer->doUpdate($request)){
             return back()
-                ->withErrors(['message' => 'There is something wrong, please contact admin']);
+                ->withErrors(['message' => 'Input salah, harap hubungi admin']);
         }
         return back()
             ->with('success', 'Data telah berhasil diupdate');

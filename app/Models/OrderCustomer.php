@@ -136,6 +136,23 @@ class OrderCustomer extends Model
         
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
+        //edit nomor_struk
+
+            while( strlen($data->nomor_struk) < 7 ){
+                $data->nomor_struk = '0'.$data->nomor_struk;
+            }
+
+            $oc_struk = OrderCustomer::where([
+                ['customer_id',$this->customer->id],
+                ['nomor_struk','OC'.$data->nomor_struk]
+            ])->get();
+
+            if(count($oc_struk)==0){
+                return false;
+            }
+            $this->nomor_struk = 'OC'.$data->nomor_struk;
+
+
         //change customer
         if($this->customer_id != $data->customer_id){
             //remove previoius additional gallon

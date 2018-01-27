@@ -95,6 +95,17 @@ List Pesanan Customer
                             {{--</table>--}}
                         {{--</div>--}}
                     {{--</div>--}}
+                    <div class="form-group">
+                        <label for="nomor_struk"><strong>Nomor Struk </strong></label>
+                        <div class="row">
+                            <div class="col col-md-1">
+                                OC
+                            </div>
+                            <div class="col col-md-11">
+                                <input type="number" class="form-control" name="nomor_struk" id="nomor_struk" placeholder="Nomor Struk">
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group" id="purchase_type_div">
                         <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
                         <select id="purchase_type" name="purchase_type" class="form-control">
@@ -474,6 +485,7 @@ List Pesanan Customer
                         }
 
                         $('#customer-id').val(order_data.customer_id);
+                        $('#nomor_struk').val(parseInt((order_data.nomor_struk).substr(2)));
 
                         var inventory = JSON.parse('{!! $inventory !!}');
 
