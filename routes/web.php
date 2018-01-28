@@ -175,7 +175,7 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
         ]);
-        Route::get('{id}', [
+        Route::get('id/{id}', [
             'uses' => 'OrderCustomerController@showDetails',
             'as' => 'order.customer.details'
         ]);
