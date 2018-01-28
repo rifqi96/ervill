@@ -16,7 +16,7 @@ Detail Pesanan
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Struk Pesanan
+                    Struk Pemesanan
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
@@ -245,14 +245,17 @@ Detail Pesanan
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-9 terms-and-conditions">
-                            <strong>S&K</strong>
-                            <p>Terima kasih telah membeli air mineral berkualitas di ERVILL.</p>
-                        </div>
+                        <div class="col-lg-9"></div>
                         <div class="col-lg-3 clearfix">
                             <div class="total-amount">
                                 <div>Dibayar: <b class="numeral grand-total"></b></div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 terms-and-conditions">
+                            <strong>S&K</strong>
+                            <p>Terima kasih telah membeli air mineral berkualitas di ERVILL.</p>
                         </div>
                     </div>
                 </div>
@@ -273,24 +276,27 @@ Detail Pesanan
             });
 
             $('.print').click(function () {
-                var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-                mywindow.document.write('<html><head><title>ERVILL - Struk Pemesanan</title>');
-                mywindow.document.write('<link rel="stylesheet" href="https://ervill.net/assets/css/lib/bootstrap/bootstrap.min.css" media="print">' +
-                '<link rel="stylesheet" href="https://ervill.net/assets/css/main.css" media="print">' +
-                '');
-                mywindow.document.write('</head><body >');
-                mywindow.document.write('<h3>ERVILL - Struk Pemesanan</h3>');
-                mywindow.document.write(document.getElementById('print-area').innerHTML);
-                mywindow.document.write('</body></html>');
-
-                mywindow.document.close(); // necessary for IE >= 10
-                mywindow.focus(); // necessary for IE >= 10*/
-
-                mywindow.print();
-                mywindow.close();
-
-                return true;
+                var contents = $("#print-area").html();
+                var frame1 = $('<iframe />');
+                frame1[0].name = "frame1";
+                frame1.css({ "position": "absolute", "top": "-1000000px" });
+                $("body").append(frame1);
+                var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+                frameDoc.document.open();
+                //Create a new HTML document.
+                frameDoc.document.write('<html><head><title>ERVILL - Struk Pemesanan</title>');
+                frameDoc.document.write('</head><body>');
+                //Append the external CSS file.
+                frameDoc.document.write('<link href="{{asset('assets/css/lib/bootstrap/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />');
+                //Append the DIV contents.
+                frameDoc.document.write(contents);
+                frameDoc.document.write('</body></html>');
+                frameDoc.document.close();
+                setTimeout(function () {
+                    window.frames["frame1"].focus();
+                    window.frames["frame1"].print();
+                    frame1.remove();
+                }, 500);
             });
 
         });
