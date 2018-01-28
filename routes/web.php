@@ -175,6 +175,10 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
         ]);
+        Route::get('{id}', [
+            'uses' => 'OrderCustomerController@showDetails',
+            'as' => 'order.customer.details'
+        ]);
 
         Route::prefix('do')->group(function(){
             Route::post('make', [

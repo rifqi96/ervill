@@ -49,8 +49,9 @@ Overview
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
                 <th>Nama Driver</th>
-                <th>Jumlah</th>
-                <th>Galon Ditukar</th>
+                <th>Galon Isi Keluar</th>
+                <th>Galon Masuk Kosong Ervill</th>
+                <th>Galon Masuk Kosong Non Ervill</th>
                 <th align="center">Waktu</th>
                 <th>Admin</th>
                 <!-- <th>Action</th> -->
@@ -168,8 +169,37 @@ Overview
                                 return '-';
                             }
                         }},
-                    {data: 'order.quantity'},
-                    {data: 'empty_gallon_quantity'},
+                    {data: null,
+                        render: function (data) {
+                            return data.additional_quantity+data.order.quantity;
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.purchase_type == 'non_ervill'){
+                                if(data.is_new == 'true'){
+                                    return 0;
+                                }
+                                else if(data.is_new == 'false'){
+                                    return data.order.quantity;
+                                }
+                            }
+
+                            return data.empty_gallon_quantity;
+                        }},
+                    {data: null,
+                        render: function (data) {
+                            if(data.purchase_type == 'non_ervill'){
+                                if(data.is_new == 'true'){
+                                    return data.order.quantity;
+                                }
+                                else if(data.is_new == 'false'){
+                                    return data.additional_quantity;
+                                }
+                            }
+
+                            return 0;
+                        }},
                     {data: null,
                     render: function (data) {
                         var date = moment(data.order.created_at, 'YYYY-MM-DD HH:mm:ss');

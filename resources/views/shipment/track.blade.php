@@ -126,8 +126,9 @@ Detil Pesanan
 				  <th>Nama Customer</th>
 				  <th>No. Telepon</th>
 				  <th>Alamat Customer</th>
-				  <th>Jumlah (Galon)</th>
-				  <th>Jumlah Galon Kosong (Galon)</th>
+				  <th>Galon Isi Keluar</th>
+				  <th>Galon Masuk Kosong Ervill</th>
+                  <th>Galon Masuk Kosong Non Ervill</th>
 				  <th>Tgl Order</th>
 				  <th>Tgl Penerimaan</th>
 				  <th>Admin</th>
@@ -196,8 +197,37 @@ Detil Pesanan
                                     }
                                     return '<i>Data customer tidak ditemukan</i>';
                                 }},
-                            {data: 'order.quantity'},
-                            {data: 'empty_gallon_quantity'},
+                            {data: null,
+                                render: function (data) {
+                                    return data.additional_quantity+data.order.quantity;
+                                }
+                            },
+                            {data: null,
+                                render: function (data) {
+                                    if(data.purchase_type == 'non_ervill'){
+                                        if(data.is_new == 'true'){
+                                            return 0;
+                                        }
+                                        else if(data.is_new == 'false'){
+                                            return data.order.quantity;
+                                        }
+                                    }
+
+                                    return data.empty_gallon_quantity;
+                                }},
+                            {data: null,
+                                render: function (data) {
+                                    if(data.purchase_type == 'non_ervill'){
+                                        if(data.is_new == 'true'){
+                                            return data.order.quantity;
+                                        }
+                                        else if(data.is_new == 'false'){
+                                            return data.additional_quantity;
+                                        }
+                                    }
+
+                                    return 0;
+                                }},
                             {data: null,
                                 render: function (data) {
                                     if(data.order.created_at){

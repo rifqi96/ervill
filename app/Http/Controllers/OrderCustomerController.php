@@ -44,6 +44,22 @@ class OrderCustomerController extends OrderController
         return view('order.customer.make', $this->data);
     }
 
+    public function showDetails($id){
+        $this->data['breadcrumb'] = "Order - Customer Order - Details";
+
+         $this->data['oc'] = $this->get($id);
+         if($this->data['oc']->nomor_struk){
+             $this->data['details'] = $this->getSameReceipts($this->data['oc']->nomor_struk);
+         }
+         else{
+             $this->data['details'] = array(
+                 $this->data['oc']
+             );
+         }
+
+         return view('order.customer.details', $this->data);
+    }
+
     /*======= Get Methods =======*/
     public function getAll(){
         return OrderCustomer::with([
@@ -54,6 +70,38 @@ class OrderCustomerController extends OrderController
             'order' => function($query){
                 $query->with(['user', 'issues']);
             }
+            ])
+            ->has('order')
+            ->get();
+    }
+
+    public function get($id){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->has('order')
+            ->find($id);
+    }
+
+    public function getSameReceipts($receipts){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+        ])
+            ->where([
+                ['nomor_struk', '!=', ''],
+                ['nomor_struk', '=', $receipts]
             ])
             ->has('order')
             ->get();

@@ -185,12 +185,22 @@
                         render: 'id'
                     },
                     {
-                        data: 'user',
-                        render: 'id'
+                        data: null,
+                        render: function (data) {
+                            if(data.user){
+                                return data.user.id;
+                            }
+                            return 'User tidak ditemukan';
+                        }
                     },
                     {
-                        data: 'user',
-                        render: 'full_name'
+                        data: null,
+                        render: function (data) {
+                            if(data.user){
+                                return data.user.full_name;
+                            }
+                            return 'User tidak ditemukan';
+                        }
                     },
                     {data: null,
                         render: function (data) {

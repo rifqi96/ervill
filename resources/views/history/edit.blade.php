@@ -133,7 +133,13 @@
                     {data: 'module_name'},    
                     {data: 'data_id'},
                     {data: 'user_id'},  
-                    {data: 'user.full_name'},
+                    {data: null,
+                    render: function (data) {
+                        if(data.user){
+                            return data.user.full_name;
+                        }
+                        return 'User tidak ditemukan';
+                    }},
                     {data: null,
                         render: function (data) {
                             if(data.updated_at){

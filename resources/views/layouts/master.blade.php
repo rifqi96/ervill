@@ -37,6 +37,28 @@
 @include('layouts.errors')<!--.errors-->
 @include('layouts.success')<!--.errors-->
 <script type="text/javascript">
+    // load a locale
+    numeral.register('locale', 'id', {
+        delimiters: {
+            thousands: '.',
+            decimal: ','
+        },
+        abbreviations: {
+            thousand: 'k',
+            million: 'juta',
+            billion: 'milyar',
+            trillion: 'triliun'
+        },
+        ordinal : function (number) {
+            return number === 1 ? 'er' : 'ème';
+        },
+        currency: {
+            symbol: 'Rp'
+        }
+    });
+
+    // switch between locales
+    numeral.locale('id');
     //disable button after submit
     $("form").submit(function(){
         $(this).find("button[type='submit'],input[type='submit']").attr('disabled','disabled');

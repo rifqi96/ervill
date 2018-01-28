@@ -285,7 +285,7 @@ List Pesanan Customer
                         columns: [
                             {data: null,
                                 render: function(data, type, row, meta){
-                                    var result = "";
+                                    var result = '<a href="customer/'+data.id+'" target="_blank"><button type="button" class="btn btn-sm">Cetak Struk</button></a>';
                                     if(data.status != "Draft"){
                                         if(data.shipment){
                                             var shipment_url = "{{route("shipment.track", ":id")}}";

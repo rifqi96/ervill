@@ -116,7 +116,7 @@ class OrderWaterController extends OrderController
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
             'buffer_qty' => 'required|integer|min:0|max:'.$max_buffer_qty,
             'warehouse_qty' => 'required|integer|min:0|max:'.$max_warehouse_qty,
-            'delivery_at' => 'required|date|after_or_equal:today'
+            'delivery_at' => 'required|date'
         ]);
 
         if($request->buffer_qty < 1 && $request->warehouse_qty < 1){
