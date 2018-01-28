@@ -205,6 +205,11 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderCustomerController@addIssueByAdmin',
                 'as' => 'order.customer.do.addIssue'
             ]);
+
+            Route::post('', [
+                'uses' => 'OrderCustomerController@filterBy',
+                'as' => 'order.customer.do.filterby'
+            ]);
         });
 
         Route::prefix('buy')->group(function(){

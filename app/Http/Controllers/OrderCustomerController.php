@@ -314,4 +314,38 @@ class OrderCustomerController extends OrderController
                 ->withErrors(['message' => 'Terjadi kesalahan pada penambahan masalah']);
         }
     }
+
+    public function filterBy(Request $request){
+        $filters = [];
+        if($request->id){
+            array_push($filters, ['id', '=', $request->id]);
+        }
+        else if($request->nomor_struk){
+            array_push($filters, ['nomor_struk', '!=', '']);
+            array_push($filters, ['nomor_struk', '=', $request->nomor_struk]);
+        }
+        else if($request->delivery_at){
+            array_push($filters, ['delivery_at', '=', $request->delivery_at]);
+        }
+
+        $oc = OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->where($filters)
+            ->has('order');
+
+        if($request->customer_name){
+            $oc->whereHas('customer', function ($query) use($request){
+                $query->where('name', 'like', '%'.$request->customer_name.'%');
+            });
+        }
+
+        return $oc->get();
+    }
 }
