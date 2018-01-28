@@ -11,10 +11,10 @@ Detail Pesanan
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <a href="{{route('order.customer.index')}}"><button class="btn btn-primary">Lihat Pesanan Customer</button></a>
                 {{--<button class="btn btn-rounded btn-inline">Send</button>--}}
-                <button class="btn btn-inline btn-secondary btn-rounded">Print</button>
+                <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
             </header>
 
-            <section class="card">
+            <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
                     Struk Pesanan
                 </header>
@@ -271,6 +271,28 @@ Detail Pesanan
                 var price = $(this).text();
                 $(this).text(numeral(price).format('$0,0.00'));
             });
+
+            $('.print').click(function () {
+                var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+                mywindow.document.write('<html><head><title>ERVILL - Struk Pemesanan</title>');
+                mywindow.document.write('<link rel="stylesheet" href="https://ervill.net/assets/css/lib/bootstrap/bootstrap.min.css" media="print">' +
+                '<link rel="stylesheet" href="https://ervill.net/assets/css/main.css" media="print">' +
+                '');
+                mywindow.document.write('</head><body >');
+                mywindow.document.write('<h3>ERVILL - Struk Pemesanan</h3>');
+                mywindow.document.write(document.getElementById('print-area').innerHTML);
+                mywindow.document.write('</body></html>');
+
+                mywindow.document.close(); // necessary for IE >= 10
+                mywindow.focus(); // necessary for IE >= 10*/
+
+                mywindow.print();
+                mywindow.close();
+
+                return true;
+            });
+
         });
     </script>
 
