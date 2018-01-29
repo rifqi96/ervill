@@ -362,7 +362,7 @@ List Pesanan Customer
                     columns: [
                         {data: null,
                             render: function(data, type, row, meta){
-                                var result = '<a href="customer/id/'+data.id+'" target="_blank"><button type="button" class="btn btn-sm">Lihat Struk</button></a>';
+                                var result = '<a href="customer/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Struk</button></a>';
                                 if(data.status != "Draft"){
                                     if(data.shipment){
                                         var shipment_url = "{{route("shipment.track", ":id")}}";

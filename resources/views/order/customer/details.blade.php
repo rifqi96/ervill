@@ -9,9 +9,15 @@ Detail Pesanan
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <a href="{{route('order.customer.index')}}"><button class="btn btn-primary">Lihat Pesanan Customer</button></a>
-                {{--<button class="btn btn-rounded btn-inline">Send</button>--}}
-                <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
+                <div class="row">
+                    <div class="col-xl-10 col-sm-10 col-xs-9">
+                        <a href="{{route('order.customer.index')}}"><button class="btn btn-primary">Lihat Pesanan Customer</button></a>
+                    </div>
+                    {{--<button class="btn btn-rounded btn-inline">Send</button>--}}
+                    <div class="col-xl-2 col-sm-2 col-xs-3">
+                        <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
+                    </div>
+                </div>
             </header>
 
             <section class="card" id="print-area">
@@ -20,7 +26,7 @@ Detail Pesanan
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
-                        <div class="col-lg-6 company-info">
+                        <div class="col-lg-6 col-md-8 col-print-6 company-info">
                             <h5>ERVILL</h5>
 
                             <div class="invoice-block">
@@ -32,15 +38,11 @@ Detail Pesanan
                                 <div>Telephone: 555-692-7754</div>
                                 <div>Fax: 555-692-7754</div>
                             </div>
-                            <hr>
-                            <div class="invoice-block">
-                                <h5>Pemesanan untuk:</h5>
-                                <div>Ibu/Bapak {{$oc->customer->name}}</div>
-                                <div>Alamat: {{$oc->customer->address}}</div>
-                                <div>No. HP: {{$oc->customer->phone=='0000'?"-":$oc->customer->phone}}</div>
-                            </div>
                         </div>
-                        <div class="col-lg-6 clearfix invoice-info">
+                        <div class="newhr">
+                            <hr>
+                        </div>
+                        <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
                             <div class="text-lg-right">
                                 <h5>Nomor Transaksi {{$oc->nomor_struk?$oc->nomor_struk:$oc->id}}</h5>
                                 <div>Tanggal Pengiriman: <b class="delivery-at">{{\Carbon\Carbon::parse($oc->delivery_at)->format('d-m-Y')}}</b></div>
@@ -79,6 +81,17 @@ Detail Pesanan
                                     {{--</tr>--}}
                                 {{--</table>--}}
                             {{--</div>--}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12 col-print-12">
+                            <div class="invoice-block">
+                                <h5>Pemesanan untuk:</h5>
+                                <div>Ibu/Bapak {{$oc->customer->name}}</div>
+                                <div>Alamat: {{$oc->customer->address}}</div>
+                                <div>No. HP: {{$oc->customer->phone=='0000'?"-":$oc->customer->phone}}</div>
+                            </div>
                         </div>
                     </div>
                     <div class="row table-details">
@@ -245,17 +258,14 @@ Detail Pesanan
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-9"></div>
-                        <div class="col-lg-3 clearfix">
+                        <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
+                            <strong>S&K</strong>
+                            <p>Terima kasih telah membeli air mineral berkualitas di ERVILL.</p>
+                        </div>
+                        <div class="col-lg-3 col-sm-3 col-xs-6 col-print-3 clearfix">
                             <div class="total-amount">
                                 <div>Dibayar: <b class="numeral grand-total"></b></div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12 terms-and-conditions">
-                            <strong>S&K</strong>
-                            <p>Terima kasih telah membeli air mineral berkualitas di ERVILL.</p>
                         </div>
                     </div>
                 </div>
@@ -275,6 +285,28 @@ Detail Pesanan
                 $(this).text(numeral(price).format('$0,0.00'));
             });
 
+            var changeOnScroll = function () {
+                if($('body').width() < 580){
+                    $('.table').addClass('table-responsive');
+                }
+                else{
+                    $('.table').removeClass('table-responsive');
+                }
+
+                if($('body').width() < 780){
+                    $('.newhr').show();
+                }
+                else{
+                    $('.newhr').hide();
+                }
+            };
+
+            changeOnScroll();
+
+            $( window ).on('resize', function () {
+                changeOnScroll();
+            });
+
             $('.print').click(function () {
                 var contents = $("#print-area").html();
                 var frame1 = $('<iframe />');
@@ -288,6 +320,7 @@ Detail Pesanan
                 frameDoc.document.write('</head><body>');
                 //Append the external CSS file.
                 frameDoc.document.write('<link href="{{asset('assets/css/lib/bootstrap/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />');
+                frameDoc.document.write('<link href="{{asset('assets/css/print.css')}}" rel="stylesheet" type="text/css" />');
                 //Append the DIV contents.
                 frameDoc.document.write(contents);
                 frameDoc.document.write('</body></html>');
