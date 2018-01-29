@@ -209,9 +209,9 @@ Overview
                     {data:null,
                     render: function (data) {
                         if(data.order.user){
-                            return data.order.user.full_name;
+                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
                         }
-                        return '-';
+                        return 'Data admin tidak ditemukan';
                     }},
                     // {data: null,
                     //     render: function(data, type, row, meta){

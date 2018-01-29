@@ -776,7 +776,7 @@ class OrderCustomer extends Model
         $data = array(
             'module_name' => 'Order Customer',
             'description' => $description,
-            'data_id' => $this->order_id,
+            'data_id' => $this->id,
             'user_id' => $author_id
         );
 

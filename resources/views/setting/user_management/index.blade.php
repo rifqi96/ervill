@@ -146,7 +146,7 @@ List User
         $(document).ready(function () {
 
             var users = [];
-            $('#setting_user_management').on('click','.detail-btn',function(){
+            $('#setting_user_management').on('click','.edit-btn',function(){
                 $('#change_password').prop('checked',false);
                 $('#change_password_div').hide();
                 $("#change_password").change(function() {
@@ -172,6 +172,14 @@ List User
                 for(var i in users){
                     if(users[i].id==$(this).data('index')){
                         $('input[name=user_id]').val(users[i].id);
+                    }
+                }
+            });
+
+            $('#setting_user_management').on('click','.detail-btn',function(){
+                for(var i in users){
+                    if(users[i].id==$(this).data('index')){
+                        window.location.href = "user_management/id/" + users[i].id;
                     }
                 }
             });
@@ -225,8 +233,9 @@ List User
                                     'email': row.email,
                                     'phone': row.phone
                                 });
-                                return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
-                                    '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
+                                return '<button class="btn btn-sm edit-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                                    '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>' +
+                                    '<button type="button" class="btn btn-sm btn-warning detail-btn" data-index="' + row.id + '">Detail</button>';
                             }
                            
                         }

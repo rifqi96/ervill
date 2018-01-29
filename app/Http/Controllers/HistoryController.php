@@ -236,13 +236,14 @@ class HistoryController extends Controller
                 ->find($dh->data_id);
         }
         else if($dh->module_name == "Order Gallon"){
+            $order_id = OrderGallon::find($dh->data_id)->order_id;
             $order_gallon = OrderGallon::with(['order' => function($query){
                 $query->onlyTrashed();
                 $query->with('user');
             }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -257,13 +258,14 @@ class HistoryController extends Controller
             return $order_gallon;
         }
         else if($dh->module_name == "Order Customer"){
+            $order_id = OrderCustomer::find($dh->data_id)->order_id;
             $order_customer = OrderCustomer::with(['order' => function($query){
                     $query->onlyTrashed();
                     $query->with('user');
                 }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -279,13 +281,14 @@ class HistoryController extends Controller
             return $order_customer;
         }
         else if($dh->module_name == "Order Water"){
+            $order_id = OrderWater::find($dh->data_id)->order_id;
             $order_water = OrderWater::with(['order' => function($query){
                 $query->onlyTrashed();
                 $query->with('user');
                 }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -305,6 +308,61 @@ class HistoryController extends Controller
             return Shipment::onlyTrashed()
                 ->find($dh->data_id);
         }
+    }
+
+    public function editFilterBy(Request $request){
+        $filters = [];
+        if($request->module_name){
+            array_push($filters, ['module_name', '=', $request->module_name]);
+        }
+        if($request->data_id){
+            array_push($filters, ['data_id', '=', $request->data_id]);
+        }
+        if($request->created_at){
+            array_push($filters, ['created_at', 'like', '%'.$request->created_at.'%']);
+        }
+
+        $eh = EditHistory::with('user')
+            ->where($filters);
+
+        if($request->user_fullname){
+            $eh->whereHas('user', function ($query) use($request){
+                $query->where('full_name', 'like', '%'.$request->user_fullname.'%');
+            });
+        }
+
+        return $eh->get();
+    }
+
+    public function deleteFilterBy(Request $request){
+        $filters = [];
+        if($request->module_name){
+            array_push($filters, ['module_name', '=', $request->module_name]);
+        }
+        if($request->data_id){
+            array_push($filters, ['data_id', '=', $request->data_id]);
+        }
+        if($request->created_at){
+            array_push($filters, ['created_at', 'like', '%'.$request->created_at.'%']);
+        }
+
+        $delete_histories = DeleteHistory::with('user')
+            ->where($filters);
+
+        if($request->user_fullname){
+            $delete_histories->whereHas('user', function ($query) use($request){
+                $query->where('full_name', 'like', '%'.$request->user_fullname.'%');
+            });
+        }
+
+        $new_dh = $delete_histories->get();
+
+        for($i=0; $i<$new_dh->count(); $i++){
+            $object = $this->getTrashedObject($new_dh[$i]);
+            $new_dh[$i]->data_id = $object;
+        }
+
+        return $new_dh;
     }
 
     /*======= Do Methods =======*/

@@ -12,11 +12,68 @@
                     <form action="{{route('history.do.mass_restore_or_delete')}}" method="POST">
                         {{csrf_field()}}
                         <div id="ids-list"></div>
-                        <input type="hidden" name="delete_id" val="">
+                        <input type="hidden" name="delete_id" value="">
                         <input type="hidden" name="submit_btn" value="">
                         <button type="submit" class="btn btn-danger force_delete" id="mass-delete">Hapus Data Permanen</button>
                         <button type="submit" class="btn btn-success restore" id="mass-restore">Kembalikan Data</button>
+                        <button type="button" class="btn btn-secondary showFilterBy">Kolom Pencarian</button>
                     </form>
+                </div>
+            </div>
+
+            <div class="row filterBy">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Kolom pencarian</h5>
+                        </div>
+                        <div class="card-block">
+                            <form id="filterBy">
+                                <div class="row form-group">
+                                    <div class="col-xl-3">Nama Modul:</div>
+                                    <div class="col-xl-9">
+                                        <select name="module_name" id="search-module" class="form-control">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            <option value="Order Customer">Order Customer</option>
+                                            <option value="Shipment">Pengiriman</option>
+                                            <option value="Inventory">Inventori</option>
+                                            <option value="Order Gallon">Order Gallon</option>
+                                            <option value="Order Water">Order Air</option>
+                                            <option value="User Management">User</option>
+                                            <option value="Outsourcing Driver">Outsourcing Driver</option>
+                                            <option value="Customers">Customer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xl-3">No. Transaksi / Data ID:</div>
+                                    <div class="col-xl-9">
+                                        <input type="text" name="data_id" class="form-control" id="search-id" placeholder="101">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xl-3">Nama Admin:</div>
+                                    <div class="col-xl-9">
+                                        <input type="text" name="user_fullname" class="form-control" id="search-fullname" placeholder="Budi">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xl-3">Tanggal Delete:</div>
+                                    <div class="col-xl-9">
+                                        <input type="date" name="created_at" class="form-control" id="search-date" value="">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xl-3"></div>
+                                    <div class="col-xl-9">
+                                        {{csrf_field()}}
+                                        <button type="submit" class="btn btn-primary search-btn">Cari</button>
+                                        <button type="reset" class="btn btn-info">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -28,8 +85,7 @@
                         <th>No</th>
                         <th>Nama Modul</th>
                         <th>Data ID</th>
-                        <th>Author ID</th>
-                        <th>Author Name</th>
+                        <th>Admin</th>
                         <th>Tgl Delete</th>
                         <th>Action</th>
                         </thead>
@@ -88,34 +144,61 @@
             $('#mass-restore').attr('disabled', true);
             $('#mass-delete').attr('disabled', true);
 
-            var delete_histories_json = {!! $delete_histories->toJson() !!};
-            var values_template = "";
-            var changeSelect = function(elem){
-                if(elem.checked){
-                    var index = $(elem).val();
+            $('.filterBy').hide();
 
-                    $(elem).attr('checked', true);
-                    $('#ids-list').append($('<input>', {
-                        name: 'ids[]',
-                        value: $(elem).val(),
-                        "data-index": index
-                    }));
-                }
-                else{
-                    var index = $(elem).val();
-                    $(elem).removeAttr('checked');
-                    $('#ids-list input[data-index='+index+']').remove();
-                }
+            $('.showFilterBy').click(function () {
+                $('.filterBy').slideToggle();
+            });
 
-                if($('.ids:checked').length > 0){
-                    $('#mass-restore').attr('disabled', false);
-                    $('#mass-delete').attr('disabled', false);
-                }
-                else{
-                    $('#mass-restore').attr('disabled', true);
-                    $('#mass-delete').attr('disabled', true);
-                }
+            $('#filterBy').submit(function (e) {
+                e.preventDefault();
+
+                $.post("{{route('history.delete.filterby')}}", $(this).serialize())
+                    .done(function (result) {
+                        console.log('success');
+                        console.log(result);
+                        delete_table(result);
+                    })
+                    .fail(function (msg) {
+                        console.log('error');
+                        console.log(msg);
+                    });
+                $(this).find('button[type=submit]').prop('disabled', false);
+            });
+
+            delete_table({!! $delete_histories->toJson() !!});
+
+        });
+
+        var changeSelect = function(elem){
+            if(elem.checked){
+                var index = $(elem).val();
+
+                $(elem).attr('checked', true);
+                $('#ids-list').append($('<input>', {
+                    name: 'ids[]',
+                    value: $(elem).val(),
+                    "data-index": index
+                }));
             }
+            else{
+                var index = $(elem).val();
+                $(elem).removeAttr('checked');
+                $('#ids-list input[data-index='+index+']').remove();
+            }
+
+            if($('.ids:checked').length > 0){
+                $('#mass-restore').attr('disabled', false);
+                $('#mass-delete').attr('disabled', false);
+            }
+            else{
+                $('#mass-restore').attr('disabled', true);
+                $('#mass-delete').attr('disabled', true);
+            }
+        };
+
+        var delete_table = function (delete_histories_json) {
+            var values_template = "";
 
             $('#deleteTable').on('change', '.ids', function () {
                 changeSelect(this);
@@ -164,6 +247,7 @@
                 }
             });
 
+            $('#deleteTable').DataTable().destroy();
             $('#deleteTable').dataTable({
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
@@ -188,16 +272,7 @@
                         data: null,
                         render: function (data) {
                             if(data.user){
-                                return data.user.id;
-                            }
-                            return 'User tidak ditemukan';
-                        }
-                    },
-                    {
-                        data: null,
-                        render: function (data) {
-                            if(data.user){
-                                return data.user.full_name;
+                                return '<a href="/setting/user_management/id/'+data.user.id+'" target="_blank" title="Klik untuk lihat">'+data.user.full_name+'</a>';
                             }
                             return 'User tidak ditemukan';
                         }
@@ -227,7 +302,7 @@
             $('.restore').on('click', function () {
                 $(this).siblings('input[name=submit_btn]').val('restore');
             });
-        });
+        };
     </script>
 
 @endsection

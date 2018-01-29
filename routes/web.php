@@ -295,6 +295,16 @@ Route::prefix('history')->group(function(){
         'as' => 'history.delete.index'
     ]);
 
+    Route::post('edit', [
+        'uses' => 'HistoryController@editFilterBy',
+        'as' => 'history.edit.filterby'
+    ]);
+
+    Route::post('delete', [
+        'uses' => 'HistoryController@deleteFilterBy',
+        'as' => 'history.delete.filterby'
+    ]);
+
     Route::post('do/restore-or-delete', [
         'uses' => 'HistoryController@doRestoreOrDelete',
         'as' => 'history.do.restore_or_delete'
@@ -348,10 +358,14 @@ Route::prefix('setting')->group(function(){
             'uses' => 'UserController@index',
             'as' => 'setting.user_management.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'UserController@showMake',
             'as' => 'setting.user_management.make'
-        ]);    
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'UserController@showDetails',
+            'as' => 'setting.user_management.details'
+        ]);
 
         Route::prefix('do')->group(function(){
             Route::post('make', [

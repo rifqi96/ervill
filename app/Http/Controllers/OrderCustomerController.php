@@ -320,11 +320,11 @@ class OrderCustomerController extends OrderController
         if($request->id){
             array_push($filters, ['id', '=', $request->id]);
         }
-        else if($request->nomor_struk){
+        if($request->nomor_struk){
             array_push($filters, ['nomor_struk', '!=', '']);
             array_push($filters, ['nomor_struk', '=', $request->nomor_struk]);
         }
-        else if($request->delivery_at){
+        if($request->delivery_at){
             array_push($filters, ['delivery_at', '=', $request->delivery_at]);
         }
 

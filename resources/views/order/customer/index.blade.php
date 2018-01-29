@@ -367,7 +367,7 @@ List Pesanan Customer
                                     if(data.shipment){
                                         var shipment_url = "{{route("shipment.track", ":id")}}";
                                         shipment_url = shipment_url.replace(':id', data.shipment.id);
-                                        result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>';
+                                        result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Pengiriman</a>';
                                         // if(data.status == "Proses"){
                                         //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
                                         // }
@@ -491,7 +491,7 @@ List Pesanan Customer
                         {data: null,
                             render: function(data){
                                 if(data.order.user){
-                                    return data.order.user.full_name;
+                                    return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
                                 }
                                 return '<i>Data admin tidak ditemukan</i>';
                             }}

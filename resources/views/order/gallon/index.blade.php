@@ -260,7 +260,13 @@ List Pesanan Galon
                 },
                 columns: [
                     {data: 'id'},
-                    {data: 'order.user.full_name'},
+                    {data: null,
+                    render: function (data) {
+                        if(data.order.user){
+                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
+                        }
+                        return 'Data admin tidak ditemukan';
+                    }},
                     {
                         data: 'outsourcing_driver',
                         render: function ( data ){           
