@@ -11,7 +11,7 @@ List Pesanan Customer
                 <!--<h3 class="panel-title">Pesanan Air</h3>-->
                 <a href="{{route('order.customer.make')}}"><button class="btn btn-success">Pesan</button></a>
                 <a href="{{route('order.customer.buy.index')}}"><button class="btn btn-primary">Pindah Tangan Galon</button></a>
-                <button class="btn btn-secondary showFilterBy">Tampilkan kolom pencarian</button>
+                <button class="btn btn-secondary showFilterBy">Kolom Pencarian</button>
             </header>
 
             <div class="row filterBy">

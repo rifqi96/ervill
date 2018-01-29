@@ -316,14 +316,11 @@ Detail Pesanan
                 var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
                 frameDoc.document.open();
                 //Create a new HTML document.
-//                frameDoc.document.write('<html><head><title>ERVILL - Struk Pemesanan</title>');
                 //Append the external CSS file.
                 frameDoc.document.write('<link href="{{asset('assets/css/lib/bootstrap/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />');
                 frameDoc.document.write('<link href="{{asset('assets/css/print.css')}}" rel="stylesheet" type="text/css" />');
-//                frameDoc.document.write('</head><body>');
                 //Append the DIV contents.
                 frameDoc.document.write(contents);
-//                frameDoc.document.write('</body></html>');
                 frameDoc.document.close();
                 setTimeout(function () {
                     window.frames["frame1"].focus();
