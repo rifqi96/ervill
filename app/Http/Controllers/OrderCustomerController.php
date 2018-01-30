@@ -345,9 +345,6 @@ class OrderCustomerController extends OrderController
         if($request->nomor_struk){
             array_push($filters, ['nomor_struk', $request->nomor_struk]);
         }
-        if($request->delivery_at){
-            array_push($filters, ['delivery_at', $request->delivery_at]);
-        }
 
         $oc = OrderCustomer::with([
             'shipment' => function($query){
@@ -361,6 +358,19 @@ class OrderCustomerController extends OrderController
 
         foreach($filters as $filter){
             $oc->whereIn($filter[0], $filter[1]);
+        }
+
+        if($request->delivery_start && !$request->delivery_end){
+            $oc->where('delivery_at', '>=', $request->delivery_start);
+        }
+        else if($request->delivery_end && !$request->delivery_start){
+            $oc->where('delivery_at', '<=', $request->delivery_end);
+        }
+        else if($request->delivery_start && $request->delivery_end){
+            $oc->where([
+                ['delivery_at', '>=', $request->delivery_start],
+                ['delivery_at', '<=', $request->delivery_end]
+            ]);
         }
 
         $oc->has('order');

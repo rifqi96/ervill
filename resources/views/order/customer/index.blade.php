@@ -41,7 +41,7 @@ List Pesanan Customer
                                         <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
                                             @foreach($struks as $struk)
-                                                <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}}</option>
+                                                <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -59,9 +59,13 @@ List Pesanan Customer
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-xl-3">Tanggal Pengiriman:</div>
-                                    <div class="col-xl-9">
-                                        <input type="date" name="delivery_at" class="form-control" id="search-date" value="">
+                                    <div class="col-xl-3">Tgl Pengiriman dari:</div>
+                                    <div class="col-xl-4">
+                                        <input type="date" name="delivery_start" class="form-control" id="search-date-start" value="">
+                                    </div>
+                                    <div class="col-xl-1">Sampai dengan:</div>
+                                    <div class="col-xl-4">
+                                        <input type="date" name="delivery_end" class="form-control" id="search-date-end" value="">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -69,7 +73,7 @@ List Pesanan Customer
                                     <div class="col-xl-9">
                                         {{csrf_field()}}
                                         <button type="submit" class="btn btn-primary search-btn">Cari</button>
-                                        <button type="reset" class="btn btn-info">Reset</button>
+                                        <button type="reset" class="btn btn-info reset">Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -80,22 +84,21 @@ List Pesanan Customer
 
             <table class="table table-hover" id="customer-order">
                 <thead>
-                <th>Aksi</th>
-                <th>Status</th>
-                <th>No</th>
-                <th>No Struk</th>
-                <th>Nama Customer</th>
-                <th>No. Telepon</th>
-                <th>Alamat Customer</th>
-                <th>Nama Pengemudi</th>
-                <th>Galon Isi Keluar</th>
-                <th>Galon Masuk Kosong Ervill</th>
-                <th>Galon Masuk Non Ervill</th>
-                <th>Tgl Order</th>
-                <th>Tgl Pengiriman</th>
-                <th>Tgl Penerimaan</th>
-                <th>Admin</th>
-               
+                    <th>Aksi</th>
+                    <th>Status</th>
+                    <th>No</th>
+                    <th>No Struk</th>
+                    <th>Nama Customer</th>
+                    <th>No. Telepon</th>
+                    <th>Alamat Customer</th>
+                    <th>Nama Pengemudi</th>
+                    <th>Galon Isi Keluar</th>
+                    <th>Galon Masuk Kosong Ervill</th>
+                    <th>Galon Masuk Non Ervill</th>
+                    <th>Tgl Order</th>
+                    <th>Tgl Pengiriman</th>
+                    <th>Tgl Penerimaan</th>
+                    <th>Admin</th>
                 </thead>
             </table>
         </div>
@@ -165,7 +168,7 @@ List Pesanan Customer
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
                                 <option value="">-- Silahkan Pilih --</option>
                                 @foreach($struks as $struk)
-                                    <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}}</option>
+                                    <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
                                 @endforeach
                             </select>
                     </div>
@@ -352,6 +355,11 @@ List Pesanan Customer
 
             var customerTable = function (result) {
                 $('#customer-order').DataTable().destroy();
+                // Setup - add a text input to each footer cell
+                $('#customer-order tfoot th').each( function () {
+                    var title = $(this).text();
+                    $(this).html( '<input type="text" placeholder="Cari '+title+'" />' );
+                } );
                 $('#customer-order').dataTable({
                     order:[2, 'desc'],
                     fixedHeader: {
@@ -375,7 +383,7 @@ List Pesanan Customer
                     columns: [
                         {data: null,
                             render: function(data, type, row, meta){
-                                var result = '<a href="customer/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Struk</button></a>';
+                                var result = '<a href="customer/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Struk</button></a>';
                                 if(data.status != "Draft"){
                                     if(data.shipment){
                                         var shipment_url = "{{route("shipment.track", ":id")}}";
