@@ -272,7 +272,7 @@
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                'order':[6, 'desc'],
+                'order':[1, 'desc'],g
                 data:delete_histories_json,
                 columns: [
                     {

@@ -189,7 +189,7 @@
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                'order':[5, 'desc'],
+                'order':[0, 'desc'],
                 data:edit_history_json,
                 columns: [
                     {data: 'id'},
