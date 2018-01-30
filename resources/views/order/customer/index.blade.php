@@ -115,8 +115,8 @@ List Pesanan Customer
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="issueModalLabel">Detail Masalah</h4>
           </div>
-     
-              <div class="modal-body">                       
+
+              <div class="modal-body">
                 <table class="table table-hover" id="issues">
                       <thead>
                           <th>Tipe Masalah</th>
@@ -340,6 +340,15 @@ List Pesanan Customer
                         console.log(msg);
                     });
                 $(this).find('button[type=submit]').prop('disabled', false);
+            });
+
+            $('#filterBy .reset-btn').click(function () {
+                $('#search-id').val('');
+                $('#search-id').trigger('change');
+                $('#search-cusname').val('');
+                $('#search-cusname').trigger('change');
+                $('#search-nostruk').val('');
+                $('#search-nostruk').trigger('change');
             });
 
             // Init //

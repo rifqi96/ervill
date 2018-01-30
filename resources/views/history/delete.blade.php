@@ -78,7 +78,7 @@
                                     <div class="col-xl-9">
                                         {{csrf_field()}}
                                         <button type="submit" class="btn btn-primary search-btn">Cari</button>
-                                        <button type="reset" class="btn btn-info">Reset</button>
+                                        <button type="reset" class="btn btn-info reset-btn">Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -174,6 +174,15 @@
                         console.log(msg);
                     });
                 $(this).find('button[type=submit]').prop('disabled', false);
+            });
+
+            $('#filterBy .reset-btn').click(function () {
+                $('#search-id').val('');
+                $('#search-id').trigger('change');
+                $('#search-fullname').val('');
+                $('#search-fullname').trigger('change');
+                $('#search-module').val('');
+                $('#search-module').trigger('change');
             });
 
             delete_table({!! $delete_histories->toJson() !!});

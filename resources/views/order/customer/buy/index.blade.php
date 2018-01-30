@@ -21,7 +21,7 @@
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
                 <th>Jumlah Galon</th>
-                <th>Tgl Order</th>
+                <th>Tgl Pembelian</th>
                 <th>Admin</th>
                 <th>Aksi</th>
                 </thead>
@@ -119,7 +119,7 @@
                             {data: null,
                                 render: function (data) {
                                     if(data.buy_at){
-                                        return moment(data.buy_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.buy_at).locale('id').format('DD MMMM YYYY');
                                     }
                                     return '-';
                                 }
