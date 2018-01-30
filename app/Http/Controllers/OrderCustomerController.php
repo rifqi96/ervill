@@ -11,6 +11,7 @@ use App\Models\DeleteHistory;
 use App\Models\EditHistory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
+use App\Http\Controllers\CustomerController;
 
 class OrderCustomerController extends OrderController
 {
@@ -26,6 +27,10 @@ class OrderCustomerController extends OrderController
         $this->data['breadcrumb'] = "Order - Customer Order";
 
         $this->data['inventory'] = Inventory::find(3);
+
+        $this->data['customers'] = (new CustomerController())->getAll();
+        $this->data['struks'] = $this->getNomorStruk();
+        $this->data['orders'] = $this->getAll();
 
         return view('order.customer.index', $this->data);
     }
@@ -126,6 +131,22 @@ class OrderCustomerController extends OrderController
                 $query->where('accepted_at', null);
             })
             ->has('customer')
+            ->get();
+    }
+
+    public function getNomorStruk(){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->where('nomor_struk', '!=', '')
+            ->has('order')
+            ->groupBy('nomor_struk')
             ->get();
     }
 
@@ -318,14 +339,13 @@ class OrderCustomerController extends OrderController
     public function filterBy(Request $request){
         $filters = [];
         if($request->id){
-            array_push($filters, ['id', '=', $request->id]);
+            array_push($filters, ['id', $request->id]);
         }
         if($request->nomor_struk){
-            array_push($filters, ['nomor_struk', '!=', '']);
-            array_push($filters, ['nomor_struk', '=', $request->nomor_struk]);
+            array_push($filters, ['nomor_struk', $request->nomor_struk]);
         }
         if($request->delivery_at){
-            array_push($filters, ['delivery_at', '=', $request->delivery_at]);
+            array_push($filters, ['delivery_at', $request->delivery_at]);
         }
 
         $oc = OrderCustomer::with([
@@ -336,13 +356,17 @@ class OrderCustomerController extends OrderController
             'order' => function($query){
                 $query->with(['user', 'issues']);
             }
-            ])
-            ->where($filters)
-            ->has('order');
+            ]);
+
+        foreach($filters as $filter){
+            $oc->whereIn($filter[0], $filter[1]);
+        }
+
+        $oc->has('order');
 
         if($request->customer_name){
             $oc->whereHas('customer', function ($query) use($request){
-                $query->where('name', 'like', '%'.$request->customer_name.'%');
+                $query->whereIn('name', $request->customer_name);
             });
         }
 

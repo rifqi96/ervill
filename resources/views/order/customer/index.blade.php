@@ -25,19 +25,37 @@ List Pesanan Customer
                                 <div class="row form-group">
                                     <div class="col-xl-3">No Order:</div>
                                     <div class="col-xl-9">
-                                        <input type="number" name="id" class="form-control" id="search-id" placeholder="101">
+                                        {{--<input type="number" name="id" class="form-control" id="search-id" placeholder="101">--}}
+                                        <select name="id[]" id="search-id" class="form-control select2" multiple="multiple">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            @foreach($orders as $order)
+                                                <option value="{{$order->id}}">{{$order->id}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-xl-3">No Struk:</div>
                                     <div class="col-xl-9">
-                                        <input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">
+                                        {{--<input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">--}}
+                                        <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            @foreach($struks as $struk)
+                                                <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-xl-3">Nama Customer:</div>
                                     <div class="col-xl-9">
-                                        <input type="text" name="customer_name" class="form-control" id="search-cusname" placeholder="Budi">
+                                        {{--<input type="text" name="customer_name" class="form-control" id="search-cusname" placeholder="Budi">--}}
+                                        <select name="customer_name[]" id="search-cusname" class="form-control select2" multiple="multiple">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            @foreach($customers as $customer)
+                                                <option value="{{$customer->name}}">{{$customer->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -297,9 +315,6 @@ List Pesanan Customer
         </div>
       </div>
     </div>
-
-
-    
 
     <script>
         $(document).ready(function () {

@@ -12,6 +12,13 @@
 
     @include('layouts.include_header')
 
+    <style>
+        .select2-container--classic .select2-results__option--highlighted[aria-selected] {
+            background: #f00;
+            color: #3875d7;
+        }
+    </style>
+
 </head>
 <body class="with-side-menu control-panel control-panel-compact">
 
@@ -74,6 +81,12 @@
     });
     $('form').on('blur', 'input[type=number]', function (e) {
       $(this).off('mousewheel.disableScroll');
+    });
+
+    $(document).ready(function () {
+        $('.select2').select2({
+            theme:'classic'
+        });
     });
 </script>
 </body>

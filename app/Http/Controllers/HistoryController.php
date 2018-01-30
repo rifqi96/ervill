@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Shipment;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\UserController;
 
 class HistoryController extends Controller
 {
@@ -46,6 +47,9 @@ class HistoryController extends Controller
         $edit_histories = EditHistory::with('user')->get();
 
         $this->data['edit_history'] = $this->getEditValues($edit_histories);
+        $this->data['users'] = (new UserController())->getUsers();
+        $this->data['edit_histories'] = $this->getEditHistories();
+        $this->data['datas'] = $this->getEditData();
         //dd($this->data['edit_history']);
         return view('history.edit', $this->data);
     }
@@ -62,14 +66,19 @@ class HistoryController extends Controller
         }
 
         $this->data['delete_histories'] = $delete_histories;
+        $this->data['users'] = (new UserController())->getUsers();
+        $this->data['datas'] = $this->getDeleteData();
 
         return view('history.delete', $this->data);
     }
 
     /*======= Get Methods =======*/
     public function getEditHistories(){
-        $editHistories = EditHistory::all();
-        return json_encode($editHistories);
+        return EditHistory::all();
+    }
+
+    public function getEditData(){
+        return EditHistory::groupBy('data_id')->get();
     }
 
     public function getTrashedObject($request){
@@ -173,24 +182,30 @@ class HistoryController extends Controller
         }
     }
 
+    public function getDeleteData(){
+        return DeleteHistory::groupBy('data_id')->get();
+    }
+
     public function editFilterBy(Request $request){
         $filters = [];
         if($request->module_name){
-            array_push($filters, ['module_name', '=', $request->module_name]);
+            array_push($filters, ['module_name', $request->module_name]);
         }
         if($request->data_id){
-            array_push($filters, ['data_id', '=', $request->data_id]);
-        }
-        if($request->created_at){
-            array_push($filters, ['created_at', 'like', '%'.$request->created_at.'%']);
+            array_push($filters, ['data_id', $request->data_id]);
         }
 
-        $edit_histories = EditHistory::with('user')
-            ->where($filters);
+        $edit_histories = EditHistory::with('user');
+
+        foreach($filters as $filter){
+            $edit_histories->whereIn($filter[0], $filter[1]);
+        }
+
+        $edit_histories->where('created_at', 'like', '%'.$request->created_at.'%');
 
         if($request->user_fullname){
             $edit_histories->whereHas('user', function ($query) use($request){
-                $query->where('full_name', 'like', '%'.$request->user_fullname.'%');
+                $query->whereIn('full_name', $request->user_fullname);
             });
         }
 
@@ -200,21 +215,24 @@ class HistoryController extends Controller
     public function deleteFilterBy(Request $request){
         $filters = [];
         if($request->module_name){
-            array_push($filters, ['module_name', '=', $request->module_name]);
+            array_push($filters, ['module_name', $request->module_name]);
         }
         if($request->data_id){
-            array_push($filters, ['data_id', '=', $request->data_id]);
-        }
-        if($request->created_at){
-            array_push($filters, ['created_at', 'like', '%'.$request->created_at.'%']);
+            array_push($filters, ['data_id', $request->data_id]);
         }
 
-        $delete_histories = DeleteHistory::with('user')
-            ->where($filters);
+
+        $delete_histories = DeleteHistory::with('user');
+
+        foreach($filters as $filter){
+            $delete_histories->whereIn($filter[0], $filter[1]);
+        }
+
+        $delete_histories->where('created_at', 'like', '%'.$request->created_at.'%');
 
         if($request->user_fullname){
             $delete_histories->whereHas('user', function ($query) use($request){
-                $query->where('full_name', 'like', '%'.$request->user_fullname.'%');
+                $query->whereIn('full_name', $request->user_fullname);
             });
         }
 

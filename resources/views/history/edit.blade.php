@@ -22,7 +22,7 @@
                                 <div class="row form-group">
                                     <div class="col-xl-3">Nama Modul:</div>
                                     <div class="col-xl-9">
-                                        <select name="module_name" id="search-module" class="form-control">
+                                        <select name="module_name[]" id="search-module" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
                                             <option value="Order Customer">Order Customer</option>
                                             <option value="Shipment">Pengiriman</option>
@@ -38,13 +38,25 @@
                                 <div class="row form-group">
                                     <div class="col-xl-3">No. Transaksi / Data ID:</div>
                                     <div class="col-xl-9">
-                                        <input type="text" name="data_id" class="form-control" id="search-id" placeholder="101">
+                                        {{--<input type="text" name="data_id" class="form-control" id="search-id" placeholder="101">--}}
+                                        <select name="data_id[]" id="search-id" class="form-control select2" multiple="multiple">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            @foreach($datas as $data)
+                                                <option value="{{$data->data_id}}">{{$data->data_id}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-xl-3">Nama Admin:</div>
                                     <div class="col-xl-9">
-                                        <input type="text" name="user_fullname" class="form-control" id="search-fullname" placeholder="Budi">
+                                        {{--<input type="text" name="user_fullname" class="form-control" id="search-fullname" placeholder="Budi">--}}
+                                        <select name="user_fullname[]" id="search-fullname" class="form-control select2" multiple="multiple">
+                                            <option value="">-- Silahkan Pilih --</option>
+                                            @foreach($users as $user)
+                                                <option value="{{$user->full_name}}">{{$user->full_name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">

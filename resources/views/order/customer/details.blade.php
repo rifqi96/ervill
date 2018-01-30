@@ -13,7 +13,6 @@ Detail Pesanan
                     <div class="col-xl-10 col-sm-10 col-xs-9">
                         <a href="{{route('order.customer.index')}}"><button class="btn btn-primary">Lihat Pesanan Customer</button></a>
                     </div>
-                    {{--<button class="btn btn-rounded btn-inline">Send</button>--}}
                     <div class="col-xl-2 col-sm-2 col-xs-3">
                         <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
                     </div>
@@ -30,13 +29,13 @@ Detail Pesanan
                             <h5>ERVILL</h5>
 
                             <div class="invoice-block">
-                                <div>Jalan Imam Bonjol</div>
+                                <div>Jl. Imam Bonjol No. 27 E</div>
+                                <div>Karawaci</div>
                                 <div>Tangerang</div>
                             </div>
 
                             <div class="invoice-block">
-                                <div>Telephone: 555-692-7754</div>
-                                <div>Fax: 555-692-7754</div>
+                                <div>Telephone: (021) 5585050</div>
                             </div>
                         </div>
                         <div class="newhr">
@@ -44,43 +43,9 @@ Detail Pesanan
                         </div>
                         <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
                             <div class="text-lg-right">
-                                <h5>Nomor Transaksi {{$oc->nomor_struk?$oc->nomor_struk:$oc->id}}</h5>
+                                <h5>Nomor Transaksi/Struk {{$oc->nomor_struk?$oc->nomor_struk:$oc->id}}</h5>
                                 <div>Tanggal Pengiriman: <b class="delivery-at">{{\Carbon\Carbon::parse($oc->delivery_at)->format('d-m-Y')}}</b></div>
                             </div>
-
-                            {{--<div class="payment-details">--}}
-                                {{--<strong>Payment Details</strong>--}}
-                                {{--<table>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>Total Due:</td>--}}
-                                        {{--<td>$8,750</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>Bank Name:</td>--}}
-                                        {{--<td>Profit Bank Europe</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>Country:</td>--}}
-                                        {{--<td>United Kingdom</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>City:</td>--}}
-                                        {{--<td>London</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>Address:</td>--}}
-                                        {{--<td>3 Goodman street</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>IBAN:</td>--}}
-                                        {{--<td>KFHT32565523921540571</td>--}}
-                                    {{--</tr>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>SWIFT Code:</td>--}}
-                                        {{--<td>BPT4E</td>--}}
-                                    {{--</tr>--}}
-                                {{--</table>--}}
-                            {{--</div>--}}
                         </div>
                     </div>
                     <hr>
@@ -152,9 +117,9 @@ Detail Pesanan
                                             @if($details[$key]->purchase_type)
                                                 @if($details[$key]->purchase_type == "purchase")
                                                     @if($details[$key]->customer->type == "end_customer")
-                                                        32000
+                                                        42000
                                                     @else
-                                                        30000
+                                                        40000
                                                     @endif
                                                 @elseif($details[$key]->purchase_type == "rent")
                                                     @if($details[$key]->customer->type == "end_customer")
@@ -164,16 +129,16 @@ Detail Pesanan
                                                     @endif
                                                 @else
                                                     @if($details[$key]->customer->type == "end_customer")
-                                                        10000
+                                                        12000
                                                     @else
-                                                        8000
+                                                        10000
                                                     @endif
                                                 @endif
                                             @else
                                                 @if($details[$key]->customer->type == "end_customer")
-                                                    9000
+                                                    12000
                                                 @else
-                                                    7000
+                                                    10000
                                                 @endif
                                             @endif
                                         </td>
@@ -182,15 +147,15 @@ Detail Pesanan
                                                 @if($details[$key]->purchase_type == "purchase")
                                                     @if($details[$key]->customer->type == "end_customer")
                                                         @if($details[$key]->is_new == "false")
-                                                            {{32000*$details[$key]->additional_quantity}}
+                                                            {{42000*$details[$key]->additional_quantity}}
                                                         @else
-                                                            {{32000*$details[$key]->order->quantity}}
+                                                            {{42000*$details[$key]->order->quantity}}
                                                         @endif
                                                     @else
                                                         @if($details[$key]->is_new == "false")
-                                                            {{30000*$details[$key]->additional_quantity}}
+                                                            {{40000*$details[$key]->additional_quantity}}
                                                         @else
-                                                            {{30000*$details[$key]->order->quantity}}
+                                                            {{40000*$details[$key]->order->quantity}}
                                                         @endif
                                                     @endif
                                                 @elseif($details[$key]->purchase_type == "rent")
@@ -210,23 +175,23 @@ Detail Pesanan
                                                 @else
                                                     @if($details[$key]->customer->type == "end_customer")
                                                         @if($details[$key]->is_new == "false")
-                                                            {{10000*$details[$key]->additional_quantity}}
+                                                            {{12000*$details[$key]->additional_quantity}}
                                                         @else
-                                                            {{10000*$details[$key]->order->quantity}}
+                                                            {{12000*$details[$key]->order->quantity}}
                                                         @endif
                                                     @else
                                                         @if($details[$key]->is_new == "false")
-                                                            {{8000*$details[$key]->additional_quantity}}
+                                                            {{10000*$details[$key]->additional_quantity}}
                                                         @else
-                                                            {{8000*$details[$key]->order->quantity}}
+                                                            {{10000*$details[$key]->order->quantity}}
                                                         @endif
                                                     @endif
                                                 @endif
                                             @else
                                                 @if($details[$key]->customer->type == "end_customer")
-                                                    {{9000*$details[$key]->order->quantity}}
+                                                    {{12000*$details[$key]->order->quantity}}
                                                 @else
-                                                    {{7000*$details[$key]->order->quantity}}
+                                                    {{10000*$details[$key]->order->quantity}}
                                                 @endif
                                             @endif
                                         </td>
@@ -238,16 +203,16 @@ Detail Pesanan
                                             <td>{{$details[$key]->order->quantity}}</td>
                                             <td class="numeral">
                                                 @if($details[$key]->customer->type == "end_customer")
-                                                    9000
+                                                    12000
                                                 @else
-                                                    7000
+                                                    10000
                                                 @endif
                                             </td>
                                             <td class="numeral total">
                                                 @if($details[$key]->customer->type == "end_customer")
-                                                    {{9000*$details[$key]->order->quantity}}
+                                                    {{12000*$details[$key]->order->quantity}}
                                                 @else
-                                                    {{7000*$details[$key]->order->quantity}}
+                                                    {{10000*$details[$key]->order->quantity}}
                                                 @endif
                                             </td>
                                         </tr>

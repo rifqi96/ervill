@@ -63,8 +63,7 @@ class UserController extends SettingController
     /*======= Get Methods =======*/
     public function getUsers()
     {
-        $users = User::with('role')->get();
-        return json_encode($users);
+        return User::with('role')->get();
     }
 
     public function getAllDrivers(){
