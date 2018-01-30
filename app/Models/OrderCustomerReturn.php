@@ -58,6 +58,7 @@ class OrderCustomerReturn extends Model
 
         $empty_gallon = Inventory::find(2);
         $filled_gallon = Inventory::find(3);
+        $outgoing_gallon = Inventory::find(5);
 
         if(!$customer_gallon){
             return false;
@@ -79,10 +80,21 @@ class OrderCustomerReturn extends Model
             return false;
         }
 
-        $customer_gallon->qty -= $returned_gallons;
-
-        if(!$customer_gallon->save()){
+        $outgoing_gallon->quantity -= $returned_gallons;
+        if(!$outgoing_gallon->save()){
             return false;
+        }
+
+        $customer_gallon->qty -= $returned_gallons;
+        if($customer_gallon->qty > 0){
+            if(!$customer_gallon->save()){
+                return false;
+            }
+        }
+        else{
+            if(!$customer_gallon->delete()){
+                return false;
+            }
         }
 
         $this->status = 'Selesai';
@@ -100,12 +112,26 @@ class OrderCustomerReturn extends Model
 
         $empty_gallon = Inventory::find(2);
         $filled_gallon = Inventory::find(3);
-
-        if(!$customer_gallon){
-            return false;
-        }
+        $outgoing_gallon = Inventory::find(5);
 
         $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
+
+        if(!$customer_gallon){
+            $customer_gallon = new CustomerGallon();
+            $customer_gallon->customer_id = $this->customer_id;
+            $customer_gallon->qty = $returned_gallons;
+            $customer_gallon->type = "rent";
+            if(!$customer_gallon->save()){
+                return false;
+            }
+        }
+        else{
+            $customer_gallon->qty += $returned_gallons;
+
+            if(!$customer_gallon->save()){
+                return false;
+            }
+        }
 
         $empty_gallon->quantity -= $this->empty_gallon_quantity;
         if(!$empty_gallon->save()){
@@ -117,9 +143,8 @@ class OrderCustomerReturn extends Model
             return false;
         }
 
-        $customer_gallon->qty += $returned_gallons;
-
-        if(!$customer_gallon->save()){
+        $outgoing_gallon->quantity += $returned_gallons;
+        if(!$outgoing_gallon->save()){
             return false;
         }
 

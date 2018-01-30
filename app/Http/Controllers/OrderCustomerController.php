@@ -41,6 +41,7 @@ class OrderCustomerController extends OrderController
 
         $this->data['inventory'] = Inventory::find(3);
         $this->data['customer_gallons'] = CustomerGallon::all();
+        $this->data['struks'] = $this->getNomorStruk();
 
         $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
         $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
@@ -207,7 +208,7 @@ class OrderCustomerController extends OrderController
             //if change nomor_struk
             if($request->change_nomor_struk){
                 $this->validate($request, [               
-                    'nomor_struk' => 'required|integer'
+                    'nomor_struk' => 'required'
                 ]);             
             }
 
@@ -247,7 +248,7 @@ class OrderCustomerController extends OrderController
     {
         $this->validate($request, [
             'customer_id' => 'required|integer|exists:customers,id',
-            'nomor_struk' => 'required|integer',
+            'nomor_struk' => 'required',
             // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);

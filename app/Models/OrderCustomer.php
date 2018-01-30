@@ -55,19 +55,17 @@ class OrderCustomer extends Model
     public function doMake($gallon_data, $customer_id, $author_id)
     {
         if($gallon_data->change_nomor_struk){
-            while( strlen($gallon_data->nomor_struk) < 7 ){
-                $gallon_data->nomor_struk = '0'.$gallon_data->nomor_struk;
-            }
+
 
             $oc_struk = OrderCustomer::where([
                 ['customer_id',$customer_id],
-                ['nomor_struk','OC'.$gallon_data->nomor_struk]
+                ['nomor_struk',$gallon_data->nomor_struk]
             ])->get();
 
             if(count($oc_struk)==0){
                 return false;
             }
-            $this->nomor_struk = 'OC'.$gallon_data->nomor_struk;
+            $this->nomor_struk = $gallon_data->nomor_struk;
         }else{
             //get latest nomor struk
             $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
@@ -138,20 +136,15 @@ class OrderCustomer extends Model
 
         //edit nomor_struk
 
-            while( strlen($data->nomor_struk) < 7 ){
-                $data->nomor_struk = '0'.$data->nomor_struk;
-            }
+        $oc_struk = OrderCustomer::where([
+            ['customer_id',$this->customer->id],
+            ['nomor_struk',$data->nomor_struk]
+        ])->get();
 
-            $oc_struk = OrderCustomer::where([
-                ['customer_id',$this->customer->id],
-                ['nomor_struk','OC'.$data->nomor_struk]
-            ])->get();
-
-            if(count($oc_struk)==0){
-                return false;
-            }
-            $this->nomor_struk = 'OC'.$data->nomor_struk;
-
+        if(count($oc_struk)==0){
+            return false;
+        }
+        $this->nomor_struk = $data->nomor_struk;
 
         //change customer
         if($this->customer_id != $data->customer_id){

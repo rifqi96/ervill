@@ -162,14 +162,12 @@ List Pesanan Customer
                     {{--</div>--}}
                     <div class="form-group">
                         <label for="nomor_struk"><strong>Nomor Struk </strong></label>
-                        <div class="row">
-                            <div class="col col-md-1">
-                                OC
-                            </div>
-                            <div class="col col-md-11">
-                                <input type="number" class="form-control" name="nomor_struk" id="nomor_struk" placeholder="Nomor Struk">
-                            </div>
-                        </div>
+                            <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
+                                <option value="">-- Silahkan Pilih --</option>
+                                @foreach($struks as $struk)
+                                    <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}}</option>
+                                @endforeach
+                            </select>
                     </div>
                     <div class="form-group" id="purchase_type_div">
                         <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
@@ -182,7 +180,7 @@ List Pesanan Customer
                     </div>
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon </strong><span id="edit-qty-max"></span></label>
-                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="1">
+                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="0">
                     </div>
                     <div class="form-group" id="add_gallon_checkbox_div">
                         <label for="add_gallon"><strong>Tambah Galon ?</strong></label>
@@ -201,7 +199,7 @@ List Pesanan Customer
                         </div>
                         <div class="form-group">
                             <label for="add_gallon_quantity"><strong>Jumlah Galon Tambah</strong><span id="add_gallon_quantity_max"></span></label>
-                            <input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="" max="" min="1">
+                            <input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="" max="" min="0">
                         </div>
                     </div>
                     
@@ -578,8 +576,12 @@ List Pesanan Customer
                         }
                     }
 
+                    //isi nomor struk
+                    $('#edit-nostruk').val(order_data.nomor_struk);
+                    $('#edit-nostruk').trigger('change');
+
                     $('#customer-id').val(order_data.customer_id);
-                    $('#nomor_struk').val(parseInt((order_data.nomor_struk).substr(2)));
+
 
                     var inventory = JSON.parse('{!! $inventory !!}');
 
