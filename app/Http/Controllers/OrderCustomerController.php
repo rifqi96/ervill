@@ -11,6 +11,7 @@ use App\Models\DeleteHistory;
 use App\Models\EditHistory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
+use App\Http\Controllers\CustomerController;
 
 class OrderCustomerController extends OrderController
 {
@@ -27,6 +28,10 @@ class OrderCustomerController extends OrderController
 
         $this->data['inventory'] = Inventory::find(3);
 
+        $this->data['customers'] = (new CustomerController())->getAll();
+        $this->data['struks'] = $this->getNomorStruk();
+        $this->data['orders'] = $this->getAll();
+
         return view('order.customer.index', $this->data);
     }
 
@@ -36,12 +41,29 @@ class OrderCustomerController extends OrderController
 
         $this->data['inventory'] = Inventory::find(3);
         $this->data['customer_gallons'] = CustomerGallon::all();
+        $this->data['struks'] = $this->getNomorStruk();
 
         $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
         $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
         $this->data['latest_nomor_struk'] = $new_nomor_struk;
 
         return view('order.customer.make', $this->data);
+    }
+
+    public function showDetails($id){
+        $this->data['breadcrumb'] = "Order - Customer Order - Details";
+
+         $this->data['oc'] = $this->get($id);
+         if($this->data['oc']->nomor_struk){
+             $this->data['details'] = $this->getSameReceipts($this->data['oc']->nomor_struk);
+         }
+         else{
+             $this->data['details'] = array(
+                 $this->data['oc']
+             );
+         }
+
+         return view('order.customer.details', $this->data);
     }
 
     /*======= Get Methods =======*/
@@ -54,6 +76,38 @@ class OrderCustomerController extends OrderController
             'order' => function($query){
                 $query->with(['user', 'issues']);
             }
+            ])
+            ->has('order')
+            ->get();
+    }
+
+    public function get($id){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->has('order')
+            ->find($id);
+    }
+
+    public function getSameReceipts($receipts){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+        ])
+            ->where([
+                ['nomor_struk', '!=', ''],
+                ['nomor_struk', '=', $receipts]
             ])
             ->has('order')
             ->get();
@@ -81,6 +135,22 @@ class OrderCustomerController extends OrderController
             ->get();
     }
 
+    public function getNomorStruk(){
+        return OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ])
+            ->where('nomor_struk', '!=', '')
+            ->has('order')
+            ->groupBy('nomor_struk')
+            ->get();
+    }
+
     /*======= Do Methods =======*/
     public function doMake(Request $request){
         $customer_id = null;
@@ -105,7 +175,7 @@ class OrderCustomerController extends OrderController
                 'name' => 'required|string',
                 'phone' => 'required|string|digits_between:3,14',
                 'address' => 'required|string',
-                'quantity' => 'required|integer|min:1',
+                'quantity' => 'required|integer|min:0',
                 'delivery_at' => 'required|date',
                 'purchase_type' => 'required'
             ]);
@@ -138,7 +208,7 @@ class OrderCustomerController extends OrderController
             //if change nomor_struk
             if($request->change_nomor_struk){
                 $this->validate($request, [               
-                    'nomor_struk' => 'required|integer'
+                    'nomor_struk' => 'required'
                 ]);             
             }
 
@@ -177,7 +247,8 @@ class OrderCustomerController extends OrderController
     public function doUpdate(Request $request)
     {
         $this->validate($request, [
-            'customer_id' => 'required|integer|exists:customers,id',                     
+            'customer_id' => 'required|integer|exists:customers,id',
+            'nomor_struk' => 'required',
             // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
@@ -225,7 +296,7 @@ class OrderCustomerController extends OrderController
 
         if(!$order_customer->doUpdate($request)){
             return back()
-                ->withErrors(['message' => 'There is something wrong, please contact admin']);
+                ->withErrors(['message' => 'Input salah, harap hubungi admin']);
         }
         return back()
             ->with('success', 'Data telah berhasil diupdate');
@@ -264,5 +335,52 @@ class OrderCustomerController extends OrderController
             return back()
                 ->withErrors(['message' => 'Terjadi kesalahan pada penambahan masalah']);
         }
+    }
+
+    public function filterBy(Request $request){
+        $filters = [];
+        if($request->id){
+            array_push($filters, ['id', $request->id]);
+        }
+        if($request->nomor_struk){
+            array_push($filters, ['nomor_struk', $request->nomor_struk]);
+        }
+
+        $oc = OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+            ]);
+
+        foreach($filters as $filter){
+            $oc->whereIn($filter[0], $filter[1]);
+        }
+
+        if($request->delivery_start && !$request->delivery_end){
+            $oc->where('delivery_at', '>=', $request->delivery_start);
+        }
+        else if($request->delivery_end && !$request->delivery_start){
+            $oc->where('delivery_at', '<=', $request->delivery_end);
+        }
+        else if($request->delivery_start && $request->delivery_end){
+            $oc->where([
+                ['delivery_at', '>=', $request->delivery_start],
+                ['delivery_at', '<=', $request->delivery_end]
+            ]);
+        }
+
+        $oc->has('order');
+
+        if($request->customer_name){
+            $oc->whereHas('customer', function ($query) use($request){
+                $query->whereIn('name', $request->customer_name);
+            });
+        }
+
+        return $oc->get();
     }
 }

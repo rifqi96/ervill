@@ -140,8 +140,9 @@ Pengiriman
                 dataType:'json',
                 success: function(result){
                     $('#unfinished-shipment').dataTable({
-                        scrollX: true,
-                        fixedHeader: true,
+                        fixedHeader: {
+                            headerOffset: $('.site-header').outerHeight()
+                        },
                         processing: true,
                         'order':[4, 'asc'],
                         select: {
@@ -230,8 +231,9 @@ Pengiriman
                 dataType:'json',
                 success: function(result){
                     $('#finished-shipment').dataTable({
-                        scrollX: true,
-                        fixedHeader: true,
+                        fixedHeader: {
+                            headerOffset: $('.site-header').outerHeight()
+                        },
                         processing: true,
                         'order':[4, 'desc'],
                         select: {

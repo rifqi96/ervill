@@ -8,7 +8,7 @@ List Pesanan Galon
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <a href="{{route('order.gallon.make')}}"><button class="btn btn-primary">Pesan Galon</button></a>              
+                <a href="{{route('order.gallon.make')}}"><button class="btn btn-success">Pesan</button></a>
             </header>
             <table class="table table-hover" id="gallon_order">
                 <thead>
@@ -236,7 +236,9 @@ List Pesanan Galon
             $('#gallon_order').dataTable({
                 order:[5, 'desc'],
 //                scrollX: true,
-                fixedHeader: true,       
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 processing: true,
                 select: {
                     style: 'multi'
@@ -258,7 +260,13 @@ List Pesanan Galon
                 },
                 columns: [
                     {data: 'id'},
-                    {data: 'order.user.full_name'},
+                    {data: null,
+                    render: function (data) {
+                        if(data.order.user){
+                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
+                        }
+                        return 'Data admin tidak ditemukan';
+                    }},
                     {
                         data: 'outsourcing_driver',
                         render: function ( data ){           

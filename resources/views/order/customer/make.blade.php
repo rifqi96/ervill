@@ -89,7 +89,14 @@ Pesan Customer
                     <div class="form-group row" id="nomor_struk_div">
                         <label class="col-sm-2 form-control-label">Nomor Struk</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><input id="nomor_struk" type="number" class="form-control" name="nomor_struk" min="1" max="{{$latest_nomor_struk}}" ></p>
+                            <p class="form-control-static">
+                                <select name="nomor_struk" id="nostruk" class="form-control select2">
+                                    <option value="">-- Silahkan Pilih --</option>
+                                    @foreach($struks as $struk)
+                                        <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
+                                    @endforeach
+                                </select>
+                            </p>
                         </div>                        
                     </div>
                     <div class="form-group row">
@@ -229,8 +236,9 @@ Pesan Customer
             });
 
             $('#customer-table').dataTable({
-                scrollX: true,
-                fixedHeader: true,
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
                 ajax: {
                     url: '/getCustomers',
                     dataSrc: ''

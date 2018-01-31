@@ -40,8 +40,15 @@ class UserController extends SettingController
             $this->data['roles'] = Role::where('name','driver')->get();
 
         return view('setting.user_management.make', $this->data);
-        
+    }
 
+    public function showDetails($id)
+    {
+        $this->data['breadcrumb'] = "Setting - User Management - User Details";
+
+        $this->data['user'] = $this->get($id);
+
+        return view('setting.user_management.details', $this->data);
     }
 
     public function showProfile()
@@ -56,8 +63,7 @@ class UserController extends SettingController
     /*======= Get Methods =======*/
     public function getUsers()
     {
-        $users = User::with('role')->get();
-        return json_encode($users);
+        return User::with('role')->get();
     }
 
     public function getAllDrivers(){
@@ -66,6 +72,11 @@ class UserController extends SettingController
                 $query->where('name', 'driver');
             })
             ->get();
+    }
+
+    public function get($id){
+        return User::with('role')->find($id);
+
     }
 
     /*======= Do Methods =======*/

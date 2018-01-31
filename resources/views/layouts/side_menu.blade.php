@@ -28,6 +28,12 @@
             <span class="lbl">Pengiriman</span>
         </a>
     </li>
+    <li class="{{$module=="return"?"opened":""}}">
+        <a href="{{route('return.index')}}">
+            <i class="font-icon font-icon-import"></i>
+            <span class="lbl">Retur Galon</span>
+        </a>
+    </li>
     <li class="{{$module=="inventory"?"opened":""}}">
         <a href="{{route('inventory.index')}}">
             <i class="font-icon font-icon-archive"></i>

@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Shipment;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\UserController;
 
 class HistoryController extends Controller
 {
@@ -45,144 +46,10 @@ class HistoryController extends Controller
 
         $edit_histories = EditHistory::with('user')->get();
 
-        foreach($edit_histories as $edit_history){
-            $old_value = explode(";", $edit_history->old_value);
-            $new_value = explode(";", $edit_history->new_value);
-            $old_value_arr = array();
-            $new_value_arr = array();
-
-            if($edit_history->module_name == "User Management"){                             
-                $old_value_arr['Username'] = $old_value[0];
-                $old_value_arr['Nama'] = $old_value[1];
-                $old_value_arr['Email'] = $old_value[2];
-                $old_value_arr['No. Telepon'] = $old_value[3];
-                $old_value_arr['Role'] = $old_value[4];
-             
-                $new_value_arr['Username'] = $new_value[0];
-                $new_value_arr['Nama'] = $new_value[1];
-                $new_value_arr['Email'] = $new_value[2];
-                $new_value_arr['No. Telepon'] = $new_value[3];
-                if(count($new_value)==5){
-                    $new_value_arr['Role'] = $new_value[4];
-                }else{
-                    $new_value_arr['Password Baru'] = $new_value[4];
-                    $new_value_arr['Role'] = $new_value[5];
-                }
-                
-
-            }
-            else if($edit_history->module_name == "Customers"){
-                $old_value_arr['Nama'] = $old_value[0];
-                $old_value_arr['Alamat'] = $old_value[1];
-                $old_value_arr['No. Telepon'] = $old_value[2];
-                if($old_value[3] == "end_customer"){
-                    $type = "End Customer";
-                }
-                else{
-                    $type = "Agen";
-                }
-                $old_value_arr['Jenis'] = $type;
-
-                $new_value_arr['Nama'] = $new_value[0];
-                $new_value_arr['Alamat'] = $new_value[1];
-                $new_value_arr['No. Telepon'] = $new_value[2];
-                if($new_value[3] == "end_customer"){
-                    $type = "End Customer";
-                }
-                else{
-                    $type = "Agen";
-                }
-                $new_value_arr['Jenis'] = $type;
-            }
-            else if($edit_history->module_name == "Outsourcing Driver"){
-                $old_value_arr['Nama'] = $old_value[0];
-                $old_value_arr['No Telp/HP'] = $old_value[1];
-                $old_value_arr['Alamat'] = $old_value[2];
-                
-                $new_value_arr['Nama'] = $new_value[0];
-                $new_value_arr['No Telp/HP'] = $new_value[1];
-                $new_value_arr['Alamat'] = $new_value[2];
-            }else if($edit_history->module_name == "Outsourcing Water"){
-                $old_value_arr['Nama'] = $old_value[0];
-
-                $new_value_arr['Nama'] = $new_value[0];
-            }else if($edit_history->module_name == "Order Gallon"){
-                $old_value_arr['Outsourcing Pengemudi'] = $old_value[0];
-                $old_value_arr['Nama Pengemudi'] = $old_value[1];
-                $old_value_arr['Jumlah (Galon)'] = $old_value[2];
-                
-                $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
-                $new_value_arr['Nama Pengemudi'] = $new_value[1];
-                $new_value_arr['Jumlah (Galon)'] = $new_value[2];
-            }else if($edit_history->module_name == "Inventory"){             
-                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
-                $old_value_arr['Harga'] = $old_value[1];
-                
-                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
-                $new_value_arr['Harga'] = $new_value[1];
-            }else if($edit_history->module_name == "Order Water"){   
-//                $old_value_arr['Outsourcing Pabrik Air'] = $old_value[0];
-                $old_value_arr['Outsourcing Pengemudi'] = $old_value[0];
-                $old_value_arr['Nama Pengemudi'] = $old_value[1];
-                $old_value_arr['Jumlah Galon Buffer'] = $old_value[2];
-                $old_value_arr['Jumlah Galon Gudang'] = $old_value[3];
-                $old_value_arr['Tgl Pengiriman'] = $old_value[4];
-
-//                $new_value_arr['Outsourcing Pabrik Air'] = $new_value[0];
-                $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
-                $new_value_arr['Nama Pengemudi'] = $new_value[1];
-                $new_value_arr['Jumlah Galon Buffer'] = $new_value[2];
-                $new_value_arr['Jumlah Galon Gudang'] = $new_value[3];
-                $new_value_arr['Tgl Pengiriman'] = $new_value[4];
-            }else if($edit_history->module_name == "Order Customer"){  
-                $old_value_arr['Jumlah (Galon)'] = $old_value[0];                   
-                $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
-                $old_value_arr['Jenis Pembelian'] = $old_value[2];                
-
-                if(array_key_exists(3, $old_value)){
-                    $old_value_arr['Tgl Pengiriman'] = $old_value[3];
-                    $old_value_arr['Nama Customer'] = $old_value[4];
-                }
-                else{
-                    $old_value_arr['Nama Customer'] = $old_value[3];
-                }
-         
-
-                $new_value_arr['Jumlah (Galon)'] = $new_value[0];          
-                $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
-                $new_value_arr['Jenis Pembelian'] = $new_value[2];        
-                if(array_key_exists(3, $new_value)){
-                    $new_value_arr['Tgl Pengiriman'] = $new_value[3];
-                    $new_value_arr['Nama Customer'] = $new_value[4];
-                }
-                else{
-                    $new_value_arr['Nama Customer'] = $new_value[3];
-                }
-                
-             
-            }else if($edit_history->module_name == "Shipment"){   
-                $old_value_arr['Nama Pengemudi'] = $old_value[0];          
-                $old_value_arr['Tgl Pengiriman'] = $old_value[1];
-                $old_value_arr['Status'] = $old_value[2];
-
-                $new_value_arr['Nama Pengemudi'] = $new_value[0];          
-                $new_value_arr['Tgl Pengiriman'] = $new_value[1];
-                $new_value_arr['Status'] = $new_value[2];
-            }else if($edit_history->module_name == "Order Customer by Driver"){   
-                $old_value_arr['Jumlah (Galon)'] = $old_value[0];          
-                $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];  
-                $old_value_arr['Jenis Pembelian'] = $old_value[2];              
-
-                $new_value_arr['Jumlah (Galon)'] = $new_value[0];          
-                $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];            
-                $new_value_arr['Jenis Pembelian'] = $new_value[2]; 
-            }
-
-            $edit_history->old_value = $old_value_arr;
-            $edit_history->new_value = $new_value_arr;
-        }
-
-        $this->data['edit_history'] = $edit_histories;
+        $this->data['edit_history'] = $this->getEditValues($edit_histories);
+        $this->data['users'] = (new UserController())->getUsers();
+        $this->data['edit_histories'] = $this->getEditHistories();
+        $this->data['datas'] = $this->getEditData();
         //dd($this->data['edit_history']);
         return view('history.edit', $this->data);
     }
@@ -199,14 +66,19 @@ class HistoryController extends Controller
         }
 
         $this->data['delete_histories'] = $delete_histories;
+        $this->data['users'] = (new UserController())->getUsers();
+        $this->data['datas'] = $this->getDeleteData();
 
         return view('history.delete', $this->data);
     }
 
     /*======= Get Methods =======*/
     public function getEditHistories(){
-        $editHistories = EditHistory::all();
-        return json_encode($editHistories);
+        return EditHistory::all();
+    }
+
+    public function getEditData(){
+        return EditHistory::groupBy('data_id')->get();
     }
 
     public function getTrashedObject($request){
@@ -236,13 +108,14 @@ class HistoryController extends Controller
                 ->find($dh->data_id);
         }
         else if($dh->module_name == "Order Gallon"){
+            $order_id = OrderGallon::find($dh->data_id)->order_id;
             $order_gallon = OrderGallon::with(['order' => function($query){
                 $query->onlyTrashed();
                 $query->with('user');
             }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -257,13 +130,14 @@ class HistoryController extends Controller
             return $order_gallon;
         }
         else if($dh->module_name == "Order Customer"){
+            $order_id = OrderCustomer::find($dh->data_id)->order_id;
             $order_customer = OrderCustomer::with(['order' => function($query){
                     $query->onlyTrashed();
                     $query->with('user');
                 }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -279,13 +153,14 @@ class HistoryController extends Controller
             return $order_customer;
         }
         else if($dh->module_name == "Order Water"){
+            $order_id = OrderWater::find($dh->data_id)->order_id;
             $order_water = OrderWater::with(['order' => function($query){
                 $query->onlyTrashed();
                 $query->with('user');
                 }])
-                ->whereHas('order', function ($query) use($dh){
+                ->whereHas('order', function ($query) use($dh, $order_id){
                     $query->onlyTrashed();
-                    $query->where('id', $dh->data_id);
+                    $query->where('id', $order_id);
                 })
                 ->first();
 
@@ -305,6 +180,70 @@ class HistoryController extends Controller
             return Shipment::onlyTrashed()
                 ->find($dh->data_id);
         }
+    }
+
+    public function getDeleteData(){
+        return DeleteHistory::groupBy('data_id')->get();
+    }
+
+    public function editFilterBy(Request $request){
+        $filters = [];
+        if($request->module_name){
+            array_push($filters, ['module_name', $request->module_name]);
+        }
+        if($request->data_id){
+            array_push($filters, ['data_id', $request->data_id]);
+        }
+
+        $edit_histories = EditHistory::with('user');
+
+        foreach($filters as $filter){
+            $edit_histories->whereIn($filter[0], $filter[1]);
+        }
+
+        $edit_histories->where('created_at', 'like', '%'.$request->created_at.'%');
+
+        if($request->user_fullname){
+            $edit_histories->whereHas('user', function ($query) use($request){
+                $query->whereIn('full_name', $request->user_fullname);
+            });
+        }
+
+        return $this->getEditValues($edit_histories->get());
+    }
+
+    public function deleteFilterBy(Request $request){
+        $filters = [];
+        if($request->module_name){
+            array_push($filters, ['module_name', $request->module_name]);
+        }
+        if($request->data_id){
+            array_push($filters, ['data_id', $request->data_id]);
+        }
+
+
+        $delete_histories = DeleteHistory::with('user');
+
+        foreach($filters as $filter){
+            $delete_histories->whereIn($filter[0], $filter[1]);
+        }
+
+        $delete_histories->where('created_at', 'like', '%'.$request->created_at.'%');
+
+        if($request->user_fullname){
+            $delete_histories->whereHas('user', function ($query) use($request){
+                $query->whereIn('full_name', $request->user_fullname);
+            });
+        }
+
+        $new_dh = $delete_histories->get();
+
+        for($i=0; $i<$new_dh->count(); $i++){
+            $object = $this->getTrashedObject($new_dh[$i]);
+            $new_dh[$i]->data_id = $object;
+        }
+
+        return $new_dh;
     }
 
     /*======= Do Methods =======*/
@@ -377,5 +316,147 @@ class HistoryController extends Controller
         else{
             return back()->withErrors(['message' => 'Telah terjadi kesalahan']);
         }
+    }
+
+    /*======= Functions =======*/
+    public function getEditValues($edit_histories){
+        foreach($edit_histories as $edit_history){
+            $old_value = explode(";", $edit_history->old_value);
+            $new_value = explode(";", $edit_history->new_value);
+            $old_value_arr = array();
+            $new_value_arr = array();
+
+            if($edit_history->module_name == "User Management"){
+                $old_value_arr['Username'] = $old_value[0];
+                $old_value_arr['Nama'] = $old_value[1];
+                $old_value_arr['Email'] = $old_value[2];
+                $old_value_arr['No. Telepon'] = $old_value[3];
+                $old_value_arr['Role'] = $old_value[4];
+
+                $new_value_arr['Username'] = $new_value[0];
+                $new_value_arr['Nama'] = $new_value[1];
+                $new_value_arr['Email'] = $new_value[2];
+                $new_value_arr['No. Telepon'] = $new_value[3];
+                if(count($new_value)==5){
+                    $new_value_arr['Role'] = $new_value[4];
+                }else{
+                    $new_value_arr['Password Baru'] = $new_value[4];
+                    $new_value_arr['Role'] = $new_value[5];
+                }
+
+
+            }
+            else if($edit_history->module_name == "Customers"){
+                $old_value_arr['Nama'] = $old_value[0];
+                $old_value_arr['Alamat'] = $old_value[1];
+                $old_value_arr['No. Telepon'] = $old_value[2];
+                if($old_value[3] == "end_customer"){
+                    $type = "End Customer";
+                }
+                else{
+                    $type = "Agen";
+                }
+                $old_value_arr['Jenis'] = $type;
+
+                $new_value_arr['Nama'] = $new_value[0];
+                $new_value_arr['Alamat'] = $new_value[1];
+                $new_value_arr['No. Telepon'] = $new_value[2];
+                if($new_value[3] == "end_customer"){
+                    $type = "End Customer";
+                }
+                else{
+                    $type = "Agen";
+                }
+                $new_value_arr['Jenis'] = $type;
+            }
+            else if($edit_history->module_name == "Outsourcing Driver"){
+                $old_value_arr['Nama'] = $old_value[0];
+                $old_value_arr['No Telp/HP'] = $old_value[1];
+                $old_value_arr['Alamat'] = $old_value[2];
+
+                $new_value_arr['Nama'] = $new_value[0];
+                $new_value_arr['No Telp/HP'] = $new_value[1];
+                $new_value_arr['Alamat'] = $new_value[2];
+            }else if($edit_history->module_name == "Outsourcing Water"){
+                $old_value_arr['Nama'] = $old_value[0];
+
+                $new_value_arr['Nama'] = $new_value[0];
+            }else if($edit_history->module_name == "Order Gallon"){
+                $old_value_arr['Outsourcing Pengemudi'] = $old_value[0];
+                $old_value_arr['Nama Pengemudi'] = $old_value[1];
+                $old_value_arr['Jumlah (Galon)'] = $old_value[2];
+
+                $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
+                $new_value_arr['Nama Pengemudi'] = $new_value[1];
+                $new_value_arr['Jumlah (Galon)'] = $new_value[2];
+            }else if($edit_history->module_name == "Inventory"){
+                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
+                $old_value_arr['Harga'] = $old_value[1];
+
+                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
+                $new_value_arr['Harga'] = $new_value[1];
+            }else if($edit_history->module_name == "Order Water"){
+//                $old_value_arr['Outsourcing Pabrik Air'] = $old_value[0];
+                $old_value_arr['Outsourcing Pengemudi'] = $old_value[0];
+                $old_value_arr['Nama Pengemudi'] = $old_value[1];
+                $old_value_arr['Jumlah Galon Buffer'] = $old_value[2];
+                $old_value_arr['Jumlah Galon Gudang'] = $old_value[3];
+                $old_value_arr['Tgl Pengiriman'] = $old_value[4];
+
+//                $new_value_arr['Outsourcing Pabrik Air'] = $new_value[0];
+                $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
+                $new_value_arr['Nama Pengemudi'] = $new_value[1];
+                $new_value_arr['Jumlah Galon Buffer'] = $new_value[2];
+                $new_value_arr['Jumlah Galon Gudang'] = $new_value[3];
+                $new_value_arr['Tgl Pengiriman'] = $new_value[4];
+            }else if($edit_history->module_name == "Order Customer"){
+                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
+                $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
+                $old_value_arr['Jenis Pembelian'] = $old_value[2];
+
+                if(array_key_exists(3, $old_value)){
+                    $old_value_arr['Tgl Pengiriman'] = $old_value[3];
+                    $old_value_arr['Nama Customer'] = $old_value[4];
+                }
+                else{
+                    $old_value_arr['Nama Customer'] = $old_value[3];
+                }
+
+
+                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
+                $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
+                $new_value_arr['Jenis Pembelian'] = $new_value[2];
+                if(array_key_exists(3, $new_value)){
+                    $new_value_arr['Tgl Pengiriman'] = $new_value[3];
+                    $new_value_arr['Nama Customer'] = $new_value[4];
+                }
+                else{
+                    $new_value_arr['Nama Customer'] = $new_value[3];
+                }
+
+
+            }else if($edit_history->module_name == "Shipment"){
+                $old_value_arr['Nama Pengemudi'] = $old_value[0];
+                $old_value_arr['Tgl Pengiriman'] = $old_value[1];
+                $old_value_arr['Status'] = $old_value[2];
+
+                $new_value_arr['Nama Pengemudi'] = $new_value[0];
+                $new_value_arr['Tgl Pengiriman'] = $new_value[1];
+                $new_value_arr['Status'] = $new_value[2];
+            }else if($edit_history->module_name == "Order Customer by Driver"){
+                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
+                $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
+                $old_value_arr['Jenis Pembelian'] = $old_value[2];
+
+                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
+                $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
+                $new_value_arr['Jenis Pembelian'] = $new_value[2];
+            }
+
+            $edit_history->old_value = $old_value_arr;
+            $edit_history->new_value = $new_value_arr;
+        }
+
+        return $edit_histories;
     }
 }

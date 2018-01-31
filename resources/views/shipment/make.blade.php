@@ -131,8 +131,9 @@ Buat Pengiriman
                     success: function(result){
                         $('#customer-order').DataTable().destroy();
                         $('#customer-order').dataTable({
-                            scrollX: true,
-                            fixedHeader: true,
+                            fixedHeader: {
+                                headerOffset: $('.site-header').outerHeight()
+                            },
                             processing: true,
                             order:[8, 'desc'],
 							data:result,

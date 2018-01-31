@@ -63,7 +63,14 @@ class Order extends Model
                 if( !$non_ervill_gallon->save() ){
                     return false;
                 } 
-            }                                           
+            }
+            else if($data->purchase_type=='purchase'){
+                $sold_gallon = Inventory::find(7);
+                $sold_gallon->quantity += $data->quantity;
+                if(!$sold_gallon->save()){
+                    return false;
+                }
+            }
         }else{//existing customer
             $empty_gallon = Inventory::find(2);
             $empty_gallon->quantity += $data->quantity;
@@ -101,7 +108,14 @@ class Order extends Model
                     if( !$non_ervill_gallon->save() ){
                         return false;
                     } 
-                }    
+                }
+                else if($data->add_gallon_purchase_type=='purchase'){
+                    $sold_gallon = Inventory::find(7);
+                    $sold_gallon->quantity += $data->quantity;
+                    if( !$sold_gallon->save() ){
+                        return false;
+                    }
+                }
                 
                 //$this->quantity += $data->add_gallon_quantity;
             }

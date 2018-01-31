@@ -12,6 +12,13 @@
 
     @include('layouts.include_header')
 
+    <style>
+        .select2-container--classic .select2-results__option--highlighted[aria-selected] {
+            background: #f00;
+            color: #3875d7;
+        }
+    </style>
+
 </head>
 <body class="with-side-menu control-panel control-panel-compact">
 
@@ -37,6 +44,28 @@
 @include('layouts.errors')<!--.errors-->
 @include('layouts.success')<!--.errors-->
 <script type="text/javascript">
+    // load a locale
+    numeral.register('locale', 'id', {
+        delimiters: {
+            thousands: '.',
+            decimal: ','
+        },
+        abbreviations: {
+            thousand: 'k',
+            million: 'juta',
+            billion: 'milyar',
+            trillion: 'triliun'
+        },
+        ordinal : function (number) {
+            return number === 1 ? 'er' : 'ème';
+        },
+        currency: {
+            symbol: 'Rp'
+        }
+    });
+
+    // switch between locales
+    numeral.locale('id');
     //disable button after submit
     $("form").submit(function(){
         $(this).find("button[type='submit'],input[type='submit']").attr('disabled','disabled');
@@ -52,6 +81,12 @@
     });
     $('form').on('blur', 'input[type=number]', function (e) {
       $(this).off('mousewheel.disableScroll');
+    });
+
+    $(document).ready(function () {
+        $('.select2').select2({
+            theme:'classic'
+        });
     });
 </script>
 </body>

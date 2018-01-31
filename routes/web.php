@@ -175,6 +175,10 @@ Route::prefix('order')->group(function(){
             'uses' => 'OrderCustomerController@showMake',
             'as' => 'order.customer.make'
         ]);
+        Route::get('id/{id}', [
+            'uses' => 'OrderCustomerController@showDetails',
+            'as' => 'order.customer.details'
+        ]);
 
         Route::prefix('do')->group(function(){
             Route::post('make', [
@@ -201,8 +205,68 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderCustomerController@addIssueByAdmin',
                 'as' => 'order.customer.do.addIssue'
             ]);
+
+            Route::post('', [
+                'uses' => 'OrderCustomerController@filterBy',
+                'as' => 'order.customer.do.filterby'
+            ]);
+        });
+
+        Route::prefix('buy')->group(function(){
+            Route::get('/', [
+                'uses' => 'OrderCustomerBuyController@index',
+                'as' => 'order.customer.buy.index'
+            ]);
+
+            Route::get('create', [
+                'uses' => 'OrderCustomerBuyController@showMake',
+                'as' => 'order.customer.buy.make'
+            ]);
+
+            Route::prefix('do')->group(function(){
+                Route::post('make', [
+                    'uses' => 'OrderCustomerBuyController@doMake',
+                    'as' => 'order.customer.buy.do.make'
+                ]);
+
+                Route::post('delete', [
+                    'uses' => 'OrderCustomerBuyController@doDelete',
+                    'as' => 'order.customer.buy.do.delete'
+                ]);
+            });
+
         });
     });
+});
+
+Route::prefix('return')->group(function(){
+    Route::get('/', [
+        'uses' => 'OrderCustomerReturnController@index',
+        'as' => 'return.index'
+    ]);
+
+    Route::get('create', [
+        'uses' => 'OrderCustomerReturnController@showMake',
+        'as' => 'return.make'
+    ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('make', [
+            'uses' => 'OrderCustomerReturnController@doMake',
+            'as' => 'return.do.make'
+        ]);
+
+        Route::post('confirm', [
+            'uses' => 'OrderCustomerReturnController@doConfirm',
+            'as' => 'return.do.confirm'
+        ]);
+
+        Route::post('cancel', [
+            'uses' => 'OrderCustomerReturnController@doCancel',
+            'as' => 'return.do.cancel'
+        ]);
+    });
+
 });
 
 Route::prefix('inventory')->group(function(){
@@ -229,6 +293,16 @@ Route::prefix('history')->group(function(){
     Route::get('delete', [
         'uses' => 'HistoryController@showDelete',
         'as' => 'history.delete.index'
+    ]);
+
+    Route::post('edit', [
+        'uses' => 'HistoryController@editFilterBy',
+        'as' => 'history.edit.filterby'
+    ]);
+
+    Route::post('delete', [
+        'uses' => 'HistoryController@deleteFilterBy',
+        'as' => 'history.delete.filterby'
     ]);
 
     Route::post('do/restore-or-delete', [
@@ -284,10 +358,14 @@ Route::prefix('setting')->group(function(){
             'uses' => 'UserController@index',
             'as' => 'setting.user_management.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'UserController@showMake',
             'as' => 'setting.user_management.make'
-        ]);    
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'UserController@showDetails',
+            'as' => 'setting.user_management.details'
+        ]);
 
         Route::prefix('do')->group(function(){
             Route::post('make', [
@@ -367,6 +445,9 @@ Route::post('/getUnshippedOrders', 'OrderCustomerController@getUnshippedOrders')
 Route::get('/getAllDrivers', 'UserController@getAllDrivers');
 Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById');
 Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
+
+Route::get('/getReturns', 'OrderCustomerReturnController@getAll');
+Route::get('/getOrderCustomerBuys', 'OrderCustomerBuyController@getAll');
 
 /**
  * Auth::routes() are :
