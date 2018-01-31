@@ -65,6 +65,8 @@ return array(
     'App\\Models\\ModuleAccess' => $baseDir . '/app/Models/ModuleAccess.php',
     'App\\Models\\Order' => $baseDir . '/app/Models/Order.php',
     'App\\Models\\OrderCustomer' => $baseDir . '/app/Models/OrderCustomer.php',
+    'App\\Models\\OrderCustomerBuy' => $baseDir . '/app/Models/OrderCustomerBuy.php',
+    'App\\Models\\OrderCustomerReturn' => $baseDir . '/app/Models/OrderCustomerReturn.php',
     'App\\Models\\OrderGallon' => $baseDir . '/app/Models/OrderGallon.php',
     'App\\Models\\OrderWater' => $baseDir . '/app/Models/OrderWater.php',
     'App\\Models\\OutsourcingDriver' => $baseDir . '/app/Models/OutsourcingDriver.php',
