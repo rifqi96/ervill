@@ -11,6 +11,8 @@ use App\Models\DeleteHistory;
 use App\Models\EditHistory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
+use App\Models\OrderCustomerInvoice;
+use App\Models\OcHeaderInvoice;
 use App\Http\Controllers\CustomerController;
 
 class OrderCustomerController extends OrderController
@@ -136,19 +138,21 @@ class OrderCustomerController extends OrderController
     }
 
     public function getNomorStruk(){
-        return OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            }
-            ])
-            ->where('nomor_struk', '!=', '')
-            ->has('order')
-            ->groupBy('nomor_struk')
-            ->get();
+        return OcHeaderInvoice::has('orderCustomerInvoices')->pluck('id');
+
+        // return OrderCustomer::with([
+        //     'shipment' => function($query){
+        //         $query->with(['user']);
+        //     },
+        //     'customer',
+        //     'order' => function($query){
+        //         $query->with(['user', 'issues']);
+        //     }
+        //     ])
+        //     ->where('nomor_struk', '!=', '')
+        //     ->has('order')
+        //     ->groupBy('nomor_struk')
+        //     ->get();
     }
 
     /*======= Do Methods =======*/

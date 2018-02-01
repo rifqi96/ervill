@@ -12,6 +12,9 @@ class OrderCustomerReturn extends Model
     public function customer(){
         return $this->belongsTo('App\Models\Customer');
     }
+    public function orderCustomerReturnInvoices(){
+        return $this->hasMany('App\Models\OrderCustomerReturnInvoice');
+    }
 
     public function author(){
         return $this->belongsTo('App\Models\User');

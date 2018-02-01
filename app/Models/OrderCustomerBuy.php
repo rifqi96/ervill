@@ -16,6 +16,10 @@ class OrderCustomerBuy extends Model
     public function author(){
         return $this->belongsTo('App\Models\User');
     }
+    public function orderCustomerBuyInvoices()
+    {
+        return $this->hasMany('App\Models\OrderCustomerBuyInvoice');
+    }
 
     public function doMake($data, $author_id){
         $customer_gallon_rent = CustomerGallon::with([
