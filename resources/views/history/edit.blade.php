@@ -32,6 +32,7 @@
                                             <option value="User Management">User</option>
                                             <option value="Outsourcing Driver">Outsourcing Driver</option>
                                             <option value="Customers">Customer</option>
+                                            <option value="Price List">Daftar Harga</option>
                                         </select>
                                     </div>
                                 </div>
