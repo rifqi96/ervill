@@ -45,9 +45,9 @@ class OrderCustomerController extends OrderController
         $this->data['customer_gallons'] = CustomerGallon::all();
         $this->data['struks'] = $this->getNomorStruk();
 
-        $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
-        $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
-        $this->data['latest_nomor_struk'] = $new_nomor_struk;
+        // $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
+        // $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
+        // $this->data['latest_nomor_struk'] = $new_nomor_struk;
 
         return view('order.customer.make', $this->data);
     }
@@ -77,6 +77,9 @@ class OrderCustomerController extends OrderController
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);
+            },
+            'orderCustomerInvoices' => function($query){
+                $query->with(['ocHeaderInvoice']);
             }
             ])
             ->has('order')
@@ -184,21 +187,21 @@ class OrderCustomerController extends OrderController
                 'purchase_type' => 'required'
             ]);
 
-            $customer = new Customer;
-            $customerGallon = new CustomerGallon;
+            // $customer = new Customer;
+            // $customerGallon = new CustomerGallon;
 
-            //create customer
-            if($customer->doMake($request)){
-                $customer_id = $customer->id;
-                //create customer gallon
-                if(!$customerGallon->doMake($request, $customer_id)){
-                    return back()
-                    ->withErrors(['message' => 'There is something wrong, please contact admin (customer telah dibuat, customergallon error)']);
-                }              
-            }else{
-                return back()
-                    ->withErrors(['message' => 'There is something wrong, please contact admin']);
-            }
+            // //create customer
+            // if($customer->doMake($request)){
+            //     $customer_id = $customer->id;
+            //     //create customer gallon
+            //     if(!$customerGallon->doMake($request, $customer_id)){
+            //         return back()
+            //         ->withErrors(['message' => 'There is something wrong, please contact admin (customer telah dibuat, customergallon error)']);
+            //     }              
+            // }else{
+            //     return back()
+            //         ->withErrors(['message' => 'There is something wrong, please contact admin']);
+            // }
         }
         else{
             // If existing customer //
@@ -235,11 +238,23 @@ class OrderCustomerController extends OrderController
 
             
 
-            $customer_id = $request->customer_id;
+            //$customer_id = $request->customer_id;
         }
 
+        // $order_customer = (new OrderCustomer())->doMake($request, auth()->id());
+        // if(!$order_customer){
+        //     return back()
+        //         ->withErrors(['message' => 'Input data salah, harap hubungi admin']);
+        // }
 
-        if(!(new OrderCustomer())->doMake($request, $customer_id, auth()->id())){
+        // //handle nomor_struk
+        // $order_customer_invoice = (new OrderCustomerInvoice())->doMake($request);
+        // if(!$order_customer_invoice){
+        //     return back()
+        //         ->withErrors(['message' => 'Input order customer invoice data salah, harap hubungi admin']);
+        // }
+
+        if(!(new OrderCustomer())->doMake($request, auth()->id())){
             return back()
                 ->withErrors(['message' => 'Input data salah, harap hubungi admin']);
         }

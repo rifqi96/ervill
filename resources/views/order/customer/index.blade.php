@@ -437,7 +437,13 @@ List Pesanan Customer
                                 }
                             }},
                         {data: 'id'},
-                        {data: 'nomor_struk'},
+                        {data: null,
+                            render: function(data){
+                                if(data.orderCustomerInvoices){
+                                    return data.orderCustomerInvoices.ocHeaderInvoice.id;
+                                }
+                                return '<i>Data nomor struk tidak ditemukan</i>';
+                            }},
                         {data: null,
                             render: function(data){
                                 if(data.customer){
@@ -594,7 +600,7 @@ List Pesanan Customer
                     }
 
                     //isi nomor struk
-                    $('#edit-nostruk').val(order_data.nomor_struk);
+                    $('#edit-nostruk').val(order_data.orderCustomerInvoices.ocHeaderInvoice.id);
                     $('#edit-nostruk').trigger('change');
 
                     $('#customer-id').val(order_data.customer_id);

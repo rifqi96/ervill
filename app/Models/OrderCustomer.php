@@ -56,44 +56,55 @@ class OrderCustomer extends Model
             ->get();
     }
 
-    public function doMake($gallon_data, $customer_id, $author_id)
+    public function doMake($gallon_data, $author_id)
     {
+
+        /////////////validation start////////////////
+
         if($gallon_data->change_nomor_struk){
 
-
-            $oc_struk = OrderCustomer::where([
-                ['customer_id',$customer_id],
-                ['nomor_struk',$gallon_data->nomor_struk]
+            //check whether invalid nomor_struk
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query){
+                $query->where('oc_header_invoice_id',$gallon_data->nomor_struk)
+            })
+            ->where([
+                ['customer_id',$gallon_data->customer_id]//,
+                //['nomor_struk',$gallon_data->nomor_struk]
             ])->get();
 
             if(count($oc_struk)==0){
                 return false;
             }
-            $this->nomor_struk = $gallon_data->nomor_struk;
-        }else{
-            //get latest nomor struk
-            $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
-            if($latest_nomor_struk_str){
-                $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
-                while( strlen($new_nomor_struk) < 7 ){
-                    $new_nomor_struk = '0'.$new_nomor_struk;
-                }
-                $this->nomor_struk = 'OC'.$new_nomor_struk;
-            }else{
-                $this->nomor_struk = 'OC0000001';
-            }
-        }    
+        }           
+        // }else{
+        //     //get latest nomor struk
+        //     $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
+        //     if($latest_nomor_struk_str){
+        //         $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
+        //         while( strlen($new_nomor_struk) < 7 ){
+        //             $new_nomor_struk = '0'.$new_nomor_struk;
+        //         }
+        //         $this->nomor_struk = 'OC'.$new_nomor_struk;
+        //     }else{
+        //         $this->nomor_struk = 'OC0000001';
+        //     }
+        // }    
 
-        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $customer_id, $author_id);
+        
 
-        if(!$order_data){
-            return false;
+
+
+        //////////////////////validation finish////////////////////
+        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
+        
+        if($gallon_data->new_customer){        
+            $customer = (new Customer())->doMake($gallon_data);         
+            $customerGallon = (new CustomerGallon())->doMake($gallon_data,$customer->id);
         }
-
-
+        
 
         $this->order_id = $order_data->id;
-        $this->customer_id = $customer_id;
+        $this->customer_id = $customer->id;
         if($gallon_data->new_customer){
             $this->empty_gallon_quantity = 0;
             $this->purchase_type = $gallon_data->purchase_type;
@@ -107,12 +118,17 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
-
         
-        
+        $this->save();
 
+        if($gallon_data->change_nomor_struk){            
+            $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $gallon_data->nomor_struk);
+        }else{
+            $oc_header_invoice = (new OcHeaderInvoice())->doMake($gallon_data);
+            $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $oc_header_invoice->id);
+        }
 
-        return $this->save();
+        return true;
     }
 
     public function doUpdate($data)
