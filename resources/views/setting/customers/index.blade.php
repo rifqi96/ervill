@@ -17,7 +17,10 @@ List Customer
                 <th>Nama</th>
                 <th>Alamat</th>
                 <th>No. Telepon</th>
-                <th>Jenis</th>            
+                <th>Jenis</th>
+                <th>Galon Pinjam</th>
+                <th>Galon Beli</th>
+                <th>Galon Tukar Non-Ervill</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Update</th>     
                 <th>Action</th>    
@@ -28,41 +31,41 @@ List Customer
 
     <!-- Asset Modal -->
 
-    <div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="assetModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-           
-                
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="assetModalLabel">Aset Customer</h4>
-                </div>
+    {{--<div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="assetModalLabel">--}}
+      {{--<div class="modal-dialog" role="document">--}}
+        {{--<div class="modal-content">--}}
+           {{----}}
+                {{----}}
+                {{--<div class="modal-header">--}}
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--}}
+                    {{--<h4 class="modal-title" id="assetModalLabel">Aset Customer</h4>--}}
+                {{--</div>--}}
 
-                <div class="modal-body">                                           
-                    <div class="form-group">
-                        <label><strong>Galon Pinjam</strong></label>
-                        <p class="form-control-static" id="rent"></p>
-                    </div>
-                    <div class="form-group">
-                        <label><strong>Galon Beli</strong></label>
-                        <p class="form-control-static" id="purchase"></p>
-                    </div>
-                    <div class="form-group">
-                        <label><strong>Galon Tukar Non-Ervill</strong></label>
-                        <p class="form-control-static" id="non_ervill"></p>
-                    </div>
-                </div>
-
-
-                <div class="modal-footer">                    
-                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                </div>
-           
+                {{--<div class="modal-body">                                           --}}
+                    {{--<div class="form-group">--}}
+                        {{--<label><strong>Galon Pinjam</strong></label>--}}
+                        {{--<p class="form-control-static" id="rent"></p>--}}
+                    {{--</div>--}}
+                    {{--<div class="form-group">--}}
+                        {{--<label><strong>Galon Beli</strong></label>--}}
+                        {{--<p class="form-control-static" id="purchase"></p>--}}
+                    {{--</div>--}}
+                    {{--<div class="form-group">--}}
+                        {{--<label><strong>Galon Tukar Non-Ervill</strong></label>--}}
+                        {{--<p class="form-control-static" id="non_ervill"></p>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
 
 
-        </div>
-      </div>
-    </div>
+                {{--<div class="modal-footer">                    --}}
+                    {{--<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>--}}
+                {{--</div>--}}
+           {{----}}
+
+
+        {{--</div>--}}
+      {{--</div>--}}
+    {{--</div>--}}
 
 
 
@@ -153,25 +156,25 @@ List Customer
         $(document).ready(function () {
             var customers = [];
 
-            $('#setting_customers').on('click','.confirm-btn',function(){
-                $('#rent').text('');
-                $('#purchase').text('');
-                $('#non_ervill').text('');
-                for(var i in customers){
-                    if(customers[i].id==$(this).data('index')){
-                        for(var j in customers[i].customer_gallons){
-                            if(customers[i].customer_gallons[j].type=='rent'){
-                                $('#rent').text(customers[i].customer_gallons[j].qty);
-                            }else if(customers[i].customer_gallons[j].type=='purchase'){
-                                $('#purchase').text(customers[i].customer_gallons[j].qty);
-                            }else if(customers[i].customer_gallons[j].type=='non_ervill'){
-                                $('#non_ervill').text(customers[i].customer_gallons[j].qty);
-                            }
-                        }
-                        
-                    }
-                }
-            });
+//            $('#setting_customers').on('click','.confirm-btn',function(){
+//                $('#rent').text('');
+//                $('#purchase').text('');
+//                $('#non_ervill').text('');
+//                for(var i in customers){
+//                    if(customers[i].id==$(this).data('index')){
+//                        for(var j in customers[i].customer_gallons){
+//                            if(customers[i].customer_gallons[j].type=='rent'){
+//                                $('#rent').text(customers[i].customer_gallons[j].qty);
+//                            }else if(customers[i].customer_gallons[j].type=='purchase'){
+//                                $('#purchase').text(customers[i].customer_gallons[j].qty);
+//                            }else if(customers[i].customer_gallons[j].type=='non_ervill'){
+//                                $('#non_ervill').text(customers[i].customer_gallons[j].qty);
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            });
 
             $('#setting_customers').on('click','.detail-btn',function(){
                 for(var i in customers){
@@ -198,7 +201,7 @@ List Customer
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                order:[5, 'desc'],
+                order:[0, 'desc'],
                 ajax: {
                     url: '/getCustomers',
                     dataSrc: ''
@@ -217,7 +220,40 @@ List Customer
 
                             return "-";
                         }
-                    },                    
+                    },
+                    {data:'customer_gallons',
+                    render: function (data) {
+                        if(data){
+                            for(var i in data){
+                                if(data[i].type=='rent'){
+                                    return data[i].qty;
+                                }
+                            }
+                        }
+                        return 0;
+                    }},
+                    {data:'customer_gallons',
+                        render: function (data) {
+                            if(data){
+                                for(var i in data){
+                                    if(data[i].type=='purchase'){
+                                        return data[i].qty;
+                                    }
+                                }
+                            }
+                            return 0;
+                        }},
+                    {data:'customer_gallons',
+                        render: function (data) {
+                            if(data){
+                                for(var i in data){
+                                    if(data[i].type=='non_ervill'){
+                                        return data[i].qty;
+                                    }
+                                }
+                            }
+                            return 0;
+                        }},
                     {data: null,
                         render: function (data) {
                             if(data.created_at){
@@ -245,8 +281,7 @@ List Customer
                                 'customer_gallons': row.customer_gallons,
                                 'type': row.type
                             });
-                            return '<button class="btn btn-sm confirm-btn" type="button" data-toggle="modal" data-target="#assetModal" data-index="' + row.id + '">Lihat Aset</button>'+
-                            '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                            return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
                            
                         }
