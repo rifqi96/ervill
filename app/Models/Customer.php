@@ -44,8 +44,9 @@ class Customer extends Model
             $this->type = 'end_customer';
         }
         
+        $this->save();        
 
-        return ($this->save());
+        return $this;
     }
 
     public function doUpdate($data)

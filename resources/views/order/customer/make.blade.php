@@ -93,7 +93,7 @@ Pesan Customer
                                 <select name="nomor_struk" id="nostruk" class="form-control select2">
                                     <option value="">-- Silahkan Pilih --</option>
                                     @foreach($struks as $struk)
-                                        <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
+                                        <option value="{{$struk}}">{{$struk}}</option>
                                     @endforeach
                                 </select>
                             </p>

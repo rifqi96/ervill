@@ -17,8 +17,9 @@ class CustomerGallon extends Model
     {
         $this->customer_id = $customer_id;
         $this->qty = $data->quantity;
-        $this->type = $data->purchase_type;        
-        return ($this->save());
+        $this->type = $data->purchase_type;     
+        $this->save();   
+        return $this;
     }
 
     public function doMakeAdd($data,$customer_id)
