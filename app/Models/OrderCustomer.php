@@ -65,7 +65,7 @@ class OrderCustomer extends Model
 
             //check whether invalid nomor_struk
             $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query){
-                $query->where('oc_header_invoice_id',$gallon_data->nomor_struk)
+                $query->where('oc_header_invoice_id',$gallon_data->nomor_struk);
             })
             ->where([
                 ['customer_id',$gallon_data->customer_id]//,
