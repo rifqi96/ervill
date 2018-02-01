@@ -16,7 +16,7 @@
                         <input type="hidden" name="submit_btn" value="">
                         <button type="submit" class="btn btn-danger force_delete" id="mass-delete">Hapus Data Permanen</button>
                         <button type="submit" class="btn btn-success restore" id="mass-restore">Kembalikan Data</button>
-                        <button type="button" class="btn btn-secondary showFilterBy">Kolom Pencarian</button>
+                        {{--<button type="button" class="btn btn-secondary showFilterBy">Kolom Pencarian</button>--}}
                     </form>
                 </div>
             </div>
@@ -154,11 +154,11 @@
             $('#mass-restore').attr('disabled', true);
             $('#mass-delete').attr('disabled', true);
 
-            $('.filterBy').hide();
-
-            $('.showFilterBy').click(function () {
-                $('.filterBy').slideToggle();
-            });
+//            $('.filterBy').hide();
+//
+//            $('.showFilterBy').click(function () {
+//                $('.filterBy').slideToggle();
+//            });
 
             $('#filterBy').submit(function (e) {
                 e.preventDefault();
@@ -272,7 +272,7 @@
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                'order':[1, 'desc'],g
+                'order':[1, 'desc'],
                 data:delete_histories_json,
                 columns: [
                     {

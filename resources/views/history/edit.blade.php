@@ -7,9 +7,9 @@
 @section('content')
     <div class="row">
         <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <button class="btn btn-secondary showFilterBy">Kolom Pencarian</button>
-            </header>
+            {{--<header class="box-typical-header panel-heading" style="margin-bottom: 30px;">--}}
+                {{--<button class="btn btn-secondary showFilterBy">Kolom Pencarian</button>--}}
+            {{--</header>--}}
 
             <div class="row filterBy">
                 <div class="col-xl-12">
@@ -145,11 +145,11 @@
     <script>
         $(document).ready(function () {
 
-            $('.filterBy').hide();
-
-            $('.showFilterBy').click(function () {
-                $('.filterBy').slideToggle();
-            });
+//            $('.filterBy').hide();
+//
+//            $('.showFilterBy').click(function () {
+//                $('.filterBy').slideToggle();
+//            });
 
             $('#filterBy').submit(function (e) {
                 e.preventDefault();
