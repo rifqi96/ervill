@@ -33,6 +33,10 @@ class OrderCustomer extends Model
     {
         return $this->belongsTo('App\Models\Shipment');
     }
+    public function orderCustomerInvoices()
+    {
+        return $this->hasMany('App\Models\OrderCustomerInvoice');
+    }
 
     public function getRecentOrders(){
         return $this->with([
