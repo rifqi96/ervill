@@ -147,6 +147,18 @@ Pesan Customer
                     </div>
                     
                     <div class="form-group row">
+                        <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_piutang" id="is_piutang" value="is_piutang"></p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label" for="is_free">Gratis/Sample ?</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_free" id="is_free" value="is_free"></p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">
