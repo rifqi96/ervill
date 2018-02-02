@@ -269,6 +269,21 @@ Route::prefix('return')->group(function(){
 
 });
 
+Route::prefix('price')->group(function(){
+    Route::get('/', [
+        'uses' => 'PriceController@index',
+        'as' => 'price.index'
+    ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('update', [
+            'uses' => 'PriceController@doUpdate',
+            'as' => 'price.do.update'
+        ]);
+    });
+
+});
+
 Route::prefix('inventory')->group(function(){
     Route::get('/', [
             'uses' => 'InventoryController@index',

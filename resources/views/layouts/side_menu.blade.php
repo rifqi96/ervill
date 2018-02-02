@@ -40,6 +40,12 @@
             <span class="lbl">Inventori</span>
         </a>
     </li>
+    <li class="{{$module=="price"?"opened":""}}">
+        <a href="{{route('price.index')}}">
+            <i class="font-icon font-icon-list-square"></i>
+            <span class="lbl">Daftar Harga</span>
+        </a>
+    </li>
     <li class="{{$slug=="customers"?"opened":""}}">
         <a href="{{route("setting.customers.index")}}">
             <i class="font-icon font-icon-users"></i>

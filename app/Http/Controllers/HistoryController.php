@@ -30,6 +30,7 @@ class HistoryController extends Controller
      * 6. Order Customer
      * 7. Customers
      * 8. Shipment
+     * 9. Price List
      */
 
     public function __construct()
@@ -451,6 +452,15 @@ class HistoryController extends Controller
                 $new_value_arr['Jumlah (Galon)'] = $new_value[0];
                 $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
                 $new_value_arr['Jenis Pembelian'] = $new_value[2];
+            }
+            else if($edit_history->module_name == "Price List"){
+                $old_value_arr['Nama'] = $old_value[0];
+                $old_value_arr['Harga'] = $old_value[1];
+                $old_value_arr['Jenis Customer'] = $old_value[2];
+
+                $new_value_arr['Nama'] = $new_value[0];
+                $new_value_arr['Harga'] = $new_value[1];
+                $new_value_arr['Jenis Customer'] = $new_value[2];
             }
 
             $edit_history->old_value = $old_value_arr;
