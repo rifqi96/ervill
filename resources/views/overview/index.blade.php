@@ -10,12 +10,14 @@ Overview
             <div class="row">
                 <div class="col-sm-6">
                     @if($recent_issues->count() > 0)
-                        <article class="statistic-box red">
-                            <div>
-                                <div class="number">{{$recent_issues->count()}}</div>
-                                <div class="caption"><div>Masalah</div></div>
-                            </div>
-                        </article>
+                        <a href="{{route('order.customers.index')}}">
+                            <article class="statistic-box red">
+                                <div>
+                                    <div class="number">{{$recent_issues->count()}}</div>
+                                    <div class="caption"><div>Masalah</div></div>
+                                </div>
+                            </article>
+                        </a>
                     @else
                         <article class="statistic-box green">
                             <div>
@@ -27,12 +29,14 @@ Overview
                 </div><!--.col-->
                 <div class="col-sm-6">
                     @if($process_orders->count() > 0)
-                        <article class="statistic-box yellow">
-                            <div>
-                                <div class="number">{{$process_orders->count()}}</div>
-                                <div class="caption"><div>Order Berlangsung</div></div>
-                            </div>
-                        </article>
+                        <a href="{{route('order.customers.index')}}">
+                            <article class="statistic-box yellow">
+                                <div>
+                                    <div class="number">{{$process_orders->count()}}</div>
+                                    <div class="caption"><div>Order Berlangsung</div></div>
+                                </div>
+                            </article>
+                        </a>
                     @else
                         <article class="statistic-box green">
                             <div>
@@ -50,7 +54,7 @@ Overview
                             <article class="statistic-box yellow">
                                 <div>
                                     <div class="number">{{$overdue_customers->count()}}</div>
-                                    <div class="caption"><div>Overdue Customers</div></div>
+                                    <div class="caption"><div>Customer Overdue</div></div>
                                 </div>
                             </article>
                         </a>
@@ -58,7 +62,7 @@ Overview
                         <article class="statistic-box green">
                             <div>
                                 <div class="number">{{$overdue_customers->count()}}</div>
-                                <div class="caption"><div>Overdue Customers</div></div>
+                                <div class="caption"><div>Customer Overdue</div></div>
                             </div>
                         </article>
                     @endif
