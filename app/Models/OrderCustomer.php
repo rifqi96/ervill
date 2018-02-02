@@ -64,35 +64,18 @@ class OrderCustomer extends Model
         if($gallon_data->change_nomor_struk){
 
             //check whether invalid nomor_struk
-            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query){
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($gallon_data){
                 $query->where('oc_header_invoice_id',$gallon_data->nomor_struk);
             })
             ->where([
-                ['customer_id',$gallon_data->customer_id]//,
-                //['nomor_struk',$gallon_data->nomor_struk]
+                ['customer_id',$gallon_data->customer_id]
             ])->get();
 
             if(count($oc_struk)==0){
                 return false;
             }
         }           
-        // }else{
-        //     //get latest nomor struk
-        //     $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
-        //     if($latest_nomor_struk_str){
-        //         $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
-        //         while( strlen($new_nomor_struk) < 7 ){
-        //             $new_nomor_struk = '0'.$new_nomor_struk;
-        //         }
-        //         $this->nomor_struk = 'OC'.$new_nomor_struk;
-        //     }else{
-        //         $this->nomor_struk = 'OC0000001';
-        //     }
-        // }    
-
-        
-
-
+      
 
         //////////////////////validation finish////////////////////
         $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
@@ -100,6 +83,8 @@ class OrderCustomer extends Model
         if($gallon_data->new_customer){        
             $customer = (new Customer())->doMake($gallon_data);         
             $customerGallon = (new CustomerGallon())->doMake($gallon_data,$customer->id);
+        }else{
+            $customer = Customer::find($gallon_data->customer_id);
         }
         
 
@@ -111,6 +96,7 @@ class OrderCustomer extends Model
             $this->is_new = 'true';
         }else{
             $this->empty_gallon_quantity = $gallon_data->quantity;
+            $this->is_new = 'false';
         }
         if($gallon_data->add_gallon){
             $this->additional_quantity = $gallon_data->add_gallon_quantity;
@@ -123,9 +109,17 @@ class OrderCustomer extends Model
 
         if($gallon_data->change_nomor_struk){            
             $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $gallon_data->nomor_struk);
+            //refill and add gallon
+            if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+                $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $gallon_data->nomor_struk, true);
+            }
         }else{
             $oc_header_invoice = (new OcHeaderInvoice())->doMake($gallon_data);
             $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $oc_header_invoice->id);
+            //refill and add gallon
+            if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+                $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $oc_header_invoice->id, true);
+            }
         }
 
         return true;
