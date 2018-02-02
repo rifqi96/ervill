@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class OcHeaderInvoice extends Model
 {
     protected $guarded = [];
+    
+    //for non-auto-increment PK
+    protected $primaryKey = 'id';
+    public $incrementing = false;
 
     public function orderCustomerInvoices()
     {
@@ -30,13 +34,13 @@ class OcHeaderInvoice extends Model
     		$this->id = 'OC0000001';
     	}
     	
-    	if($data->xxx){
+    	if($data->is_piutang){
     		$this->payment_status = "piutang";
     	}else{
     		$this->payment_status = "cash";
     	}
 
-    	if($data->xxx){
+    	if($data->is_free){
     		$this->is_free = "true";
     	}else{
     		$this->is_free = "false";

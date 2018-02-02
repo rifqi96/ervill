@@ -439,8 +439,8 @@ List Pesanan Customer
                         {data: 'id'},
                         {data: null,
                             render: function(data){
-                                if(data.orderCustomerInvoices){
-                                    return data.orderCustomerInvoices.ocHeaderInvoice.id;
+                                if(data.order_customer_invoices){
+                                    return data.order_customer_invoices[0].oc_header_invoice.id;
                                 }
                                 return '<i>Data nomor struk tidak ditemukan</i>';
                             }},

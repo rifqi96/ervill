@@ -111,7 +111,7 @@ class Order extends Model
                 }
                 else if($data->add_gallon_purchase_type=='purchase'){
                     $sold_gallon = Inventory::find(7);
-                    $sold_gallon->quantity += $data->quantity;
+                    $sold_gallon->quantity += $data->add_gallon_quantity;
                     if( !$sold_gallon->save() ){
                         return false;
                     }
