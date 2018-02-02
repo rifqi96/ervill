@@ -6,10 +6,10 @@
         </a>
     </li>
     <li class="with-sub {{$module=="order"?"opened":""}}">
-                <span>
-                    <i class="font-icon font-icon-wallet"></i>
-                    <span class="lbl">Order</span>
-                </span>
+        <span>
+            <i class="font-icon font-icon-wallet"></i>
+            <span class="lbl">Order</span>
+        </span>
         <ul>
             <li>
                 {!!$slug=="gallon"?'<span class="lbl">Galon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Galon</span></a>'!!}
@@ -46,18 +46,28 @@
             <span class="lbl">Daftar Harga</span>
         </a>
     </li>
-    <li class="{{$slug=="customers"?"opened":""}}">
-        <a href="{{route("setting.customers.index")}}">
+    <li class="with-sub {{$module=="customers"?"opened":""}}">
+        <span>
             <i class="font-icon font-icon-users"></i>
-            <span class="lbl">Customer</span>
-        </a>
+            <span class="lbl">
+                Customer
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$slug=="list"?'<span class="lbl">Daftar Customer</span>':'<a href="'.route('setting.customers.index').'"><span class="lbl">Daftar Customer</span></a>'!!}
+            </li>
+            <li>
+                {!!$slug=="overdue"?'<span class="lbl">Customer Overdue</span>':'<a href="'.route("setting.customers.overdue").'"><span class="lbl">Customer Overdue</span></a>'!!}
+            </li>
+        </ul>
     </li>
     @if(auth()->user()->role->name == 'superadmin')
     <li class="with-sub {{$module=="history"?"opened":""}}">
-                <span>
-                    <i class="font-icon font-icon-clock"></i>
-                    <span class="lbl">History</span>
-                </span>
+        <span>
+            <i class="font-icon font-icon-clock"></i>
+            <span class="lbl">History</span>
+        </span>
         <ul>
             <li>
                 {!!$slug=="edit_history"?'<span class="lbl">Edit History</span>':'<a href="'.route("history.edit.index").'"><span class="lbl">Edit History</span></a>'!!}

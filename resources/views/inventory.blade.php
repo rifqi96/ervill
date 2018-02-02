@@ -105,7 +105,10 @@ Persediaan Galon
                     {data: 'id'},
                     {data: 'name'},
                     {data: 'quantity'},
-                    {data: 'price'},
+                    {data: 'price',
+                    render: function (data) {
+                        return numeral(data).format('$0,0.00');
+                    }},
 //                    {data: null,
 //                        render: function (data) {
 //                            if(data.created_at){

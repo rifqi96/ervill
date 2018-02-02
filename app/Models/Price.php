@@ -9,11 +9,11 @@ class Price extends Model
     protected $guarded = [];
 
     public function doUpdate($data){
-        $this->price = $data->price;
-
         if(!$this->doAddToEditHistory($this, $data)){
             return false;
         }
+
+        $this->price = $data->price;
 
         return $this->save();
     }

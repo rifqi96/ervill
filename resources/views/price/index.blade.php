@@ -115,6 +115,7 @@
             var customer_return_prices = {!! $customer_return_prices->toJson() !!};
             var agent_sale_prices = {!! $agent_sale_prices->toJson() !!};
             var agent_return_prices = {!! $agent_return_prices->toJson() !!};
+            var price_list = {!! $price_list->toJson() !!};
 
             for(var i=0; i<4; i++){
                 var id = "";
@@ -190,10 +191,10 @@
 
                 $('#' + id).on('click','.update-btn',function(){
                     var index = $(this).data('index');
-                    for(var i in data){
-                        if(data[i].id==index){
-                            $('#price').val(data[i].price);
-                            $('#input_id').val(data[i].id);
+                    for(var i in price_list){
+                        if(price_list[i].id==index){
+                            $('#price').val(price_list[i].price);
+                            $('#input_id').val(price_list[i].id);
                         }
                     }
                 });
