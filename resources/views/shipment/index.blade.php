@@ -144,7 +144,7 @@ Pengiriman
                             headerOffset: $('.site-header').outerHeight()
                         },
                         processing: true,
-                        'order':[4, 'asc'],
+                        order:[1, 'desc'],
                         select: {
                             style: 'multi'
                         },
@@ -235,7 +235,7 @@ Pengiriman
                             headerOffset: $('.site-header').outerHeight()
                         },
                         processing: true,
-                        'order':[4, 'desc'],
+                        order:[1, 'desc'],
                         select: {
                             style: 'multi'
                         },

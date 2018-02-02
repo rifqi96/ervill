@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Customer extends Model
 {
@@ -33,11 +34,100 @@ class Customer extends Model
         return $this->hasMany('App\Models\CustomerGallon');
     }
 
+    public function get($id){
+        $customer = Customer::with([
+            'customerGallons' => function($query){
+                $query->orderBy('type', 'DESC');
+            },
+            'order_customers' => function($query){
+                $query->with([
+                    'shipment' => function($query){
+                        $query->with(['user']);
+                    },
+                    'order' => function($query){
+                        $query->with(['user', 'issues']);
+                    },
+                ]);
+                $query->has('order');
+                $query->orderBy('delivery_at', 'DESC');
+                $query->orderBy('id', 'DESC');
+            }])
+            ->find($id);
+
+        if($customer->customerGallons->count() > 0 && $customer->order_customers->count() > 0){
+            $last_transaction = Carbon::parse($customer->order_customers[0]->delivery_at);
+            if(!$customer->notif_day){
+                $notif_day = 14;
+            }
+            else{
+                $notif_day = $customer->notif_day;
+            }
+            $overdue = $last_transaction->addDay($notif_day);
+
+            $customer->overdue = Carbon::now()->diffInDays($overdue, false);
+            $customer->last_transaction = $customer->order_customers[0]->delivery_at;
+            $customer->overdue_date = $overdue->format('Y-m-d');
+        }
+        else{
+            $customer->overdue = null;
+            $customer->last_transaction = null;
+            $customer->overdue_date = null;
+        }
+
+        return $customer;
+    }
+
+    public function getOverdueCustomers(){
+        $customers = Customer::with([
+            'customerGallons' => function($query){
+                $query->orderBy('type', 'DESC');
+            },
+            'order_customers' => function($query){
+                $query->with([
+                    'shipment' => function($query){
+                        $query->with(['user']);
+                    },
+                    'order' => function($query){
+                        $query->with(['user', 'issues']);
+                    },
+                ]);
+                $query->has('order');
+                $query->orderBy('delivery_at', 'DESC');
+                $query->orderBy('id', 'DESC');
+            }])
+            ->has('order_customers')
+            ->get();
+
+        $res = collect();
+
+        foreach($customers as $key => $val){
+            $last_transaction = Carbon::parse($customers[$key]->order_customers[0]->delivery_at);
+            if(!$customers[$key]->notif_day){
+                $notif_day = 14;
+            }
+            else{
+                $notif_day = $customers[$key]->notif_day;
+            }
+            $overdue = $last_transaction->addDay($notif_day);
+
+            $customers[$key]->overdue = Carbon::now()->diffInDays($overdue, false);
+            $customers[$key]->last_transaction = $customers[$key]->order_customers[0]->delivery_at;
+            $customers[$key]->overdue_date = $overdue->format('Y-m-d');
+
+            if($customers[$key]->overdue <= 0){
+                $res->push($customers[$key]);
+            }
+        };
+
+        return $res;
+    }
+
     public function doMake($data)
     {
         $this->name = $data->name;
         $this->address = $data->address;
         $this->phone = $data->phone;
+        $this->notif_day = $data->notif_day;
         if($data->type){
             $this->type = 'agent';
         }else{
@@ -55,6 +145,7 @@ class Customer extends Model
         $this->address = $data->address;
         $this->phone = $data->phone;
         $this->type = $data->type;
+        $this->notif_day = $data->notif_day;
 
         return ($this->save());
     }

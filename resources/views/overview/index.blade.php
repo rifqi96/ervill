@@ -26,14 +26,44 @@ Overview
                     @endif
                 </div><!--.col-->
                 <div class="col-sm-6">
-                    <article class="statistic-box yellow">
-                        <div>
-                            <div class="number">{{$process_orders->count()}}</div>
-                            <div class="caption"><div>Order Berlangsung</div></div>
-                        </div>
-                    </article>
+                    @if($process_orders->count() > 0)
+                        <article class="statistic-box yellow">
+                            <div>
+                                <div class="number">{{$process_orders->count()}}</div>
+                                <div class="caption"><div>Order Berlangsung</div></div>
+                            </div>
+                        </article>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">{{$process_orders->count()}}</div>
+                                <div class="caption"><div>Order Berlangsung</div></div>
+                            </div>
+                        </article>
+                    @endif
                 </div><!--.col-->
             </div><!--.row-->
+            <div class="row">
+                <div class="col-sm-12">
+                    @if($overdue_customers->count() > 0)
+                        <a href="{{route('setting.customers.overdue')}}">
+                            <article class="statistic-box yellow">
+                                <div>
+                                    <div class="number">{{$overdue_customers->count()}}</div>
+                                    <div class="caption"><div>Overdue Customers</div></div>
+                                </div>
+                            </article>
+                        </a>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">{{$overdue_customers->count()}}</div>
+                                <div class="caption"><div>Overdue Customers</div></div>
+                            </div>
+                        </article>
+                    @endif
+                </div>
+            </div>
         </div><!--.col-->
     </div>
 
@@ -121,7 +151,7 @@ Overview
                 scrollY: 250,
                 scrollCollapse:true,
                 processing: true,
-                order:[7, 'desc'],
+                order:[8, 'desc'],
                 data:recent_orders,
                 columns:[
                     {data: null,

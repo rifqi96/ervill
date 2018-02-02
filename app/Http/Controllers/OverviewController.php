@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Issue;
 use App\Models\OrderCustomer;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class OverviewController extends Controller
@@ -32,6 +33,7 @@ class OverviewController extends Controller
         $this->data['recent_orders'] = $this->getRecentOrders();
         $this->data['recent_issues'] = $this->getRecentIssues();
         $this->data['process_orders'] = $this->getRecentOrders()->where('status', 'Proses');
+        $this->data['overdue_customers'] = $this->getOverdueCustomers();
         $this->data['slug'] = "";
         $this->data['breadcrumb'] = "Home - Overview";
 
@@ -44,5 +46,9 @@ class OverviewController extends Controller
 
     public function getRecentIssues(){
         return (new Issue())->getRecentIssues();
+    }
+
+    public function getOverdueCustomers(){
+        return (new Customer())->getOverdueCustomers();
     }
 }

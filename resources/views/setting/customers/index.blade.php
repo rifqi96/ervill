@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-List Customer
+    Daftar Customer
 @endsection
 
 @section('content')
@@ -21,6 +21,7 @@ List Customer
                 <th>Galon Pinjam</th>
                 <th>Galon Beli</th>
                 <th>Galon Tukar Non-Ervill</th>
+                <th>Diperingatkan setiap (Overdue)</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Update</th>     
                 <th>Action</th>    
@@ -104,6 +105,17 @@ List Customer
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="notif_day"><strong>Diperingatkan setiap</strong></label>
+                        <div class="row">
+                            <div class="col-xs-9">
+                                <input id="notif_day" type="number" class="form-control" name="notif_day" placeholder="Contoh: 7">
+                            </div>
+                            <div class="col-xs-3">
+                                Hari dari pengiriman terakhir
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                     </div>                                       
@@ -184,6 +196,7 @@ List Customer
                         $('#phone').val(customers[i].phone);
                         $('#type').val(customers[i].type);
                         $('#input_id').val(customers[i].id);
+                        $('#notif_day').val(customers[i].notif_day);
                     }
                 }
             });
@@ -254,6 +267,15 @@ List Customer
                             }
                             return 0;
                         }},
+                    {data: 'notif_day',
+                        render: function (data) {
+                            if(data){
+                                return data + ' hari dari pengiriman terakhir';
+                            }
+
+                            return '14 hari dari pengiriman terakhir';
+                        }
+                    },
                     {data: null,
                         render: function (data) {
                             if(data.created_at){
@@ -279,9 +301,11 @@ List Customer
                                 'address': row.address,
                                 'phone': row.phone,
                                 'customer_gallons': row.customer_gallons,
+                                'notif_day': row.notif_day,
                                 'type': row.type
                             });
-                            return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
+                            return '<a href="customers/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
                            
                         }

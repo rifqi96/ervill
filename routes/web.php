@@ -404,9 +404,17 @@ Route::prefix('setting')->group(function(){
             'uses' => 'CustomerController@index',
             'as' => 'setting.customers.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'CustomerController@showMake',
             'as' => 'setting.customers.make'
+        ]);
+        Route::get('overdue', [
+            'uses' => 'CustomerController@showOverdue',
+            'as' => 'setting.customers.overdue'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'CustomerController@showDetails',
+            'as' => 'setting.customers.details'
         ]);
 
         Route::prefix('do')->group(function(){
