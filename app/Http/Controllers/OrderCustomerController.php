@@ -55,15 +55,13 @@ class OrderCustomerController extends OrderController
     public function showDetails($id){
         $this->data['breadcrumb'] = "Order - Customer Order - Details";
 
-         $this->data['oc'] = $this->get($id);
-         if($this->data['oc']->nomor_struk){
-             $this->data['details'] = $this->getSameReceipts($this->data['oc']->nomor_struk);
-         }
-         else{
-             $this->data['details'] = array(
-                 $this->data['oc']
-             );
-         }
+         // $this->data['ocs'] = OrderCustomer::whereHas('orderCustomerInvoices', function ($query) use ($id){
+         //    $query->where('oc_header_invoice_id',$id);
+         // })->get();
+     
+        $this->data['invoices'] = OrderCustomerInvoice::where('oc_header_invoice_id',$id)->get();
+       
+        
 
          return view('order.customer.details', $this->data);
     }
