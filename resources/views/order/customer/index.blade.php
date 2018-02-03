@@ -35,7 +35,7 @@ List Pesanan Customer
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-xl-3">No Struk:</div>
+                                    <div class="col-xl-3">No Faktur:</div>
                                     <div class="col-xl-9">
                                         {{--<input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">--}}
                                         <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
@@ -87,7 +87,7 @@ List Pesanan Customer
                     <th>Aksi</th>
                     <th>Status</th>
                     <th>No</th>
-                    <th>No Struk</th>
+                    <th>No Faktur</th>
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
@@ -164,7 +164,7 @@ List Pesanan Customer
                         {{--</div>--}}
                     {{--</div>--}}
                     <div class="form-group">
-                        <label for="nomor_struk"><strong>Nomor Struk </strong></label>
+                        <label for="nomor_struk"><strong>Nomor Faktur </strong></label>
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
                                 <option value="">-- Silahkan Pilih --</option>
                                 @foreach($struks as $struk)
@@ -450,7 +450,7 @@ List Pesanan Customer
                                 if(data.order_customer_invoices){
                                     return data.order_customer_invoices[0].oc_header_invoice.id;
                                 }
-                                return '<i>Data nomor struk tidak ditemukan</i>';
+                                return '<i>Data nomor faktur tidak ditemukan</i>';
                             }},
                         {data: null,
                             render: function(data){

@@ -81,13 +81,13 @@ Pesan Customer
                     </div>
 
                     <div class="form-group row" id="nomor_struk_checkbox_div">
-                        <label class="col-sm-2 form-control-label" for="change_nomor_struk">Ganti Nomor Struk ?</label>
+                        <label class="col-sm-2 form-control-label" for="change_nomor_struk">Ganti Nomor Faktur ?</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="change_nomor_struk" id="change_nomor_struk" value="change_nomor_struk"></p>
                         </div>
                     </div>
                     <div class="form-group row" id="nomor_struk_div">
-                        <label class="col-sm-2 form-control-label">Nomor Struk</label>
+                        <label class="col-sm-2 form-control-label">Nomor Faktur</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
                                 <select name="nomor_struk" id="nostruk" class="form-control select2">
