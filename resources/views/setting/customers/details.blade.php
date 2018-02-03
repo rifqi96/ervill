@@ -130,6 +130,18 @@
             </div>
         </div>
         @endif
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label">Tgl Pembuatan</label>
+            <div class="col-sm-10">
+                <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->created_at}}" id="created_at" readonly=""></p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label">Tgl Update</label>
+            <div class="col-sm-10">
+                <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->updated_at}}" id="updated_at" readonly=""></p>
+            </div>
+        </div>
     </section><!--.box-typical-->
 
     <script type="text/javascript">
@@ -139,6 +151,11 @@
             var overdue = $('#overdue').val();
             var overdue_date = $('#overduedate').val();
             var type = $('#type').val();
+            var created_at = $('#created_at').val();
+            var updated_at = $('#updated_at').val();
+
+            $('#created_at').val(moment(created_at).locale('id').format('DD MMMM YYYY HH:mm:ss'));
+            $('#updated_at').val(moment(updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss'));
 
             if(!notif_day){
                 $('#notifday').val('14 Hari dari pengiriman terakhir');

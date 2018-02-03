@@ -14,7 +14,7 @@ Persediaan Galon
                 <th>No</th>
                 <th>Nama</th>
                 <th>Jumlah (Gallon)</th>
-                <th>Harga (Rupiah)</th>
+                {{--<th>Harga (Rupiah)</th>--}}
                 {{--<th align="center">Tgl Pembuatan</th>--}}
                 <th align="center">Tgl Update</th>
                 <th>Action</th>
@@ -105,10 +105,10 @@ Persediaan Galon
                     {data: 'id'},
                     {data: 'name'},
                     {data: 'quantity'},
-                    {data: 'price',
-                    render: function (data) {
-                        return numeral(data).format('$0,0.00');
-                    }},
+//                    {data: 'price',
+//                    render: function (data) {
+//                        return numeral(data).format('$0,0.00');
+//                    }},
 //                    {data: null,
 //                        render: function (data) {
 //                            if(data.created_at){

@@ -95,8 +95,9 @@
                         <th>No</th>
                         <th>Nama Modul</th>
                         <th>Data ID</th>
-                        <th>Admin</th>
+                        <th>Alasan</th>
                         <th>Tgl Delete</th>
+                        <th>Admin</th>
                         <th>Action</th>
                         </thead>
                     </table>
@@ -287,6 +288,15 @@
                         data: 'data_id',
                         render: 'id'
                     },
+                    {data: 'description'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
                     {
                         data: null,
                         render: function (data) {
@@ -294,14 +304,6 @@
                                 return '<a href="/setting/user_management/id/'+data.user.id+'" target="_blank" title="Klik untuk lihat">'+data.user.full_name+'</a>';
                             }
                             return 'User tidak ditemukan';
-                        }
-                    },
-                    {data: null,
-                        render: function (data) {
-                            if(data.created_at){
-                                return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
-                            }
-                            return '-';
                         }
                     },
                     {

@@ -85,8 +85,9 @@
                 <th>No</th>
                 <th>Nama Modul</th>
                 <th>Data ID</th>
-                <th>Admin</th>
+                <th>Alasan</th>
                 <th>Tgl Edit</th>
+                <th>Admin</th>
                 <th>Action</th>
                 </thead>                
             </table>
@@ -196,19 +197,21 @@
                     {data: 'id'},
                     {data: 'module_name'},
                     {data: 'data_id'},
-                    {data: null,
-                        render: function (data) {
-                            if(data.user){
-                                return '<a href="/setting/user_management/id/'+data.user.id+'" target="_blank" title="Klik untuk lihat">'+data.user.full_name+'</a>';
-                            }
-                            return 'User tidak ditemukan';
-                        }},
+                    {data: 'description'},
                     {data: null,
                         render: function (data) {
                             if(data.updated_at){
                                 return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
                             }
                             return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.user){
+                                return '<a href="/setting/user_management/id/'+data.user.id+'" target="_blank" title="Klik untuk lihat">'+data.user.full_name+'</a>';
+                            }
+                            return 'User tidak ditemukan';
                         }
                     },
                     {
