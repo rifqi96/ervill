@@ -13,6 +13,7 @@ return array(
     'AddIsNewToOrderCustomers' => $baseDir . '/database/migrations/2018_01_03_194143_add_is_new_to_order_customers.php',
     'AddNomorStrukToOrderCustomers' => $baseDir . '/database/migrations/2018_01_25_165625_add_nomor_struk_to_order_customers.php',
     'AddNotifDayToCustomers' => $baseDir . '/database/migrations/2018_02_02_081915_add_notif_day_to_customers.php',
+    'AddPaymentDateIntoOcHeaderInvoiceTables' => $baseDir . '/database/migrations/2018_02_03_090719_add_payment_date_into_oc_header_invoice_tables.php',
     'AddPriceIdIntoOrderCustomerBuyInvoicesTable' => $baseDir . '/database/migrations/2018_02_01_194741_add_price_id_into_order_customer_buy_invoices_table.php',
     'AddPriceIdIntoOrderCustomerInvoicesTable' => $baseDir . '/database/migrations/2018_02_01_194027_add_price_id_into_order_customer_invoices_table.php',
     'AddPriceIdIntoOrderCustomerReturnInvoicesTable' => $baseDir . '/database/migrations/2018_02_01_194954_add_price_id_into_order_customer_return_invoices_table.php',

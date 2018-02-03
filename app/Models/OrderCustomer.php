@@ -10,6 +10,8 @@ use App\Models\DeleteHistory;
 use Illuminate\Support\Collection;
 use PhpParser\ErrorHandler\Collecting;
 use App\Models\CustomerGallon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrderCustomer extends Model
 {
@@ -150,15 +152,34 @@ class OrderCustomer extends Model
 
         //edit nomor_struk
 
-        $oc_struk = OrderCustomer::where([
-            ['customer_id',$this->customer->id],
-            ['nomor_struk',$data->nomor_struk]
+        //check whether invalid nomor_struk
+        $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
+            $query->where('oc_header_invoice_id',$data->nomor_struk);
+        })
+        ->where([
+            ['customer_id',$data->customer_id]
         ])->get();
 
-        if(count($oc_struk)==0){
-            return false;
+        if(count($oc_struk)==0){       
+            //nomor_struk exception  
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+            throw new ValidationException($validator);
+            
+            //return false;
         }
-        $this->nomor_struk = $data->nomor_struk;
+       
+        ///////////////////validation finish//////////////////////
+
+        //$this->nomor_struk = $data->nomor_struk;
+
+       //change no struk
+       if($data->nomor_struk!=$this->orderCustomerInvoices[0]->oc_header_invoice_id){
+            foreach($this->orderCustomerInvoices as $orderCustomerInvoice){
+                $orderCustomerInvoice->oc_header_invoice_id = $data->nomor_struk;
+                $orderCustomerInvoice->save();
+            }
+       }
 
         //change customer
         if($this->customer_id != $data->customer_id){

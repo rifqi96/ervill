@@ -146,13 +146,13 @@ Pesan Customer
                         </div>
                     </div>
                     
-                    <div class="form-group row">
+                    <div class="form-group row" id="is_piutang_div">
                         <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_piutang" id="is_piutang" value="is_piutang"></p>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" id="is_free_div">
                         <label class="col-sm-2 form-control-label" for="is_free">Gratis/Sample ?</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_free" id="is_free" value="is_free"></p>
@@ -432,10 +432,13 @@ Pesan Customer
 
             $('#change_nomor_struk').on('change',function(){
                 if(this.checked){
-                    $('#nomor_struk_div').fadeIn();                    
+                    $('#nomor_struk_div').fadeIn();  
+                    $('#is_free_div, #is_piutang_div').fadeOut();
+
                 }
                 else{
                     $('#nomor_struk_div').fadeOut(); 
+                    $('#is_free_div, #is_piutang_div').fadeIn();
                 }
             });
         });
