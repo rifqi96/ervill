@@ -147,6 +147,8 @@ class OrderCustomer extends Model
         // }
 
         $old_data = $this->toArray();
+        $old_data['oc_header_invoice_id'] = $this->orderCustomerInvoices[0]['oc_header_invoice_id'];
+       
         
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
@@ -573,7 +575,7 @@ class OrderCustomer extends Model
 
     public function doAddToEditHistory($old_data, $data){
         //set old values
-
+        
         $old_data['customer_name'] = $old_data['customer']['name'];
         $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
@@ -591,6 +593,7 @@ class OrderCustomer extends Model
         unset($old_data['customer']);
 
         $old_value = '';
+        $old_value .= $old_data['oc_header_invoice_id'] . ';';
         $old_value .= $old_data['quantity'] . ';';
         $old_value .= $old_data['additional_quantity']. ';';
         $old_value .= $old_data['purchase_type']. ';';
@@ -612,6 +615,7 @@ class OrderCustomer extends Model
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
+        $new_value .= $new_value_obj['nomor_struk'] . ';'; 
         $new_value .= $new_value_obj['quantity'] . ';';    
         if($new_value_obj['add_gallon_quantity'] == null){
             $new_value_obj['add_gallon_quantity'] = 0;
@@ -630,7 +634,7 @@ class OrderCustomer extends Model
             $new_value .= $new_value_obj['delivery_at']. ';';
             $new_value .= $new_value_obj['customer_name'];
         //}
-        
+       
 
         $edit_data = array(
             'module_name' => 'Order Customer',
