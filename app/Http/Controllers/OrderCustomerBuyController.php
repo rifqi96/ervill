@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\OrderCustomerBuy;
+use App\Models\OcHeaderInvoice;
 
 class OrderCustomerBuyController extends OrderCustomerController
 {
@@ -24,14 +25,20 @@ class OrderCustomerBuyController extends OrderCustomerController
     public function showMake()
     {
         $this->data['breadcrumb'] = "Customer Order - Pindah Tangan Galon - Lakukan Transaksi";
+        $this->data['struks'] = $this->getNomorStruk();
 
         return view('order.customer.buy.make', $this->data);
     }
 
     /*======= Get Methods =======*/
     public function getAll(){
-        return OrderCustomerBuy::with(['customer', 'author'])
+        return OrderCustomerBuy::with(['customer', 'author','orderCustomerBuyInvoices'])
             ->get();
+    }
+    public function getNomorStruk(){
+        return OcHeaderInvoice::has('orderCustomerInvoices')->pluck('id');
+
+       
     }
 
     /*======= Do Methods =======*/

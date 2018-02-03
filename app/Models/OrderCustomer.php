@@ -74,7 +74,10 @@ class OrderCustomer extends Model
             ])->get();
 
             if(count($oc_struk)==0){
-                return false;
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+                throw new ValidationException($validator);
+                //return false;
             }
         }           
       

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrderCustomerBuy extends Model
 {
@@ -41,11 +43,38 @@ class OrderCustomerBuy extends Model
             ->first();
 
         if(!$customer_gallon_rent || $customer_gallon_rent->qty < $data->quantity){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('customer_gallon_rent', 'Jumlah galon melebihi kapasitas, mohon diperiksa kembali');
+            throw new ValidationException($validator);
+            //return false;
         }
 
-        $customer_gallon_rent->qty -= $data->quantity;
+        if($data->change_nomor_struk){
 
+            //check whether invalid nomor_struk
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
+                $query->where('oc_header_invoice_id',$data->nomor_struk);
+            })
+            ->where([
+                ['customer_id',$data->customer_id]
+            ])->get();
+
+            if(count($oc_struk)==0){
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+                throw new ValidationException($validator);
+                //return false;
+            }
+        }   
+
+        //////validation finish///////////
+        
+        $customer_gallon_rent->qty -= $data->quantity;
+        if($customer_gallon_rent->qty<1){
+            $customer_gallon_rent->delete();
+        }else{
+            $customer_gallon_rent->save();
+        }
         if(!$customer_gallon_purchase){
             $data->purchase_type = "purchase";
             $data['purchase_type'] = "purchase";
@@ -60,9 +89,8 @@ class OrderCustomerBuy extends Model
             }
         }
 
-        if(!$customer_gallon_rent->save()){
-            return false;
-        }
+
+        
 
         $outgoing_gallon = Inventory::find(5);
         $sold_gallon = Inventory::find(7);
@@ -79,12 +107,32 @@ class OrderCustomerBuy extends Model
         }
 
         $this->customer_id = $data->customer_id;
-        $this->no_struk = $data->no_struk;
+        
         $this->quantity = $data->quantity;
         $this->author_id = $author_id;
         $this->buy_at = Carbon::parse($data->buy_at)->format('Y-n-d');
+        $this->save();
 
-        return $this->save();
+        if($data->change_nomor_struk){            
+            $orderCustomerBuyInvoice = (new OrderCustomerBuyInvoice())->doMake($this, $data->nomor_struk);
+            //$this->no_struk = $data->nomor_struk;
+            //refill and add gallon
+            // if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+            //     $orderCustomerBuyInvoice = (new OrderCustomerBuyInvoice())->doMake($this, $data->nomor_struk, true);
+            // }
+        }else{
+            $oc_header_invoice = (new OcHeaderInvoice())->doMake($data);
+            $orderCustomerBuyInvoice = (new OrderCustomerBuyInvoice())->doMake($this, $oc_header_invoice->id);
+            //$this->no_struk = $oc_header_invoice->id;
+            //refill and add gallon
+            // if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+            //     $orderCustomerBuyInvoice = (new OrderCustomerBuyInvoice())->doMake($this, $oc_header_invoice->id, true);
+            // }
+        }
+
+        //$this->no_struk = $data->nomor_struk?$data->nomor_struk:$oc_header_invoice->id;
+
+        return $this;
     }
 
     public function doDelete(){
@@ -106,11 +154,19 @@ class OrderCustomerBuy extends Model
             ])
             ->first();
 
-        if(!$customer_gallon_rent || !$customer_gallon_purchase){
+        if(!$customer_gallon_purchase){
             return false;
         }
 
-        $customer_gallon_rent->qty += $this->quantity;
+        if(!$customer_gallon_rent){
+            $customer_gallon_rent = new CustomerGallon();
+            $customer_gallon_rent->customer_id = $this->customer_id;
+            $customer_gallon_rent->qty = $this->quantity;
+            $customer_gallon_rent->type="rent";
+        }else{
+            $customer_gallon_rent->qty += $this->quantity;
+        }
+        
         $customer_gallon_purchase->qty -= $this->quantity;
 
         if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
@@ -130,6 +186,10 @@ class OrderCustomerBuy extends Model
         if(!$outgoing_gallon->save() || !$sold_gallon->save()){
             return false;
         }
+
+        //delete oc_buy_invoice_detail
+        $oc_buy_invoice_detail = OrderCustomerBuyInvoice::where('order_customer_buy_id',$this->id)->first();
+        $oc_buy_invoice_detail->delete();
 
 //        $data = array(
 //            'module_name' => 'Pindah Tangan Galon',

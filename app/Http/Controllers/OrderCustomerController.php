@@ -12,6 +12,7 @@ use App\Models\EditHistory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
 use App\Models\OrderCustomerInvoice;
+use App\Models\OrderCustomerBuyInvoice;
 use App\Models\OcHeaderInvoice;
 use App\Http\Controllers\CustomerController;
 
@@ -60,6 +61,7 @@ class OrderCustomerController extends OrderController
          // })->get();
      
         $this->data['invoices'] = OrderCustomerInvoice::has('orderCustomer.order')->where('oc_header_invoice_id',$id)->get();
+        $this->data['buy_invoices'] = OrderCustomerBuyInvoice::where('oc_header_invoice_id',$id)->get();
        
         
 
