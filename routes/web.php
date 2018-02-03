@@ -435,6 +435,17 @@ Route::prefix('setting')->group(function(){
     });
 });
 
+Route::prefix('invoice')->group(function (){
+    Route::get('sales', [
+        'uses' => 'InvoiceController@showSales',
+        'as' => 'invoice.sales'
+    ]);
+    Route::get('return', [
+        'uses' => 'InvoiceController@showReturn',
+        'as' => 'invoice.return'
+    ]);
+});
+
 Route::prefix('issue')->group(function(){
     Route::prefix('do')->group(function(){
         Route::post('delete', [

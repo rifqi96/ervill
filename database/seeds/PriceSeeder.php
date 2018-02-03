@@ -45,13 +45,20 @@ class PriceSeeder extends Seeder
 
         array_push($data, array(
             'id'=>5,
-            'name'=>'Retur galon kosong',
+            'name'=>'Pembayaran galon',
             'customer_type' => 'end_customer',
             'price' => 30000
         ));
 
         array_push($data, array(
             'id'=>6,
+            'name'=>'Retur galon kosong',
+            'customer_type' => 'end_customer',
+            'price' => 30000
+        ));
+
+        array_push($data, array(
+            'id'=>7,
             'name'=>'Retur galon isi',
             'customer_type' => 'end_customer',
             'price' => 42000
@@ -59,42 +66,49 @@ class PriceSeeder extends Seeder
 
         // Agen //
         array_push($data, array(
-            'id'=>7,
+            'id'=>8,
             'name'=>'Isi ulang air',
             'customer_type' => 'agent',
             'price' => 10000
         ));
 
         array_push($data, array(
-            'id'=>8,
+            'id'=>9,
             'name'=>'Pinjam galon',
             'customer_type' => 'agent',
             'price' => 10000
         ));
 
         array_push($data, array(
-            'id'=>9,
+            'id'=>10,
             'name'=>'Tukar galon merk lain',
             'customer_type' => 'agent',
             'price' => 10000
         ));
 
         array_push($data, array(
-            'id'=>10,
+            'id'=>11,
             'name'=>'Beli galon',
             'customer_type' => 'agent',
             'price' => 40000
         ));
 
         array_push($data, array(
-            'id'=>11,
+            'id'=>12,
+            'name'=>'Pembayaran galon',
+            'customer_type' => 'end_customer',
+            'price' => 30000
+        ));
+
+        array_push($data, array(
+            'id'=>13,
             'name'=>'Retur galon kosong',
             'customer_type' => 'agent',
             'price' => 30000
         ));
 
         array_push($data, array(
-            'id'=>12,
+            'id'=>14,
             'name'=>'Retur galon isi',
             'customer_type' => 'agent',
             'price' => 40000

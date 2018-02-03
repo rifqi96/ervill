@@ -312,6 +312,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'App\\Http\\Controllers\\CustomerGallonController' => __DIR__ . '/../..' . '/app/Http/Controllers/CustomerGallonController.php',
         'App\\Http\\Controllers\\HistoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/HistoryController.php',
         'App\\Http\\Controllers\\InventoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/InventoryController.php',
+        'App\\Http\\Controllers\\InvoiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/InvoiceController.php',
         'App\\Http\\Controllers\\IssueController' => __DIR__ . '/../..' . '/app/Http/Controllers/IssueController.php',
         'App\\Http\\Controllers\\ModuleAccessController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModuleAccessController.php',
         'App\\Http\\Controllers\\ModuleController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModuleController.php',
