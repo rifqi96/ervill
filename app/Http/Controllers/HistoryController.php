@@ -411,29 +411,44 @@ class HistoryController extends Controller
                 $new_value_arr['Jumlah Galon Gudang'] = $new_value[3];
                 $new_value_arr['Tgl Pengiriman'] = $new_value[4];
             }else if($edit_history->module_name == "Order Customer"){
-                $old_value_arr['Jumlah (Galon)'] = $old_value[0];
-                $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
-                $old_value_arr['Jenis Pembelian'] = $old_value[2];
+                if(count($old_value)==6){
+                    $old_value_arr['Nomor Faktur'] = $old_value[0];
+                    $old_value_arr['Jumlah (Galon)'] = $old_value[1];
+                    $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[2];
+                    $old_value_arr['Jenis Pembelian'] = $old_value[3];
 
-                if(array_key_exists(3, $old_value)){
+              
+                    $old_value_arr['Tgl Pengiriman'] = $old_value[4];
+                    $old_value_arr['Nama Customer'] = $old_value[5];
+                
+                
+
+                    $new_value_arr['Nomor Faktur'] = $new_value[0];
+                    $new_value_arr['Jumlah (Galon)'] = $new_value[1];
+                    $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[2];
+                    $new_value_arr['Jenis Pembelian'] = $new_value[3];
+                
+                    $new_value_arr['Tgl Pengiriman'] = $new_value[4];
+                    $new_value_arr['Nama Customer'] = $new_value[5];
+                
+               }else{
+
+                    $old_value_arr['Jumlah (Galon)'] = $old_value[0];
+                    $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
+                    $old_value_arr['Jenis Pembelian'] = $old_value[2];
+
+              
                     $old_value_arr['Tgl Pengiriman'] = $old_value[3];
                     $old_value_arr['Nama Customer'] = $old_value[4];
-                }
-                else{
-                    $old_value_arr['Nama Customer'] = $old_value[3];
-                }
-
-
-                $new_value_arr['Jumlah (Galon)'] = $new_value[0];
-                $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
-                $new_value_arr['Jenis Pembelian'] = $new_value[2];
-                if(array_key_exists(3, $new_value)){
+                
+        
+                    $new_value_arr['Jumlah (Galon)'] = $new_value[0];
+                    $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
+                    $new_value_arr['Jenis Pembelian'] = $new_value[2];
+                
                     $new_value_arr['Tgl Pengiriman'] = $new_value[3];
                     $new_value_arr['Nama Customer'] = $new_value[4];
-                }
-                else{
-                    $new_value_arr['Nama Customer'] = $new_value[3];
-                }
+               }
 
 
             }else if($edit_history->module_name == "Shipment"){

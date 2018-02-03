@@ -35,7 +35,7 @@ List Pesanan Customer
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-xl-3">No Struk:</div>
+                                    <div class="col-xl-3">No Faktur:</div>
                                     <div class="col-xl-9">
                                         {{--<input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">--}}
                                         <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
@@ -87,7 +87,7 @@ List Pesanan Customer
                     <th>Aksi</th>
                     <th>Status</th>
                     <th>No</th>
-                    <th>No Struk</th>
+                    <th>No Faktur</th>
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
@@ -164,7 +164,7 @@ List Pesanan Customer
                         {{--</div>--}}
                     {{--</div>--}}
                     <div class="form-group">
-                        <label for="nomor_struk"><strong>Nomor Struk </strong></label>
+                        <label for="nomor_struk"><strong>Nomor Faktur </strong></label>
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
                                 <option value="">-- Silahkan Pilih --</option>
                                 @foreach($struks as $struk)
@@ -209,6 +209,14 @@ List Pesanan Customer
                     {{-- <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
                         <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
+                    </div> --}}
+                    {{-- <div class="form-group" id="is_piutang_div">
+                        <label for="is_piutang"><strong>Piutang?</strong></label>
+                        <input type="checkbox" class="form-control" name="is_piutang" id="is_piutang">
+                    </div>
+                    <div class="form-group" id="is_free_div">
+                        <label for="is_free"><strong>Gratis/Sample?</strong></label>
+                        <input type="checkbox" class="form-control" name="is_free" id="is_free">
                     </div> --}}
                     <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
@@ -442,7 +450,7 @@ List Pesanan Customer
                                 if(data.order_customer_invoices){
                                     return data.order_customer_invoices[0].oc_header_invoice.id;
                                 }
-                                return '<i>Data nomor struk tidak ditemukan</i>';
+                                return '<i>Data nomor faktur tidak ditemukan</i>';
                             }},
                         {data: null,
                             render: function(data){
@@ -600,11 +608,21 @@ List Pesanan Customer
                     }
 
                     //isi nomor struk
-                    $('#edit-nostruk').val(order_data.orderCustomerInvoices.ocHeaderInvoice.id);
-                    $('#edit-nostruk').trigger('change');
-
+                    $('#edit-nostruk').val(order_data.order_customer_invoices[0].oc_header_invoice.id);
+                    $('#edit-nostruk').trigger('change');                  
                     $('#customer-id').val(order_data.customer_id);
-
+                    // //is_piutang
+                    // if(order_data.order_customer_invoices[0].oc_header_invoice.payment_status=="piutang"){
+                    //     $('#is_piutang').prop("checked",true);
+                    // }else{
+                    //     $('#is_piutang').prop("checked",false);
+                    // }
+                    // //is_free
+                    // if(order_data.order_customer_invoices[0].oc_header_invoice.is_free=="true"){
+                    //     $('#is_free').prop("checked",true);
+                    // }else{
+                    //     $('#is_free').prop("checked",false);
+                    // }
 
                     var inventory = JSON.parse('{!! $inventory !!}');
 
@@ -614,10 +632,14 @@ List Pesanan Customer
                         $('#add_gallon_checkbox_div').hide();
                         $('#purchase_type_div').show();
                         $('#purchase_type').val(order_data.purchase_type);
+                        //$('#is_piutang_div').show();
+                        //$('#is_free_div').show();
                     }else{
                         $('#add_gallon_checkbox_div').show();
                         $('#purchase_type').val('');
                         $('#purchase_type_div').hide();
+                        //$('#is_piutang_div').hide();
+                        //$('#is_free_div').hide();
                     }
 
                     //add gallon or not

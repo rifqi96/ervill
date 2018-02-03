@@ -10,6 +10,8 @@ use App\Models\DeleteHistory;
 use Illuminate\Support\Collection;
 use PhpParser\ErrorHandler\Collecting;
 use App\Models\CustomerGallon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrderCustomer extends Model
 {
@@ -145,20 +147,41 @@ class OrderCustomer extends Model
         // }
 
         $old_data = $this->toArray();
+        $old_data['oc_header_invoice_id'] = $this->orderCustomerInvoices[0]['oc_header_invoice_id'];
+       
         
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
         //edit nomor_struk
 
-        $oc_struk = OrderCustomer::where([
-            ['customer_id',$this->customer->id],
-            ['nomor_struk',$data->nomor_struk]
+        //check whether invalid nomor_struk
+        $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
+            $query->where('oc_header_invoice_id',$data->nomor_struk);
+        })
+        ->where([
+            ['customer_id',$data->customer_id]
         ])->get();
 
-        if(count($oc_struk)==0){
-            return false;
+        if(count($oc_struk)==0){       
+            //nomor_struk exception  
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+            throw new ValidationException($validator);
+            
+            //return false;
         }
-        $this->nomor_struk = $data->nomor_struk;
+       
+        ///////////////////validation finish//////////////////////
+
+        //$this->nomor_struk = $data->nomor_struk;
+
+       //change no struk
+       if($data->nomor_struk!=$this->orderCustomerInvoices[0]->oc_header_invoice_id){
+            foreach($this->orderCustomerInvoices as $orderCustomerInvoice){
+                $orderCustomerInvoice->oc_header_invoice_id = $data->nomor_struk;
+                $orderCustomerInvoice->save();
+            }
+       }
 
         //change customer
         if($this->customer_id != $data->customer_id){
@@ -552,7 +575,7 @@ class OrderCustomer extends Model
 
     public function doAddToEditHistory($old_data, $data){
         //set old values
-
+        
         $old_data['customer_name'] = $old_data['customer']['name'];
         $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
@@ -570,6 +593,7 @@ class OrderCustomer extends Model
         unset($old_data['customer']);
 
         $old_value = '';
+        $old_value .= $old_data['oc_header_invoice_id'] . ';';
         $old_value .= $old_data['quantity'] . ';';
         $old_value .= $old_data['additional_quantity']. ';';
         $old_value .= $old_data['purchase_type']. ';';
@@ -591,6 +615,7 @@ class OrderCustomer extends Model
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
+        $new_value .= $new_value_obj['nomor_struk'] . ';'; 
         $new_value .= $new_value_obj['quantity'] . ';';    
         if($new_value_obj['add_gallon_quantity'] == null){
             $new_value_obj['add_gallon_quantity'] = 0;
@@ -609,7 +634,7 @@ class OrderCustomer extends Model
             $new_value .= $new_value_obj['delivery_at']. ';';
             $new_value .= $new_value_obj['customer_name'];
         //}
-        
+       
 
         $edit_data = array(
             'module_name' => 'Order Customer',
