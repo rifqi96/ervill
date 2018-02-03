@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class OcHeaderInvoice extends Model
 {
@@ -38,10 +39,12 @@ class OcHeaderInvoice extends Model
     		$this->payment_status = "piutang";
     	}else{
     		$this->payment_status = "cash";
+            $this->payment_date = Carbon::now()->format('Y-n-d H:i:s');
     	}
 
     	if($data->is_free){
     		$this->is_free = "true";
+            $this->payment_date = Carbon::now()->format('Y-n-d H:i:s');
     	}else{
     		$this->is_free = "false";
     	}
