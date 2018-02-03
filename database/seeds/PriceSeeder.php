@@ -45,7 +45,7 @@ class PriceSeeder extends Seeder
 
         array_push($data, array(
             'id'=>5,
-            'name'=>'Pembayaran galon',
+            'name'=>'Pembayaran galong',
             'customer_type' => 'end_customer',
             'price' => 30000
         ));
