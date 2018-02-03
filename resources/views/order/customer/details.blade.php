@@ -43,8 +43,8 @@ Detail Pesanan
                         </div>
                         <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
                             <div class="text-lg-right">
-                                <h5>Nomor Transaksi/Struk {{$oc->nomor_struk?$oc->nomor_struk:$oc->id}}</h5>
-                                <div>Tanggal Pengiriman: <b class="delivery-at">{{\Carbon\Carbon::parse($oc->delivery_at)->format('d-m-Y')}}</b></div>
+                                <h5>Nomor Faktur {{$invoices[0]->oc_header_invoice_id}}</h5>
+                                <div>Tanggal Pengiriman: <b class="delivery-at">{{\Carbon\Carbon::parse($invoices[0]->orderCustomer->delivery_at)->format('d-m-Y')}}</b></div>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@ Detail Pesanan
                         <div class="col-lg-12 col-print-12">
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
-                                <div>Ibu/Bapak {{$oc->customer->name}}</div>
+                                <div>Ibu/Bapak {{$invoices[0]->orderCustomer->customer->name}}</div>
                                 <div>Alamat: {{$oc->customer->address}}</div>
                                 <div>No. HP: {{$oc->customer->phone=='0000'?"-":$oc->customer->phone}}</div>
                             </div>
