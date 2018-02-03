@@ -145,7 +145,7 @@ Pesan Customer
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row" id="is_piutang_div">
                         <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
                         <div class="col-sm-10">
