@@ -36,12 +36,12 @@ class PriceController extends Controller
         return Price::where([
             ['customer_type', '=', 'end_customer']
         ])
-            ->whereNotIn('id', [5,6])
+            ->whereNotIn('id', [6,7])
             ->get();
     }
 
     public function getEndCustomerReturnPrices(){
-        return Price::whereIn('id', [5,6])
+        return Price::whereIn('id', [6,7])
             ->get();
     }
 
@@ -49,12 +49,12 @@ class PriceController extends Controller
         return Price::where([
             ['customer_type', '=', 'agent']
         ])
-            ->whereNotIn('id', [11,12])
+            ->whereNotIn('id', [13,14])
             ->get();
     }
 
     public function getAgentReturnPrices(){
-        return Price::whereIn('id', [11,12])
+        return Price::whereIn('id', [13,14])
             ->get();
     }
 
