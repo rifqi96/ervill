@@ -445,10 +445,10 @@ List Pesanan Customer
                                 }
                             }},
                         {data: 'id'},
-                        {data: null,
+                        {data: 'order_customer_invoices',
                             render: function(data){
-                                if(count(data.order_customer_invoices) > 0){
-                                    return data.order_customer_invoices[0].oc_header_invoice.id;
+                                if(data){
+                                    return data[0].oc_header_invoice.id;
                                 }
                                 return '<i>Data nomor faktur tidak ditemukan</i>';
                             }},

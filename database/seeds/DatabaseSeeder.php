@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call('CreateInventoriesSeeder');
         $this->command->info("Inventories table seeded :)");
 
+        $this->call('AddSoldGallonsToInventory');
+        $this->command->info("SoldGallons seeded to Inventories table :)");
+
         $this->call('PriceSeeder');
         $this->command->info("Prices table seeded :)");
     }
