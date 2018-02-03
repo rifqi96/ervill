@@ -72,9 +72,10 @@ Detail Pesanan
                                 </tr>
                                 </thead>
                                 <tbody>
+                                    {{$i=1}}
                                     @foreach($invoices as $key => $val)
                                         <tr>
-                                            <td>{{$i=$key+1}}</td>
+                                            <td>{{$i++}}</td>
                                             <td>
                                                 {{$invoices[$key]->price->name}}
                                             </td>
@@ -86,6 +87,23 @@ Detail Pesanan
                                             </td>
                                             <td class="numeral total">
                                                 {{$invoices[$key]->subtotal}}
+                                            </td>
+                                        </tr>                                    
+                                    @endforeach
+                                     @foreach($buy_invoices as $key => $val)
+                                        <tr>
+                                            <td>{{$i++}}</td>
+                                            <td>
+                                                {{$buy_invoices[$key]->price->name}}
+                                            </td>
+                                            <td>
+                                                {{$buy_invoices[$key]->quantity}}
+                                            </td>
+                                            <td class="numeral">
+                                                {{$buy_invoices[$key]->price->price}}
+                                            </td>
+                                            <td class="numeral total">
+                                                {{$buy_invoices[$key]->subtotal}}
                                             </td>
                                         </tr>                                    
                                     @endforeach

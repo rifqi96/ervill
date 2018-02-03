@@ -66,7 +66,7 @@
                 dataType: 'json',
                 success: function(result){
                     $('#buy-gallon-order').dataTable({
-                        order:[2, 'desc'],
+                        order:[0, 'desc'],
                         fixedHeader: {
                             headerOffset: $('.site-header').outerHeight()
                         },
@@ -87,10 +87,10 @@
                         data:result,
                         columns: [
                             {data: 'id'},
-                            {data: 'no_struk',
+                            {data: 'order_customer_buy_invoices',
                             render: function (data) {
-                                if(data || data !== ''){
-                                    return data;
+                                if(data.length>0){
+                                    return data[0].oc_header_invoice_id;
                                 }
                                 return '-';
                             }},
