@@ -175,13 +175,7 @@ class OrderCustomer extends Model
 
         //$this->nomor_struk = $data->nomor_struk;
 
-       //change no struk
-       if($data->nomor_struk!=$this->orderCustomerInvoices[0]->oc_header_invoice_id){
-            foreach($this->orderCustomerInvoices as $orderCustomerInvoice){
-                $orderCustomerInvoice->oc_header_invoice_id = $data->nomor_struk;
-                $orderCustomerInvoice->save();
-            }
-       }
+       
 
         //change customer
         if($this->customer_id != $data->customer_id){
@@ -566,6 +560,22 @@ class OrderCustomer extends Model
         }
         // $this->status = $data->status;
         //$this->customer_id = $data->customer_id;
+
+        //change no struk      
+        //delete previous data
+        foreach($this->orderCustomerInvoices as $orderCustomerInvoice){       
+            $orderCustomerInvoice->delete();            
+        }
+
+        //create new invoice details
+        $oc = new OrderCustomerInvoice();
+        $oc->doMake($this, $data->nomor_struk);        
+        //refill and add gallon
+        if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+            $oc_both = new OrderCustomerInvoice();
+            $oc_both->doMake($this, $data->nomor_struk, true);
+        }
+
 
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$sold_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;

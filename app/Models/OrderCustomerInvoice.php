@@ -17,6 +17,12 @@ class OrderCustomerInvoice extends Model
     {
         return $this->belongsTo('App\Models\OcHeaderInvoice');
     }
+    public function price()
+    {
+        return $this->belongsTo('App\Models\Price');
+    }
+
+
 
     public function doMake($order_customer, $nomor_struk, $is_refill_and_add = false){
 

@@ -59,7 +59,7 @@ class OrderCustomerController extends OrderController
          //    $query->where('oc_header_invoice_id',$id);
          // })->get();
      
-        $this->data['invoices'] = OrderCustomerInvoice::where('oc_header_invoice_id',$id)->get();
+        $this->data['invoices'] = OrderCustomerInvoice::has('orderCustomer.order')->where('oc_header_invoice_id',$id)->get();
        
         
 

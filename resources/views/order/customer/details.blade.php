@@ -54,8 +54,8 @@ Detail Pesanan
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
                                 <div>Ibu/Bapak {{$invoices[0]->orderCustomer->customer->name}}</div>
-                                <div>Alamat: {{$oc->customer->address}}</div>
-                                <div>No. HP: {{$oc->customer->phone=='0000'?"-":$oc->customer->phone}}</div>
+                                <div>Alamat: {{$invoices[0]->orderCustomer->customer->address}}</div>
+                                <div>No. HP: {{$invoices[0]->orderCustomer->customer->phone}}</div>
                             </div>
                         </div>
                     </div>
@@ -68,156 +68,27 @@ Detail Pesanan
                                     <th>Keterangan</th>
                                     <th>Jumlah (Galon)</th>
                                     <th>Harga</th>
-                                    <th>Total</th>
+                                    <th>Subtotal</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($details as $key => $val)
-                                    <tr>
-                                        <td>{{$i=$key+1}}</td>
-                                        <td>
-                                            @if($details[$key]->purchase_type)
-                                                @if($details[$key]->purchase_type == "purchase")
-                                                    Pembelian galon
-                                                @elseif($details[$key]->purchase_type == "rent")
-                                                    Peminjaman galon
-                                                @else
-                                                    Tukar galon merk lain
-                                                @endif
-                                            @else
-                                                Isi ulang air
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($details[$key]->purchase_type)
-                                                @if($details[$key]->purchase_type == "purchase")
-                                                    @if($details[$key]->is_new == "false")
-                                                        {{$details[$key]->additional_quantity}}
-                                                    @else
-                                                        {{$details[$key]->order->quantity}}
-                                                    @endif
-                                                @elseif($details[$key]->purchase_type == "rent")
-                                                    @if($details[$key]->is_new == "false")
-                                                        {{$details[$key]->additional_quantity}}
-                                                    @else
-                                                        {{$details[$key]->order->quantity}}
-                                                    @endif
-                                                @else
-                                                    @if($details[$key]->is_new == "false")
-                                                        {{$details[$key]->additional_quantity}}
-                                                    @else
-                                                        {{$details[$key]->order->quantity}}
-                                                    @endif
-                                                @endif
-                                            @else
-                                                {{$details[$key]->order->quantity}}
-                                            @endif
-                                        </td>
-                                        <td class="numeral">
-                                            @if($details[$key]->purchase_type)
-                                                @if($details[$key]->purchase_type == "purchase")
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        42000
-                                                    @else
-                                                        40000
-                                                    @endif
-                                                @elseif($details[$key]->purchase_type == "rent")
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        12000
-                                                    @else
-                                                        10000
-                                                    @endif
-                                                @else
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        12000
-                                                    @else
-                                                        10000
-                                                    @endif
-                                                @endif
-                                            @else
-                                                @if($details[$key]->customer->type == "end_customer")
-                                                    12000
-                                                @else
-                                                    10000
-                                                @endif
-                                            @endif
-                                        </td>
-                                        <td class="numeral total">
-                                            @if($details[$key]->purchase_type)
-                                                @if($details[$key]->purchase_type == "purchase")
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{42000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{42000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @else
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{40000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{40000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @endif
-                                                @elseif($details[$key]->purchase_type == "rent")
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{12000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{12000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @else
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{10000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{10000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @endif
-                                                @else
-                                                    @if($details[$key]->customer->type == "end_customer")
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{12000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{12000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @else
-                                                        @if($details[$key]->is_new == "false")
-                                                            {{10000*$details[$key]->additional_quantity}}
-                                                        @else
-                                                            {{10000*$details[$key]->order->quantity}}
-                                                        @endif
-                                                    @endif
-                                                @endif
-                                            @else
-                                                @if($details[$key]->customer->type == "end_customer")
-                                                    {{12000*$details[$key]->order->quantity}}
-                                                @else
-                                                    {{10000*$details[$key]->order->quantity}}
-                                                @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @if($details[$key]->is_new == "false" && $details[$key]->purchase_type && $details[$key]->order->quantity > 0)
+                                    @foreach($invoices as $key => $val)
                                         <tr>
-                                            <td>{{++$i}}</td>
-                                            <td>Isi ulang air</td>
-                                            <td>{{$details[$key]->order->quantity}}</td>
+                                            <td>{{$i=$key+1}}</td>
+                                            <td>
+                                                {{$invoices[$key]->price->name}}
+                                            </td>
+                                            <td>
+                                                {{$invoices[$key]->quantity}}
+                                            </td>
                                             <td class="numeral">
-                                                @if($details[$key]->customer->type == "end_customer")
-                                                    12000
-                                                @else
-                                                    10000
-                                                @endif
+                                                {{$invoices[$key]->price->price}}
                                             </td>
                                             <td class="numeral total">
-                                                @if($details[$key]->customer->type == "end_customer")
-                                                    {{12000*$details[$key]->order->quantity}}
-                                                @else
-                                                    {{10000*$details[$key]->order->quantity}}
-                                                @endif
+                                                {{$invoices[$key]->subtotal}}
                                             </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
+                                        </tr>                                    
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
