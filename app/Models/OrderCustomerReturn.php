@@ -47,24 +47,21 @@ class OrderCustomerReturn extends Model
         }
 
         //////////////validation finish/////////////
-        
+
         $this->customer_id = $data->customer_id;
         $this->filled_gallon_quantity = $data->filled_quantity;
         $this->empty_gallon_quantity = $data->empty_quantity;
+        if($data->is_non_refund){
+            $this->is_non_refund = "true";
+        }else{
+            $this->is_non_refund = "false";
+        }
         $this->description = $data->description;
         $this->return_at = Carbon::parse($data->return_at)->format('Y-n-d');
         $this->author_id = $author_id;
         $this->status = 'Draft';
 
-        $this->save();
-
-        $re_header_invoice = (new ReHeaderInvoice())->doMake($data);
-        if($this->empty_gallon_quantity>0){
-            $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
-        }
-        if($this->filled_gallon_quantity>0){
-            $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
-        }
+        $this->save();        
         
 
         return $this;
@@ -121,6 +118,15 @@ class OrderCustomerReturn extends Model
 
         $this->status = 'Selesai';
 
+        //create nomor_faktur
+        $re_header_invoice = (new ReHeaderInvoice())->doMake($this);
+        if($this->empty_gallon_quantity>0){
+            $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
+        }
+        if($this->filled_gallon_quantity>0){
+            $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
+        }
+
         return $this->save();
     }
 
@@ -171,6 +177,12 @@ class OrderCustomerReturn extends Model
         }
 
         $this->status = 'Batal';
+
+        //delete nomor faktur
+        $invoice_details = OrderCustomerReturnInvoice::where('order_customer_return_id',$this->id)->get();
+        foreach ($invoice_details as $invoice_detail) {
+            $invoice_detail->delete();
+        }
 
         return $this->save();
     }
