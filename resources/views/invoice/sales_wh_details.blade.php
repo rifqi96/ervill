@@ -21,7 +21,7 @@ Detail Faktur
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Faktur Penjualan - {{$invoice->status}}
+                    Logistik Gudang
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
@@ -73,48 +73,24 @@ Detail Faktur
                                     <th width="10">#</th>
                                     <th>Keterangan</th>
                                     <th>Jumlah (Galon)</th>
-                                    <th>Harga</th>
-                                    <th>Subtotal</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                    $i = 1;
-                                    @endphp
-                                    @foreach($invoice->orderCustomerInvoices as $row)
-                                        <tr>
-                                            <td>{{$i++}}</td>
-                                            <td>
-                                                {{$row->price->name}}
-                                            </td>
-                                            <td>
-                                                {{$row->quantity}}
-                                            </td>
-                                            <td class="numeral">
-                                                {{$invoice->is_free == "false" ? $row->price->price : 0}}
-                                            </td>
-                                            <td class="numeral total">
-                                                {{$invoice->is_free == "false" ? $row->subtotal : 0}}
-                                            </td>
-                                        </tr>                                    
-                                    @endforeach
-                                     @foreach($invoice->orderCustomerBuyInvoices as $row)
-                                        <tr>
-                                            <td>{{$i++}}</td>
-                                            <td>
-                                                {{$row->price->name}}
-                                            </td>
-                                            <td>
-                                                {{$row->quantity}}
-                                            </td>
-                                            <td class="numeral">
-                                                {{$invoice->is_free == "false" ? $row->price->price : 0}}
-                                            </td>
-                                            <td class="numeral total">
-                                                {{$invoice->is_free == "false" ? $row->subtotal : 0}}
-                                            </td>
-                                        </tr>                                    
-                                    @endforeach
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Galon Keluar Isi</td>
+                                        <td>{{$invoice->filled_gallon}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Galon Masuk Kosong (ERVILL)</td>
+                                        <td>{{$invoice->ervill_empty_gallon}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Galon Masuk Kosong (NON - ERVILL / MERK LAIN)</td>
+                                        <td>{{$invoice->non_ervill_empty_gallon}}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -123,12 +99,8 @@ Detail Faktur
                     <div class="row">
                         <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
                             <strong>S&K</strong>
-                            <p>Terima kasih telah membeli air mineral berkualitas di ERVILL.</p>
-                        </div>
-                        <div class="col-lg-3 col-sm-3 col-xs-6 col-print-3 clearfix">
-                            <div class="total-amount">
-                                <div>Total: <b class="numeral grand-total"></b></div>
-                            </div>
+                            <p>- Harap diperhatikan bagi driver dan helper untuk membawa dan mengambil galon sesuai tabel diatas.</p>
+                            <p>- Mohon untuk melapor ke bagian gudang atau administrasi jika ada masalah dalam pembawaan dan pengambilan barang.</p>
                         </div>
                     </div>
                 </div>
@@ -138,16 +110,6 @@ Detail Faktur
 
     <script>
         $(document).ready(function () {
-            var grand_total = 0;
-            $('.total').each(function () {
-               grand_total += parseInt($(this).text());
-            });
-            $('.grand-total').text(grand_total);
-            $('.numeral').each(function () {
-                var price = $(this).text();
-                $(this).text(numeral(price).format('$0,0.00'));
-            });
-
             var changeOnScroll = function () {
                 if($('body').width() < 580){
                     $('.table').addClass('table-responsive');

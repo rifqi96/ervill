@@ -445,6 +445,10 @@ Route::prefix('invoice')->group(function (){
             'uses' => 'InvoiceController@showSalesDetails',
             'as' => 'invoice.sales.details'
         ]);
+        Route::get('wh/id/{id}', [
+            'uses' => 'InvoiceController@showSalesWHDetails',
+            'as' => 'invoice.sales.wh.details'
+        ]);
         Route::prefix('do')->group(function(){
             Route::post('pay', [
                 'uses' => 'InvoiceController@doPay',

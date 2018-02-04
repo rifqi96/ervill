@@ -37,6 +37,14 @@ class InvoiceController extends Controller
         return view('invoice.sales_details', $this->data);
     }
 
+    public function showSalesWHDetails($id){
+        $this->data['breadcrumb'] = "Home - Faktur - Penjualan - Logistik Gudang";
+        $this->data['slug'] = 'sales';
+        $this->data['invoice'] = $this->getSales($id);
+
+        return view('invoice.sales_wh_details', $this->data);
+    }
+
     public function showReturn()
     {
         $this->data['breadcrumb'] = "Home - Faktur - Retur";
@@ -177,7 +185,7 @@ class InvoiceController extends Controller
             'orderCustomerInvoices' => function($query){
                 $query->with([
                     'orderCustomer' => function($query){
-                        $query->with('customer');
+                        $query->with(['customer', 'order']);
                         $query->has('order');
                     }
                 ]);
@@ -201,6 +209,9 @@ class InvoiceController extends Controller
 
     public function setInvoiceAttributes($invoice){
         $invoice->has_order = false;
+        $invoice->filled_gallon = 0;
+        $invoice->ervill_empty_gallon = 0;
+        $invoice->non_ervill_empty_gallon = 0;
         if($invoice->orderCustomerInvoices->count() > 0){
             $invoice->has_order = true;
             $invoice->is_only_buy = false;
@@ -210,6 +221,23 @@ class InvoiceController extends Controller
                 $invoice->customer_name = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->name;
                 $invoice->customer_address = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->address;
                 $invoice->customer_phone = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->phone;
+
+                foreach($invoice->orderCustomerInvoices as $ocInvoice){
+                    //Filled Gallon
+                    if($ocInvoice->price_id != 5 || $ocInvoice->price_id != 6 || $ocInvoice->price_id != 7 || $ocInvoice->price_id != 12 || $ocInvoice->price_id != 13 || $ocInvoice->price_id != 14){
+                        $invoice->filled_gallon += $ocInvoice->quantity;
+                    }
+
+                    // Ervill Empty Gallon
+                    if($ocInvoice->price_id == 1 || $ocInvoice->price_id == 8){
+                        $invoice->ervill_empty_gallon += $ocInvoice->quantity;
+                    }
+
+                    // Non Ervill Empty Gallon
+                    if($ocInvoice->price_id == 3 || $ocInvoice->price_id == 10){
+                        $invoice->non_ervill_empty_gallon += $ocInvoice->quantity;
+                    }
+                }
             }
         }
         else if($invoice->orderCustomerInvoices->count() < 1 && $invoice->orderCustomerBuyInvoices->count() > 0){
