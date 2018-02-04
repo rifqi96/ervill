@@ -323,9 +323,6 @@ class OrderCustomerController extends OrderController
         if($request->id){
             array_push($filters, ['id', $request->id]);
         }
-        if($request->nomor_struk){
-            array_push($filters, ['nomor_struk', $request->nomor_struk]);
-        }
 
         $oc = OrderCustomer::with([
             'shipment' => function($query){
@@ -334,11 +331,19 @@ class OrderCustomerController extends OrderController
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);
+            },
+            'orderCustomerInvoices' => function($query){
+                $query->with(['ocHeaderInvoice']);
             }
             ]);
 
         foreach($filters as $filter){
             $oc->whereIn($filter[0], $filter[1]);
+        }
+        if($request->nomor_struk){
+            $oc->whereHas('orderCustomerInvoices', function ($query) use ($request){
+                $query->whereIn('oc_header_invoice_id', $request->nomor_struk);
+            });
         }
 
         if($request->delivery_start && !$request->delivery_end){

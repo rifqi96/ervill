@@ -73,7 +73,7 @@ List Pesanan Customer
                                     <div class="col-xl-9">
                                         {{csrf_field()}}
                                         <button type="submit" class="btn btn-primary search-btn">Cari</button>
-                                        <button type="reset" class="btn btn-info reset">Reset</button>
+                                        <button type="reset" class="btn btn-info reset-btn">Reset</button>
                                     </div>
                                 </div>
                             </form>
