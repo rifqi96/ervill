@@ -7,8 +7,8 @@
     </li>
     <li class="with-sub {{$module=="order"?"opened":""}}">
         <span>
-            <i class="font-icon font-icon-wallet"></i>
-            <span class="lbl">Order</span>
+            <i class="font-icon font-icon-cart-2"></i>
+            <span class="lbl">Pesanan</span>
         </span>
         <ul>
             <li>
@@ -33,6 +33,22 @@
             <i class="font-icon font-icon-import"></i>
             <span class="lbl">Retur Galon</span>
         </a>
+    </li>
+    <li class="with-sub {{$module=="invoice"?"opened":""}}">
+        <span>
+            <i class="font-icon font-icon-doc"></i>
+            <span class="lbl">
+                Faktur
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('invoice.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
+            </li>
+            <li>
+                {!!$slug=="return"?'<span class="lbl">Retur</span>':'<a href="'.route("invoice.return.index").'"><span class="lbl">Retur</span></a>'!!}
+            </li>
+        </ul>
     </li>
     <li class="{{$module=="inventory"?"opened":""}}">
         <a href="{{route('inventory.index')}}">

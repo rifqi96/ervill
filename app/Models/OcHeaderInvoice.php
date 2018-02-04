@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OcHeaderInvoice extends Model
 {
@@ -51,5 +53,18 @@ class OcHeaderInvoice extends Model
 
     	$this->save();
     	return $this;
+    }
+
+    public function doPay(){
+        if($this->payment_status == "cash"){
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('id', 'Gagal update, status faktur telah lunas');
+            throw new ValidationException($validator);
+        }
+
+        $this->payment_date = Carbon::now()->format('Y-n-d H:i:s');
+        $this->payment_status = 'cash';
+
+        return $this->save();
     }
 }

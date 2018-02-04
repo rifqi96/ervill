@@ -15,9 +15,8 @@
 
             <table class="table table-hover" id="buy-gallon-order">
                 <thead>
-                <th>Aksi</th>
                 <th>No</th>
-                <th>No Struk</th>
+                <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -87,16 +86,6 @@
                         ],
                         data:result,
                         columns: [
-                            {data: 'order_customer_buy_invoices',
-                            render: function(data){
-                                if(data.length>0){
-                                    return '<a href="id/'+data[0].oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Faktur</button></a>';
-                                }else{
-                                    return '-'; 
-                                }
-                                                              
-                            }
-                        },
                             {data: 'id'},
                             {data: 'order_customer_buy_invoices',
                             render: function (data) {
@@ -144,7 +133,12 @@
                                 }},
                             {data: null,
                                 render: function(data, type, row, meta){
-                                    return '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>'
+                                    if(data.order_customer_buy_invoices.length>0){
+                                        return '<a href="/invoice/sales/id/'+data.order_customer_buy_invoices[0].oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Faktur</button></a>' +
+                                            '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+                                    }
+
+                                    return '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
                                 }
                             },
 

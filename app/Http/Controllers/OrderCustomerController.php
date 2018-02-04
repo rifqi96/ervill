@@ -53,20 +53,14 @@ class OrderCustomerController extends OrderController
         return view('order.customer.make', $this->data);
     }
 
-    public function showDetails($id){
-        $this->data['breadcrumb'] = "Order - Customer Order - Details";
-
-         // $this->data['ocs'] = OrderCustomer::whereHas('orderCustomerInvoices', function ($query) use ($id){
-         //    $query->where('oc_header_invoice_id',$id);
-         // })->get();
-     
-        $this->data['invoices'] = OrderCustomerInvoice::has('orderCustomer.order')->where('oc_header_invoice_id',$id)->get();
-        $this->data['buy_invoices'] = OrderCustomerBuyInvoice::where('oc_header_invoice_id',$id)->get();
-       
-        
-
-         return view('order.customer.details', $this->data);
-    }
+//    public function showDetails($id){
+//        $this->data['breadcrumb'] = "Order - Customer Order - Details";
+//
+//        $this->data['invoices'] = OrderCustomerInvoice::has('orderCustomer.order')->where('oc_header_invoice_id',$id)->get();
+//        $this->data['buy_invoices'] = OrderCustomerBuyInvoice::where('oc_header_invoice_id',$id)->get();
+//
+//         return view('order.customer.details', $this->data);
+//    }
 
     /*======= Get Methods =======*/
     public function getAll(){
@@ -100,24 +94,6 @@ class OrderCustomerController extends OrderController
             ->find($id);
     }
 
-    public function getSameReceipts($receipts){
-        return OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            }
-        ])
-            ->where([
-                ['nomor_struk', '!=', ''],
-                ['nomor_struk', '=', $receipts]
-            ])
-            ->has('order')
-            ->get();
-    }
-
     public function getUnshippedOrders(Request $request){
         return OrderCustomer::with([
             'shipment' => function($query){
@@ -142,20 +118,6 @@ class OrderCustomerController extends OrderController
 
     public function getNomorStruk(){
         return OcHeaderInvoice::has('orderCustomerInvoices')->pluck('id');
-
-        // return OrderCustomer::with([
-        //     'shipment' => function($query){
-        //         $query->with(['user']);
-        //     },
-        //     'customer',
-        //     'order' => function($query){
-        //         $query->with(['user', 'issues']);
-        //     }
-        //     ])
-        //     ->where('nomor_struk', '!=', '')
-        //     ->has('order')
-        //     ->groupBy('nomor_struk')
-        //     ->get();
     }
 
     /*======= Do Methods =======*/

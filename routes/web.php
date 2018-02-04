@@ -436,14 +436,33 @@ Route::prefix('setting')->group(function(){
 });
 
 Route::prefix('invoice')->group(function (){
-    Route::get('sales', [
-        'uses' => 'InvoiceController@showSales',
-        'as' => 'invoice.sales'
-    ]);
-    Route::get('return', [
-        'uses' => 'InvoiceController@showReturn',
-        'as' => 'invoice.return'
-    ]);
+    Route::prefix('sales')->group(function (){
+        Route::get('', [
+            'uses' => 'InvoiceController@showSales',
+            'as' => 'invoice.sales.index'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'InvoiceController@showSalesDetails',
+            'as' => 'invoice.sales.details'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('pay', [
+                'uses' => 'InvoiceController@doPay',
+                'as' => 'invoice.sales.do.pay'
+            ]);
+        });
+    });
+
+    Route::prefix('return')->group(function (){
+        Route::get('', [
+            'uses' => 'InvoiceController@showReturn',
+            'as' => 'invoice.return.index'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'InvoiceController@showReturnDetails',
+            'as' => 'invoice.return.details'
+        ]);
+    });
 });
 
 Route::prefix('issue')->group(function(){

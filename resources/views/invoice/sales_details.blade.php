@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-Detail Pesanan
+Detail Faktur
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@ Detail Pesanan
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <div class="row">
                     <div class="col-xl-10 col-sm-10 col-xs-9">
-                        <a href="{{route('order.customer.index')}}"><button class="btn btn-primary">Lihat Pesanan Customer</button></a>
+                        <a href="{{route('invoice.sales.index')}}"><button class="btn btn-primary">Lihat Daftar Faktur Penjualan</button></a>
                     </div>
                     <div class="col-xl-2 col-sm-2 col-xs-3">
                         <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
@@ -21,7 +21,7 @@ Detail Pesanan
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Struk Pemesanan
+                    Faktur Penjualan - {{$invoice->status}}
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
@@ -43,19 +43,25 @@ Detail Pesanan
                         </div>
                         <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
                             <div class="text-lg-right">
-                                <h5>Nomor Faktur {{$invoices[0]->oc_header_invoice_id}}</h5>
-                                <div>Tanggal Pengiriman: <b class="delivery-at">{{\Carbon\Carbon::parse($invoices[0]->orderCustomer->delivery_at)->format('d-m-Y')}}</b></div>
+                                <h5>Nomor Faktur {{$invoice->id}}</h5>
+                                @if($invoice->has_order)
+                                <div>
+                                    Tanggal Pengiriman:
+                                    <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
+                    @if($invoice->has_order)
                     <hr>
                     <div class="row">
                         <div class="col-lg-12 col-print-12">
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
-                                <div>Ibu/Bapak {{$invoices[0]->orderCustomer->customer->name}}</div>
-                                <div>Alamat: {{$invoices[0]->orderCustomer->customer->address}}</div>
-                                <div>No. HP: {{$invoices[0]->orderCustomer->customer->phone}}</div>
+                                <div>Ibu/Bapak {{$invoice->customer_name}}</div>
+                                <div>Alamat: {{$invoice->customer_address}}</div>
+                                <div>No. HP: {{$invoice->customer_phone}}</div>
                             </div>
                         </div>
                     </div>
@@ -72,38 +78,40 @@ Detail Pesanan
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {{$i=1}}
-                                    @foreach($invoices as $key => $val)
+                                    @php
+                                    $i = 1;
+                                    @endphp
+                                    @foreach($invoice->orderCustomerInvoices as $row)
                                         <tr>
                                             <td>{{$i++}}</td>
                                             <td>
-                                                {{$invoices[$key]->price->name}}
+                                                {{$row->price->name}}
                                             </td>
                                             <td>
-                                                {{$invoices[$key]->quantity}}
+                                                {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$invoices[$key]->price->price}}
+                                                {{$row->price->price}}
                                             </td>
                                             <td class="numeral total">
-                                                {{$invoices[$key]->subtotal}}
+                                                {{$row->subtotal}}
                                             </td>
                                         </tr>                                    
                                     @endforeach
-                                     @foreach($buy_invoices as $key => $val)
+                                     @foreach($invoice->orderCustomerBuyInvoices as $row)
                                         <tr>
                                             <td>{{$i++}}</td>
                                             <td>
-                                                {{$buy_invoices[$key]->price->name}}
+                                                {{$row->price->name}}
                                             </td>
                                             <td>
-                                                {{$buy_invoices[$key]->quantity}}
+                                                {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$buy_invoices[$key]->price->price}}
+                                                {{$row->price->price}}
                                             </td>
                                             <td class="numeral total">
-                                                {{$buy_invoices[$key]->subtotal}}
+                                                {{$row->subtotal}}
                                             </td>
                                         </tr>                                    
                                     @endforeach
@@ -111,6 +119,7 @@ Detail Pesanan
                             </table>
                         </div>
                     </div>
+                    @endif
                     <div class="row">
                         <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
                             <strong>S&K</strong>
@@ -118,7 +127,7 @@ Detail Pesanan
                         </div>
                         <div class="col-lg-3 col-sm-3 col-xs-6 col-print-3 clearfix">
                             <div class="total-amount">
-                                <div>Dibayar: <b class="numeral grand-total"></b></div>
+                                <div>Total: <b class="numeral grand-total"></b></div>
                             </div>
                         </div>
                     </div>
