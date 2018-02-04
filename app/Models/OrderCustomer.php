@@ -70,7 +70,9 @@ class OrderCustomer extends Model
                 $query->where('oc_header_invoice_id',$gallon_data->nomor_struk);
             })
             ->where([
-                ['customer_id',$gallon_data->customer_id]
+                ['customer_id',$gallon_data->customer_id],
+                ['status','Draft'],
+                ['delivery_at',Carbon::today()]
             ])->get();
 
             if(count($oc_struk)==0){
@@ -80,7 +82,7 @@ class OrderCustomer extends Model
                 //return false;
             }
         }           
-      
+
 
         //////////////////////validation finish////////////////////
         $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
@@ -162,7 +164,9 @@ class OrderCustomer extends Model
             $query->where('oc_header_invoice_id',$data->nomor_struk);
         })
         ->where([
-            ['customer_id',$data->customer_id]
+            ['customer_id',$data->customer_id],
+            ['status','Draft'],
+            ['delivery_at',Carbon::today()]
         ])->get();
 
         if(count($oc_struk)==0){       

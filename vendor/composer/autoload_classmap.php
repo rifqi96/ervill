@@ -2465,6 +2465,7 @@ return array(
     'Ramsey\\Uuid\\UuidFactory' => $vendorDir . '/ramsey/uuid/src/UuidFactory.php',
     'Ramsey\\Uuid\\UuidFactoryInterface' => $vendorDir . '/ramsey/uuid/src/UuidFactoryInterface.php',
     'Ramsey\\Uuid\\UuidInterface' => $vendorDir . '/ramsey/uuid/src/UuidInterface.php',
+    'RemoveIsFreeInReHeaderInvoices' => $baseDir . '/database/migrations/2018_02_04_201428_remove_is_free_in_re_header_invoices.php',
     'RemoveNomorStrukInOrderCustomersTable' => $baseDir . '/database/migrations/2018_02_01_134226_remove_nomor_struk_in_order_customers_table.php',
     'RemoveOutsourcingWatersTable' => $baseDir . '/database/migrations/2017_12_29_160040_remove_outsourcing_waters_table.php',
     'RemoveTrackDataInShipmentTable' => $baseDir . '/database/migrations/2017_11_29_150819_remove_track_data_in_shipment_table.php',
