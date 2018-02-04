@@ -58,7 +58,7 @@ class OrderCustomerBuy extends Model
             ->where([
                 ['customer_id',$data->customer_id],
                 ['status','Draft'],
-                ['delivery_at',Carbon::today()]
+                ['delivery_at',$data->buy_at]
             ])->get();
 
             if(count($oc_struk)==0){
