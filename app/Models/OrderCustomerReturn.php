@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrderCustomerReturn extends Model
 {
@@ -31,15 +33,21 @@ class OrderCustomerReturn extends Model
             ->first();
 
         if(!$customer_gallon){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('customer_gallon_rent_return', 'Customer tidak memiliki galon pinjam, mohon diperiksa kembali');
+            throw new ValidationException($validator);
         }
 
         $returned_gallons = $data->empty_quantity + $data->filled_quantity;
 
         if($returned_gallons > $customer_gallon->qty){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('returned_gallons_return', 'Jumlah galon melebihi kapasitas, mohon diperiksa kembali');
+            throw new ValidationException($validator);
         }
 
+        //////////////validation finish/////////////
+        
         $this->customer_id = $data->customer_id;
         $this->filled_gallon_quantity = $data->filled_quantity;
         $this->empty_gallon_quantity = $data->empty_quantity;
@@ -48,7 +56,18 @@ class OrderCustomerReturn extends Model
         $this->author_id = $author_id;
         $this->status = 'Draft';
 
-        return $this->save();
+        $this->save();
+
+        $re_header_invoice = (new ReHeaderInvoice())->doMake($data);
+        if($this->empty_gallon_quantity>0){
+            $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
+        }
+        if($this->filled_gallon_quantity>0){
+            $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
+        }
+        
+
+        return $this;
     }
 
     public function doConfirm(){

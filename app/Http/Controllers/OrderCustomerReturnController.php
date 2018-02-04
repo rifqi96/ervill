@@ -48,7 +48,7 @@ class OrderCustomerReturnController extends Controller
             $request['empty_quantity'] = 0;
         }
 
-        if(!$request->filled_quantity || $request->empty_quantity == null){
+        if(!$request->filled_quantity || $request->filled_quantity == null){
             $request->filled_quantity = 0;
             $request['filled_quantity'] = 0;
         }
