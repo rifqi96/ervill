@@ -67,4 +67,59 @@ class OcHeaderInvoice extends Model
 
         return $this->save();
     }
+
+    public function setInvoiceAttributes(){
+        $this->has_order = false;
+        $this->filled_gallon = 0;
+        $this->ervill_empty_gallon = 0;
+        $this->non_ervill_empty_gallon = 0;
+        if($this->orderCustomerInvoices->count() > 0){
+            $this->has_order = true;
+            $this->is_only_buy = false;
+            if($this->orderCustomerInvoices[0]->orderCustomer && $this->orderCustomerInvoices[0]->orderCustomer->customer){
+                $this->delivery_at = $this->orderCustomerInvoices[0]->orderCustomer->delivery_at;
+                $this->customer_id = $this->orderCustomerInvoices[0]->orderCustomer->customer->id;
+                $this->customer_name = $this->orderCustomerInvoices[0]->orderCustomer->customer->name;
+                $this->customer_address = $this->orderCustomerInvoices[0]->orderCustomer->customer->address;
+                $this->customer_phone = $this->orderCustomerInvoices[0]->orderCustomer->customer->phone;
+
+                foreach($this->orderCustomerInvoices as $ocInvoice){
+                    //Filled Gallon
+                    if($ocInvoice->price_id != 5 || $ocInvoice->price_id != 6 || $ocInvoice->price_id != 7 || $ocInvoice->price_id != 12 || $ocInvoice->price_id != 13 || $ocInvoice->price_id != 14){
+                        $this->filled_gallon += $ocInvoice->quantity;
+                    }
+
+                    // Ervill Empty Gallon
+                    if($ocInvoice->price_id == 1 || $ocInvoice->price_id == 8){
+                        $this->ervill_empty_gallon += $ocInvoice->quantity;
+                    }
+
+                    // Non Ervill Empty Gallon
+                    if($ocInvoice->price_id == 3 || $ocInvoice->price_id == 10){
+                        $this->non_ervill_empty_gallon += $ocInvoice->quantity;
+                    }
+                }
+            }
+        }
+        else if($this->orderCustomerInvoices->count() < 1 && $this->orderCustomerBuyInvoices->count() > 0){
+            $this->has_order = true;
+            $this->is_only_buy = true;
+            if($this->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer){
+                $this->delivery_at = $this->orderCustomerBuyInvoices[0]->orderCustomerBuy->buy_at;
+                $this->customer_id = $this->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->id;
+                $this->customer_name = $this->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name;
+                $this->customer_address = $this->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address;
+                $this->customer_phone = $this->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone;
+            }
+        }
+
+        $this->status = "LUNAS";
+
+        if($this->payment_status == "piutang"){
+            $this->status = "PIUTANG";
+        }
+        else if($this->is_free == "true"){
+            $this->status = "FREE atau SAMPLE";
+        }
+    }
 }

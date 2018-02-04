@@ -41,7 +41,7 @@ List Pesanan Customer
                                         <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
                                             @foreach($struks as $struk)
-                                                <option value="{{$struk}}">{{$struk}}</option>
+                                                <option value="{{$struk->id}}">{{$struk->id}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -164,11 +164,11 @@ List Pesanan Customer
                         {{--</div>--}}
                     {{--</div>--}}
                     <div class="form-group">
-                        <label for="nomor_struk"><strong>Nomor Faktur </strong></label>
+                        <label for="edit-nostruk"><strong>Nomor Faktur </strong></label>
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
                                 <option value="">-- Silahkan Pilih --</option>
                                 @foreach($struks as $struk)
-                                    <option value="{{$struk}}">{{$struk}}</option>
+                                    <option value="{{$struk->id}}">{{$struk->id}}</option>
                                 @endforeach
                             </select>
                     </div>

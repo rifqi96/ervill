@@ -48,7 +48,7 @@
                                 <select name="nomor_struk" id="nostruk" class="form-control select2">
                                     <option value="">-- Silahkan Pilih --</option>
                                     @foreach($struks as $struk)
-                                        <option value="{{$struk}}">{{$struk}}</option>
+                                        <option value="{{$struk->id}}">{{$struk->id}}</option>
                                     @endforeach
                                 </select>
                             </p>

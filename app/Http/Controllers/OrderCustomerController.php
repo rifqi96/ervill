@@ -3,18 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Order;
 use App\Models\OrderCustomer;
 use App\Models\Inventory;
-use App\Models\Customer;
-use App\Models\DeleteHistory;
-use App\Models\EditHistory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
-use App\Models\OrderCustomerInvoice;
-use App\Models\OrderCustomerBuyInvoice;
-use App\Models\OcHeaderInvoice;
-use App\Http\Controllers\CustomerController;
 
 class OrderCustomerController extends OrderController
 {
@@ -32,7 +24,7 @@ class OrderCustomerController extends OrderController
         $this->data['inventory'] = Inventory::find(3);
 
         $this->data['customers'] = (new CustomerController())->getAll();
-        $this->data['struks'] = $this->getNomorStruk();
+        $this->data['struks'] = (new InvoiceController())->getAllSales();
         $this->data['orders'] = $this->getAll();
 
         return view('order.customer.index', $this->data);
@@ -44,7 +36,7 @@ class OrderCustomerController extends OrderController
 
         $this->data['inventory'] = Inventory::find(3);
         $this->data['customer_gallons'] = CustomerGallon::all();
-        $this->data['struks'] = $this->getNomorStruk();
+        $this->data['struks'] = (new InvoiceController())->getAllSales();
 
         // $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
         // $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
@@ -114,10 +106,6 @@ class OrderCustomerController extends OrderController
             })
             ->has('customer')
             ->get();
-    }
-
-    public function getNomorStruk(){
-        return OcHeaderInvoice::has('orderCustomerInvoices')->pluck('id');
     }
 
     /*======= Do Methods =======*/

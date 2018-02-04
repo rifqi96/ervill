@@ -76,7 +76,7 @@ class InvoiceController extends Controller
             ->get();
 
         foreach($invoices as $invoice){
-            $this->setInvoiceAttributes($invoice);
+            $invoice->setInvoiceAttributes();
         }
 
         return $invoices;
@@ -109,7 +109,7 @@ class InvoiceController extends Controller
             ->get();
 
         foreach($invoices as $invoice){
-            $this->setInvoiceAttributes($invoice);
+            $invoice->setInvoiceAttributes();
         }
 
         return $invoices;
@@ -142,7 +142,7 @@ class InvoiceController extends Controller
             ->get();
 
         foreach($invoices as $invoice){
-            $this->setInvoiceAttributes($invoice);
+            $invoice->setInvoiceAttributes();
         }
 
         return $invoices;
@@ -174,7 +174,7 @@ class InvoiceController extends Controller
             ->get();
 
         foreach($invoices as $invoice){
-            $this->setInvoiceAttributes($invoice);
+            $invoice->setInvoiceAttributes();
         }
 
         return $invoices;
@@ -202,64 +202,9 @@ class InvoiceController extends Controller
         ])
             ->find($id);
 
-        $this->setInvoiceAttributes($invoice);
+        $invoice->setInvoiceAttributes();
 
         return $invoice;
-    }
-
-    public function setInvoiceAttributes($invoice){
-        $invoice->has_order = false;
-        $invoice->filled_gallon = 0;
-        $invoice->ervill_empty_gallon = 0;
-        $invoice->non_ervill_empty_gallon = 0;
-        if($invoice->orderCustomerInvoices->count() > 0){
-            $invoice->has_order = true;
-            $invoice->is_only_buy = false;
-            if($invoice->orderCustomerInvoices[0]->orderCustomer && $invoice->orderCustomerInvoices[0]->orderCustomer->customer){
-                $invoice->delivery_at = $invoice->orderCustomerInvoices[0]->orderCustomer->delivery_at;
-                $invoice->customer_id = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->id;
-                $invoice->customer_name = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->name;
-                $invoice->customer_address = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->address;
-                $invoice->customer_phone = $invoice->orderCustomerInvoices[0]->orderCustomer->customer->phone;
-
-                foreach($invoice->orderCustomerInvoices as $ocInvoice){
-                    //Filled Gallon
-                    if($ocInvoice->price_id != 5 || $ocInvoice->price_id != 6 || $ocInvoice->price_id != 7 || $ocInvoice->price_id != 12 || $ocInvoice->price_id != 13 || $ocInvoice->price_id != 14){
-                        $invoice->filled_gallon += $ocInvoice->quantity;
-                    }
-
-                    // Ervill Empty Gallon
-                    if($ocInvoice->price_id == 1 || $ocInvoice->price_id == 8){
-                        $invoice->ervill_empty_gallon += $ocInvoice->quantity;
-                    }
-
-                    // Non Ervill Empty Gallon
-                    if($ocInvoice->price_id == 3 || $ocInvoice->price_id == 10){
-                        $invoice->non_ervill_empty_gallon += $ocInvoice->quantity;
-                    }
-                }
-            }
-        }
-        else if($invoice->orderCustomerInvoices->count() < 1 && $invoice->orderCustomerBuyInvoices->count() > 0){
-            $invoice->has_order = true;
-            $invoice->is_only_buy = true;
-            if($invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer){
-                $invoice->delivery_at = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->buy_at;
-                $invoice->customer_id = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->id;
-                $invoice->customer_name = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name;
-                $invoice->customer_address = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address;
-                $invoice->customer_phone = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone;
-            }
-        }
-
-        $invoice->status = "LUNAS";
-
-        if($invoice->payment_status == "piutang"){
-            $invoice->status = "PIUTANG";
-        }
-        else if($invoice->is_free == "true"){
-            $invoice->status = "FREE atau SAMPLE";
-        }
     }
 
     public function doPay(Request $request){
