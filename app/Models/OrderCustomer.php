@@ -72,7 +72,7 @@ class OrderCustomer extends Model
             ->where([
                 ['customer_id',$gallon_data->customer_id],
                 ['status','Draft'],
-                ['delivery_at',Carbon::today()]
+                ['delivery_at',$gallon_data->delivery_at]
             ])->get();
 
             if(count($oc_struk)==0){
@@ -166,7 +166,7 @@ class OrderCustomer extends Model
         ->where([
             ['customer_id',$data->customer_id],
             ['status','Draft'],
-            ['delivery_at',Carbon::today()]
+            ['delivery_at',$data->delivery_at]
         ])->get();
 
         if(count($oc_struk)==0){       
