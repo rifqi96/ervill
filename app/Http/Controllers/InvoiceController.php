@@ -216,7 +216,7 @@ class InvoiceController extends Controller
             $invoice->has_order = true;
             $invoice->is_only_buy = true;
             if($invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer){
-                $invoice->delivery_at = $invoice->orderCustomerBuyInvoices[0]->buy_at;
+                $invoice->delivery_at = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->buy_at;
                 $invoice->customer_id = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->id;
                 $invoice->customer_name = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name;
                 $invoice->customer_address = $invoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address;

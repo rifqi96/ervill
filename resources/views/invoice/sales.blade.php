@@ -15,6 +15,7 @@
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
+                <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
                 <th>Aksi</th>
                 </thead>
@@ -32,6 +33,7 @@
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
+                <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
                 <th>Aksi</th>
                 </thead>
@@ -49,6 +51,7 @@
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
+                <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
                 <th>Aksi</th>
                 </thead>
@@ -154,16 +157,14 @@
                                 return '-';
                             }
                         },
-//                        {data: null,
-//                            render: function (data) {
-//                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0){
-//                                    if(data.order_customer_invoices[0].order_customer){
-//                                        return moment(data.order_customer_invoices[0].order_customer.delivery_at).locale('id').format('DD MMMM YYYY');
-//                                    }
-//                                }
-//
-//                                return '<i>Data tidak ditemukan</i>';
-//                            }},
+                        {data: null,
+                            render: function (data) {
+                                if(data.delivery_at){
+                                    return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                }
+                                return '-';
+                            }
+                        },
                         {data: null,
                             render: function (data) {
                                 if(data.updated_at){
