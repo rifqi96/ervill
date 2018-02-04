@@ -11,7 +11,7 @@ class ReHeaderInvoice extends Model
     //for non-auto-increment PK
     protected $primaryKey = 'id';
     public $incrementing = false;
-    
+
     public function orderCustomerReturnInvoices()
     {
         return $this->hasMany('App\Models\OrderCustomerReturnInvoice');
@@ -32,7 +32,7 @@ class ReHeaderInvoice extends Model
 
     	$this->payment_status = "Refund";
 
-    	if($data->is_non_refund){
+    	if($data->is_non_refund=="true"){
     		$this->payment_status = "Non Refund";
     		
     	}   	

@@ -287,6 +287,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'AddDataIdToEditHistories' => __DIR__ . '/../..' . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
         'AddErvillTokenToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
         'AddIsNewToOrderCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_01_03_194143_add_is_new_to_order_customers.php',
+        'AddIsNonRefundIntoOrderCustomerReturns' => __DIR__ . '/../..' . '/database/migrations/2018_02_04_210152_add_is_non_refund_into_order_customer_returns.php',
         'AddNomorStrukToOrderCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_01_25_165625_add_nomor_struk_to_order_customers.php',
         'AddNotifDayToCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_02_02_081915_add_notif_day_to_customers.php',
         'AddPaymentDateIntoOcHeaderInvoiceTables' => __DIR__ . '/../..' . '/database/migrations/2018_02_03_090719_add_payment_date_into_oc_header_invoice_tables.php',
