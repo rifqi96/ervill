@@ -149,20 +149,6 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    {{--<div class="form-group row customer-table-container" >--}}
-                        {{--<div class="col-sm-12">--}}
-                            {{--<h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>--}}
-                            {{--<table id="customer-table">--}}
-                                {{--<thead>--}}
-                                {{--<th></th>--}}
-                                {{--<th>No</th>--}}
-                                {{--<th>Nama Customer</th>--}}
-                                {{--<th>Alamat</th>--}}
-                                {{--<th>No. Telepon</th>--}}
-                                {{--</thead>--}}
-                            {{--</table>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                     <div class="form-group">
                         <label for="edit-nostruk"><strong>Nomor Faktur </strong></label>
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">

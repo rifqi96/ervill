@@ -469,6 +469,21 @@ Route::prefix('invoice')->group(function (){
     });
 });
 
+Route::prefix('report')->group(function (){
+    Route::prefix('sales')->group(function (){
+        Route::get('', [
+            'uses' => 'ReportController@showSales',
+            'as' => 'report.sales.index'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('filter', [
+                'uses' => 'ReportController@filterBy',
+                'as' => 'report.sales.do.filterby'
+            ]);
+        });
+    });
+});
+
 Route::prefix('issue')->group(function(){
     Route::prefix('do')->group(function(){
         Route::post('delete', [

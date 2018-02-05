@@ -37,20 +37,30 @@ class InvoiceController extends Controller
         return view('invoice.sales_details', $this->data);
     }
 
+    public function showReturn()
+    {
+        $this->data['breadcrumb'] = "Home - Faktur - Retur";
+        $this->data['slug'] = 'return';
+        $this->data['refund_returns'] = $this->getRefundReturns();
+        $this->data['non_refund_returns'] = $this->getNonRefundReturns();
+
+        return view('invoice.return', $this->data);
+    }
+
+    public function showReturnDetails($id){
+        $this->data['breadcrumb'] = "Home - Faktur - Retur - Detail";
+        $this->data['slug'] = 'return';
+        $this->data['invoice'] = $this->getReturn($id);
+
+        return view('invoice.return_details', $this->data);
+    }
+
     public function showSalesWHDetails($id){
         $this->data['breadcrumb'] = "Home - Faktur - Penjualan - Logistik Gudang";
         $this->data['slug'] = 'sales';
         $this->data['invoice'] = $this->getSales($id);
 
         return view('invoice.sales_wh_details', $this->data);
-    }
-
-    public function showReturn()
-    {
-        $this->data['breadcrumb'] = "Home - Faktur - Retur";
-        $this->data['slug'] = 'return';
-
-        return view('invoice.return', $this->data);
     }
 
     public function getAllSales(){
@@ -180,6 +190,47 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
+    public function getSalesByDate($start_date, $end_date){
+        $invoices = OcHeaderInvoice::with([
+                'orderCustomerInvoices' => function($query) use($start_date, $end_date){
+                    $query->with([
+                        'orderCustomer' => function($query){
+                            $query->with('customer');
+                            $query->has('order');
+                        }
+                    ]);
+                    $query->has('orderCustomer.order');
+                },
+                'orderCustomerBuyInvoices' => function($query) use($start_date, $end_date){
+                    $query->with([
+                        'orderCustomerBuy' => function($query){
+                            $query->with('customer');
+                        }
+                    ]);
+                    $query->has('orderCustomerBuy');
+                }
+            ])
+            ->whereHas('orderCustomerInvoices.orderCustomer', function ($query) use($start_date, $end_date){
+                $query->where([
+                    ['delivery_at', '>=', $start_date],
+                    ['delivery_at', '<=', $end_date]
+                ]);
+            })
+            ->orWHereHas('orderCustomerBuyInvoices.orderCustomerBuy', function ($query) use($start_date, $end_date){
+                $query->where([
+                    ['buy_at', '>=', $start_date],
+                    ['buy_at', '<=', $end_date]
+                ]);
+            })
+            ->get();
+
+        foreach($invoices as $invoice){
+            $invoice->setInvoiceAttributes();
+        }
+
+        return $invoices;
+    }
+
     public function getSales($id){
         $invoice = OcHeaderInvoice::with([
             'orderCustomerInvoices' => function($query){
@@ -205,6 +256,101 @@ class InvoiceController extends Controller
         $invoice->setInvoiceAttributes();
 
         return $invoice;
+    }
+
+    public function getRefundReturns(){
+        $returns = ReHeaderInvoice::with([
+            'orderCustomerReturnInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturn' => function($query){
+                        $query->with('customer');
+                    }
+                ]);
+            }
+        ])
+            ->has('orderCustomerReturnInvoices')
+            ->whereHas('orderCustomerReturnInvoices.orderCustomerReturn', function($query){
+                $query->where([
+                    ['is_non_refund', '=', 'false']
+                ]);
+            })
+            ->get();
+
+        foreach($returns as $return){
+            $return->setReturnAttributes();
+        }
+
+        return $returns;
+    }
+
+    public function getNonRefundReturns(){
+        $returns = ReHeaderInvoice::with([
+            'orderCustomerReturnInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturn' => function($query){
+                        $query->with('customer');
+                    }
+                ]);
+            }
+        ])
+            ->has('orderCustomerReturnInvoices')
+            ->whereHas('orderCustomerReturnInvoices.orderCustomerReturn', function($query){
+                $query->where([
+                    ['is_non_refund', '=', 'true']
+                ]);
+            })
+            ->get();
+
+        foreach($returns as $return){
+            $return->setReturnAttributes();
+        }
+
+        return $returns;
+    }
+
+    public function getReturn($id){
+        $return = ReHeaderInvoice::with([
+            'orderCustomerReturnInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturn' => function($query){
+                        $query->with('customer');
+                    }
+                ]);
+            }
+        ])
+            ->has('orderCustomerReturnInvoices')
+            ->find($id);
+
+        $return->setReturnAttributes();
+
+        return $return;
+    }
+
+    public function getReturnsByDate($start_date, $end_date){
+        $returns = ReHeaderInvoice::with([
+            'orderCustomerReturnInvoices' => function($query) use($start_date, $end_date){
+                $query->with([
+                    'orderCustomerReturn' => function($query){
+                        $query->with('customer');
+                    }
+                ]);
+            }
+            ])
+            ->has('orderCustomerReturnInvoices')
+            ->whereHas('orderCustomerReturnInvoices.orderCustomerReturn', function($query) use($start_date, $end_date){
+                $query->where([
+                    ['status', '=', 'Selesai'],
+                    ['return_at', '>=', $start_date],
+                    ['return_at', '<=', $end_date]
+                ]);
+            })
+            ->get();
+
+        foreach($returns as $return){
+            $return->setReturnAttributes();
+        }
+
+        return $returns;
     }
 
     public function doPay(Request $request){

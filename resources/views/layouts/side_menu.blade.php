@@ -36,17 +36,30 @@
     </li>
     <li class="with-sub {{$module=="invoice"?"opened":""}}">
         <span>
-            <i class="font-icon font-icon-doc"></i>
+            <i class="font-icon font-icon-card"></i>
             <span class="lbl">
                 Faktur
             </span>
         </span>
         <ul>
             <li>
-                {!!$slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('invoice.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
+                {!!$module=="invoice" && $slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('invoice.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="return"?'<span class="lbl">Retur</span>':'<a href="'.route("invoice.return.index").'"><span class="lbl">Retur</span></a>'!!}
+                {!!$module=="invoice" && $slug=="return"?'<span class="lbl">Retur</span>':'<a href="'.route("invoice.return.index").'"><span class="lbl">Retur</span></a>'!!}
+            </li>
+        </ul>
+    </li>
+    <li class="with-sub {{$module=="report"?"opened":""}}">
+        <span>
+            <i class="font-icon font-icon-doc"></i>
+            <span class="lbl">
+                Laporan
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$module=="report" && $slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('report.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
             </li>
         </ul>
     </li>
