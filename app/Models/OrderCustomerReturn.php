@@ -61,7 +61,18 @@ class OrderCustomerReturn extends Model
         $this->author_id = $author_id;
         $this->status = 'Draft';
 
-        $this->save();        
+        $this->save();   
+
+        //create nomor_faktur
+     
+        $re_header_invoice = (new ReHeaderInvoice())->doMake($this);
+        if($this->empty_gallon_quantity>0){
+            $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
+        }
+        if($this->filled_gallon_quantity>0){
+            $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
+        }
+        
         
 
         return $this;
@@ -118,16 +129,7 @@ class OrderCustomerReturn extends Model
 
         
 
-        //create nomor_faktur
-        if($this->status=="Draft"){
-            $re_header_invoice = (new ReHeaderInvoice())->doMake($this);
-            if($this->empty_gallon_quantity>0){
-                $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
-            }
-            if($this->filled_gallon_quantity>0){
-                $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
-            }
-        }else if($this->status=="Batal"){
+        if($this->status=="Batal"){
             //update faktur_detail
             $invoice_details = OrderCustomerReturnInvoice::where('order_customer_return_id',$this->id)->get();
             foreach ($invoice_details as $invoice_detail) {
