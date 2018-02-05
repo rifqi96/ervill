@@ -386,8 +386,12 @@ List Pesanan Customer
                     columns: [
                         {data: null,
                             render: function(data, type, row, meta){
-                                var result = '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Faktur</button></a>' +
-                                    '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
+                                var result = "";
+                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
+                                    result += '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Faktur</button></a>' +
+                                        '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
+                                }
+
                                 if(data.status != "Draft"){
                                     if(data.shipment){
                                         var shipment_url = "{{route("shipment.track", ":id")}}";
@@ -434,7 +438,7 @@ List Pesanan Customer
                         {data: 'id'},
                         {data: null,
                             render: function(data){
-                                if((data.order_customer_invoices).length>0){
+                                if((data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
                                     return data.order_customer_invoices[0].oc_header_invoice_id;
                                 }
                                 return '<i>Data nomor faktur tidak ditemukan</i>';
