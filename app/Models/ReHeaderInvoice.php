@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ReHeaderInvoice extends Model
 {
@@ -31,7 +32,7 @@ class ReHeaderInvoice extends Model
     	}
 
     	$this->payment_status = "Refund";
-
+        $this->payment_date = Carbon::now()->format('Y-n-d H:i:s');
     	if($data->is_non_refund=="true"){
     		$this->payment_status = "Non Refund";
     		

@@ -291,6 +291,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'AddNomorStrukToOrderCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_01_25_165625_add_nomor_struk_to_order_customers.php',
         'AddNotifDayToCustomers' => __DIR__ . '/../..' . '/database/migrations/2018_02_02_081915_add_notif_day_to_customers.php',
         'AddPaymentDateIntoOcHeaderInvoiceTables' => __DIR__ . '/../..' . '/database/migrations/2018_02_03_090719_add_payment_date_into_oc_header_invoice_tables.php',
+        'AddPaymentDateIntoReHeaderInvoices' => __DIR__ . '/../..' . '/database/migrations/2018_02_05_102215_add_payment_date_into_re_header_invoices.php',
         'AddPriceIdIntoOrderCustomerBuyInvoicesTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_01_194741_add_price_id_into_order_customer_buy_invoices_table.php',
         'AddPriceIdIntoOrderCustomerInvoicesTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_01_194027_add_price_id_into_order_customer_invoices_table.php',
         'AddPriceIdIntoOrderCustomerReturnInvoicesTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_01_194954_add_price_id_into_order_customer_return_invoices_table.php',
