@@ -438,7 +438,7 @@ List Pesanan Customer
                         {data: 'id'},
                         {data: null,
                             render: function(data){
-                                if((data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
+                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
                                     return data.order_customer_invoices[0].oc_header_invoice_id;
                                 }
                                 return '<i>Data nomor faktur tidak ditemukan</i>';
