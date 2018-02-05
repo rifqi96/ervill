@@ -51,7 +51,7 @@ class ReportController extends Controller
         });
 
         $i=1;
-        foreach($res['headers']->sortBy('delivery_at') as $row){
+        foreach($res['headers']->sortBy('delivery_at')->sortBy('id') as $row){
             $row->no = $i;
             $i++;
         }
