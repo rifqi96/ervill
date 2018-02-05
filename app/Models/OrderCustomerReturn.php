@@ -116,16 +116,29 @@ class OrderCustomerReturn extends Model
             }
         }
 
-        $this->status = 'Selesai';
+        
 
         //create nomor_faktur
-        $re_header_invoice = (new ReHeaderInvoice())->doMake($this);
-        if($this->empty_gallon_quantity>0){
-            $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
+        if($this->status=="Draft"){
+            $re_header_invoice = (new ReHeaderInvoice())->doMake($this);
+            if($this->empty_gallon_quantity>0){
+                $empty = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "empty");
+            }
+            if($this->filled_gallon_quantity>0){
+                $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
+            }
+        }else if($this->status=="Batal"){
+            //update faktur_detail
+            $invoice_details = OrderCustomerReturnInvoice::where('order_customer_return_id',$this->id)->get();
+            foreach ($invoice_details as $invoice_detail) {
+                $invoice_detail->subtotal = $invoice_detail->quantity * Price::find($invoice_detail->price_id)->price;
+                $invoice_detail->save();
+            }
+            $invoice_details[0]->reHeaderInvoice->payment_date = Carbon::now()->format('Y-n-d H:i:s');
+            $invoice_details[0]->reHeaderInvoice->save();
         }
-        if($this->filled_gallon_quantity>0){
-            $filled = (new OrderCustomerReturnInvoice())->doMake($this, $re_header_invoice->id, "filled");
-        }
+
+        $this->status = 'Selesai';
 
         return $this->save();
     }
@@ -178,11 +191,8 @@ class OrderCustomerReturn extends Model
 
         $this->status = 'Batal';
 
-        //delete nomor faktur
-        $invoice_details = OrderCustomerReturnInvoice::where('order_customer_return_id',$this->id)->get();
-        foreach ($invoice_details as $invoice_detail) {
-            $invoice_detail->delete();
-        }
+        
+
 
         return $this->save();
     }
