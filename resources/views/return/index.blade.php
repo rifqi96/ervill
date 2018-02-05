@@ -16,6 +16,8 @@
                 <thead>
                 <th>Status</th>
                 <th>No</th>
+                <th>No Faktur</th>
+                <th>Jenis</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -131,6 +133,22 @@
                             }
                         }},
                     {data:'id'},
+                    {data: 'order_customer_return_invoices',
+                        render: function (data) {
+                            if(data.length>0){
+                                return data[0].re_header_invoice_id;
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: 'order_customer_return_invoices',
+                        render: function (data) {
+                            if(data.length>0){
+                                return data[0].re_header_invoice.payment_status;
+                            }
+                            return '-';
+                        }
+                    },
                     {data: null,
                         render: function(data){
                             if(data.customer){

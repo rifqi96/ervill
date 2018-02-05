@@ -31,7 +31,7 @@ class OrderCustomerReturnController extends Controller
 
     /*======= Get Methods =======*/
     public function getAll(){
-        return OrderCustomerReturn::with(['customer', 'author'])
+        return OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice'])
             ->get();
     }
 
