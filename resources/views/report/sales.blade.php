@@ -63,21 +63,21 @@
                 </div>
             </header>
 
-            <section class="card" id="print-area">
-                <header class="card-header card-header-lg">
+            <section class="" id="print-area">
+                <h2 class="report-title">
                     Laporan Penjualan <div id="period-txt">{{\Carbon\Carbon::parse($report['params']['start_date'])->format('d M Y')}} - {{\Carbon\Carbon::parse($report['params']['end_date'])->format('d M Y')}}</div>
-                </header>
-                <div class="card-block invoice">
+                </h2>
+                <div class="invoice">
                     <div class="row table-details">
                         <div class="col-lg-12">
-                            <table class="table table-bordered" id="report">
+                            <table class="table table-hover" id="report">
                                 <thead>
                                 <tr>
                                     <th width="10">#</th>
                                     <th>Tanggal</th>
                                     <th>No Faktur</th>
                                     <th>Nama Customer</th>
-                                    <th>Jenis</th>
+                                    <th>Jenis Customer</th>
                                     <th>Transaksi</th>
                                     <th>Keterangan</th>
                                     <th>Jumlah Galon</th>
@@ -87,19 +87,12 @@
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="9">Total:</td>
-                                        <td class="grand-total"></td>
+                                        <td><b>Total</b></td>
+                                        <td colspan="8"></td>
+                                        <td><b class="numeral grand-total"></b></td>
                                     </tr>
                                 </tfoot>
                             </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
-                            <button class="btn btn-inline btn-secondary btn-rounded print">Print</button>
-                        </div>
-                        <div class="col-lg-3 col-sm-3 col-xs-6 col-print-3 clearfix">
-
                         </div>
                     </div>
                 </div>
@@ -109,9 +102,13 @@
 
     <script>
         var reportTable = function (data) {
+            var start_date = moment($('#search-date-start').val()).locale('id').format('DD MMMM YYYY');
+            var end_date = moment($('#search-date-end').val()).locale('id').format('DD MMMM YYYY');
+            $('#period-txt').text(start_date+' - '+end_date);
+            var period_txt = "<h2>Periode " + $('#period-txt').text() + "</h2>";
             $('#report').DataTable().destroy();
             $('#report').dataTable({
-                order:[2, 'desc'],
+                order:[0, 'asc'],
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
                 },
@@ -120,15 +117,16 @@
                 },
                 dom: 'Bfrtip',
                 buttons: [
-                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                    { extend: 'excel', text:'Simpan ke Excel', messageTop: period_txt, footer:true, className:'btn btn-success btn-sm', exportOptions: {
                         columns: ':visible'
                     }},
-                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                    { extend: 'print', text:'Cetak', messageTop: period_txt, className:'btn btn-warning btn-sm', footer:true, exportOptions: {
                         columns: ':visible'
                     }},
                     { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
 
                 ],
+                bPaginate: false,
                 data:data,
                 columns: [
                     {data: 'no'},
@@ -140,39 +138,121 @@
                             return '-';
                         }
                     },
-                    {data: 'id'},
                     {data: null,
                         render: function (data) {
-                            if(data.customer_id){
-                                return '<a href="/setting/customers/id/'+data.customer_id+'" target="_blank">'+data.customer_name+'</a>';
+                            if(data.order_customer){
+                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" target="_blank">'+data.oc_header_invoice_id+'</a>';
+                            }
+                            else if(data.order_customer_buy){
+                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" target="_blank">'+data.oc_header_invoice_id+'</a>';
+                            }
+                            else if(data.order_customer_return){
+                                return '<a href="/invoice/return/id/'+data.re_header_invoice_id+'" target="_blank">'+data.re_header_invoice_id+'</a>';
                             }
                             return 'Data tidak ditemukan';
                         }
                     },
-                    {data: 'customer_type',
+                    {data: null,
                         render: function (data) {
-                            if(data == "end_customer"){
-                                return "End Customer";
+                            if(data.order_customer){
+                                return '<a href="/setting/customers/id/'+data.order_customer.customer.id+'" target="_blank">'+data.order_customer.customer.name+'</a>';
                             }
-                            return 'Agen';
+                            else if(data.order_customer_buy){
+                                return '<a href="/setting/customers/id/'+data.order_customer_buy.customer.id+'" target="_blank">'+data.order_customer_buy.customer.name+'</a>';
+                            }
+                            else if(data.order_customer_return){
+                                return '<a href="/setting/customers/id/'+data.order_customer_return.id+'" target="_blank">'+data.order_customer_return.customer.name+'</a>';
+                            }
+                            return 'Data tidak ditemukan';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.order_customer){
+                                if(data.order_customer.customer.type == "end_customer"){
+                                    return "End Customer";
+                                }
+                                return "Agen"
+                            }
+                            else if(data.order_customer_buy){
+                                if(data.order_customer_buy.customer.type == "end_customer"){
+                                    return "End Customer";
+                                }
+                                return "Agen"
+                            }
+                            else if(data.order_customer_return){
+                                if(data.order_customer_return.customer.type == "end_customer"){
+                                    return "End Customer";
+                                }
+                                return "Agen"
+                            }
+
+                            return 'Data tidak ditemukan';
                         }
                     },
                     {data: null,
                         render: function(data){
-                            if(data.type == "sales"){
-                                if(data.is_only_buy == "true"){
-
+                            if(data.price){
+                                if(data.type == "return"){
+                                    return data.price.name + " (" +data.payment_status+")";
                                 }
+                                return data.price.name;
                             }
+                            return 'Data tidak ditemukan';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.type == "return"){
+                                return data.order_customer_return.description;
+                            }
+                            return "";
+                        }
+                    },
+                    {data: 'quantity'},
+                    {data: null,
+                        render: function (data) {
+                            if(data.payment_status == "Non Refund"){
+                                return '<div class="numeral">0</div>';
+                            }
+                            else if(data.payment_status == "Refund"){
+                                return '<div class="numeral">'+data.price.price * (-1)+'</div>';
+                            }
+
+                            return '<div class="numeral">'+data.price.price+'</div>';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.payment_status == "Non Refund"){
+                                return '<div class="numeral total">0</div>';
+                            }
+                            else if(data.payment_status == "Refund"){
+                                return '<div class="numeral total">'+data.subtotal * (-1)+'</div>';
+                            }
+
+                            return '<div class="numeral total">'+data.subtotal+'</div>';
                         }
                     }
                 ],
                 processing: true
             });
+
+            var grand_total = 0;
+            $('.total').each(function () {
+                grand_total += parseInt($(this).text());
+            });
+            $('.grand-total').text(grand_total);
+            $('.numeral').each(function () {
+                var price = $(this).text();
+                $(this).text(numeral(price).format('$0,0.00'));
+            });
         };
 
         $(document).ready(function () {
-            var report = {!! $report['report']['details']->toJson() !!}
+            var report = {!! $report['details']->toJson() !!}
+
+            console.log(report);
 
             $('.types input[value=all]').change(function () {
                 if($(this).is(':checked')){
@@ -195,18 +275,35 @@
                         console.log(result);
                         reportTable(result);
                     })
-                    .fail(function (msg) {
+                    .fail(function (res) {
                         console.log('error');
-                        console.log(msg);
+                        console.log(res.responseJSON);
+
+                        var response = res.responseJSON;
+                        var msg = "";
+
+                        if(response.type){
+                            for(var i=0; i<response.type.length; i++){
+                                msg += response.type[i] + " ; ";
+                            }
+                        }
+                        if(response.start_date){
+                            for(var i=0; i<response.start_date.length; i++){
+                                msg += response.start_date[i] + " ; ";
+                            }
+                        }
+                        if(response.end_date){
+                            for(var i=0; i<response.end_date.length; i++){
+                                msg += response.end_date[i] + " ; ";
+                            }
+                        }
+
+                        alert(msg);
                     });
                 $(this).find('button[type=submit]').prop('disabled', false);
             });
 
             $('#filterBy .reset-btn').click(function () {
-                $('#search-id').val('');
-                $('#search-id').trigger('change');
-                $('#search-cusname').val('');
-                $('#search-cusname').trigger('change');
                 $('#search-nostruk').val('');
                 $('#search-nostruk').trigger('change');
             });
@@ -214,50 +311,6 @@
             $('.numeral').each(function () {
                 var price = $(this).text();
                 $(this).text(numeral(price).format('$0,0.00'));
-            });
-
-            var changeOnScroll = function () {
-                if($('body').width() < 580){
-                    $('.table').addClass('table-responsive');
-                }
-                else{
-                    $('.table').removeClass('table-responsive');
-                }
-
-                if($('body').width() < 780){
-                    $('.newhr').show();
-                }
-                else{
-                    $('.newhr').hide();
-                }
-            };
-
-            changeOnScroll();
-
-            $( window ).on('resize', function () {
-                changeOnScroll();
-            });
-
-            $('.print').click(function () {
-                var contents = $("#print-area").html();
-                var frame1 = $('<iframe />');
-                frame1[0].name = "frame1";
-                frame1.css({ "position": "absolute", "top": "-1000000px" });
-                $("body").append(frame1);
-                var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
-                frameDoc.document.open();
-                //Create a new HTML document.
-                //Append the external CSS file.
-                frameDoc.document.write('<link href="{{asset('assets/css/lib/bootstrap/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />');
-                frameDoc.document.write('<link href="{{asset('assets/css/print.css')}}" rel="stylesheet" type="text/css" />');
-                //Append the DIV contents.
-                frameDoc.document.write(contents);
-                frameDoc.document.close();
-                setTimeout(function () {
-                    window.frames["frame1"].focus();
-                    window.frames["frame1"].print();
-                    frame1.remove();
-                }, 500);
             });
 
         });

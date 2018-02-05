@@ -68,6 +68,26 @@ class OcHeaderInvoice extends Model
         return $this->save();
     }
 
+    public function scopeIsPaid($query){
+        return $query->where([
+            ['payment_status', '=', 'cash'],
+            ['is_free', '=', 'false']
+        ]);
+    }
+
+    public function scopeIsPiutang($query){
+        return $query->where([
+            ['payment_status', '=', 'piutang'],
+            ['is_free', '=', 'false']
+        ]);
+    }
+
+    public function scopeIsFree($query){
+        return $query->where([
+            ['is_free', '=', 'true']
+        ]);
+    }
+
     public function setInvoiceAttributes(){
         $this->has_order = false;
         $this->filled_gallon = 0;

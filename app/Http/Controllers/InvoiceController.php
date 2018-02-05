@@ -99,7 +99,8 @@ class InvoiceController extends Controller
                     'orderCustomer' => function($query){
                         $query->with('customer');
                         $query->has('order');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomer.order');
             },
@@ -107,7 +108,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerBuy' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomerBuy');
             }
@@ -132,7 +134,8 @@ class InvoiceController extends Controller
                     'orderCustomer' => function($query){
                         $query->with('customer');
                         $query->has('order');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomer.order');
             },
@@ -140,7 +143,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerBuy' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomerBuy');
             }
@@ -165,7 +169,8 @@ class InvoiceController extends Controller
                     'orderCustomer' => function($query){
                         $query->with('customer');
                         $query->has('order');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomer.order');
             },
@@ -173,7 +178,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerBuy' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomerBuy');
             }
@@ -197,7 +203,8 @@ class InvoiceController extends Controller
                         'orderCustomer' => function($query){
                             $query->with('customer');
                             $query->has('order');
-                        }
+                        },
+                        'price'
                     ]);
                     $query->has('orderCustomer.order');
                 },
@@ -205,7 +212,8 @@ class InvoiceController extends Controller
                     $query->with([
                         'orderCustomerBuy' => function($query){
                             $query->with('customer');
-                        }
+                        },
+                        'price'
                     ]);
                     $query->has('orderCustomerBuy');
                 }
@@ -238,7 +246,8 @@ class InvoiceController extends Controller
                     'orderCustomer' => function($query){
                         $query->with(['customer', 'order']);
                         $query->has('order');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomer.order');
             },
@@ -246,7 +255,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerBuy' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
                 $query->has('orderCustomerBuy');
             }
@@ -264,7 +274,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerReturn' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
             }
         ])
@@ -289,7 +300,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerReturn' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
             }
         ])
@@ -314,7 +326,8 @@ class InvoiceController extends Controller
                 $query->with([
                     'orderCustomerReturn' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
             }
         ])
@@ -326,13 +339,14 @@ class InvoiceController extends Controller
         return $return;
     }
 
-    public function getReturnsByDate($start_date, $end_date){
+    public function getFinishedReturnsByDate($start_date, $end_date){
         $returns = ReHeaderInvoice::with([
             'orderCustomerReturnInvoices' => function($query) use($start_date, $end_date){
                 $query->with([
                     'orderCustomerReturn' => function($query){
                         $query->with('customer');
-                    }
+                    },
+                    'price'
                 ]);
             }
             ])
