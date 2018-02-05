@@ -69,6 +69,7 @@ class ReportController extends Controller
                         $res->push($ocBuyInvoice);
                         $res[$res->count()-1]->delivery_at = $header->delivery_at;
                         $res[$res->count()-1]->type = $header->type;
+                        $res[$res->count()-1]->is_free = $header->is_free;
                         $res[$res->count()-1]->payment_status = $header->payment_status;
                     }
                 }
@@ -77,12 +78,14 @@ class ReportController extends Controller
                         $res->push($ocInvoice);
                         $res[$res->count()-1]->delivery_at = $header->delivery_at;
                         $res[$res->count()-1]->type = $header->type;
+                        $res[$res->count()-1]->is_free = $header->is_free;
                         $res[$res->count()-1]->payment_status = $header->payment_status;
                     }
                     foreach($header->orderCustomerBuyInvoices as $ocBuyInvoice){
                         $res->push($ocBuyInvoice);
                         $res[$res->count()-1]->delivery_at = $header->delivery_at;
                         $res[$res->count()-1]->type = $header->type;
+                        $res[$res->count()-1]->is_free = $header->is_free;
                         $res[$res->count()-1]->payment_status = $header->payment_status;
                     }
                 }

@@ -218,6 +218,9 @@
                             else if(data.payment_status == "Refund"){
                                 return '<div class="numeral">'+data.price.price * (-1)+'</div>';
                             }
+                            else if(data.type == "sales" && data.is_free == "true"){
+                                return '<div class="numeral">0</div>';
+                            }
 
                             return '<div class="numeral">'+data.price.price+'</div>';
                         }
@@ -229,6 +232,9 @@
                             }
                             else if(data.payment_status == "Refund"){
                                 return '<div class="numeral total">'+data.subtotal * (-1)+'</div>';
+                            }
+                            else if(data.type == "sales" && data.is_free == "true"){
+                                return '<div class="numeral">0</div>';
                             }
 
                             return '<div class="numeral total">'+data.subtotal+'</div>';
