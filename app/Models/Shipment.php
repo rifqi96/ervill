@@ -38,6 +38,14 @@ class Shipment extends Model
     {
         return $this->hasMany('App\Models\OrderCustomer');
     }
+    public function ocHeaderInvoices()
+    {
+        return $this->hasMany('App\Models\OcHeaderInvoice');
+    }
+    public function reHeaderInvoices()
+    {
+        return $this->hasMany('App\Models\ReHeaderInvoice');
+    }
 
     public function doMake($data){
         $driver = User::with('role')

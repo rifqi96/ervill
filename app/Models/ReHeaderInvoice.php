@@ -17,6 +17,10 @@ class ReHeaderInvoice extends Model
     {
         return $this->hasMany('App\Models\OrderCustomerReturnInvoice');
     }
+    public function shipment()
+    {
+        return $this->belongsTo('App\Models\Shipment');
+    }
 
     public function doMake($data){
 

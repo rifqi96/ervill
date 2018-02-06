@@ -23,6 +23,10 @@ class OcHeaderInvoice extends Model
     {
         return $this->hasMany('App\Models\OrderCustomerBuyInvoice');
     }
+    public function shipment()
+    {
+        return $this->belongsTo('App\Models\Shipment');
+    }
 
     public function doMake($data){
 
