@@ -184,14 +184,14 @@
                     {data: null,
                         render: function(data){
                             if(data.return_at){
-                                return moment(data.return_at).locale('id').format('DD MMMM YYYY');
+                                return moment(data.return_at).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }},
                     {data: null,
                         render: function(data){
                             if(data.updated_at){
-                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }},

@@ -119,7 +119,7 @@
                             {data: null,
                                 render: function (data) {
                                     if(data.buy_at){
-                                        return moment(data.buy_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.buy_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }

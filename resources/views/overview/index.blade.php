@@ -10,7 +10,7 @@ Overview
             <div class="row">
                 <div class="col-sm-6">
                     @if($recent_issues->count() > 0)
-                        <a href="{{route('order.customers.index')}}">
+                        <a href="{{route('order.customer.index')}}">
                             <article class="statistic-box red">
                                 <div>
                                     <div class="number">{{$recent_issues->count()}}</div>
@@ -29,7 +29,7 @@ Overview
                 </div><!--.col-->
                 <div class="col-sm-6">
                     @if($process_orders->count() > 0)
-                        <a href="{{route('order.customers.index')}}">
+                        <a href="{{route('order.customer.index')}}">
                             <article class="statistic-box yellow">
                                 <div>
                                     <div class="number">{{$process_orders->count()}}</div>

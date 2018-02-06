@@ -154,15 +154,15 @@
             var created_at = $('#created_at').val();
             var updated_at = $('#updated_at').val();
 
-            $('#created_at').val(moment(created_at).locale('id').format('DD MMMM YYYY HH:mm:ss'));
-            $('#updated_at').val(moment(updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss'));
+            $('#created_at').val(moment(created_at).locale('id').format('DD/MM/YYYY HH:mm:ss'));
+            $('#updated_at').val(moment(updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss'));
 
             if(!notif_day){
                 $('#notifday').val('14 Hari dari pengiriman terakhir');
             }
 
-            $('#lasttransaction').val(moment(last_transaction).locale('id').format('DD MMMM YYYY'));
-            $('#overduedate').val(moment(overdue_date).locale('id').format('DD MMMM YYYY'));
+            $('#lasttransaction').val(moment(last_transaction).locale('id').format('DD/MM/YYYY'));
+            $('#overduedate').val(moment(overdue_date).locale('id').format('DD/MM/YYYY'));
 
             if(overdue < 0){
                 $('#overdue').val('Lewat ' + Math.abs(overdue) + ' hari');

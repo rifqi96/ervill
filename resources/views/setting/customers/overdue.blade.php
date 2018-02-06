@@ -68,7 +68,7 @@
                     {data: 'last_transaction',
                         render: function (data) {
                             if(data){
-                                return moment(data).locale('id').format('DD MMMM YYYY');
+                                return moment(data).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }
@@ -76,7 +76,7 @@
                     {data: 'overdue_date',
                         render: function (data) {
                             if(data){
-                                return '<span style="color:red;">' + moment(data).locale('id').format('DD MMMM YYYY') + '</span>';
+                                return '<span style="color:red;">' + moment(data).locale('id').format('DD/MM/YYYY') + '</span>';
                             }
                             return '-';
                         }

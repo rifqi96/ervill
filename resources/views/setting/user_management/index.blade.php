@@ -204,7 +204,7 @@ List User
                     {data: null,
                         render: function (data) {
                             if(data.created_at){
-                                return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }
@@ -212,7 +212,7 @@ List User
                     {data: null,
                         render: function (data) {
                             if(data.updated_at){
-                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }

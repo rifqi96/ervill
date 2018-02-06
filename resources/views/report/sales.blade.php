@@ -102,8 +102,8 @@
 
     <script>
         var reportTable = function (data) {
-            var start_date = moment($('#search-date-start').val()).locale('id').format('DD MMMM YYYY');
-            var end_date = moment($('#search-date-end').val()).locale('id').format('DD MMMM YYYY');
+            var start_date = moment($('#search-date-start').val()).locale('id').format('DD/MM/YYYY');
+            var end_date = moment($('#search-date-end').val()).locale('id').format('DD/MM/YYYY');
             $('#period-txt').text(start_date+' - '+end_date);
             var period_txt = "<h2>Periode " + $('#period-txt').text() + "</h2>";
             $('#report').DataTable().destroy();
@@ -133,7 +133,7 @@
                     {data: 'delivery_at',
                         render: function (data) {
                             if(data){
-                                return moment(data).locale('id').format('DD MMMM YYYY');
+                                return moment(data).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }

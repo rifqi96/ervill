@@ -182,7 +182,7 @@ Pengiriman
                             render: function(data){
                                 var gallon_total = 0;
                                 for(var i in data.order_customers){
-                                    gallon_total += data.order_customers[i].order.quantity;
+                                    gallon_total += data.order_customers[i].order.quantity + data.order_customers[i].additional_quantity;
                                 }
 
                                 return gallon_total;
@@ -190,7 +190,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }
@@ -198,7 +198,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -206,7 +206,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -273,7 +273,7 @@ Pengiriman
                                 render: function(data){
                                     var gallon_total = 0;
                                     for(var i in data.order_customers){
-                                        gallon_total += data.order_customers[i].order.quantity;
+                                        gallon_total += data.order_customers[i].order.quantity + data.order_customers[i].additional_quantity;
                                     }
 
                                     return gallon_total;
@@ -281,7 +281,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }
@@ -289,7 +289,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -297,7 +297,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
