@@ -17,9 +17,13 @@ class CreateOCHeaderInvoicesTable extends Migration
             $table->string('id');
             $table->string('payment_status');
             $table->string('is_free');
+            $table->integer('shipment_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->primary('id');
+
+            $table->foreign('shipment_id')->references('id')->on('shipments')
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 
@@ -30,6 +34,9 @@ class CreateOCHeaderInvoicesTable extends Migration
      */
     public function down()
     {
+        Schema::table('oc_header_invoices', function (Blueprint $table) {
+            $table->dropForeign('oc_header_invoices_shipment_id_foreign');
+        });
         Schema::dropIfExists('oc_header_invoices');
     }
 }

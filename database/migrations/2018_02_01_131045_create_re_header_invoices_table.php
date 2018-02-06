@@ -17,9 +17,12 @@ class CreateReHeaderInvoicesTable extends Migration
             $table->string('id');
             $table->string('payment_status');
             $table->string('is_free');
+            $table->integer('shipment_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->primary('id');
+            $table->foreign('shipment_id')->references('id')->on('shipments')
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 
@@ -30,6 +33,9 @@ class CreateReHeaderInvoicesTable extends Migration
      */
     public function down()
     {
+        Schema::table('re_header_invoices', function (Blueprint $table) {
+            $table->dropForeign('re_header_invoices_shipment_id_foreign');
+        });
         Schema::dropIfExists('re_header_invoices');
     }
 }
