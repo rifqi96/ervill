@@ -149,7 +149,7 @@ class ServiceController extends Controller
     	if( count($shipments) > 0 ){
 	    	$data = array();
 
-	    	$order_quantity = 0;
+	    	//$order_quantity = 0;
 	    	$gallon_quantity = 0;
 
 	    	//sort proses shipment then draft shipment
@@ -164,14 +164,27 @@ class ServiceController extends Controller
 	   
 
 	    	foreach($shipments_sorted as $shipment){
+                $invoice_id_arr = array();
+                $order_quantity = 0;
 	    		//calculate amount of orders in a shipment
-	    		$order_quantity = count($shipment->orderCustomers);
+	    		//$order_quantity = count($shipment->orderCustomers);
+                foreach ($shipment->orderCustomers as $orderCustomer) {
+                    $invoice_id = $orderCustomer->orderCustomerInvoices[0]->oc_header_invoice_id;
+                    if(!in_array($invoice_id, $invoice_id_arr)){
+                        array_push($invoice_id_arr, $invoice_id);
+                        $order_quantity++;
+                    }                   
+                    
+                }
+
+
 				$gallon_quantity = 0;
 
 				if($shipment->orderCustomers){
 					foreach ($shipment->orderCustomers as $orderCustomer) {
 						//calculate amount of gallons in an order
 						$gallon_quantity += $orderCustomer->order->quantity;
+                        $gallon_quantity += $orderCustomer->additional_quantity;
 					}
 					array_push($data,[
 						'id' => $shipment->id,
@@ -211,7 +224,7 @@ class ServiceController extends Controller
 
 	    	foreach($orderCustomers as $orderCustomer){	    		
 	    		array_push($data,[
-	    			'id' => $orderCustomer->id,
+	    			'id' => $orderCustomer->orderCustomerInvoices[0]->oc_header_invoice_id,
 	    			'customer_name' => $orderCustomer->customer->name,
 	    			'customer_address' => $orderCustomer->customer->address,
 	    			'customer_phone' => $orderCustomer->customer->phone	    	
