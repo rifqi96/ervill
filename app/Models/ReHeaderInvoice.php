@@ -42,7 +42,7 @@ class ReHeaderInvoice extends Model
     		
     	}   	
 
-    	
+    	$this->status="Draft";
 
     	$this->save();
     	return $this;

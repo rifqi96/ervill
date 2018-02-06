@@ -198,4 +198,15 @@ class OrderCustomerReturn extends Model
 
         return $this->save();
     }
+
+
+
+
+
+
+    ///////api////////////
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
+    }
 }

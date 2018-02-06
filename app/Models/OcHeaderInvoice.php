@@ -55,6 +55,8 @@ class OcHeaderInvoice extends Model
     		$this->is_free = "false";
     	}
 
+        $this->status = "Draft";
+
     	$this->save();
     	return $this;
     }

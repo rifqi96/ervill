@@ -113,6 +113,7 @@ class OrderCustomerBuy extends Model
         $this->quantity = $data->quantity;
         $this->author_id = $author_id;
         $this->buy_at = Carbon::parse($data->buy_at)->format('Y-n-d');
+        $this->status = "Draft";
         $this->save();
 
         if($data->change_nomor_struk){            
@@ -205,5 +206,12 @@ class OrderCustomerBuy extends Model
 //        }
 
         return $this->delete();
+    }
+
+
+    /////////////api///////////////
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
     }
 }

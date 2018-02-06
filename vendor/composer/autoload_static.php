@@ -299,6 +299,8 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'AddRoleIdToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_10_31_065523_add_role_id_to_users.php',
         'AddSoftDeletesToTables' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_205738_add_soft_deletes_to_tables.php',
         'AddSoldGallonsToInventory' => __DIR__ . '/../..' . '/database/seeds/AddSoldGallonsToInventory.php',
+        'AddStatusIntoOcHeaderInvoices' => __DIR__ . '/../..' . '/database/migrations/2018_02_06_234040_add_status_into_oc_header_invoices.php',
+        'AddStatusIntoReHeaderInvoices' => __DIR__ . '/../..' . '/database/migrations/2018_02_06_234151_add_status_into_re_header_invoices.php',
         'AddStatusToOcbuy' => __DIR__ . '/../..' . '/database/migrations/2018_02_06_222522_add_status_to_ocbuy.php',
         'AddStatusToOrderCustomersAndWaters' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_104052_add_status_to_order_customers_and_waters.php',
         'AddTypeToCustomersTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_29_152129_add_type_to_customers_table.php',
