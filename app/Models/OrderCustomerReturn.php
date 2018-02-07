@@ -59,7 +59,7 @@ class OrderCustomerReturn extends Model
         $this->description = $data->description;
         $this->return_at = Carbon::parse($data->return_at)->format('Y-n-d');
         $this->author_id = $author_id;
-        $this->status = 'Draft';
+        //$this->status = 'Draft';
 
         $this->save();   
 
@@ -205,8 +205,8 @@ class OrderCustomerReturn extends Model
 
 
     ///////api////////////
-    public function doStartShipment(){
-        $this->status = 'Proses';
-        return $this->save();
-    }
+    // public function doStartShipment(){
+    //     $this->status = 'Proses';
+    //     return $this->save();
+    // }
 }

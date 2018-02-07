@@ -222,41 +222,64 @@ class ServiceController extends Controller
                 ['user_id', $request->user_id],
                 ['delivery_at',$today]]
             );
-        })->where('shipment_id', $request->shipment_id)
+        })->where([
+            ['shipment_id', $request->shipment_id],
+            ['status','Proses']])
         ->get();
 
-    
-    	if( count($ocHeaderInvoices) > 0 ){
+        $reHeaderInvoices = ReHeaderInvoice::whereHas('shipment', function ($query) use($request,$today){
+            $query->where([
+                ['user_id', $request->user_id],
+                ['delivery_at',$today]]
+            );
+        })->where([
+            ['shipment_id', $request->shipment_id],
+            ['status','Proses']])
+        ->get();
+
+        
+    	if( count($ocHeaderInvoices) > 0 || count($reHeaderInvoices) > 0 ){
 	    	$data = array();
 
-	    	foreach($ocHeaderInvoices-> as $ocHeaderInvoice){	  
-                foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                    if($orderCustomerInvoice->orderCustomer->status=="Proses"){
+            //ocheaderinvoices
+	    	foreach($ocHeaderInvoices as $ocHeaderInvoice){	  
+                if($ocHeaderInvoice->status=="Proses"){
+                    if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
                             'Type' => 'order',
-                            'customer_name' => $orderCustomerInvoice->orderCustomer->customer->name,
-                            'customer_address' => $orderCustomerInvoice->orderCustomer->customer->address,
-                            'customer_phone' => $orderCustomerInvoice->orderCustomer->customer->phone         
+                            'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
+                            'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone         
                         ]);
-                    }
-                }
-
-                foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                    if($orderCustomerInvoice->orderCustomer->status=="Proses"){
+                    }else if(count($ocHeaderInvoice->orderCustomerBuyInvoices)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
-                            'Type' => 'order',
-                            'customer_name' => $orderCustomerInvoice->orderCustomer->customer->name,
-                            'customer_address' => $orderCustomerInvoice->orderCustomer->customer->address,
-                            'customer_phone' => $orderCustomerInvoice->orderCustomer->customer->phone         
+                            'type' => 'order',
+                            'customer_name' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name,
+                            'customer_address' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone         
                         ]);
                     }
-                }
-                
-                 		
+                }           		
 	    		
 	    	}
+
+            //reheaderinvoice
+            foreach($reHeaderInvoices as $reHeaderInvoice){     
+                if($reHeaderInvoice->status=="Proses"){
+                    if(count($reHeaderInvoice->orderCustomerReturnInvoices)>0){
+                        array_push($data,[
+                            'id' => $reHeaderInvoice->id,
+                            'type' => 'return',
+                            'customer_name' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->name,
+                            'customer_address' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->address,
+                            'customer_phone' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->phone         
+                        ]);
+                    }
+                }                   
+                
+            }
     	
     	
     		return $this->apiResponse(1,'berhasil memuat data order','berhasil memuat data order', $data);
@@ -266,36 +289,106 @@ class ServiceController extends Controller
 
     public function getOrdersHistoryByShipment($request){
 
-    	if( !$request->shipment_id ){
-    		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
-    	}    	
+  //   	if( !$request->shipment_id ){
+  //   		return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
+  //   	}    	
 
 
-    	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
-    		$query->where('user_id', $request->user_id);
-		})->where([
-    		['shipment_id', $request->shipment_id],
-    		['status','!=','Proses'],
-    		['status','!=','Draft']])
-		->get();
+  //   	$orderCustomers = OrderCustomer::whereHas('shipment', function ($query) use($request) {
+  //   		$query->where('user_id', $request->user_id);
+		// })->where([
+  //   		['shipment_id', $request->shipment_id],
+  //   		['status','!=','Proses'],
+  //   		['status','!=','Draft']])
+		// ->get();
     
-    	if( count($orderCustomers) > 0 ){
-	    	$data = array();
+  //   	if( count($orderCustomers) > 0 ){
+	 //    	$data = array();
 
-	    	foreach($orderCustomers as $orderCustomer){	    		
-	    		array_push($data,[
-	    			'id' => $orderCustomer->orderCustomerInvoices[0]->oc_header_invoice_id,
-	    			'customer_name' => $orderCustomer->customer->name,
-	    			'customer_address' => $orderCustomer->customer->address,
-	    			'customer_phone' => $orderCustomer->customer->phone,
-	    			'status' => $orderCustomer->status	    	
-	    		]);
-	    	}
+	 //    	foreach($orderCustomers as $orderCustomer){	    		
+	 //    		array_push($data,[
+	 //    			'id' => $orderCustomer->orderCustomerInvoices[0]->oc_header_invoice_id,
+	 //    			'customer_name' => $orderCustomer->customer->name,
+	 //    			'customer_address' => $orderCustomer->customer->address,
+	 //    			'customer_phone' => $orderCustomer->customer->phone,
+	 //    			'status' => $orderCustomer->status	    	
+	 //    		]);
+	 //    	}
     	
     	
-    		return $this->apiResponse(1,'berhasil memuat data order yang telah selesai','berhasil memuat data order yang telah selesai', $data);
-    	}
-    	return $this->apiResponse(1,'tidak ada order yang selesai pada pengiriman ini');
+  //   		return $this->apiResponse(1,'berhasil memuat data order yang telah selesai','berhasil memuat data order yang telah selesai', $data);
+  //   	}
+  //   	return $this->apiResponse(1,'tidak ada order yang selesai pada pengiriman ini');
+
+
+        if( !$request->shipment_id ){
+            return $this->apiResponse(0,'gagal memuat data order','gagal memuat data order, shipment id tidak ditemukan');
+        }       
+
+        $ocHeaderInvoices = OcHeaderInvoice::whereHas('shipment', function ($query) use($request){
+            $query->where('user_id', $request->user_id);
+        })->where([
+            ['shipment_id', $request->shipment_id],
+            ['status','!=','Proses'],
+            ['status','!=','Draft']])
+        ->get();
+
+        $reHeaderInvoices = ReHeaderInvoice::whereHas('shipment', function ($query) use($request){
+            $query->where('user_id', $request->user_id);
+        })->where([
+            ['shipment_id', $request->shipment_id],
+            ['status','!=','Proses'],
+            ['status','!=','Draft']])
+        ->get();
+
+        
+        if( count($ocHeaderInvoices) > 0 || count($reHeaderInvoices) > 0 ){
+            $data = array();
+
+            //ocheaderinvoices
+            foreach($ocHeaderInvoices as $ocHeaderInvoice){   
+                //if($ocHeaderInvoice->status=="Proses"){
+                    if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
+                        array_push($data,[
+                            'id' => $ocHeaderInvoice->id,
+                            'Type' => 'order',
+                            'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
+                            'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone         
+                        ]);
+                    }else if(count($ocHeaderInvoice->orderCustomerBuyInvoices)>0){
+                        array_push($data,[
+                            'id' => $ocHeaderInvoice->id,
+                            'type' => 'order',
+                            'customer_name' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name,
+                            'customer_address' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone         
+                        ]);
+                    }
+                //}                   
+                
+            }
+
+            //reheaderinvoice
+            foreach($reHeaderInvoices as $reHeaderInvoice){     
+                //if($reHeaderInvoice->status=="Proses"){
+                    if(count($reHeaderInvoice->orderCustomerReturnInvoices)>0){
+                        array_push($data,[
+                            'id' => $reHeaderInvoice->id,
+                            'type' => 'return',
+                            'customer_name' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->name,
+                            'customer_address' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->address,
+                            'customer_phone' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->phone         
+                        ]);
+                    }
+                //}                   
+                
+            }
+        
+        
+            return $this->apiResponse(1,'berhasil memuat data order','berhasil memuat data order', $data);
+        }
+        return $this->apiResponse(1,'tidak ada order pada pengiriman ini');
     }
 
     public function getOrderDetail($request){
@@ -308,12 +401,20 @@ class ServiceController extends Controller
         $ervill_empty_gallon_qty=0;
         $non_ervill_empty_gallon_qty=0;
         $total = 0;
+        $customer_name = "";
+        $customer_address = "";
+        $customer_phone = "";
 
     	// $orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request) {
     	// 	$query->where('user_id', $request->user_id);
     	// })->where('id', $request->order_id)->first();
+        $header_invoice = OcHeaderInvoice::whereHas('shipment', function ($query) use($request){
+            $query->where('user_id', $request->user_id);
+        })->where('id', $request->order_id)->first();
 
-        $header_invoice = OcHeaderInvoice::where('id',$request->order_id)->first();
+        $re_header_invoice = ReHeaderInvoice::whereHas('shipment', function ($query) use($request){
+            $query->where('user_id', $request->user_id);
+        })->where('id', $request->order_id)->first();
 
         if( $header_invoice ){
             foreach ($header_invoice->orderCustomerInvoices as $orderCustomerInvoice) {
@@ -330,24 +431,35 @@ class ServiceController extends Controller
                  }
 
                  $total += $orderCustomerInvoice->subtotal;
+                 $customer_name = $orderCustomerInvoice->orderCustomer->customer->name;
+                 $customer_address = $orderCustomerInvoice->orderCustomer->customer->address;
+                 $customer_phone = $orderCustomerInvoice->orderCustomer->customer->phone;
                  
             }
-        }
+
+            foreach ($header_invoice->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
+                $total += $orderCustomerBuyInvoice->subtotal;
+                $customer_name = $orderCustomerBuyInvoice->orderCustomerBuy->customer->name;
+                $customer_address = $orderCustomerBuyInvoice->orderCustomerBuy->customer->address;
+                $customer_phone = $orderCustomerBuyInvoice->orderCustomerBuy->customer->phone;
+            }
+        
     
-    	if( $header_invoice ){
+    
 	    	$order_issues = array();
 
 	    	//set order detail
 	    	$order_detail = (object) array(
 	    		'id' => $header_invoice->id,
-	    		'customer_name' => $header_invoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
-	    		'customer_address' => $header_invoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
-	    		'customer_phone' => $header_invoice->orderCustomerInvoices[0]->orderCustomer->customer->phone,
+                'type' => 'order',
+	    		'customer_name' => $customer_name,
+	    		'customer_address' => $customer_address,
+	    		'customer_phone' => $customer_phone,
 	    		'gallon_qty' => $gallon_qty,
 	    		'ervill_empty_gallon_qty' => $ervill_empty_gallon_qty,
                 'non_ervill_empty_gallon_qty' => $non_ervill_empty_gallon_qty,
                 'total' => $total,
-	    		'status' => $header_invoice->orderCustomerInvoices[0]->orderCustomer->status
+	    		'status' => $header_invoice->status
 	    	);
 
 
@@ -369,7 +481,40 @@ class ServiceController extends Controller
     	
     	
     		return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
-    	}
+    	}else if( $re_header_invoice ){    
+            $total = 0;
+            $order_issues = array();
+            foreach ($re_header_invoice->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+                $total -= $orderCustomerReturnInvoice->subtotal;
+            }     
+
+            if($re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->is_non_refund == "true"){
+                $total = 0;
+            }
+
+
+            //set order detail
+            $order_detail = (object) array(
+                'id' => $re_header_invoice->id,
+                'type' => 'return',
+                'customer_name' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->name,
+                'customer_address' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->address,
+                'customer_phone' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->phone,
+                'is_non_refund' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->is_non_refund,
+                'filled_gallon_qty' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->filled_gallon_quantity,
+                'empty_gallon_qty' => $re_header_invoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->empty_gallon_quantity,             
+                'total' => $total,
+                'status' => $re_header_invoice->status
+            );
+
+
+            $data = array(
+                'order' => $order_detail,
+                'issues' => $order_issues
+            );
+
+            return $this->apiResponse(1,'berhasil memuat rincian order','berhasil memuat rincian order', $data);
+        }
     	return $this->apiResponse(0,'gagal memuat rincian order','gagal memuat rincian order');
     }
 
