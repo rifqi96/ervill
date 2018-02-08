@@ -148,4 +148,22 @@ class OcHeaderInvoice extends Model
             $this->status = "FREE atau SAMPLE";
         }
     }
+
+    //////////api/////////
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
+    }
+
+    public function doDropGallon(){
+
+        // if( count($this->order->issues) > 0 ){
+        //     $this->status = 'Bermasalah';
+        // }else{
+        //     $this->status = 'Selesai';
+        // }   
+
+        $this->status = 'Selesai';  
+        return $this->save();
+    }
 }

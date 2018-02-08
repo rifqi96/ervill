@@ -70,4 +70,25 @@ class ReHeaderInvoice extends Model
             }
         }
     }
+
+    //////////api/////////
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
+    }
+    public function doDropGallon(){
+
+        // if( count($this->order->issues) > 0 ){
+        //     $this->status = 'Bermasalah';
+        // }else{
+        //     $this->status = 'Selesai';
+        // }   
+
+        if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
+            return false;
+        }
+
+        $this->status = 'Selesai';  
+        return $this->save();
+    }
 }

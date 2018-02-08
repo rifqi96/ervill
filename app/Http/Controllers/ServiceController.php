@@ -536,35 +536,16 @@ class ServiceController extends Controller
     		if($shipment->doStartShipment($request->user_id)){
 
                 foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
-
-                    //OC
-                    foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                        if(!$orderCustomerInvoice->orderCustomer->doStartShipment()){
-                            return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status order customer','terjadi kesalahan, tidak dapat merubah status order customer');
-                        }                        
-                    }
-
-                    //OC buy
-                    foreach ($ocHeaderInvoice->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
-                        if(!$orderCustomerBuyInvoice->orderCustomerBuy->doStartShipment()){
-                            return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status order customer buy','terjadi kesalahan, tidak dapat merubah status order customer buy');
-                        }                        
-                    }
-                    
+                    if(!$ocHeaderInvoice->doStartShipment()){
+                        return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status oc_header','terjadi kesalahan, tidak dapat merubah status oc_header');
+                    }                                        
                 }
 
                 foreach ($shipment->reHeaderInvoices as $reHeaderInvoice) {
-                    //OC return
-                    foreach ($reHeaderInvoice->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
-                        if(!$orderCustomerReturnInvoice->orderCustomerReturn->doStartShipment()){
-                            return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status order customer return','terjadi kesalahan, tidak dapat merubah status order customer return');
-                        }                        
-                    }
+                    if(!$reHeaderInvoice->doStartShipment()){
+                        return $this->apiResponse(0,'terjadi kesalahan, tidak dapat merubah status re_header','terjadi kesalahan, tidak dapat merubah status re_header');
+                    }                                        
                 }
-
-
-                
-
 
     			// foreach($shipment->orderCustomers as $orderCustomer){
     			// 	if(!$orderCustomer->doStartShipment()){
@@ -599,17 +580,29 @@ class ServiceController extends Controller
     		['delivery_at',$today],
     		['status','Proses']])->first();
     
-    	if( $shipment ){
-    		if($shipment->doFinishShipment()){	    
+    	if( $shipment ){    			   
+            // foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
+            //     if(!$ocHeaderInvoice->doFinishShipment()){
+            //         return $this->apiResponse(0,'gagal mengakhiri pengiriman, tidak dapat merubah status oc_header','gagal mengakhiri pengiriman, tidak dapat merubah status oc_header');
+            //     }                                        
+            // } 
+            // foreach ($shipment->reHeaderInvoices as $reHeaderInvoice) {
+            //     if(!$reHeaderInvoice->doFinishShipment()){
+            //         return $this->apiResponse(0,'gagal mengakhiri pengiriman, tidak dapat merubah status re_header','gagal mengakhiri pengiriman, tidak dapat merubah status re_header');
+            //     }                                        
+            // } 
 
-    			$data = array(
-		    		'success' => 'true'
-		    	);
+			$data = array(
+	    		'success' => 'true'
+	    	);    			   			
+    		
 
-    			return $this->apiResponse(1,'berhasil mengakhiri pengiriman','berhasil mengakhiri pengiriman', $data);    			
-    		}	    	
-    	
-    		return $this->apiResponse(0,'gagal mengakhiri pengiriman, masih ada order yang belum dikirim','gagal mengakhiri pengiriman, masih ada order yang belum dikirim');
+            if(!$shipment->doFinishShipment()){
+                return $this->apiResponse(0,'gagal mengakhiri pengiriman, masih ada order yang belum dikirim','gagal mengakhiri pengiriman, masih ada order yang belum dikirim');
+            }	    	
+    	   
+            return $this->apiResponse(1,'berhasil mengakhiri pengiriman','berhasil mengakhiri pengiriman', $data); 
+    		
     	}
     	return $this->apiResponse(0,'gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya','gagal mengakhiri pengiriman, pengiriman ini tidak bisa diakhiri pengirimannya');	
     	
@@ -623,28 +616,55 @@ class ServiceController extends Controller
 
     	$today = Carbon::today();
 
-    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
-    		$query->where([
-    			['user_id', $request->user_id],
-    			['delivery_at',$today],
-    			['status','Proses']]);
-    	})->where([
-    		['id', $request->order_id],
-    		['status','Proses']])
-    	->first();
-    
-    	if( $orderCustomer ){
-    		if($orderCustomer->doDropGallon()){	    
+    	// $orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    	// 	$query->where([
+    	// 		['user_id', $request->user_id],
+    	// 		['delivery_at',$today],
+    	// 		['status','Proses']]);
+    	// })->where([
+    	// 	['id', $request->order_id],
+    	// 	['status','Proses']])
+    	// ->first();
 
+        $header_invoice = OcHeaderInvoice::whereHas('shipment', function ($query) use($request,$today){
+            $query->where([
+                ['user_id', $request->user_id],
+                ['delivery_at',$today],
+                ['status','Proses']]);
+        })->where([
+            ['id', $request->order_id],
+            ['status','Proses']])
+        ->first();
+
+        $re_header_invoice = ReHeaderInvoice::whereHas('shipment', function ($query) use($request,$today){
+            $query->where([
+                ['user_id', $request->user_id],
+                ['delivery_at',$today],
+                ['status','Proses']]);
+        })->where([
+            ['id', $request->order_id],
+            ['status','Proses']])
+        ->first();
+    
+    	if( $header_invoice ){
+    		if($header_invoice->doDropGallon()){	   
     			$data = array(
 		    		'success' => 'true'
 		    	);
-
-    			return $this->apiResponse(1,'berhasil memproses order','berhasil memproses order', $data);    			
+    			return $this->apiResponse(1,'berhasil memproses order','berhasil memproses order', $data);    	
     		}	    	
     	
     		return $this->apiResponse(0,'gagal memproses order, status order tidak dapat dirubah','gagal memproses order, status order tidak dapat dirubah');
-    	}
+    	}else if( $re_header_invoice ){
+            if($re_header_invoice->doDropGallon()){       
+                $data = array(
+                    'success' => 'true'
+                );
+                return $this->apiResponse(1,'berhasil memproses order','berhasil memproses order', $data);      
+            }           
+        
+            return $this->apiResponse(0,'gagal memproses order, status order tidak dapat dirubah','gagal memproses order, status order tidak dapat dirubah');
+        }
     	return $this->apiResponse(0,'gagal memproses order, order ini tidak bisa diproses','gagal memproses order, order ini tidak bisa diproses');	
     	
     }
@@ -767,27 +787,56 @@ class ServiceController extends Controller
     	if( count($shipments) > 0 ){
 	    	$data = array();
 
-	    	$order_quantity = 0;
-	    	$gallon_quantity = 0;	    	
+	    	//$order_quantity = 0;
+	    	//$gallon_quantity = 0;	   
+
+
+            foreach($shipments as $shipment){
+                $invoice_id_arr = array();           
+                $gallon_quantity = 0;
+
+                //calculate amount of orders in a shipment          
+                //if($shipment->orderCustomers){
+                    foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
+                        foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
+                     
+                            //calculate amount of gallons in an order
+                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->order->quantity;
+                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->additional_quantity;
+                        }                                 
+                        
+                    }
+
+                    array_push($data,[
+                        'id' => $shipment->id,
+                        'delivery_at' => $shipment->delivery_at,
+                        'status' => $shipment->status,
+                        'order_qty' => count($shipment->ocHeaderInvoices) + count($shipment->reHeaderInvoices),
+                        'gallon_qty' => $gallon_quantity
+                    ]);
+                //}
+            
+            }
+            /////////////////////////////////////// 	
 	   
 
-	    	foreach($shipments as $shipment){
-	    		//calculate amount of orders in a shipment
-	    		$order_quantity = count($shipment->orderCustomers);
-	 			$gallon_quantity = 0;
-	    		foreach ($shipment->orderCustomers as $orderCustomer) {
-	    			//calculate amount of gallons in an order
-	    			$gallon_quantity += $orderCustomer->order->quantity;
+	    // 	foreach($shipments as $shipment){
+	    // 		//calculate amount of orders in a shipment
+	    // 		$order_quantity = count($shipment->orderCustomers);
+	 			// $gallon_quantity = 0;
+	    // 		foreach ($shipment->orderCustomers as $orderCustomer) {
+	    // 			//calculate amount of gallons in an order
+	    // 			$gallon_quantity += $orderCustomer->order->quantity;
 
-	    		}
-	    		array_push($data,[
-	    			'id' => $shipment->id,
-	    			'delivery_at' => $shipment->delivery_at,
-	    			'status' => $shipment->status,
-	    			'order_qty' => $order_quantity,
-	    			'gallon_qty' => $gallon_quantity
-	    		]);
-	    	}
+	    // 		}
+	    // 		array_push($data,[
+	    // 			'id' => $shipment->id,
+	    // 			'delivery_at' => $shipment->delivery_at,
+	    // 			'status' => $shipment->status,
+	    // 			'order_qty' => $order_quantity,
+	    // 			'gallon_qty' => $gallon_quantity
+	    // 		]);
+	    // 	}
     	
     	
     		return $this->apiResponse(1,'berhasil memuat data pengiriman','berhasil memuat data pengiriman', $data);

@@ -174,8 +174,13 @@ class Shipment extends Model
     public function doFinishShipment(){
 
         //check if there are still any ongoing shipment
-        foreach($this->orderCustomers as $orderCustomer){
-            if($orderCustomer->status == 'Proses'){
+        foreach($this->ocHeaderInvoices as $ocHeaderInvoice){
+            if($ocHeaderInvoice->status == 'Proses'){
+                return false;
+            }
+        }
+        foreach($this->reHeaderInvoices as $reHeaderInvoice){
+            if($reHeaderInvoice->status == 'Proses'){
                 return false;
             }
         }

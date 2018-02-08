@@ -138,6 +138,14 @@ class OrderCustomerBuy extends Model
         return $this;
     }
 
+    public function doConfirm(){
+
+    }
+
+    public function doCancel(){
+        
+    }
+
     public function doDelete(){
         $customer_gallon_rent = CustomerGallon::with([
             'customer'
