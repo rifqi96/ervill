@@ -70,4 +70,44 @@ class ReHeaderInvoice extends Model
             }
         }
     }
+
+    //////////api/////////
+    public function doStartShipment(){
+        $this->status = 'Proses';
+        return $this->save();
+    }
+    public function doDropGallon(){
+
+        // if( count($this->order->issues) > 0 ){
+        //     $this->status = 'Bermasalah';
+        // }else{
+        //     $this->status = 'Selesai';
+        // }   
+        if(count($this->orderCustomerReturnInvoices)>0){
+            foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+                if(!$orderCustomerReturnInvoice->orderCustomerReturn->doConfirm()){
+                    return false;
+                }
+            }
+            
+        }
+        // if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
+        //     return false;
+        // }
+
+        $this->status = 'Selesai';  
+        return $this->save();
+    }
+
+    public function doCancelTransaction(){
+          
+        foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+            if(!$orderCustomerReturnInvoice->orderCustomerReturn->doCancel()){
+                return false;
+            }
+        }
+        
+        $this->status = 'Batal';  
+        return $this->save();
+    }
 }

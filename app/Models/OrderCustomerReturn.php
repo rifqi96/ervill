@@ -59,7 +59,7 @@ class OrderCustomerReturn extends Model
         $this->description = $data->description;
         $this->return_at = Carbon::parse($data->return_at)->format('Y-n-d');
         $this->author_id = $author_id;
-        //$this->status = 'Draft';
+        $this->status = 'Draft';
 
         $this->save();   
 
@@ -129,7 +129,7 @@ class OrderCustomerReturn extends Model
 
         
 
-        if($this->status=="Batal"){
+        if($this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status=="Batal"){
             //update faktur_detail
             $invoice_details = OrderCustomerReturnInvoice::where('order_customer_return_id',$this->id)->get();
             foreach ($invoice_details as $invoice_detail) {
@@ -141,7 +141,8 @@ class OrderCustomerReturn extends Model
         }
 
         $this->status = 'Selesai';
-
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status = 'Selesai';
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->save();
         return $this->save();
     }
 
@@ -192,6 +193,9 @@ class OrderCustomerReturn extends Model
         }
 
         $this->status = 'Batal';
+
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status = 'Batal';
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->save();
 
         
 
