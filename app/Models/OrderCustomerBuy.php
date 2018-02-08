@@ -69,44 +69,7 @@ class OrderCustomerBuy extends Model
             }
         }   
 
-        //////validation finish///////////
-        
-        $customer_gallon_rent->qty -= $data->quantity;
-        if($customer_gallon_rent->qty<1){
-            $customer_gallon_rent->delete();
-        }else{
-            $customer_gallon_rent->save();
-        }
-        if(!$customer_gallon_purchase){
-            $data->purchase_type = "purchase";
-            $data['purchase_type'] = "purchase";
-            if(!(new CustomerGallon)->doMake($data, $data->customer_id)){
-                return false;
-            }
-        }
-        else{
-            $customer_gallon_purchase->qty += $data->quantity;
-            if(!$customer_gallon_purchase->save()){
-                return false;
-            }
-        }
-
-
-        
-
-        $outgoing_gallon = Inventory::find(5);
-        $sold_gallon = Inventory::find(7);
-
-        if(!$outgoing_gallon || !$sold_gallon){
-            return false;
-        }
-
-        $outgoing_gallon->quantity -= $data->quantity;
-        $sold_gallon->quantity += $data->quantity;
-
-        if(!$outgoing_gallon->save() || !$sold_gallon->save()){
-            return false;
-        }
+        //////validation finish///////////               
 
         $this->customer_id = $data->customer_id;
         
@@ -140,13 +103,88 @@ class OrderCustomerBuy extends Model
 
     public function doConfirm(){
 
+        $customer_gallon_rent = CustomerGallon::with([
+            'customer'
+        ])
+            ->where([
+                ['customer_id', $this->customer_id],
+                ['type', 'rent']
+            ])
+            ->first();
+
+        $customer_gallon_purchase = CustomerGallon::with([
+            'customer'
+        ])
+            ->where([
+                ['customer_id', $this->customer_id],
+                ['type', 'purchase']
+            ])
+            ->first();
+
+        if(!$customer_gallon_rent || $customer_gallon_rent->qty < $this->quantity){
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('customer_gallon_rent', 'Jumlah galon melebihi kapasitas, mohon diperiksa kembali');
+            throw new ValidationException($validator);
+            //return false;
+        }
+
+        $customer_gallon_rent->qty -= $this->quantity;
+        if($customer_gallon_rent->qty<1){
+            $customer_gallon_rent->delete();
+        }else{
+            $customer_gallon_rent->save();
+        }
+        if(!$customer_gallon_purchase){
+            $data = (object)array();
+            $data->purchase_type = "purchase"; 
+            $data->quantity = $this->quantity;         
+            if(!(new CustomerGallon)->doMake($data, $this->customer_id)){
+                return false;
+            }
+        }
+        else{
+            $customer_gallon_purchase->qty += $this->quantity;
+            if(!$customer_gallon_purchase->save()){
+                return false;
+            }
+        }
+
+
+        
+
+        $outgoing_gallon = Inventory::find(5);
+        $sold_gallon = Inventory::find(7);
+
+        if(!$outgoing_gallon || !$sold_gallon){
+            return false;
+        }
+
+        $outgoing_gallon->quantity -= $this->quantity;
+        $sold_gallon->quantity += $this->quantity;
+
+        if(!$outgoing_gallon->save() || !$sold_gallon->save()){
+            return false;
+        }
+
+        if($this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status=="Batal"){
+            //update faktur_detail
+            $invoice_details = OrderCustomerBuyInvoice::where('order_customer_buy_id',$this->id)->get();
+            foreach ($invoice_details as $invoice_detail) {
+                $invoice_detail->subtotal = $invoice_detail->quantity * Price::find($invoice_detail->price_id)->price;
+                $invoice_detail->save();
+            }
+            $invoice_details[0]->ocHeaderInvoice->payment_date = Carbon::now()->format('Y-n-d H:i:s');
+            $invoice_details[0]->ocHeaderInvoice->save();
+        }
+
+
+
+        $this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status = 'Selesai';
+        $this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->save();
+        return $this->save();
     }
 
     public function doCancel(){
-        
-    }
-
-    public function doDelete(){
         $customer_gallon_rent = CustomerGallon::with([
             'customer'
         ])
@@ -198,23 +236,80 @@ class OrderCustomerBuy extends Model
             return false;
         }
 
-        //delete oc_buy_invoice_detail
-        $oc_buy_invoice_detail = OrderCustomerBuyInvoice::where('order_customer_buy_id',$this->id)->first();
-        $oc_buy_invoice_detail->delete();
-
-//        $data = array(
-//            'module_name' => 'Pindah Tangan Galon',
-//            'description' => $data->description,
-//            'data_id' => $data->id,
-//            'user_id' => $author_id
-//        );
-//
-//        if(!DeleteHistory::create($data)){
-//            return false;
-//        }
-
-        return $this->delete();
+        $this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status = 'Batal';
+        $this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->save();
+        return $this->save();
     }
+
+//     public function doDelete(){
+//         $customer_gallon_rent = CustomerGallon::with([
+//             'customer'
+//         ])
+//             ->where([
+//                 ['customer_id', $this->customer_id],
+//                 ['type', 'rent']
+//             ])
+//             ->first();
+
+//         $customer_gallon_purchase = CustomerGallon::with([
+//             'customer'
+//         ])
+//             ->where([
+//                 ['customer_id', $this->customer_id],
+//                 ['type', 'purchase']
+//             ])
+//             ->first();
+
+//         if(!$customer_gallon_purchase){
+//             return false;
+//         }
+
+//         if(!$customer_gallon_rent){
+//             $customer_gallon_rent = new CustomerGallon();
+//             $customer_gallon_rent->customer_id = $this->customer_id;
+//             $customer_gallon_rent->qty = $this->quantity;
+//             $customer_gallon_rent->type="rent";
+//         }else{
+//             $customer_gallon_rent->qty += $this->quantity;
+//         }
+        
+//         $customer_gallon_purchase->qty -= $this->quantity;
+
+//         if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
+//             return false;
+//         }
+
+//         $outgoing_gallon = Inventory::find(5);
+//         $sold_gallon = Inventory::find(7);
+
+//         if(!$outgoing_gallon || !$sold_gallon){
+//             return false;
+//         }
+
+//         $outgoing_gallon->quantity += $this->quantity;
+//         $sold_gallon->quantity -= $this->quantity;
+
+//         if(!$outgoing_gallon->save() || !$sold_gallon->save()){
+//             return false;
+//         }
+
+//         //delete oc_buy_invoice_detail
+//         $oc_buy_invoice_detail = OrderCustomerBuyInvoice::where('order_customer_buy_id',$this->id)->first();
+//         $oc_buy_invoice_detail->delete();
+
+// //        $data = array(
+// //            'module_name' => 'Pindah Tangan Galon',
+// //            'description' => $data->description,
+// //            'data_id' => $data->id,
+// //            'user_id' => $author_id
+// //        );
+// //
+// //        if(!DeleteHistory::create($data)){
+// //            return false;
+// //        }
+
+//         return $this->delete();
+//     }
 
 
     /////////////api///////////////

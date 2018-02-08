@@ -83,12 +83,31 @@ class ReHeaderInvoice extends Model
         // }else{
         //     $this->status = 'Selesai';
         // }   
-
-        if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
-            return false;
+        if(count($this->orderCustomerReturnInvoices)>0){
+            foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+                if(!$orderCustomerReturnInvoice->orderCustomerReturn->doConfirm()){
+                    return false;
+                }
+            }
+            
         }
+        // if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
+        //     return false;
+        // }
 
         $this->status = 'Selesai';  
+        return $this->save();
+    }
+
+    public function doCancelTransaction(){
+          
+        foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+            if(!$orderCustomerReturnInvoice->orderCustomerReturn->doCancel()){
+                return false;
+            }
+        }
+        
+        $this->status = 'Batal';  
         return $this->save();
     }
 }

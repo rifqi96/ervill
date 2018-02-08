@@ -354,7 +354,8 @@ class ServiceController extends Controller
                             'Type' => 'order',
                             'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
                             'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone         
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone,
+                            'status' => $ocHeaderInvoice->status         
                         ]);
                     }else if(count($ocHeaderInvoice->orderCustomerBuyInvoices)>0){
                         array_push($data,[
@@ -362,7 +363,8 @@ class ServiceController extends Controller
                             'type' => 'order',
                             'customer_name' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name,
                             'customer_address' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone         
+                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone,
+                            'status' => $ocHeaderInvoice->status            
                         ]);
                     }
                 //}                   
@@ -378,7 +380,8 @@ class ServiceController extends Controller
                             'type' => 'return',
                             'customer_name' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->name,
                             'customer_address' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->address,
-                            'customer_phone' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->phone         
+                            'customer_phone' => $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->phone,
+                            'status' => $reHeaderInvoice->status         
                         ]);
                     }
                 //}                   
@@ -742,20 +745,42 @@ class ServiceController extends Controller
 
     	$today = Carbon::today();
 
-    	$orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
-    		$query->where([
-    			['user_id', $request->user_id],
-    			['delivery_at',$today],
-    			['status','Proses']]);
-    	})->where([
-    		['id', $request->order_id],
-    		['status','Proses']])
-    	->first();
-    
-    	if( $orderCustomer ){
-    		$issue = new Issue();
-    		if($issue->doCancelTransaction($orderCustomer->order)){	    
 
+        $header_invoice = OcHeaderInvoice::whereHas('shipment', function ($query) use($request,$today){
+            $query->where([
+                ['user_id', $request->user_id],
+                ['delivery_at',$today],
+                ['status','Proses']]);
+        })->where([
+            ['id', $request->order_id],
+            ['status','Proses']])
+        ->first();
+
+        $re_header_invoice = ReHeaderInvoice::whereHas('shipment', function ($query) use($request,$today){
+            $query->where([
+                ['user_id', $request->user_id],
+                ['delivery_at',$today],
+                ['status','Proses']]);
+        })->where([
+            ['id', $request->order_id],
+            ['status','Proses']])
+        ->first();
+
+    	// $orderCustomer = OrderCustomer::whereHas('shipment', function ($query) use($request,$today) {
+    	// 	$query->where([
+    	// 		['user_id', $request->user_id],
+    	// 		['delivery_at',$today],
+    	// 		['status','Proses']]);
+    	// })->where([
+    	// 	['id', $request->order_id],
+    	// 	['status','Proses']])
+    	// ->first();
+    
+    	if( $header_invoice ){
+    		//$issue = new Issue();
+    		//if($issue->doCancelTransaction($orderCustomer->order)){	
+
+            if($header_invoice->doCancelTransaction()){ 
     			$data = array(
 		    		'success' => 'true'
 		    	);
@@ -764,7 +789,20 @@ class ServiceController extends Controller
     		}	    	
     	
     		return $this->apiResponse(0,'gagal membatalkan order, terjadi kesalahan di sistem','gagal membatalkan order, terjadi kesalahan di sistem');
-    	}
+    	}else if( $re_header_invoice ){
+            //$issue = new Issue();
+            //if($issue->doCancelTransaction($orderCustomer->order)){   
+
+            if($re_header_invoice->doCancelTransaction()){ 
+                $data = array(
+                    'success' => 'true'
+                );
+
+                return $this->apiResponse(1,'berhasil membatalkan order return','berhasil membatalkan order return', $data);              
+            }           
+        
+            return $this->apiResponse(0,'gagal membatalkan order return, terjadi kesalahan di sistem','gagal membatalkan order return, terjadi kesalahan di sistem');
+        }
     	return $this->apiResponse(0,'gagal membatalkan order, order ini tidak bisa diproses','gagal membatalkan order, order ini tidak bisa diproses');	
     }
 

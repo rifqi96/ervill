@@ -141,7 +141,8 @@ class OrderCustomerReturn extends Model
         }
 
         $this->status = 'Selesai';
-
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status = 'Selesai';
+        $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->save();
         return $this->save();
     }
 
