@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OcHeaderInvoice;
+use App\Models\ReHeaderInvoice;
 use Illuminate\Http\Request;
 use App\Models\OrderCustomer;
 use App\Models\Inventory;
@@ -87,25 +89,53 @@ class OrderCustomerController extends OrderController
     }
 
     public function getUnshippedOrders(Request $request){
-        return OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            }
-            ])
-            ->where([
-                ['delivery_at','=',$request->delivery_at],
-                ['status','=','draft'],
+        $oc = OcHeaderInvoice::where([
+                ['status', '=', 'Draft'],
                 ['shipment_id', null]
             ])
-            ->whereHas('order', function ($query){
-                $query->where('accepted_at', null);
+            ->whereHas('orderCustomerInvoices.orderCustomer', function($query) use($request){
+                $query->where('delivery_at', '=', $request->delivery_at);
             })
-            ->has('customer')
             ->get();
+        $ocBuy = OcHeaderInvoice::where([
+                ['status', '=', 'Draft'],
+                ['shipment_id', null]
+            ])
+            ->has('orderCustomerInvoices', '<', 1)
+            ->whereHas('orderCustomerBuyInvoices.orderCustomerBuy', function($query) use($request){
+                $query->where('buy_at', '=', $request->delivery_at);
+            })
+            ->get();
+
+        $returns = ReHeaderInvoice::where([
+                ['status', '=', 'Draft'],
+                ['shipment_id', null]
+            ])
+            ->has('orderCustomerReturnInvoices')
+            ->whereHas('orderCustomerReturnInvoices.orderCustomerReturn', function($query) use($request){
+                $query->where('return_at', '=', $request->delivery_at);
+            })
+            ->get();
+
+        $orders = collect();
+
+        $oc->each(function($item, $value) use($orders){
+            $item->customer = $item->orderCustomerInvoices[0]->orderCustomer->customer;
+            $item->type = "sales";
+            $orders->push($item);
+        });
+        $ocBuy->each(function($item, $value) use($orders){
+            $item->customer = $item->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer;
+            $item->type = "sales";
+            $orders->push($item);
+        });
+        $returns->each(function($item, $value) use($orders){
+            $item->customer = $item->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
+            $item->type = "return";
+            $orders->push($item);
+        });
+
+        return $orders;
     }
 
     /*======= Do Methods =======*/

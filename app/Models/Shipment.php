@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class Shipment extends Model
 {
@@ -55,7 +56,24 @@ class Shipment extends Model
             ->find($data->driver_id);
 
         if(!$driver){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('driver', 'Driver tidak ditemukan');
+            throw new ValidationException($validator);
+        }
+
+        // Faktur ID Validation //
+        $second_ids = collect();
+        foreach($data->order_ids as $order_id){
+            if(!OcHeaderInvoice::find($order_id)){
+                $second_ids->push($order_id);
+            }
+        }
+        foreach($second_ids as $second_id){
+            if(!ReHeaderInvoice::find($second_id)){
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('order_id', 'Data faktur tidak ditemukan');
+                throw new ValidationException($validator);
+            }
         }
 
         $this->user_id = $driver->id;
@@ -78,20 +96,50 @@ class Shipment extends Model
     }
 
     public function doAddOrderToShipment($data){
+        // Faktur ID Validation //
+        $second_ids = collect();
         foreach($data->order_ids as $order_id){
-            $oc = OrderCustomer::with('order')
-                ->whereHas('order', function($query){
-                    $query->where('accepted_at', null);
-                })
-                ->find($order_id);
+            if(!OcHeaderInvoice::find($order_id)){
+                $second_ids->push($order_id);
+            }
+        }
+        foreach($second_ids as $second_id){
+            if(!ReHeaderInvoice::find($second_id)){
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('order_id', 'Data faktur tidak ditemukan');
+                throw new ValidationException($validator);
+            }
+        }
 
-            if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc->delivery_at)->format('Y-m-d')){
-                return false;
+        foreach($data->order_ids as $order_id){
+            if(OcHeaderInvoice::find($order_id)){
+                $oc = OcHeaderInvoice::find($order_id);
+            }
+            else{
+                $re = ReHeaderInvoice::find($order_id);
             }
 
-            $oc->shipment_id = $this->id;
-            if(!$oc->save()){
-                return false;
+            if(isset($oc)){
+                $oc->shipment_id = $this->id;
+                if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc->delivery_at)->format('Y-m-d')){
+                    $validator = Validator::make([], []); // Empty data and rules fields
+                    $validator->errors()->add('delivery_at', 'Tanggal salah');
+                    throw new ValidationException($validator);
+                }
+                if(!$oc->save()){
+                    return false;
+                }
+            }
+            else if(isset($re)){
+                $re->shipment_id = $this->id;
+                if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($re->delivery_at)->format('Y-m-d')){
+                    $validator = Validator::make([], []); // Empty data and rules fields
+                    $validator->errors()->add('delivery_at', 'Tanggal salah');
+                    throw new ValidationException($validator);
+                }
+                if(!$re->save()){
+                    return false;
+                }
             }
         }
 

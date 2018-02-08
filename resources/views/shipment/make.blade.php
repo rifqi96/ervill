@@ -31,19 +31,13 @@ Buat Pengiriman
 	            <table class="table table-hover" id="customer-order">
 	                <thead>    
 	                	<th><input type="checkbox" class="checkbox" id="select-all"></th>
-		                <th>No</th>
+		                <th>No Faktur</th>
 		                <th>Nama Customer</th>
 		                <th>Alamat Customer</th>
 						<th>No. Telepon</th>
-		                <th>Jumlah (Galon)</th> 
-		                <th>Jumlah Galon Kosong (Galon)</th>
-						<th>Admin</th>
 						<th>Tgl Order</th>
 	                </thead>
 	            </table>
-
-
-            	<p id="gallon_total">Jumlah Galon: 180</p>
 
                 <div class="form-group row">
                     <div class="col-sm-3"></div>
@@ -135,42 +129,34 @@ Buat Pengiriman
                                 headerOffset: $('.site-header').outerHeight()
                             },
                             processing: true,
-                            order:[8, 'desc'],
+                            order:[0, 'desc'],
 							data:result,
 							columns:[
 								{data:null,
 								render:function(data){
                                 	return '<input type="checkbox" class="checkbox order-id" name="order_ids[]" value="'+data.id+'">';
 								}},
-								{data:'id'},
+								{data:null,
+								render: function (data) {
+									if(data.id){
+									    var type = data.type==="sales"?'sales':'return';
+									    return '<a href="/invoice/'+type+'/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+									}
+									return 'No faktur tidak ditemukan';
+                                }},
 								{data:'customer.name'},
 								{data:'customer.address'},
                                 {data:'customer.phone'},
-                                {data:'order.quantity'},
-                                {data:'empty_gallon_quantity'},
-                                {data:null,
-								render: function(data){
-                                	if(data.order.user){
-                                        return data.order.user.full_name;
-									}
-									return '-';
-								}},
                                 {data: null,
                                     render: function (data) {
-                                        if(data.order.created_at){
-                                            return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                                        if(data.created_at){
+                                            return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                         }
                                         return '-';
                                     }
-                                },
+                                }
 							]
                         });
-
-                        var gallon_total = 0;
-                        for(var i in result){
-                            gallon_total += result[i].order.quantity;
-						}
-                        $('#gallon_total').text('Jumlah Galon: ' + gallon_total);
                     }
                 });
 			};

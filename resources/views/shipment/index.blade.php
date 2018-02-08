@@ -172,6 +172,9 @@ Pengiriman
                                     else if(data.status == "Bermasalah"){
                                         return '<span class="label label-danger">Bermasalah</span>';
                                     }
+                                    else if(data.status == "Batal"){
+                                        return '<span class="label label-danger">Batal</span>';
+                                    }
                                     else{
                                         return '<span class="label label-info">Draft</span>';
                                     }
@@ -181,8 +184,10 @@ Pengiriman
                             {data:null,
                             render: function(data){
                                 var gallon_total = 0;
-                                for(var i in data.order_customers){
-                                    gallon_total += data.order_customers[i].order.quantity + data.order_customers[i].additional_quantity;
+                                for(var i in data.oc_header_invoices){
+                                    for(var j in data.oc_header_invoices[i].order_customer_invoices){
+                                        gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
+                                    }
                                 }
 
                                 return gallon_total;
@@ -272,8 +277,10 @@ Pengiriman
                             {data:null,
                                 render: function(data){
                                     var gallon_total = 0;
-                                    for(var i in data.order_customers){
-                                        gallon_total += data.order_customers[i].order.quantity + data.order_customers[i].additional_quantity;
+                                    for(var i in data.oc_header_invoices){
+                                        for(var j in data.oc_header_invoices[i].order_customer_invoices){
+                                            gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
+                                        }
                                     }
 
                                     return gallon_total;
