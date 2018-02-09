@@ -118,7 +118,7 @@ class ShipmentController extends Controller
             ->get();
     }
     public function getShipmentById($shipment_id){
-        return Shipment::with([
+        $shipment = Shipment::with([
             'user',
             'ocHeaderInvoices' => function($query){
                 $query->with([
@@ -139,6 +139,34 @@ class ShipmentController extends Controller
                 $query->has('order');
             }])
             ->find($shipment_id);
+
+        $shipment->details = collect();
+
+        if($shipment->ocHeaderInvoices){
+            foreach($shipment->ocHeaderInvoices as $ocHeaderInvoice){
+                if($ocHeaderInvoice->orderCustomerInvoices->count() > 0){
+                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer;
+                }
+                else if($ocHeaderInvoice->orderCustomerBuyInvoices->count() > 0){
+                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer;
+                }
+
+                $ocHeaderInvoice->type = "sales";
+                $shipment->details->push($ocHeaderInvoice);
+            }
+        }
+
+        if($shipment->reHeaderInvoices){
+            foreach($shipment->reHeaderInvoices as $reHeaderInvoice){
+                if($reHeaderInvoice->orderCustomerReturnInvoices->count() > 0){
+                    $reHeaderInvoice->customer = $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
+                }
+                $reHeaderInvoice->type = "return";
+                $shipment->details->push($reHeaderInvoice);
+            }
+        }
+
+        return $shipment;
     }
     /*======= Do Methods =======*/
     public function doMake(Request $request){
