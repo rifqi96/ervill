@@ -168,7 +168,7 @@
                         {data: 'name'},
                         {data: 'price',
                             render: function (data) {
-                                return numeral(data).format('$0,0.00');
+                                return numeral(data).format('$0,0');
                             }},
                         {data: null,
                             render: function (data) {

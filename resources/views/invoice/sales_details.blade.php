@@ -145,7 +145,7 @@ Detail Faktur
             $('.grand-total').text(grand_total);
             $('.numeral').each(function () {
                 var price = $(this).text();
-                $(this).text(numeral(price).format('$0,0.00'));
+                $(this).text(numeral(price).format('$0,0'));
             });
 
             var changeOnScroll = function () {
