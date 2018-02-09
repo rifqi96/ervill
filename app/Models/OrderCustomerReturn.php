@@ -147,50 +147,54 @@ class OrderCustomerReturn extends Model
     }
 
     public function doCancel(){
-        $customer_gallon = CustomerGallon::with('customer')
+
+        if($this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status=="Selesai"){
+            $customer_gallon = CustomerGallon::with('customer')
             ->where([
                 ['customer_id', $this->customer_id],
                 ['type', 'rent']
             ])
             ->first();
 
-        $empty_gallon = Inventory::find(2);
-        $filled_gallon = Inventory::find(3);
-        $outgoing_gallon = Inventory::find(5);
+            $empty_gallon = Inventory::find(2);
+            $filled_gallon = Inventory::find(3);
+            $outgoing_gallon = Inventory::find(5);
 
-        $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
+            $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
 
-        if(!$customer_gallon){
-            $customer_gallon = new CustomerGallon();
-            $customer_gallon->customer_id = $this->customer_id;
-            $customer_gallon->qty = $returned_gallons;
-            $customer_gallon->type = "rent";
-            if(!$customer_gallon->save()){
+            if(!$customer_gallon){
+                $customer_gallon = new CustomerGallon();
+                $customer_gallon->customer_id = $this->customer_id;
+                $customer_gallon->qty = $returned_gallons;
+                $customer_gallon->type = "rent";
+                if(!$customer_gallon->save()){
+                    return false;
+                }
+            }
+            else{
+                $customer_gallon->qty += $returned_gallons;
+
+                if(!$customer_gallon->save()){
+                    return false;
+                }
+            }
+
+            $empty_gallon->quantity -= $this->empty_gallon_quantity;
+            if(!$empty_gallon->save()){
+                return false;
+            }
+
+            $filled_gallon->quantity -= $this->filled_gallon_quantity;
+            if(!$filled_gallon->save()){
+                return false;
+            }
+
+            $outgoing_gallon->quantity += $returned_gallons;
+            if(!$outgoing_gallon->save()){
                 return false;
             }
         }
-        else{
-            $customer_gallon->qty += $returned_gallons;
-
-            if(!$customer_gallon->save()){
-                return false;
-            }
-        }
-
-        $empty_gallon->quantity -= $this->empty_gallon_quantity;
-        if(!$empty_gallon->save()){
-            return false;
-        }
-
-        $filled_gallon->quantity -= $this->filled_gallon_quantity;
-        if(!$filled_gallon->save()){
-            return false;
-        }
-
-        $outgoing_gallon->quantity += $returned_gallons;
-        if(!$outgoing_gallon->save()){
-            return false;
-        }
+        
 
         $this->status = 'Batal';
 

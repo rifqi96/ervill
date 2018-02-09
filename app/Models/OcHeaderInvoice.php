@@ -163,6 +163,10 @@ class OcHeaderInvoice extends Model
         //     $this->status = 'Selesai';
         // }   
         if(count($this->orderCustomerBuyInvoices)>0){
+            // if(!$this->orderCustomerBuyInvoices[0]->orderCustomerBuy->doConfirm()){//salah, kalo ada 2 order yang menunjuk ke satu faktur
+            //     return false;
+            // }
+
             foreach ($this->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
                 if(!$orderCustomerBuyInvoice->orderCustomerBuy->doConfirm()){
                     return false;
@@ -177,14 +181,27 @@ class OcHeaderInvoice extends Model
     public function doCancelTransaction(){
           
         if(count($this->orderCustomerInvoices)>0){
+            // if(!$this->orderCustomerInvoices[0]->orderCustomer->doCancel()){/////masih salah yang nomor faktur klo 2 order
+            //     return false;
+            // }
+            $orderCustomerArr = array();
             foreach ($this->orderCustomerInvoices as $orderCustomerInvoice) {
-                if(!$orderCustomerInvoice->orderCustomer->doCancel()){
-                    return false;
+                
+                if( !in_array($orderCustomerInvoice->order_customer_id, $orderCustomerArr) ){
+                    array_push($orderCustomerArr, $orderCustomerInvoice->order_customer_id);
+                    if(!$orderCustomerInvoice->orderCustomer->doCancel()){
+                        return false;
+                    }
                 }
+                
             }
             
         }
         if(count($this->orderCustomerBuyInvoices)>0){
+            // if(!$this->orderCustomerBuyInvoices[0]->orderCustomerBuy->doCancel()){
+            //     return false;
+            // }
+
             foreach ($this->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
                 if(!$orderCustomerBuyInvoice->orderCustomerBuy->doCancel()){
                     return false;

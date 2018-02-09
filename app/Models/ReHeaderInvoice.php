@@ -84,11 +84,15 @@ class ReHeaderInvoice extends Model
         //     $this->status = 'Selesai';
         // }   
         if(count($this->orderCustomerReturnInvoices)>0){
-            foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
-                if(!$orderCustomerReturnInvoice->orderCustomerReturn->doConfirm()){
-                    return false;
-                }
+            if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
+                return false;
             }
+
+            // foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+            //     if(!$orderCustomerReturnInvoice->orderCustomerReturn->doConfirm()){
+            //         return false;
+            //     }
+            // }
             
         }
         // if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doConfirm()){
@@ -101,11 +105,17 @@ class ReHeaderInvoice extends Model
 
     public function doCancelTransaction(){
           
-        foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
-            if(!$orderCustomerReturnInvoice->orderCustomerReturn->doCancel()){
+        if(count($this->orderCustomerReturnInvoices)>0){
+            if(!$this->orderCustomerReturnInvoices[0]->orderCustomerReturn->doCancel()){
                 return false;
             }
         }
+
+        // foreach ($this->orderCustomerReturnInvoices as $orderCustomerReturnInvoice) {
+        //     if(!$orderCustomerReturnInvoice->orderCustomerReturn->doCancel()){
+        //         return false;
+        //     }
+        // }
         
         $this->status = 'Batal';  
         return $this->save();

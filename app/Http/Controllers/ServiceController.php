@@ -175,10 +175,16 @@ class ServiceController extends Controller
                 //if($shipment->orderCustomers){
                     foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
                         foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                     
+                            
+                            //galon isi
+                            if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
+                                 $gallon_quantity += $orderCustomerInvoice->quantity;
+                             }
+
+
                             //calculate amount of gallons in an order
-                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->order->quantity;
-                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->additional_quantity;
+                            //$gallon_quantity += $orderCustomerInvoice->quantity;
+                            //$gallon_quantity += $orderCustomerInvoice->orderCustomer->additional_quantity;
                         }                                 
                         
                     }
@@ -420,17 +426,31 @@ class ServiceController extends Controller
         })->where('id', $request->order_id)->first();
 
         if( $header_invoice ){
-            foreach ($header_invoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                 $gallon_qty += ($orderCustomerInvoice->orderCustomer->order->quantity + $orderCustomerInvoice->orderCustomer->additional_quantity);
+            // $gallon_qty += ($header_invoice->orderCustomerInvoices[0]->orderCustomer->order->quantity + $header_invoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity);
 
-                 $ervill_empty_gallon_qty += $orderCustomerInvoice->orderCustomer->empty_gallon_quantity;
-                 
-                 if($orderCustomerInvoice->orderCustomer->purchase_type == "non_ervill"){
-                    if($orderCustomerInvoice->orderCustomer->is_new=="true"){
-                        $non_ervill_empty_gallon_qty += $orderCustomerInvoice->orderCustomer->order->quantity;
-                    }else if($orderCustomerInvoice->orderCustomer->is_new=="false"){
-                        $non_ervill_empty_gallon_qty += $orderCustomerInvoice->orderCustomer->additional_quantity;
-                    }
+             //  $ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->empty_gallon_quantity;
+             
+             // if($header_invoice->orderCustomerInvoices[0]->orderCustomer->purchase_type == "non_ervill"){
+             //    if($header_invoice->orderCustomerInvoices[0]->orderCustomer->is_new=="true"){
+             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->order->quantity;
+             //    }else if($header_invoice->orderCustomerInvoices[0]->orderCustomer->is_new=="false"){
+             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity;
+             //    }
+             // }
+            foreach ($header_invoice->orderCustomerInvoices as $orderCustomerInvoice) {
+
+                //galon isi
+                if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
+                     $gallon_qty += $orderCustomerInvoice->quantity;
+                 }
+
+                 //isi ulang
+                 if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="8"){
+                    $ervill_empty_gallon_qty += $orderCustomerInvoice->quantity;
+                 }
+                 //tukar galon non_ervill
+                 if($orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="10"){
+                    $non_ervill_empty_gallon_qty += $orderCustomerInvoice->quantity;
                  }
 
                  $total += $orderCustomerInvoice->subtotal;
@@ -439,6 +459,7 @@ class ServiceController extends Controller
                  $customer_phone = $orderCustomerInvoice->orderCustomer->customer->phone;
                  
             }
+
 
             foreach ($header_invoice->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
                 $total += $orderCustomerBuyInvoice->subtotal;
@@ -837,10 +858,15 @@ class ServiceController extends Controller
                 //if($shipment->orderCustomers){
                     foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
                         foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
-                     
+                            
+                            //galon isi
+                            if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
+                                 $gallon_quantity += $orderCustomerInvoice->quantity;
+                             }
+                            
                             //calculate amount of gallons in an order
-                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->order->quantity;
-                            $gallon_quantity += $orderCustomerInvoice->orderCustomer->additional_quantity;
+                            // $gallon_quantity += $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->order->quantity;
+                            // $gallon_quantity += $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity;
                         }                                 
                         
                     }
