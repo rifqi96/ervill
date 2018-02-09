@@ -181,15 +181,20 @@ class OcHeaderInvoice extends Model
     public function doCancelTransaction(){
           
         if(count($this->orderCustomerInvoices)>0){
-            if(!$this->orderCustomerInvoices[0]->orderCustomer->doCancel()){/////masih salah yang nomor faktur klo 2 order
-                return false;
-            }
-
-            // foreach ($this->orderCustomerInvoices as $orderCustomerInvoice) {
-            //     if(!$orderCustomerInvoice->orderCustomer->doCancel()){
-            //         return false;
-            //     }
+            // if(!$this->orderCustomerInvoices[0]->orderCustomer->doCancel()){/////masih salah yang nomor faktur klo 2 order
+            //     return false;
             // }
+            $orderCustomerArr = array();
+            foreach ($this->orderCustomerInvoices as $orderCustomerInvoice) {
+                
+                if( !in_array($orderCustomerInvoice->order_customer_id, $orderCustomerArr) ){
+                    array_push($orderCustomerArr, $orderCustomerInvoice->order_customer_id);
+                    if(!$orderCustomerInvoice->orderCustomer->doCancel()){
+                        return false;
+                    }
+                }
+                
+            }
             
         }
         if(count($this->orderCustomerBuyInvoices)>0){

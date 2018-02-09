@@ -185,55 +185,57 @@ class OrderCustomerBuy extends Model
     }
 
     public function doCancel(){
-        $customer_gallon_rent = CustomerGallon::with([
-            'customer'
-        ])
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'rent']
+        if($this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status=="Selesai"){
+            $customer_gallon_rent = CustomerGallon::with([
+                'customer'
             ])
-            ->first();
+                ->where([
+                    ['customer_id', $this->customer_id],
+                    ['type', 'rent']
+                ])
+                ->first();
 
-        $customer_gallon_purchase = CustomerGallon::with([
-            'customer'
-        ])
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'purchase']
+            $customer_gallon_purchase = CustomerGallon::with([
+                'customer'
             ])
-            ->first();
+                ->where([
+                    ['customer_id', $this->customer_id],
+                    ['type', 'purchase']
+                ])
+                ->first();
 
-        if(!$customer_gallon_purchase){
-            return false;
-        }
+            if(!$customer_gallon_purchase){
+                return false;
+            }
 
-        if(!$customer_gallon_rent){
-            $customer_gallon_rent = new CustomerGallon();
-            $customer_gallon_rent->customer_id = $this->customer_id;
-            $customer_gallon_rent->qty = $this->quantity;
-            $customer_gallon_rent->type="rent";
-        }else{
-            $customer_gallon_rent->qty += $this->quantity;
-        }
-        
-        $customer_gallon_purchase->qty -= $this->quantity;
+            if(!$customer_gallon_rent){
+                $customer_gallon_rent = new CustomerGallon();
+                $customer_gallon_rent->customer_id = $this->customer_id;
+                $customer_gallon_rent->qty = $this->quantity;
+                $customer_gallon_rent->type="rent";
+            }else{
+                $customer_gallon_rent->qty += $this->quantity;
+            }
+            
+            $customer_gallon_purchase->qty -= $this->quantity;
 
-        if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
-            return false;
-        }
+            if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
+                return false;
+            }
 
-        $outgoing_gallon = Inventory::find(5);
-        $sold_gallon = Inventory::find(7);
+            $outgoing_gallon = Inventory::find(5);
+            $sold_gallon = Inventory::find(7);
 
-        if(!$outgoing_gallon || !$sold_gallon){
-            return false;
-        }
+            if(!$outgoing_gallon || !$sold_gallon){
+                return false;
+            }
 
-        $outgoing_gallon->quantity += $this->quantity;
-        $sold_gallon->quantity -= $this->quantity;
+            $outgoing_gallon->quantity += $this->quantity;
+            $sold_gallon->quantity -= $this->quantity;
 
-        if(!$outgoing_gallon->save() || !$sold_gallon->save()){
-            return false;
+            if(!$outgoing_gallon->save() || !$sold_gallon->save()){
+                return false;
+            }
         }
 
         
@@ -243,55 +245,57 @@ class OrderCustomerBuy extends Model
     }
 
     public function doDelete(){
-        $customer_gallon_rent = CustomerGallon::with([
-            'customer'
-        ])
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'rent']
+        if($this->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status=="Selesai"){
+            $customer_gallon_rent = CustomerGallon::with([
+                'customer'
             ])
-            ->first();
+                ->where([
+                    ['customer_id', $this->customer_id],
+                    ['type', 'rent']
+                ])
+                ->first();
 
-        $customer_gallon_purchase = CustomerGallon::with([
-            'customer'
-        ])
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'purchase']
+            $customer_gallon_purchase = CustomerGallon::with([
+                'customer'
             ])
-            ->first();
+                ->where([
+                    ['customer_id', $this->customer_id],
+                    ['type', 'purchase']
+                ])
+                ->first();
 
-        if(!$customer_gallon_purchase){
-            return false;
-        }
+            if(!$customer_gallon_purchase){
+                return false;
+            }
 
-        if(!$customer_gallon_rent){
-            $customer_gallon_rent = new CustomerGallon();
-            $customer_gallon_rent->customer_id = $this->customer_id;
-            $customer_gallon_rent->qty = $this->quantity;
-            $customer_gallon_rent->type="rent";
-        }else{
-            $customer_gallon_rent->qty += $this->quantity;
-        }
-        
-        $customer_gallon_purchase->qty -= $this->quantity;
+            if(!$customer_gallon_rent){
+                $customer_gallon_rent = new CustomerGallon();
+                $customer_gallon_rent->customer_id = $this->customer_id;
+                $customer_gallon_rent->qty = $this->quantity;
+                $customer_gallon_rent->type="rent";
+            }else{
+                $customer_gallon_rent->qty += $this->quantity;
+            }
+            
+            $customer_gallon_purchase->qty -= $this->quantity;
 
-        if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
-            return false;
-        }
+            if(!$customer_gallon_rent->save() || !$customer_gallon_purchase->save()){
+                return false;
+            }
 
-        $outgoing_gallon = Inventory::find(5);
-        $sold_gallon = Inventory::find(7);
+            $outgoing_gallon = Inventory::find(5);
+            $sold_gallon = Inventory::find(7);
 
-        if(!$outgoing_gallon || !$sold_gallon){
-            return false;
-        }
+            if(!$outgoing_gallon || !$sold_gallon){
+                return false;
+            }
 
-        $outgoing_gallon->quantity += $this->quantity;
-        $sold_gallon->quantity -= $this->quantity;
+            $outgoing_gallon->quantity += $this->quantity;
+            $sold_gallon->quantity -= $this->quantity;
 
-        if(!$outgoing_gallon->save() || !$sold_gallon->save()){
-            return false;
+            if(!$outgoing_gallon->save() || !$sold_gallon->save()){
+                return false;
+            }
         }
 
         //delete oc_buy_invoice_detail
