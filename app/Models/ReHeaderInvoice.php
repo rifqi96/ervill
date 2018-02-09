@@ -52,7 +52,7 @@ class ReHeaderInvoice extends Model
         $this->has_order = false;
         $this->filled_gallon = 0;
         $this->empty_gallon = 0;
-        $this->status = 'Selesai';
+        $this->return_status = 'Selesai';
         if($this->orderCustomerReturnInvoices->count() > 0){
             $this->has_order = true;
             if($this->orderCustomerReturnInvoices[0]->orderCustomerReturn && $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer){
@@ -65,7 +65,6 @@ class ReHeaderInvoice extends Model
                 foreach($this->orderCustomerReturnInvoices as $ocReturn){
                     $this->filled_gallon += $ocReturn->orderCustomerReturn->filled_gallon_quantity;
                     $this->empty_gallon += $ocReturn->orderCustomerReturn->empty_gallon_quantity;
-                    $this->status = $ocReturn->orderCustomerReturn->status;
                 }
             }
         }

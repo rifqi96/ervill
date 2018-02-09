@@ -140,7 +140,7 @@ Buat Pengiriman
 								render: function (data) {
 									if(data.id){
 									    var type = data.type==="sales"?'sales':'return';
-									    return '<a href="/invoice/'+type+'/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+									    return '<a href="/invoice/'+type+'/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.id+'</a>';
 									}
 									return 'No faktur tidak ditemukan';
                                 }},

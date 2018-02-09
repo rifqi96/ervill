@@ -21,7 +21,7 @@ Detail Faktur
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Logistik Gudang
+                    Logistik Gudang - {{$invoice->status}}
                 </header>
                 <div class="card-block invoice">
                     <div class="row">

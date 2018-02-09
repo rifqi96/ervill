@@ -139,13 +139,13 @@ class OcHeaderInvoice extends Model
             }
         }
 
-        $this->status = "LUNAS";
+        $this->payment_status_txt = "LUNAS";
 
         if($this->payment_status == "piutang"){
-            $this->status = "PIUTANG";
+            $this->payment_status_txt = "PIUTANG";
         }
         else if($this->is_free == "true"){
-            $this->status = "FREE atau SAMPLE";
+            $this->payment_status_txt = "FREE atau SAMPLE";
         }
     }
 

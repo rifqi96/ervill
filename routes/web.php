@@ -229,6 +229,16 @@ Route::prefix('order')->group(function(){
                     'as' => 'order.customer.buy.do.make'
                 ]);
 
+                Route::post('confirm', [
+                    'uses' => 'OrderCustomerBuyController@doConfirm',
+                    'as' => 'order.customer.buy.do.confirm'
+                ]);
+
+                Route::post('cancel', [
+                    'uses' => 'OrderCustomerBuyController@doCancel',
+                    'as' => 'order.customer.buy.do.cancel'
+                ]);
+
                 Route::post('delete', [
                     'uses' => 'OrderCustomerBuyController@doDelete',
                     'as' => 'order.customer.buy.do.delete'
@@ -264,6 +274,11 @@ Route::prefix('return')->group(function(){
         Route::post('cancel', [
             'uses' => 'OrderCustomerReturnController@doCancel',
             'as' => 'return.do.cancel'
+        ]);
+
+        Route::post('delete', [
+            'uses' => 'OrderCustomerReturnController@doDelete',
+            'as' => 'return.do.delete'
         ]);
     });
 

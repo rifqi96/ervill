@@ -71,7 +71,7 @@ Pengiriman
                         <label for="delivery-at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="delivery-at">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group status">
                         <label for="status"><strong>Status</strong></label>
                         <p class="form-control-static">
                             <select id="status" name="status" class="form-control">
@@ -314,7 +314,7 @@ Pengiriman
                                     var shipment_url = "{{route("shipment.track", ":id")}}";
                                     shipment_url = shipment_url.replace(':id', data.id);
                                     return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
-                                        '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                        '<button type="button" class="btn btn-sm edit-modal finished" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
                                         '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
                                 }}
                         ]
@@ -350,9 +350,11 @@ Pengiriman
 
             // On Edit Button //
             $('#unfinished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                $('#editModal .status').show();
                 editModal($(this));
             });
             $('#finished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                $('#editModal .status').hide();
                 editModal($(this));
             });
         });

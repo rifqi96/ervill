@@ -216,6 +216,9 @@ class InvoiceController extends Controller
                         'price'
                     ]);
                     $query->has('orderCustomerBuy');
+                    $query->whereHas('ocHeaderInvoice', function ($query){
+                        $query->where('status', 'Selesai');
+                    });
                 }
             ])
             ->whereHas('orderCustomerInvoices.orderCustomer', function ($query) use($start_date, $end_date){

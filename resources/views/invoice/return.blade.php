@@ -98,6 +98,9 @@
                             else if(data == "Batal"){
                                 return '<span class="label label-danger">Batal</span>';
                             }
+                            else if(data == "Bermasalah"){
+                                return '<span class="label label-danger">Bermasalah</span>';
+                            }
 
                             return '<span class="label label-info">Draft</span>';
                         }},

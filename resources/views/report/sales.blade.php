@@ -141,13 +141,13 @@
                     {data: null,
                         render: function (data) {
                             if(data.order_customer){
-                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" target="_blank">'+data.oc_header_invoice_id+'</a>';
+                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
                             }
                             else if(data.order_customer_buy){
-                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" target="_blank">'+data.oc_header_invoice_id+'</a>';
+                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
                             }
                             else if(data.order_customer_return){
-                                return '<a href="/invoice/return/id/'+data.re_header_invoice_id+'" target="_blank">'+data.re_header_invoice_id+'</a>';
+                                return '<a href="/invoice/return/id/'+data.re_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.re_header_invoice_id+'</a>';
                             }
                             return 'Data tidak ditemukan';
                         }

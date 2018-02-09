@@ -13,6 +13,7 @@
             <table class="table table-hover" id="cash_invoices">
                 <thead>
                 <th>No Faktur</th>
+                <th>Status</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -31,6 +32,7 @@
             <table class="table table-hover" id="piutang_invoices">
                 <thead>
                 <th>No Faktur</th>
+                <th>Status</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -49,6 +51,7 @@
             <table class="table table-hover" id="free_invoices">
                 <thead>
                 <th>No Faktur</th>
+                <th>Status</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -139,6 +142,23 @@
                     data:data,
                     columns: [
                         {data: 'id'},
+                        {data: 'status',
+                            render: function (data) {
+                                if(data == "Selesai"){
+                                    return '<span class="label label-success">Selesai</span>';
+                                }
+                                else if(data == "Proses"){
+                                    return '<span class="label label-warning">Proses</span>';
+                                }
+                                else if(data == "Batal"){
+                                    return '<span class="label label-danger">Batal</span>';
+                                }
+                                else if(data == "Bermasalah"){
+                                    return '<span class="label label-danger">Bermasalah</span>';
+                                }
+
+                                return '<span class="label label-info">Draft</span>';
+                            }},
                         {data: null,
                         render: function (data) {
                             if(data.has_order){

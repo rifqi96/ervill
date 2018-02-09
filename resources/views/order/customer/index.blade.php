@@ -388,8 +388,7 @@ List Pesanan Customer
                             render: function(data, type, row, meta){
                                 var result = "";
                                 if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
-                                    result += '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Faktur</button></a>' +
-                                        '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
+                                    result += '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
                                 }
 
                                 if(data.status != "Draft"){
@@ -420,33 +419,35 @@ List Pesanan Customer
                                 return result;
                             }
                         },
-                        {data: null,
+                        {data: 'status',
                             render: function(data, type, row, meta){
-                                if(data.status == "Selesai"){
+                                if(data == "Selesai"){
                                     return '<span class="label label-success">Selesai</span>';
                                 }
-                                else if(data.status == "Proses"){
+                                else if(data == "Proses"){
                                     return '<span class="label label-warning">Proses</span>';
                                 }
-                                else if(data.status == "Bermasalah"){
+                                else if(data == "Bermasalah"){
                                     return '<span class="label label-danger">Bermasalah</span>';
                                 }
-                                else{
-                                    return '<span class="label label-info">Draft</span>';
+                                else if(data == "Batal"){
+                                    return '<span class="label label-danger">Batal</span>';
                                 }
+
+                                return '<span class="label label-info">Draft</span>';
                             }},
                         {data: 'id'},
                         {data: null,
                             render: function(data){
                                 if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
-                                    return data.order_customer_invoices[0].oc_header_invoice_id;
+                                    return '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.order_customer_invoices[0].oc_header_invoice.id+'</a>';
                                 }
                                 return '<i>Data nomor faktur tidak ditemukan</i>';
                             }},
                         {data: null,
                             render: function(data){
                                 if(data.customer){
-                                    return data.customer.name;
+                                    return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                                 }
                                 return '<i>Data customer tidak ditemukan</i>';
                             }},

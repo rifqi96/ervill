@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\OrderCustomerReturn;
+use Carbon\Carbon;
 
 class OrderCustomerReturnController extends Controller
 {
@@ -31,8 +32,31 @@ class OrderCustomerReturnController extends Controller
 
     /*======= Get Methods =======*/
     public function getAll(){
-        return OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice'])
+        $oc_returns = OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice'])
             ->get();
+
+        foreach($oc_returns as $oc_return){
+            $oc_return->type = "return";
+            $oc_return->user = $oc_return->author;
+            $oc_return->invoice_no = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->id;
+            $oc_return->status = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->status;
+        }
+
+        return $oc_returns;
+    }
+
+    public function getRecentOrders(){
+        $oc_returns = OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice'])
+            ->whereDate('return_at', '=', Carbon::today()->toDateString())
+            ->get();
+        foreach($oc_returns as $oc_return){
+            $oc_return->type = "return";
+            $oc_return->user = $oc_return->author;
+            $oc_return->invoice_no = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->id;
+            $oc_return->status = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->status;
+        }
+
+        return $oc_returns;
     }
 
     /*======= Do Methods =======*/

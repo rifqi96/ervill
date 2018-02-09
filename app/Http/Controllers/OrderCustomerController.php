@@ -9,6 +9,7 @@ use App\Models\OrderCustomer;
 use App\Models\Inventory;
 use App\Models\CustomerGallon;
 use App\Models\Issue;
+use Carbon\Carbon;
 
 class OrderCustomerController extends OrderController
 {
@@ -58,7 +59,7 @@ class OrderCustomerController extends OrderController
 
     /*======= Get Methods =======*/
     public function getAll(){
-        return OrderCustomer::with([
+        $ocs = OrderCustomer::with([
             'shipment' => function($query){
                 $query->with(['user']);
             },
@@ -72,10 +73,44 @@ class OrderCustomerController extends OrderController
             ])
             ->has('order')
             ->get();
+
+        foreach($ocs as $oc){
+            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+        }
+
+        return $ocs;
+    }
+
+    public function getRecentOrders(){
+        $ocs = OrderCustomer::with([
+            'shipment' => function($query){
+                $query->with(['user']);
+            },
+            'customer',
+            'order' => function($query){
+                $query->with(['user', 'issues']);
+            }
+        ])
+//            ->whereHas('order', function ($query){
+//                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
+//            })
+            ->has('order')
+            ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
+            ->get();
+
+        foreach($ocs as $oc){
+            $oc->type = "sales";
+            $oc->user = $oc->order->user;
+            $oc->updated_at = Carbon::parse($oc->order->updated_at)->format('Y-m-d H:i:s');
+            $oc->invoice_no = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->id;
+            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+        }
+
+        return $ocs;
     }
 
     public function get($id){
-        return OrderCustomer::with([
+        $oc = OrderCustomer::with([
             'shipment' => function($query){
                 $query->with(['user']);
             },
@@ -86,6 +121,10 @@ class OrderCustomerController extends OrderController
             ])
             ->has('order')
             ->find($id);
+
+        $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+
+        return $oc;
     }
 
     public function getUnshippedOrders(Request $request){

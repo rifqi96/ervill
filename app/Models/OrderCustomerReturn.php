@@ -91,13 +91,17 @@ class OrderCustomerReturn extends Model
         $outgoing_gallon = Inventory::find(5);
 
         if(!$customer_gallon){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('customer', 'Gagal Retur, customer tidak memiliki galon pinjam');
+            throw new ValidationException($validator);
         }
 
         $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
 
         if($returned_gallons > $customer_gallon->qty){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('customer', 'Gagal Retur, jumlah galon retur melibihi kapasitas pinjam customer');
+            throw new ValidationException($validator);
         }
 
         $empty_gallon->quantity += $this->empty_gallon_quantity;

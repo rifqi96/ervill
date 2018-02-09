@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\OrderCustomerBuy;
 use App\Models\OcHeaderInvoice;
+use Carbon\Carbon;
 
 class OrderCustomerBuyController extends OrderCustomerController
 {
@@ -32,8 +33,31 @@ class OrderCustomerBuyController extends OrderCustomerController
 
     /*======= Get Methods =======*/
     public function getAll(){
-        return OrderCustomerBuy::with(['customer', 'author','orderCustomerBuyInvoices'])
+        $ocs = OrderCustomerBuy::with(['customer', 'author','orderCustomerBuyInvoices' => function($query){
+            $query->with('ocHeaderInvoice');
+        }])
             ->get();
+
+        foreach($ocs as $oc){
+            $oc->status = $oc->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status;
+        }
+
+        return $ocs;
+    }
+
+    public function getRecentOrders(){
+        $oc_buys = OrderCustomerBuy::with('customer')
+            ->whereDate('buy_at', '=', Carbon::today()->toDateString())
+            ->get();
+
+        foreach($oc_buys as $oc_buy){
+            $oc_buy->type = "sales";
+            $oc_buy->user = $oc_buy->author;
+            $oc_buy->invoice_no = $oc_buy->orderCustomerBuyInvoices[0]->ocHeaderInvoice->id;
+            $oc_buy->status = $oc_buy->orderCustomerBuyInvoices[0]->ocHeaderInvoice->status;
+        }
+
+        return $oc_buys;
     }
 
     /*======= Do Methods =======*/
@@ -53,19 +77,35 @@ class OrderCustomerBuyController extends OrderCustomerController
             ->with('success', 'Data telah berhasil dibuat');
     }
 
-    public function doDelete(Request $request){
+    public function doConfirm(Request $request){
+        $this->validate($request, [
+            'id' => 'required|integer|exists:order_customer_buys,id'
+        ]);
+
+        $return = OrderCustomerBuy::find($request->id);
+
+        if(!$return->doConfirm()){
+            return back()
+                ->withErrors(['message' => 'Gagal konfirmasi order']);
+        }
+
+        return back()
+            ->with('success', 'Galon pinjam telah berhasil dibeli');
+    }
+
+    public function doCancel(Request $request){
         $this->validate($request, [
             'id' => 'required|integer|exists:order_customer_buys,id'
         ]);
 
         $buy = OrderCustomerBuy::find($request->id);
 
-        if(!$buy->doDelete()){
+        if(!$buy->doCancel()){
             return back()
-                ->withErrors(['message' => 'Gagal menghapus data']);
+                ->withErrors(['message' => 'Gagal membatalkan order']);
         }
 
         return back()
-            ->with('success', 'Data telah berhasil dihapus');
+            ->with('success', 'Order telah berhasil dibatalkan');
     }
 }

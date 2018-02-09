@@ -168,6 +168,12 @@ class Shipment extends Model
 
         $old_data = $this->toArray();
 
+        $status_state = "";
+
+        if( ($this->status == "Draft" || $this->status == "Proses") && $data->status == "Selesai"){
+            $status_state = "Finish";
+        }
+
         $this->user_id = $data->driver_id;
         $this->delivery_at = $data->delivery_at;
         $this->status = $data->status;
@@ -190,8 +196,16 @@ class Shipment extends Model
                         return false;
                     }
                 }
-                if(!$ocHeaderInvoice->save()){
-                    return false;
+
+                if($status_state != "" && $status_state == "Finish"){
+                    if(!$ocHeaderInvoice->doDropGallon()){
+                        return false;
+                    }
+                }
+                else{
+                    if(!$ocHeaderInvoice->save()){
+                        return false;
+                    }
                 }
             }
         }
@@ -206,8 +220,16 @@ class Shipment extends Model
                         return false;
                     }
                 }
-                if(!$reHeaderInvoice->save()){
-                    return false;
+
+                if($status_state != "" && $status_state == "Finish"){
+                    if(!$reHeaderInvoice->doDropGallon()){
+                        return false;
+                    }
+                }
+                else{
+                    if(!$reHeaderInvoice->save()){
+                        return false;
+                    }
                 }
             }
         }

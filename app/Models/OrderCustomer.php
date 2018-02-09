@@ -40,24 +40,6 @@ class OrderCustomer extends Model
         return $this->hasMany('App\Models\OrderCustomerInvoice');
     }
 
-    public function getRecentOrders(){
-        return $this->with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            }
-            ])
-//            ->whereHas('order', function ($query){
-//                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
-//            })
-            ->has('order')
-            ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
-            ->get();
-    }
-
     public function doMake($gallon_data, $author_id)
     {
 
@@ -668,6 +650,14 @@ class OrderCustomer extends Model
     }
 
     public function doDelete($description, $author_id){
+
+        if($this->status == "Batal"){
+            if(!$this->doAddToDeleteHistory($description, $author_id)){
+                return false;
+            }
+            return $this->order->doDelete();
+        }
+
         $empty_gallon = Inventory::find(2);
         $filled_gallon = Inventory::find(3);
         $broken_gallon = Inventory::find(4);
