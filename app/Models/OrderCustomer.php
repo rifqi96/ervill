@@ -160,22 +160,24 @@ class OrderCustomer extends Model
         //edit nomor_struk
 
         //check whether invalid nomor_struk
-        $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
-            $query->where('oc_header_invoice_id',$data->nomor_struk);
-        })
-        ->where([
-            ['customer_id',$data->customer_id],
-            ['status','Draft'],
-            ['delivery_at',$data->delivery_at]
-        ])->get();
+        if($this->orderCustomerInvoices[0]->oc_header_invoice_id!=$data->nomor_struk){
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
+                $query->where('oc_header_invoice_id',$data->nomor_struk);
+            })
+            ->where([
+                ['customer_id',$data->customer_id],
+                ['status','Draft'],
+                ['delivery_at',$data->delivery_at]
+            ])->get();
 
-        if(count($oc_struk)==0){       
-            //nomor_struk exception  
-            $validator = Validator::make([], []); // Empty data and rules fields
-            $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
-            throw new ValidationException($validator);
-            
-            //return false;
+            if(count($oc_struk)==0){       
+                //nomor_struk exception  
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+                throw new ValidationException($validator);
+                
+                //return false;
+            }
         }
        
         ///////////////////validation finish//////////////////////
