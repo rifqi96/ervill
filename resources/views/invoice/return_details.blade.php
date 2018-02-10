@@ -46,7 +46,7 @@ Detail Retur
                                 <h5>Nomor Faktur {{$invoice->id}}</h5>
                                 @if($invoice->has_order)
                                 <div>
-                                    Tanggal Pengiriman:
+                                    Tgl Pengiriman:
                                     <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
                                 </div>
                                 @endif
