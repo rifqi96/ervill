@@ -50,12 +50,13 @@ class CustomerController extends SettingController
 
     public function doUpdate(Request $request)
     {
-        $customer = Customer::select('id','name','address','phone')->find($request->id);
+        $customer = Customer::select('id','name','address','phone','gallon_quantity')->find($request->id);
 
         $this->validate($request, [
             'name' => 'required|string',
             'phone' => 'required|string|digits_between:3,14',
             'address' => 'required|string',
+            'gallon_quantity' => 'required|integer',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 

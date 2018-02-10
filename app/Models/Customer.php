@@ -35,15 +35,28 @@ class Customer extends Model
         $this->name = $data->name;
         $this->address = $data->address;
         $this->phone = $data->phone;
+        $this->gallon_quantity = 0;
 
         return ($this->save());
     }
 
     public function doUpdate($data)
     {
+        //retur galon
+        $outgoing_gallon = Inventory::find(4);
+        $outgoing_gallon->quantity += ($data->gallon_quantity - $this->gallon_quantity);
+        $outgoing_gallon->save();
+
+        $empty_gallon = Inventory::find(1);
+        $empty_gallon->quantity -= ($data->gallon_quantity - $this->gallon_quantity);
+        $empty_gallon->save();
+
         $this->name = $data->name;
         $this->address = $data->address;
         $this->phone = $data->phone;
+        $this->gallon_quantity = $data->gallon_quantity;
+
+
 
         return ($this->save());
     }

@@ -55,6 +55,12 @@ class OrderCustomer extends Model
     {
         $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
 
+        if(!$gallon_data->empty_gallon){
+            $customer = Customer::find($customer_id);
+            $customer->gallon_quantity += $gallon_data->quantity;
+            $customer->save();
+        }
+
         if(!$order_data){
             return false;
         }
@@ -93,6 +99,19 @@ class OrderCustomer extends Model
 
         $outgoing_gallon_change = ($data->quantity - $this->order->quantity) - ($data->empty_gallon_quantity - $this->empty_gallon_quantity);
         $outgoing_gallon->quantity += $outgoing_gallon_change;
+
+        //customer gallon
+        $customer = $this->customer;
+        if($this->customer_id == $data->customer_id){            
+            $customer->gallon_quantity += $outgoing_gallon_change;            
+        }else{
+            $customer->gallon_quantity -= $this->order->quantity - $this->empty_gallon_quantity;
+
+            $customerNew = Customer::find($data->customer_id);
+            $customerNew->gallon_quantity += ($data->quantity - $data->empty_gallon_quantity);
+            $customerNew->save();
+        }
+        $customer->save();
 
         $old_data = $this->toArray();
 

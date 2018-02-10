@@ -53,6 +53,10 @@ List Customer
                         <input id="phone" type="text" class="form-control" name="phone">
                     </div>    
                     <div class="form-group">
+                        <label for="gallon_quantity"><strong>Jumlah Galon</strong></label>
+                        <input id="gallon_quantity" type="number" class="form-control" name="gallon_quantity" min="0">
+                    </div> 
+                    <div class="form-group">
                         <label for="description"><strong>Alasan Mengubah Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                     </div>                                       
@@ -110,6 +114,7 @@ List Customer
                         $('#name').val(customers[i].name);
                         $('#address').val(customers[i].address);
                         $('#phone').val(customers[i].phone);
+                        $('#gallon_quantity').val(customers[i].gallon_quantity);
                         $('#input_id').val(customers[i].id);
                     }
                 }
@@ -146,7 +151,8 @@ List Customer
                                 'id': row.id,
                                 'name': row.name,
                                 'address': row.address,
-                                'phone': row.phone
+                                'phone': row.phone,
+                                'gallon_quantity': row.gallon_quantity
                             });
                             return '<button class="btn btn-sm detail-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Edit</button>'+
                                 '<button type="button" class="btn btn-sm btn-danger delete-btn" data-toggle="modal" data-target="#deleteModal" data-index="' + row.id + '">Delete</button>';
