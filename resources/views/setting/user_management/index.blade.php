@@ -189,7 +189,7 @@ List User
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                order:[6, 'desc'],
+                order:[0, 'desc'],
                 ajax: {
                     url: '/getUsers',
                     dataSrc: ''

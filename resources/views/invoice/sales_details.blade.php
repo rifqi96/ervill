@@ -46,8 +46,12 @@ Detail Faktur
                                 <h5>Nomor Faktur {{$invoice->id}}</h5>
                                 @if($invoice->has_order)
                                 <div>
-                                    Tanggal Pengiriman:
+                                    Tgl Pengiriman:
                                     <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
+                                </div>
+                                <div>
+                                    Tgl Pembayaran:
+                                    <b class="payment-at">{{ $invoice->payment_status && $invoice->is_free == "false" ? \Carbon\Carbon::parse($invoice->payment_date)->format('d-m-Y H:i:s') : '-' }}</b>
                                 </div>
                                 @endif
                             </div>
