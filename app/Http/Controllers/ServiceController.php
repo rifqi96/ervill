@@ -253,7 +253,7 @@ class ServiceController extends Controller
                     if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
-                            'Type' => 'order',
+                            'type' => 'order',
                             'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
                             'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
                             'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone         
@@ -357,7 +357,7 @@ class ServiceController extends Controller
                     if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
-                            'Type' => 'order',
+                            'type' => 'order',
                             'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
                             'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
                             'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone,
@@ -468,7 +468,9 @@ class ServiceController extends Controller
                 $customer_phone = $orderCustomerBuyInvoice->orderCustomerBuy->customer->phone;
             }
         
-    
+            if($header_invoice->is_free=="true"){
+                $total = 0;
+            }
     
 	    	$order_issues = array();
 
