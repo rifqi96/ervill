@@ -36,10 +36,10 @@ class Shipment extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
-    public function orderCustomers()
-    {
-        return $this->hasMany('App\Models\OrderCustomer');
-    }
+    // public function orderCustomers()
+    // {
+    //     return $this->hasMany('App\Models\OrderCustomer');
+    // }
     public function ocHeaderInvoices()
     {
         return $this->hasMany('App\Models\OcHeaderInvoice');
