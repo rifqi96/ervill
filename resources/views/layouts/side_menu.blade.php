@@ -6,10 +6,10 @@
         </a>
     </li>
     <li class="with-sub {{$module=="order"?"opened":""}}">
-                <span>
-                    <i class="font-icon font-icon-wallet"></i>
-                    <span class="lbl">Order</span>
-                </span>
+        <span>
+            <i class="font-icon font-icon-cart-2"></i>
+            <span class="lbl">Pesanan</span>
+        </span>
         <ul>
             <li>
                 {!!$slug=="gallon"?'<span class="lbl">Galon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Galon</span></a>'!!}
@@ -34,24 +34,69 @@
             <span class="lbl">Retur Galon</span>
         </a>
     </li>
+    <li class="with-sub {{$module=="invoice"?"opened":""}}">
+        <span>
+            <i class="font-icon font-icon-card"></i>
+            <span class="lbl">
+                Faktur
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$module=="invoice" && $slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('invoice.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
+            </li>
+            <li>
+                {!!$module=="invoice" && $slug=="return"?'<span class="lbl">Retur</span>':'<a href="'.route("invoice.return.index").'"><span class="lbl">Retur</span></a>'!!}
+            </li>
+        </ul>
+    </li>
+    <li class="with-sub {{$module=="report"?"opened":""}}">
+        <span>
+            <i class="font-icon font-icon-doc"></i>
+            <span class="lbl">
+                Laporan
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$module=="report" && $slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('report.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
+            </li>
+        </ul>
+    </li>
     <li class="{{$module=="inventory"?"opened":""}}">
         <a href="{{route('inventory.index')}}">
             <i class="font-icon font-icon-archive"></i>
             <span class="lbl">Inventori</span>
         </a>
     </li>
-    <li class="{{$slug=="customers"?"opened":""}}">
-        <a href="{{route("setting.customers.index")}}">
-            <i class="font-icon font-icon-users"></i>
-            <span class="lbl">Customer</span>
+    <li class="{{$module=="price"?"opened":""}}">
+        <a href="{{route('price.index')}}">
+            <i class="font-icon font-icon-list-square"></i>
+            <span class="lbl">Daftar Harga</span>
         </a>
+    </li>
+    <li class="with-sub {{$module=="customers"?"opened":""}}">
+        <span>
+            <i class="font-icon font-icon-users"></i>
+            <span class="lbl">
+                Customer
+            </span>
+        </span>
+        <ul>
+            <li>
+                {!!$slug=="list"?'<span class="lbl">Daftar Customer</span>':'<a href="'.route('setting.customers.index').'"><span class="lbl">Daftar Customer</span></a>'!!}
+            </li>
+            <li>
+                {!!$slug=="overdue"?'<span class="lbl">Customer Overdue</span>':'<a href="'.route("setting.customers.overdue").'"><span class="lbl">Customer Overdue</span></a>'!!}
+            </li>
+        </ul>
     </li>
     @if(auth()->user()->role->name == 'superadmin')
     <li class="with-sub {{$module=="history"?"opened":""}}">
-                <span>
-                    <i class="font-icon font-icon-clock"></i>
-                    <span class="lbl">History</span>
-                </span>
+        <span>
+            <i class="font-icon font-icon-clock"></i>
+            <span class="lbl">History</span>
+        </span>
         <ul>
             <li>
                 {!!$slug=="edit_history"?'<span class="lbl">Edit History</span>':'<a href="'.route("history.edit.index").'"><span class="lbl">Edit History</span></a>'!!}

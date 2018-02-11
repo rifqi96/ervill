@@ -55,6 +55,16 @@ class ShipmentController extends Controller
     public function getAllFinished(){
         return Shipment::with([
             'user',
+            'ocHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                ]);
+            },
+            'reHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturnInvoices'
+                ]);
+            },
             'orderCustomers'=> function($query){
                 $query->with('order');
                 $query->has('order');
@@ -66,6 +76,16 @@ class ShipmentController extends Controller
     public function getAllUnfinished(){
         return Shipment::with([
             'user',
+            'ocHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                ]);
+            },
+            'reHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturnInvoices'
+                ]);
+            },
             'orderCustomers'=> function($query){
                 $query->with('order');
                 $query->has('order');
@@ -76,6 +96,16 @@ class ShipmentController extends Controller
     public function getAvailableShipmentsByDate(Request $request){
         return Shipment::with([
             'user',
+            'ocHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                ]);
+            },
+            'reHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturnInvoices'
+                ]);
+            },
             'orderCustomers'=> function($query){
                 $query->with('order');
                 $query->has('order');
@@ -88,21 +118,61 @@ class ShipmentController extends Controller
             ->get();
     }
     public function getShipmentById($shipment_id){
-        return Shipment::with(['user', 'orderCustomers' => function($query){
-            $query->with([
+        $shipment = Shipment::with([
+            'user',
+            'ocHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                ]);
+            },
+            'reHeaderInvoices' => function($query){
+                $query->with([
+                    'orderCustomerReturnInvoices'
+                ]);
+            },
+            'orderCustomers' => function($query){
+                $query->with([
                 'order' => function($query){
                     $query->with('user');
                 },
                 'customer']);
-            $query->has('order');
+                $query->has('order');
             }])
             ->find($shipment_id);
+
+        $shipment->details = collect();
+
+        if($shipment->ocHeaderInvoices){
+            foreach($shipment->ocHeaderInvoices as $ocHeaderInvoice){
+                if($ocHeaderInvoice->orderCustomerInvoices->count() > 0){
+                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer;
+                }
+                else if($ocHeaderInvoice->orderCustomerBuyInvoices->count() > 0){
+                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer;
+                }
+
+                $ocHeaderInvoice->type = "sales";
+                $shipment->details->push($ocHeaderInvoice);
+            }
+        }
+
+        if($shipment->reHeaderInvoices){
+            foreach($shipment->reHeaderInvoices as $reHeaderInvoice){
+                if($reHeaderInvoice->orderCustomerReturnInvoices->count() > 0){
+                    $reHeaderInvoice->customer = $reHeaderInvoice->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
+                }
+                $reHeaderInvoice->type = "return";
+                $shipment->details->push($reHeaderInvoice);
+            }
+        }
+
+        return $shipment;
     }
     /*======= Do Methods =======*/
     public function doMake(Request $request){
         if($request->submit_type == "new"){
             $this->validate($request, [
-                'order_ids' => 'exists:order_customers,id',
+                'order_ids' => 'required',
                 'driver_id' => 'required|exists:users,id',
                 'delivery_at' => 'required|date'
             ]);
@@ -115,7 +185,7 @@ class ShipmentController extends Controller
         }
         else if($request->submit_type == "add"){
             $this->validate($request, [
-                'order_ids' => 'required|exists:order_customers,id',
+                'order_ids' => 'required',
                 'shipment_id' => 'required|exists:shipments,id',
                 'delivery_at' => 'required|date'
             ]);

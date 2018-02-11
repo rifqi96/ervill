@@ -229,6 +229,16 @@ Route::prefix('order')->group(function(){
                     'as' => 'order.customer.buy.do.make'
                 ]);
 
+                Route::post('confirm', [
+                    'uses' => 'OrderCustomerBuyController@doConfirm',
+                    'as' => 'order.customer.buy.do.confirm'
+                ]);
+
+                Route::post('cancel', [
+                    'uses' => 'OrderCustomerBuyController@doCancel',
+                    'as' => 'order.customer.buy.do.cancel'
+                ]);
+
                 Route::post('delete', [
                     'uses' => 'OrderCustomerBuyController@doDelete',
                     'as' => 'order.customer.buy.do.delete'
@@ -264,6 +274,26 @@ Route::prefix('return')->group(function(){
         Route::post('cancel', [
             'uses' => 'OrderCustomerReturnController@doCancel',
             'as' => 'return.do.cancel'
+        ]);
+
+        Route::post('delete', [
+            'uses' => 'OrderCustomerReturnController@doDelete',
+            'as' => 'return.do.delete'
+        ]);
+    });
+
+});
+
+Route::prefix('price')->group(function(){
+    Route::get('/', [
+        'uses' => 'PriceController@index',
+        'as' => 'price.index'
+    ]);
+
+    Route::prefix('do')->group(function(){
+        Route::post('update', [
+            'uses' => 'PriceController@doUpdate',
+            'as' => 'price.do.update'
         ]);
     });
 
@@ -389,9 +419,17 @@ Route::prefix('setting')->group(function(){
             'uses' => 'CustomerController@index',
             'as' => 'setting.customers.index'
         ]);
-        Route::get('/create', [
+        Route::get('create', [
             'uses' => 'CustomerController@showMake',
             'as' => 'setting.customers.make'
+        ]);
+        Route::get('overdue', [
+            'uses' => 'CustomerController@showOverdue',
+            'as' => 'setting.customers.overdue'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'CustomerController@showDetails',
+            'as' => 'setting.customers.details'
         ]);
 
         Route::prefix('do')->group(function(){
@@ -409,6 +447,55 @@ Route::prefix('setting')->group(function(){
             ]);
         });
 
+    });
+});
+
+Route::prefix('invoice')->group(function (){
+    Route::prefix('sales')->group(function (){
+        Route::get('', [
+            'uses' => 'InvoiceController@showSales',
+            'as' => 'invoice.sales.index'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'InvoiceController@showSalesDetails',
+            'as' => 'invoice.sales.details'
+        ]);
+        Route::get('wh/id/{id}', [
+            'uses' => 'InvoiceController@showSalesWHDetails',
+            'as' => 'invoice.sales.wh.details'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('pay', [
+                'uses' => 'InvoiceController@doPay',
+                'as' => 'invoice.sales.do.pay'
+            ]);
+        });
+    });
+
+    Route::prefix('return')->group(function (){
+        Route::get('', [
+            'uses' => 'InvoiceController@showReturn',
+            'as' => 'invoice.return.index'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'InvoiceController@showReturnDetails',
+            'as' => 'invoice.return.details'
+        ]);
+    });
+});
+
+Route::prefix('report')->group(function (){
+    Route::prefix('sales')->group(function (){
+        Route::get('', [
+            'uses' => 'ReportController@showSales',
+            'as' => 'report.sales.index'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('filter', [
+                'uses' => 'ReportController@filterBy',
+                'as' => 'report.sales.do.filterby'
+            ]);
+        });
     });
 });
 

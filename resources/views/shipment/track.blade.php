@@ -122,16 +122,10 @@ Detil Pesanan
 			  <table class="table table-hover" id="customer-order">
 				  <thead>
 				  <th>Status</th>
-				  <th>No</th>
+				  <th>No Faktur</th>
 				  <th>Nama Customer</th>
 				  <th>No. Telepon</th>
 				  <th>Alamat Customer</th>
-				  <th>Galon Isi Keluar</th>
-				  <th>Galon Masuk Kosong Ervill</th>
-                  <th>Galon Masuk Kosong Non Ervill</th>
-				  <th>Tgl Order</th>
-				  <th>Tgl Penerimaan</th>
-				  <th>Admin</th>
 				  </thead>
 			  </table>
 		  </div>
@@ -157,8 +151,8 @@ Detil Pesanan
                         scrollY: 400,
                         scrollCollapse: true,
                         processing: true,
-                        order:[8, 'desc'],
-                        data:result.order_customers,
+                        order:[1, 'desc'],
+                        data:result.details,
                         columns:[
                             {data: null,
                                 render: function(data, type, row, meta){
@@ -171,93 +165,54 @@ Detil Pesanan
                                     else if(data.status == "Bermasalah"){
                                         return '<span class="label label-danger">Bermasalah</span>';
                                     }
+                                    else if(data.status == "Batal"){
+                                        return '<span class="label label-danger">Batal</span>';
+                                    }
                                     else{
                                         return '<span class="label label-info">Draft</span>';
                                     }
                                 }},
-                            {data: 'id'},
                             {data: null,
+                                render: function (data) {
+                                    if(data.id){
+                                        if(data.type == "sales"){
+                                            return '<a href="/invoice/sales/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+                                        }
+                                        else{
+                                            return '<a href="/invoice/return/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+                                        }
+                                    }
+                                    return 'Data tidak ditemukan';
+                                }
+                            },
+                            {data: 'customer',
                                 render: function(data){
-                                    if(data.customer){
-                                        return data.customer.name;
+                                    if(data){
+                                        return data.name;
                                     }
                                     return '<i>Data customer tidak ditemukan</i>';
                                 }},
-                            {data: null,
+                            {data: 'customer',
                                 render: function(data){
-                                    if(data.customer){
-                                        return data.customer.phone;
+                                    if(data){
+                                        return data.phone;
                                     }
                                     return '<i>Data customer tidak ditemukan</i>';
                                 }},
-                            {data: null,
+                            {data: 'customer',
                                 render: function(data){
-                                    if(data.customer){
-                                        return data.customer.address;
+                                    if(data){
+                                        return data.address;
                                     }
                                     return '<i>Data customer tidak ditemukan</i>';
-                                }},
-                            {data: null,
-                                render: function (data) {
-                                    return data.additional_quantity+data.order.quantity;
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.purchase_type == 'non_ervill'){
-                                        if(data.is_new == 'true'){
-                                            return 0;
-                                        }
-                                        else if(data.is_new == 'false'){
-                                            return data.order.quantity;
-                                        }
-                                    }
-
-                                    return data.empty_gallon_quantity;
-                                }},
-                            {data: null,
-                                render: function (data) {
-                                    if(data.purchase_type == 'non_ervill'){
-                                        if(data.is_new == 'true'){
-                                            return data.order.quantity;
-                                        }
-                                        else if(data.is_new == 'false'){
-                                            return data.additional_quantity;
-                                        }
-                                    }
-
-                                    return 0;
-                                }},
-                            {data: null,
-                                render: function (data) {
-                                    if(data.order.created_at){
-                                        return moment(data.order.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.order.accepted_at){
-                                        return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function(data){
-                                    if(data.order.user){
-                                        return data.order.user.full_name;
-                                    }
-                                    return '<i>Data admin tidak ditemukan</i>';
-                                }},
+                                }}
                         ]
                     });
                 }
 			});
 
             var delivery_at = $('.delivery_at').text();
-            $('.delivery_at').text(moment(delivery_at).locale('id').format('DD MMMM YYYY'));
+            $('.delivery_at').text(moment(delivery_at).locale('id').format('DD/MM/YYYY'));
         });
 	</script>
 

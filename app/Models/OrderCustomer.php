@@ -10,6 +10,8 @@ use App\Models\DeleteHistory;
 use Illuminate\Support\Collection;
 use PhpParser\ErrorHandler\Collecting;
 use App\Models\CustomerGallon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class OrderCustomer extends Model
 {
@@ -33,69 +35,57 @@ class OrderCustomer extends Model
     {
         return $this->belongsTo('App\Models\Shipment');
     }
-
-    public function getRecentOrders(){
-        return $this->with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            }
-            ])
-//            ->whereHas('order', function ($query){
-//                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
-//            })
-            ->has('order')
-            ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
-            ->get();
+    public function orderCustomerInvoices()
+    {
+        return $this->hasMany('App\Models\OrderCustomerInvoice');
     }
 
-    public function doMake($gallon_data, $customer_id, $author_id)
+    public function doMake($gallon_data, $author_id)
     {
+
+        /////////////validation start////////////////
+
         if($gallon_data->change_nomor_struk){
 
-
-            $oc_struk = OrderCustomer::where([
-                ['customer_id',$customer_id],
-                ['nomor_struk',$gallon_data->nomor_struk]
+            //check whether invalid nomor_struk
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($gallon_data){
+                $query->where('oc_header_invoice_id',$gallon_data->nomor_struk);
+            })
+            ->where([
+                ['customer_id',$gallon_data->customer_id],
+                ['status','Draft'],
+                ['delivery_at',$gallon_data->delivery_at]
             ])->get();
 
             if(count($oc_struk)==0){
-                return false;
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+                throw new ValidationException($validator);
+                //return false;
             }
-            $this->nomor_struk = $gallon_data->nomor_struk;
+        }           
+
+
+        //////////////////////validation finish////////////////////
+        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $author_id);
+        
+        if($gallon_data->new_customer){        
+            $customer = (new Customer())->doMake($gallon_data);         
+            $customerGallon = (new CustomerGallon())->doMake($gallon_data,$customer->id);
         }else{
-            //get latest nomor struk
-            $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
-            if($latest_nomor_struk_str){
-                $new_nomor_struk = (string)((int)substr($latest_nomor_struk_str,2)+1);
-                while( strlen($new_nomor_struk) < 7 ){
-                    $new_nomor_struk = '0'.$new_nomor_struk;
-                }
-                $this->nomor_struk = 'OC'.$new_nomor_struk;
-            }else{
-                $this->nomor_struk = 'OC0000001';
-            }
-        }    
-
-        $order_data = (new Order)->doMakeOrderCustomer($gallon_data, $customer_id, $author_id);
-
-        if(!$order_data){
-            return false;
+            $customer = Customer::find($gallon_data->customer_id);
         }
-
-
+        
 
         $this->order_id = $order_data->id;
-        $this->customer_id = $customer_id;
+        $this->customer_id = $customer->id;
         if($gallon_data->new_customer){
             $this->empty_gallon_quantity = 0;
             $this->purchase_type = $gallon_data->purchase_type;
             $this->is_new = 'true';
         }else{
             $this->empty_gallon_quantity = $gallon_data->quantity;
+            $this->is_new = 'false';
         }
         if($gallon_data->add_gallon){
             $this->additional_quantity = $gallon_data->add_gallon_quantity;
@@ -103,12 +93,25 @@ class OrderCustomer extends Model
         }
         $this->delivery_at = $gallon_data->delivery_at;
         $this->status = "Draft";
-
         
-        
+        $this->save();
 
+        if($gallon_data->change_nomor_struk){            
+            $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $gallon_data->nomor_struk);
+            //refill and add gallon
+            if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+                $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $gallon_data->nomor_struk, true);
+            }
+        }else{
+            $oc_header_invoice = (new OcHeaderInvoice())->doMake($gallon_data);
+            $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $oc_header_invoice->id);
+            //refill and add gallon
+            if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+                $orderCustomerInvoice = (new OrderCustomerInvoice())->doMake($this, $oc_header_invoice->id, true);
+            }
+        }
 
-        return $this->save();
+        return true;
     }
 
     public function doUpdate($data)
@@ -131,20 +134,39 @@ class OrderCustomer extends Model
         // }
 
         $old_data = $this->toArray();
+        $old_data['oc_header_invoice_id'] = $this->orderCustomerInvoices[0]['oc_header_invoice_id'];
+       
         
         $filled_gallon->quantity = ($filled_gallon->quantity + $this->order->quantity) - $data->quantity;
 
         //edit nomor_struk
 
-        $oc_struk = OrderCustomer::where([
-            ['customer_id',$this->customer->id],
-            ['nomor_struk',$data->nomor_struk]
-        ])->get();
+        //check whether invalid nomor_struk
+        if($this->orderCustomerInvoices[0]->oc_header_invoice_id!=$data->nomor_struk){
+            $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
+                $query->where('oc_header_invoice_id',$data->nomor_struk);
+            })
+            ->where([
+                ['customer_id',$data->customer_id],
+                ['status','Draft'],
+                ['delivery_at',$data->delivery_at]
+            ])->get();
 
-        if(count($oc_struk)==0){
-            return false;
+            if(count($oc_struk)==0){       
+                //nomor_struk exception  
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('nomor_struk', 'Input nomor faktur salah, mohon diperiksa kembali');
+                throw new ValidationException($validator);
+                
+                //return false;
+            }
         }
-        $this->nomor_struk = $data->nomor_struk;
+       
+        ///////////////////validation finish//////////////////////
+
+        //$this->nomor_struk = $data->nomor_struk;
+
+       
 
         //change customer
         if($this->customer_id != $data->customer_id){
@@ -530,6 +552,22 @@ class OrderCustomer extends Model
         // $this->status = $data->status;
         //$this->customer_id = $data->customer_id;
 
+        //change no struk      
+        //delete previous data
+        foreach($this->orderCustomerInvoices as $orderCustomerInvoice){       
+            $orderCustomerInvoice->delete();            
+        }
+
+        //create new invoice details
+        $oc = new OrderCustomerInvoice();
+        $oc->doMake($this, $data->nomor_struk);        
+        //refill and add gallon
+        if($this->purchase_type && $this->is_new=="false" && $this->order->quantity!=0){
+            $oc_both = new OrderCustomerInvoice();
+            $oc_both->doMake($this, $data->nomor_struk, true);
+        }
+
+
         if(!$this->order->save() || !$empty_gallon->save() || !$filled_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$sold_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
             return false;
         }
@@ -538,7 +576,7 @@ class OrderCustomer extends Model
 
     public function doAddToEditHistory($old_data, $data){
         //set old values
-
+        
         $old_data['customer_name'] = $old_data['customer']['name'];
         $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
@@ -556,6 +594,7 @@ class OrderCustomer extends Model
         unset($old_data['customer']);
 
         $old_value = '';
+        $old_value .= $old_data['oc_header_invoice_id'] . ';';
         $old_value .= $old_data['quantity'] . ';';
         $old_value .= $old_data['additional_quantity']. ';';
         $old_value .= $old_data['purchase_type']. ';';
@@ -577,6 +616,7 @@ class OrderCustomer extends Model
         unset($new_value_obj['_token']);
         unset($new_value_obj['description']);
         $new_value = '';
+        $new_value .= $new_value_obj['nomor_struk'] . ';'; 
         $new_value .= $new_value_obj['quantity'] . ';';    
         if($new_value_obj['add_gallon_quantity'] == null){
             $new_value_obj['add_gallon_quantity'] = 0;
@@ -595,7 +635,7 @@ class OrderCustomer extends Model
             $new_value .= $new_value_obj['delivery_at']. ';';
             $new_value .= $new_value_obj['customer_name'];
         //}
-        
+       
 
         $edit_data = array(
             'module_name' => 'Order Customer',
@@ -610,6 +650,14 @@ class OrderCustomer extends Model
     }
 
     public function doDelete($description, $author_id){
+
+        if($this->status == "Batal"){
+            if(!$this->doAddToDeleteHistory($description, $author_id)){
+                return false;
+            }
+            return $this->order->doDelete();
+        }
+
         $empty_gallon = Inventory::find(2);
         $filled_gallon = Inventory::find(3);
         $broken_gallon = Inventory::find(4);
@@ -1343,6 +1391,163 @@ class OrderCustomer extends Model
         );
 
         return EditHistory::create($edit_data);
+    }
+
+    /////////api////////////
+    public function doCancel(){
+        $empty_gallon = Inventory::find(2);
+        $filled_gallon = Inventory::find(3);
+        $broken_gallon = Inventory::find(4);
+        $outgoing_gallon = Inventory::find(5);
+        $non_ervill_gallon = Inventory::find(6);
+        $sold_gallon = Inventory::find(7);
+
+        // if($this->order->issues){
+        //     foreach($this->order->issues as $issue){
+        //         if($issue->type == "Refund Gallon"){
+        //             $broken_gallon->quantity -= $issue->quantity;
+        //             $filled_gallon->quantity += $issue->quantity;
+        //         }
+        //         else if($issue->type == "Kesalahan Customer" ){
+        //             $broken_gallon->quantity -= $issue->quantity;
+        //             $empty_gallon->quantity += $issue->quantity;
+        //         }else if($issue->type == "Cancel Transaction"){
+        //             $empty_gallon->quantity += $this->empty_gallon_quantity;
+        //             $filled_gallon->quantity -= $issue->quantity;
+        //             if($this->purchase_type=="rent"){
+        //                 $outgoing_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
+        //             }else if($this->purchase_type=="non_ervill"){
+        //                 $non_ervill_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
+        //             }
+        //             else if($this->purchase_type=="purchase"){
+        //                 $sold_gallon->quantity += ($issue->quantity - $this->empty_gallon_quantity);
+        //             }
+                    
+        //         }
+        //     }
+        // }
+
+        $filled_gallon->quantity += ($this->order->quantity + $this->additional_quantity);
+        $empty_gallon->quantity -= $this->empty_gallon_quantity;
+        if($this->purchase_type=="rent"){
+            $outgoing_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
+        }else if($this->purchase_type=="non_ervill"){
+            $non_ervill_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
+        }else if($this->purchase_type=="purchase"){
+            $sold_gallon->quantity -= ($this->order->quantity + $this->additional_quantity - $this->empty_gallon_quantity);
+        }
+        
+
+        // if($empty_gallon->quantity<0){
+        //     $empty_gallon->quantity = 0;
+        // }
+        // else if($broken_gallon->quantity<0){
+        //     $broken_gallon->quantity = 0;
+        // }
+        // else if($filled_gallon->quantity<0){
+        //     $filled_gallon->quantity = 0;
+        // }
+
+        if($this->is_new=='false') {
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->additional_quantity;
+
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+
+                            } else {
+                                $customerGallon->save();
+
+                            }
+
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "purchase") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "purchase") {
+                            $customerGallon->qty -= $this->additional_quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "non_ervill") {
+//                        $non_ervill_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->additional_quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }else if($this->is_new=='true'){
+            if ($this->purchase_type) {
+                if ($this->purchase_type == "rent") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "rent") {
+//                        $outgoing_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->order->quantity;
+
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+
+                            } else {
+                                $customerGallon->save();
+
+                            }
+
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "purchase") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "purchase") {
+                            $customerGallon->qty -= $this->order->quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                } else if ($this->purchase_type == "non_ervill") {
+                    foreach ($this->customer->customerGallons as $customerGallon) {
+                        if ($customerGallon->type == "non_ervill") {
+//                        $non_ervill_gallon->quantity -= $this->additional_quantity;
+                            $customerGallon->qty -= $this->order->quantity;
+                            if ($customerGallon->qty == 0) {
+                                $customerGallon->delete();
+                            } else {
+                                $customerGallon->save();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        if(!$filled_gallon->save() || !$empty_gallon->save() || !$broken_gallon->save() || !$outgoing_gallon->save() || !$non_ervill_gallon->save() || !$sold_gallon->save() ){
+            return false;
+        }
+        return true;
     }
 
     //test

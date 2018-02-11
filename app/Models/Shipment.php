@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class Shipment extends Model
 {
@@ -38,6 +40,14 @@ class Shipment extends Model
     {
         return $this->hasMany('App\Models\OrderCustomer');
     }
+    public function ocHeaderInvoices()
+    {
+        return $this->hasMany('App\Models\OcHeaderInvoice');
+    }
+    public function reHeaderInvoices()
+    {
+        return $this->hasMany('App\Models\ReHeaderInvoice');
+    }
 
     public function doMake($data){
         $driver = User::with('role')
@@ -47,7 +57,24 @@ class Shipment extends Model
             ->find($data->driver_id);
 
         if(!$driver){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('driver', 'Driver tidak ditemukan');
+            throw new ValidationException($validator);
+        }
+
+        // Faktur ID Validation //
+        $second_ids = collect();
+        foreach($data->order_ids as $order_id){
+            if(!OcHeaderInvoice::find($order_id)){
+                $second_ids->push($order_id);
+            }
+        }
+        foreach($second_ids as $second_id){
+            if(!ReHeaderInvoice::find($second_id)){
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('order_id', 'Data faktur tidak ditemukan');
+                throw new ValidationException($validator);
+            }
         }
 
         $this->user_id = $driver->id;
@@ -55,35 +82,71 @@ class Shipment extends Model
         $this->status = 'Draft';
 
         if($data->order_ids){
-            if(!$this->save() || !$this->doAddOrderToShipment($data)){
+            if(!$this->save()){
                 return false;
             }
 
-            return $this;
-        }
-
-        if(!$this->save()){
-            return false;
+            if(!$this->doAddOrderToShipment($data)){
+                return false;
+            }
         }
 
         return $this;
     }
 
     public function doAddOrderToShipment($data){
+        // Faktur ID Validation //
         foreach($data->order_ids as $order_id){
-            $oc = OrderCustomer::with('order')
-                ->whereHas('order', function($query){
-                    $query->where('accepted_at', null);
-                })
-                ->find($order_id);
+            if($oc = OcHeaderInvoice::find($order_id)){
+                if($oc->orderCustomerInvoices->count() > 0){
+                    foreach($oc->orderCustomerInvoices as $oc_invoice){
+                        if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc_invoice->orderCustomer->delivery_at)->format('Y-m-d')){
+                            $validator = Validator::make([], []); // Empty data and rules fields
+                            $validator->errors()->add('delivery_at', 'Tanggal salah');
+                            throw new ValidationException($validator);
+                        }
+                        if(!$oc_invoice->orderCustomer->save()){
+                            return false;
+                        }
+                    }
+                }
 
-            if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc->delivery_at)->format('Y-m-d')){
-                return false;
+                if($oc->orderCustomerBuyInvoices->count() > 0){
+                    foreach($oc->orderCustomerBuyInvoices as $oc_invoice){
+                        if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc_invoice->orderCustomerBuy->buy_at)->format('Y-m-d')){
+                            $validator = Validator::make([], []); // Empty data and rules fields
+                            $validator->errors()->add('delivery_at', 'Tanggal salah');
+                            throw new ValidationException($validator);
+                        }
+                        if(!$oc_invoice->orderCustomerBuy->save()){
+                            return false;
+                        }
+                    }
+                }
+
+                $oc->shipment_id = $this->id;
+                if(!$oc->save()){
+                    return false;
+                }
             }
-
-            $oc->shipment_id = $this->id;
-            if(!$oc->save()){
-                return false;
+            else{
+                $re = ReHeaderInvoice::find($order_id);
+                if($re->orderCustomerReturnInvoices->count() > 0){
+                    foreach($re->orderCustomerReturnInvoices as $re_invoice){
+                        if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($re_invoice->orderCustomerReturn->return_at)->format('Y-m-d')){
+                            $validator = Validator::make([], []); // Empty data and rules fields
+                            $validator->errors()->add('delivery_at', 'Tanggal salah');
+                            throw new ValidationException($validator);
+                        }
+                        if(!$re_invoice->orderCustomerReturn->save()){
+                            return false;
+                        }
+                    }
+                }
+                $re->shipment_id = $this->id;
+                if(!$re->save()){
+                    return false;
+                }
             }
         }
 
@@ -98,25 +161,81 @@ class Shipment extends Model
             ->find($data->driver_id);
 
         if(!$driver){
-            return false;
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('driver_id', 'User driver tidak ditemukan');
+            throw new ValidationException($validator);
         }
 
         $old_data = $this->toArray();
+
+        $status_state = "";
+
+        if( ($this->status == "Draft" || $this->status == "Proses") && $data->status == "Selesai"){
+            $status_state = "Finish";
+        }
 
         $this->user_id = $data->driver_id;
         $this->delivery_at = $data->delivery_at;
         $this->status = $data->status;
 
-        if(!$this->save() || !$this->doAddToEditHistory($old_data, $data)){
-            return false;
+        // for OC and OC BUY
+        if($this->ocHeaderInvoices->count() > 0){
+            foreach($this->ocHeaderInvoices as $ocHeaderInvoice){
+                $ocHeaderInvoice->status = $this->status;
+                // for OC
+                foreach($ocHeaderInvoice->orderCustomerInvoices as $oc_invoice){
+                    $oc_invoice->orderCustomer->delivery_at = $this->delivery_at;
+                    if(!$oc_invoice->orderCustomer->save()){
+                        return false;
+                    }
+                }
+                // for OC BUY
+                foreach($ocHeaderInvoice->orderCustomerBuyInvoices as $oc_invoice){
+                    $oc_invoice->orderCustomerBuy->buy_at = $this->delivery_at;
+                    if(!$oc_invoice->orderCustomerBuy->save()){
+                        return false;
+                    }
+                }
+
+                if($status_state != "" && $status_state == "Finish"){
+                    if(!$ocHeaderInvoice->doDropGallon()){
+                        return false;
+                    }
+                }
+                else{
+                    if(!$ocHeaderInvoice->save()){
+                        return false;
+                    }
+                }
+            }
         }
 
-        foreach($this->orderCustomers as $oc){
-            $oc->delivery_at = $this->delivery_at;
-            $oc->status = $this->status;
-            if(!$oc->save()){
-                return false;
+        // for OC Return
+        if($this->reHeaderInvoices->count() > 0){
+            foreach($this->reHeaderInvoices as $reHeaderInvoice){
+                $reHeaderInvoice->status = $this->status;
+                foreach($reHeaderInvoice->orderCustomerReturnInvoices as $oc_invoice){
+                    $oc_invoice->orderCustomerReturn->return_at = $this->delivery_at;
+                    if(!$oc_invoice->orderCustomerReturn->save()){
+                        return false;
+                    }
+                }
+
+                if($status_state != "" && $status_state == "Finish"){
+                    if(!$reHeaderInvoice->doDropGallon()){
+                        return false;
+                    }
+                }
+                else{
+                    if(!$reHeaderInvoice->save()){
+                        return false;
+                    }
+                }
             }
+        }
+
+        if(!$this->save() || !$this->doAddToEditHistory($old_data, $data)){
+            return false;
         }
 
         return true;
@@ -130,15 +249,26 @@ class Shipment extends Model
             'user_id' => auth()->user()->id
         );
 
-        if(!$this->delete() || !DeleteHistory::create($data)) {
-            return false;
+        if($this->ocHeaderInvoices){
+            foreach($this->ocHeaderInvoices as $ocHeaderInvoice){
+                $ocHeaderInvoice->shipment_id = null;
+                if(!$ocHeaderInvoice->save()){
+                    return false;
+                }
+            }
         }
 
-        foreach($this->orderCustomers as $oc){
-            $oc->shipment_id = null;
-            if(!$oc->save()){
-                return false;
+        if($this->reHeaderInvoices){
+            foreach($this->reHeaderInvoices as $reHeaderInvoice){
+                $reHeaderInvoice->shipment_id = null;
+                if(!$reHeaderInvoice->save()){
+                    return false;
+                }
             }
+        }
+
+        if(!$this->delete() || !DeleteHistory::create($data)) {
+            return false;
         }
 
         return true;
@@ -166,8 +296,13 @@ class Shipment extends Model
     public function doFinishShipment(){
 
         //check if there are still any ongoing shipment
-        foreach($this->orderCustomers as $orderCustomer){
-            if($orderCustomer->status == 'Proses'){
+        foreach($this->ocHeaderInvoices as $ocHeaderInvoice){
+            if($ocHeaderInvoice->status == 'Proses'){
+                return false;
+            }
+        }
+        foreach($this->reHeaderInvoices as $reHeaderInvoice){
+            if($reHeaderInvoice->status == 'Proses'){
                 return false;
             }
         }

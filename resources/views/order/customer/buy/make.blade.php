@@ -35,11 +35,24 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">No. Struk</label>
+                    <div class="form-group row" id="nomor_struk_checkbox_div">
+                        <label class="col-sm-2 form-control-label" for="change_nomor_struk">Ganti Nomor Faktur ?</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input id="nomor_struk" type="text" class="form-control" name="no_struk"></p>
+                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="change_nomor_struk" id="change_nomor_struk" value="change_nomor_struk"></p>
                         </div>
+                    </div>
+                    <div class="form-group row" id="nomor_struk_div">
+                        <label class="col-sm-2 form-control-label">Nomor Faktur</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static">
+                                <select name="nomor_struk" id="nostruk" class="form-control select2">
+                                    <option value="">-- Silahkan Pilih --</option>
+                                    @foreach($struks as $struk)
+                                        <option value="{{$struk->id}}">{{$struk->id}}</option>
+                                    @endforeach
+                                </select>
+                            </p>
+                        </div>                        
                     </div>
 
                     <div class="form-group row">
@@ -111,6 +124,8 @@
         $(document).ready(function () {
             var customers = [];
 
+            $('#nomor_struk_div').hide(); 
+
             $('#customer-table').dataTable({
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
@@ -171,6 +186,17 @@
                         }
 
                     }
+                }
+            });
+
+            $('#change_nomor_struk').on('change',function(){
+                if(this.checked){
+                    $('#nomor_struk_div').fadeIn();  
+
+                }
+                else{
+                    $('#nomor_struk_div').fadeOut(); 
+                    
                 }
             });
         });

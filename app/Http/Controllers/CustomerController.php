@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\EditHistory;
@@ -12,22 +13,41 @@ class CustomerController extends SettingController
     public function __construct(){
         parent::__construct();
         $this->middleware('SuperadminAndAdmin');
-        $this->data['module'] = '';
-        $this->data['slug'] = 'customers';
+        $this->data['module'] = 'customers';
     }
 
     public function index()
     {
-        $this->data['breadcrumb'] = "Setting - Customer";
+        $this->data['breadcrumb'] = "Home - Customer";
+        $this->data['slug'] = 'list';
 
         return view('setting.customers.index', $this->data);
     }
 
     public function showMake()
     {
-        $this->data['breadcrumb'] = "Setting - Customer - Create";
+        $this->data['breadcrumb'] = "Home - Customer - Create";
+        $this->data['slug'] = 'list';
 
         return view('setting.customers.make', $this->data);
+    }
+
+    public function showOverdue(){
+        $this->data['breadcrumb'] = "Home - Customer Overdue";
+        $this->data['slug'] = 'overdue';
+
+        $this->data['customers'] = $this->getOverdueCustomers();
+
+        return view('setting.customers.overdue', $this->data);
+    }
+
+    public function showDetails($id){
+        $this->data['breadcrumb'] = "Home - Detail Customer";
+        $this->data['slug'] = 'list';
+
+        $this->data['customer'] = $this->get($id);
+
+        return view('setting.customers.details', $this->data);
     }
 
     public function doMake(Request $request)
@@ -68,6 +88,12 @@ class CustomerController extends SettingController
             'address' => 'required|string',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
+
+        if($request->notif_day){
+           $this->validate($request, [
+               'notif_day' => 'required|integer'
+           ]);
+        }
 
         //set old values
         $old_value_obj = $customer->toArray();
@@ -144,5 +170,13 @@ class CustomerController extends SettingController
     public function getAll()
     {
         return Customer::with('customerGallons')->get();
+    }
+
+    public function get($id){
+        return (new Customer())->get($id);
+    }
+
+    public function getOverdueCustomers(){
+        return (new Customer())->getOverdueCustomers();
     }
 }

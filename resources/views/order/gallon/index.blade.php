@@ -291,7 +291,7 @@ List Pesanan Galon
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
-                                return moment(data.order.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }
@@ -299,7 +299,7 @@ List Pesanan Galon
                     {data: null,
                         render: function (data) {
                             if(data.order.accepted_at){
-                                return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.order.accepted_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }

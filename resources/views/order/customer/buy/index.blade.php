@@ -16,7 +16,7 @@
             <table class="table table-hover" id="buy-gallon-order">
                 <thead>
                 <th>No</th>
-                <th>No Struk</th>
+                <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -34,7 +34,7 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{route('order.customer.buy.do.delete')}}" method="POST">
+                <form action="{{route('order.customer.buy.do.cancel')}}" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="deleteModalLabel">Delete Data</h4>
@@ -48,11 +48,39 @@
 
                     <div class="modal-footer">
                         {{csrf_field()}}
-                        <input type="hidden" name="id" value="" id="delete-id">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <input type="hidden" name="id" value="" id="cancel-id">
+                        <button type="submit" class="btn btn-danger">Batalkan</button>
                         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmModalLabel">Konfirmasi Pembelian Galon (Pindah Tangan)</h4>
+                </div>
+                <form action="{{route('order.customer.buy.do.confirm')}}" method="POST">
+                    {{csrf_field()}}
+                    <input type="hidden" name="id" value="" id="confirm-id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name"><strong>Pastikan customer telah membayar sejumlah galon yang dibeli</strong></label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Konfirmasi</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
@@ -66,7 +94,7 @@
                 dataType: 'json',
                 success: function(result){
                     $('#buy-gallon-order').dataTable({
-                        order:[2, 'desc'],
+                        order:[1, 'desc'],
                         fixedHeader: {
                             headerOffset: $('.site-header').outerHeight()
                         },
@@ -86,18 +114,34 @@
                         ],
                         data:result,
                         columns: [
-                            {data: 'id'},
-                            {data: 'no_struk',
+                            {data: 'status',
+                                render: function (data) {
+                                    if(data == "Selesai"){
+                                        return '<span class="label label-success">Selesai</span>';
+                                    }
+                                    else if(data == "Proses"){
+                                        return '<span class="label label-warning">Proses</span>';
+                                    }
+                                    else if(data == "Batal"){
+                                        return '<span class="label label-danger">Batal</span>';
+                                    }
+                                    else if(data == "Bermasalah"){
+                                        return '<span class="label label-danger">Bermasalah</span>';
+                                    }
+
+                                    return '<span class="label label-info">Draft</span>';
+                                }},
+                            {data: 'order_customer_buy_invoices',
                             render: function (data) {
-                                if(data || data !== ''){
-                                    return data;
+                                if(data.length>0){
+                                    return '<a href="/invoice/sales/id/'+data[0].oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data[0].oc_header_invoice_id+'</a>';
                                 }
                                 return '-';
                             }},
                             {data: null,
                                 render: function(data){
                                     if(data.customer){
-                                        return data.customer.name;
+                                        return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                                     }
                                     return '<i>Data customer tidak ditemukan</i>';
                                 }},
@@ -119,7 +163,7 @@
                             {data: null,
                                 render: function (data) {
                                     if(data.buy_at){
-                                        return moment(data.buy_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.buy_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }
@@ -133,7 +177,11 @@
                                 }},
                             {data: null,
                                 render: function(data, type, row, meta){
-                                    return '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>'
+                                    if( data.status != 'Selesai' ){
+                                        return '<button type="button" class="btn btn-sm btn-success confirm-modal" data-toggle="modal" data-target="#confirmModal" data-index="'+data.id+'">Konfirmasi</button>';
+                                    }
+
+                                    return '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Batalkan</button>';
                                 }
                             },
 
@@ -141,8 +189,12 @@
                         processing: true
                     });
 
+                    $('#buy-gallon-order').on('click', '.confirm-modal', function () {
+                        $('#confirm-id').val($(this).data('index'));
+                    });
+
                     $('#buy-gallon-order').on('click','.delete-modal', function(){
-                        $('#delete-id').val($(this).data('index'));
+                        $('#cancel-id').val($(this).data('index'));
                     });
                 }
             });

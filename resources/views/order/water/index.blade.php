@@ -357,7 +357,7 @@ List Pesanan Air
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
-                                return moment(data.order.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }
@@ -365,7 +365,7 @@ List Pesanan Air
                     {data: null,
                         render: function (data) {
                             if(data.delivery_at){
-                                return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }
@@ -373,7 +373,7 @@ List Pesanan Air
                     {data: null,
                         render: function (data) {
                             if(data.order.accepted_at){
-                                return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.order.accepted_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }

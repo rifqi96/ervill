@@ -16,6 +16,8 @@
                 <thead>
                 <th>Status</th>
                 <th>No</th>
+                <th>No Faktur</th>
+                <th>Jenis</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
@@ -131,10 +133,26 @@
                             }
                         }},
                     {data:'id'},
+                    {data: 'invoice_no',
+                        render: function (data) {
+                            if(data){
+                                return '<a href="/invoice/return/id/'+data+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data+'</a>';
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: 'order_customer_return_invoices',
+                        render: function (data) {
+                            if(data.length>0){
+                                return data[0].re_header_invoice.payment_status;
+                            }
+                            return '-';
+                        }
+                    },
                     {data: null,
                         render: function(data){
                             if(data.customer){
-                                return data.customer.name;
+                                return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                             }
                             return '<i>Data customer tidak ditemukan</i>';
                         }},
@@ -166,14 +184,14 @@
                     {data: null,
                         render: function(data){
                             if(data.return_at){
-                                return moment(data.return_at).locale('id').format('DD MMMM YYYY');
+                                return moment(data.return_at).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }},
                     {data: null,
                         render: function(data){
                             if(data.updated_at){
-                                return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }},

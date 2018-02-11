@@ -9,31 +9,80 @@ Overview
         <div class="col-xl-12">
             <div class="row">
                 <div class="col-sm-6">
-                    @if($recent_issues->count() > 0)
-                        <article class="statistic-box red">
+                    @if($recent_orders->count() > 0)
+                        <article class="statistic-box yellow">
                             <div>
-                                <div class="number">{{$recent_issues->count()}}</div>
-                                <div class="caption"><div>Masalah</div></div>
+                                <div class="number">{{$recent_orders->count()}}</div>
+                                <div class="caption"><div>Order Hari Ini</div></div>
                             </div>
                         </article>
                     @else
                         <article class="statistic-box green">
                             <div>
-                                <div class="number">0</div>
-                                <div class="caption"><div>Masalah</div></div>
+                                <div class="number">{{$recent_orders->count()}}</div>
+                                <div class="caption"><div>Order Hari Ini</div></div>
                             </div>
                         </article>
                     @endif
                 </div><!--.col-->
                 <div class="col-sm-6">
-                    <article class="statistic-box yellow">
-                        <div>
-                            <div class="number">{{$process_orders->count()}}</div>
-                            <div class="caption"><div>Order Berlangsung</div></div>
-                        </div>
-                    </article>
+                    @if($process_orders->count() > 0)
+                        <article class="statistic-box yellow">
+                            <div>
+                                <div class="number">{{$process_orders->count()}}</div>
+                                <div class="caption"><div>Order Berlangsung</div></div>
+                            </div>
+                        </article>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">{{$process_orders->count()}}</div>
+                                <div class="caption"><div>Order Berlangsung</div></div>
+                            </div>
+                        </article>
+                    @endif
                 </div><!--.col-->
             </div><!--.row-->
+            <div class="row">
+                <div class="col-sm-6">
+                    @if($recent_issues->count() > 0)
+                        <a href="{{route('order.customer.index')}}">
+                            <article class="statistic-box red">
+                                <div>
+                                    <div class="number">{{$recent_issues->count()}}</div>
+                                    <div class="caption"><div>Masalah Hari Ini</div></div>
+                                </div>
+                            </article>
+                        </a>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">0</div>
+                                <div class="caption"><div>Masalah Hari Ini</div></div>
+                            </div>
+                        </article>
+                    @endif
+                </div><!--.col-->
+                <div class="col-sm-6">
+                    @if($overdue_customers->count() > 0)
+                        <a href="{{route('setting.customers.overdue')}}">
+                            <article class="statistic-box yellow">
+                                <div>
+                                    <div class="number">{{$overdue_customers->count()}}</div>
+                                    <div class="caption"><div>Customer Overdue</div></div>
+                                </div>
+                            </article>
+                        </a>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">{{$overdue_customers->count()}}</div>
+                                <div class="caption"><div>Customer Overdue</div></div>
+                            </div>
+                        </article>
+                    @endif
+                </div>
+            </div>
         </div><!--.col-->
     </div>
 
@@ -45,13 +94,14 @@ Overview
             <table class="table table-hover" id="recent-orders">
                 <thead>
                 <th>Status</th>
+                <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
                 <th>Nama Driver</th>
-                <th>Galon Isi Keluar</th>
-                <th>Galon Masuk Kosong Ervill</th>
-                <th>Galon Masuk Kosong Non Ervill</th>
+                {{--<th>Galon Isi Keluar</th>--}}
+                {{--<th>Galon Masuk Kosong Ervill</th>--}}
+                {{--<th>Galon Masuk Kosong Non Ervill</th>--}}
                 <th align="center">Waktu</th>
                 <th>Admin</th>
                 <!-- <th>Action</th> -->
@@ -121,7 +171,7 @@ Overview
                 scrollY: 250,
                 scrollCollapse:true,
                 processing: true,
-                order:[7, 'desc'],
+                order:[1, 'desc'],
                 data:recent_orders,
                 columns:[
                     {data: null,
@@ -135,10 +185,23 @@ Overview
                             else if(data.status == "Bermasalah"){
                                 return '<span class="label label-danger">Bermasalah</span>';
                             }
-                            else{
-                                return '<span class="label label-info">Draft</span>';
+                            else if(data.status == "Batal"){
+                                return '<span class="label label-danger">Batal</span>';
                             }
+
+                            return '<span class="label label-info">Draft</span>';
                         }},
+                    {data: null,
+                        render:function (data) {
+                            if(data.invoice_no){
+                                if(data.type == "sales"){
+                                    return '<a href="invoice/sales/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
+                                }
+                                return '<a href="invoice/return/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
+                            }
+                            return '-';
+                        }
+                    },
                     {data: null,
                         render: function(data){
                             if(data.customer){
@@ -169,47 +232,47 @@ Overview
                                 return '-';
                             }
                         }},
-                    {data: null,
-                        render: function (data) {
-                            return data.additional_quantity+data.order.quantity;
-                        }
-                    },
-                    {data: null,
-                        render: function (data) {
-                            if(data.purchase_type == 'non_ervill'){
-                                if(data.is_new == 'true'){
-                                    return 0;
-                                }
-                                else if(data.is_new == 'false'){
-                                    return data.order.quantity;
-                                }
-                            }
-
-                            return data.empty_gallon_quantity;
-                        }},
-                    {data: null,
-                        render: function (data) {
-                            if(data.purchase_type == 'non_ervill'){
-                                if(data.is_new == 'true'){
-                                    return data.order.quantity;
-                                }
-                                else if(data.is_new == 'false'){
-                                    return data.additional_quantity;
-                                }
-                            }
-
-                            return 0;
-                        }},
+//                    {data: null,
+//                        render: function (data) {
+//                            return data.additional_quantity+data.order.quantity;
+//                        }
+//                    },
+//                    {data: null,
+//                        render: function (data) {
+//                            if(data.purchase_type == 'non_ervill'){
+//                                if(data.is_new == 'true'){
+//                                    return 0;
+//                                }
+//                                else if(data.is_new == 'false'){
+//                                    return data.order.quantity;
+//                                }
+//                            }
+//
+//                            return data.empty_gallon_quantity;
+//                        }},
+//                    {data: null,
+//                        render: function (data) {
+//                            if(data.purchase_type == 'non_ervill'){
+//                                if(data.is_new == 'true'){
+//                                    return data.order.quantity;
+//                                }
+//                                else if(data.is_new == 'false'){
+//                                    return data.additional_quantity;
+//                                }
+//                            }
+//
+//                            return 0;
+//                        }},
                     {data: null,
                     render: function (data) {
-                        var date = moment(data.order.created_at, 'YYYY-MM-DD HH:mm:ss');
+                        var date = moment(data.updated_at, 'YYYY-MM-DD HH:mm:ss');
                         date.locale('id');
                         return date.calendar();
                     }},
                     {data:null,
                     render: function (data) {
-                        if(data.order.user){
-                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
+                        if(data.user){
+                            return '<a href="/setting/user_management/id/'+data.user.id+'" target="_blank" title="Klik untuk lihat">'+data.user.full_name+'</a>';
                         }
                         return 'Data admin tidak ditemukan';
                     }},

@@ -71,7 +71,7 @@ Pengiriman
                         <label for="delivery-at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="delivery-at">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group status">
                         <label for="status"><strong>Status</strong></label>
                         <p class="form-control-static">
                             <select id="status" name="status" class="form-control">
@@ -144,7 +144,7 @@ Pengiriman
                             headerOffset: $('.site-header').outerHeight()
                         },
                         processing: true,
-                        'order':[4, 'asc'],
+                        order:[1, 'desc'],
                         select: {
                             style: 'multi'
                         },
@@ -172,6 +172,9 @@ Pengiriman
                                     else if(data.status == "Bermasalah"){
                                         return '<span class="label label-danger">Bermasalah</span>';
                                     }
+                                    else if(data.status == "Batal"){
+                                        return '<span class="label label-danger">Batal</span>';
+                                    }
                                     else{
                                         return '<span class="label label-info">Draft</span>';
                                     }
@@ -181,8 +184,10 @@ Pengiriman
                             {data:null,
                             render: function(data){
                                 var gallon_total = 0;
-                                for(var i in data.order_customers){
-                                    gallon_total += data.order_customers[i].order.quantity;
+                                for(var i in data.oc_header_invoices){
+                                    for(var j in data.oc_header_invoices[i].order_customer_invoices){
+                                        gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
+                                    }
                                 }
 
                                 return gallon_total;
@@ -190,7 +195,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }
@@ -198,7 +203,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -206,7 +211,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -235,7 +240,7 @@ Pengiriman
                             headerOffset: $('.site-header').outerHeight()
                         },
                         processing: true,
-                        'order':[4, 'desc'],
+                        order:[1, 'desc'],
                         select: {
                             style: 'multi'
                         },
@@ -272,8 +277,10 @@ Pengiriman
                             {data:null,
                                 render: function(data){
                                     var gallon_total = 0;
-                                    for(var i in data.order_customers){
-                                        gallon_total += data.order_customers[i].order.quantity;
+                                    for(var i in data.oc_header_invoices){
+                                        for(var j in data.oc_header_invoices[i].order_customer_invoices){
+                                            gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
+                                        }
                                     }
 
                                     return gallon_total;
@@ -281,7 +288,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                                     }
                                     return '-';
                                 }
@@ -289,7 +296,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -297,7 +304,7 @@ Pengiriman
                             {data: null,
                                 render: function (data) {
                                     if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                     }
                                     return '-';
                                 }
@@ -307,7 +314,7 @@ Pengiriman
                                     var shipment_url = "{{route("shipment.track", ":id")}}";
                                     shipment_url = shipment_url.replace(':id', data.id);
                                     return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
-                                        '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                        '<button type="button" class="btn btn-sm edit-modal finished" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
                                         '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
                                 }}
                         ]
@@ -343,9 +350,11 @@ Pengiriman
 
             // On Edit Button //
             $('#unfinished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                $('#editModal .status').show();
                 editModal($(this));
             });
             $('#finished-shipment').on('click','.edit-modal,.delete-modal',function(){
+                $('#editModal .status').hide();
                 editModal($(this));
             });
         });

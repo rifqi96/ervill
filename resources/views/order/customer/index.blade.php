@@ -35,13 +35,13 @@ List Pesanan Customer
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-xl-3">No Struk:</div>
+                                    <div class="col-xl-3">No Faktur:</div>
                                     <div class="col-xl-9">
                                         {{--<input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">--}}
                                         <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
                                             @foreach($struks as $struk)
-                                                <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
+                                                <option value="{{$struk->id}}">{{$struk->id}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -73,7 +73,7 @@ List Pesanan Customer
                                     <div class="col-xl-9">
                                         {{csrf_field()}}
                                         <button type="submit" class="btn btn-primary search-btn">Cari</button>
-                                        <button type="reset" class="btn btn-info reset">Reset</button>
+                                        <button type="reset" class="btn btn-info reset-btn">Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -87,7 +87,7 @@ List Pesanan Customer
                     <th>Aksi</th>
                     <th>Status</th>
                     <th>No</th>
-                    <th>No Struk</th>
+                    <th>No Faktur</th>
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
@@ -149,26 +149,12 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    {{--<div class="form-group row customer-table-container" >--}}
-                        {{--<div class="col-sm-12">--}}
-                            {{--<h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Ganti customer</label></h4>--}}
-                            {{--<table id="customer-table">--}}
-                                {{--<thead>--}}
-                                {{--<th></th>--}}
-                                {{--<th>No</th>--}}
-                                {{--<th>Nama Customer</th>--}}
-                                {{--<th>Alamat</th>--}}
-                                {{--<th>No. Telepon</th>--}}
-                                {{--</thead>--}}
-                            {{--</table>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                     <div class="form-group">
-                        <label for="nomor_struk"><strong>Nomor Struk </strong></label>
+                        <label for="edit-nostruk"><strong>Nomor Faktur </strong></label>
                             <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
                                 <option value="">-- Silahkan Pilih --</option>
                                 @foreach($struks as $struk)
-                                    <option value="{{$struk->nomor_struk}}">{{$struk->nomor_struk}} - {{$struk->customer->name}}</option>
+                                    <option value="{{$struk->id}}">{{$struk->id}}</option>
                                 @endforeach
                             </select>
                     </div>
@@ -209,6 +195,14 @@ List Pesanan Customer
                     {{-- <div class="form-group">
                         <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
                         <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
+                    </div> --}}
+                    {{-- <div class="form-group" id="is_piutang_div">
+                        <label for="is_piutang"><strong>Piutang?</strong></label>
+                        <input type="checkbox" class="form-control" name="is_piutang" id="is_piutang">
+                    </div>
+                    <div class="form-group" id="is_free_div">
+                        <label for="is_free"><strong>Gratis/Sample?</strong></label>
+                        <input type="checkbox" class="form-control" name="is_free" id="is_free">
                     </div> --}}
                     <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
@@ -392,7 +386,11 @@ List Pesanan Customer
                     columns: [
                         {data: null,
                             render: function(data, type, row, meta){
-                                var result = '<a href="customer/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Lihat Struk</button></a>';
+                                var result = "";
+                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
+                                    result += '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
+                                }
+
                                 if(data.status != "Draft"){
                                     if(data.shipment){
                                         var shipment_url = "{{route("shipment.track", ":id")}}";
@@ -421,27 +419,35 @@ List Pesanan Customer
                                 return result;
                             }
                         },
-                        {data: null,
+                        {data: 'status',
                             render: function(data, type, row, meta){
-                                if(data.status == "Selesai"){
+                                if(data == "Selesai"){
                                     return '<span class="label label-success">Selesai</span>';
                                 }
-                                else if(data.status == "Proses"){
+                                else if(data == "Proses"){
                                     return '<span class="label label-warning">Proses</span>';
                                 }
-                                else if(data.status == "Bermasalah"){
+                                else if(data == "Bermasalah"){
                                     return '<span class="label label-danger">Bermasalah</span>';
                                 }
-                                else{
-                                    return '<span class="label label-info">Draft</span>';
+                                else if(data == "Batal"){
+                                    return '<span class="label label-danger">Batal</span>';
                                 }
+
+                                return '<span class="label label-info">Draft</span>';
                             }},
                         {data: 'id'},
-                        {data: 'nomor_struk'},
+                        {data: null,
+                            render: function(data){
+                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
+                                    return '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.order_customer_invoices[0].oc_header_invoice.id+'</a>';
+                                }
+                                return '<i>Data nomor faktur tidak ditemukan</i>';
+                            }},
                         {data: null,
                             render: function(data){
                                 if(data.customer){
-                                    return data.customer.name;
+                                    return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                                 }
                                 return '<i>Data customer tidak ditemukan</i>';
                             }},
@@ -502,19 +508,19 @@ List Pesanan Customer
                         {data: null,
                             render: function (data) {
                                 if(data.order.created_at){
-                                    return moment(data.order.created_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                    return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                 }
                                 return '-';
                             }
                         },
                         {data: null,
                             render: function(data){
-                                return moment(data.delivery_at).locale('id').format('DD MMMM YYYY');
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                             }},
                         {data: null,
                             render: function(data){
                                 if(data.order.accepted_at){
-                                    return moment(data.order.accepted_at).locale('id').format('DD MMMM YYYY HH:mm:ss');
+                                    return moment(data.order.accepted_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                 }
                                 return '-';
                             }},
@@ -594,11 +600,21 @@ List Pesanan Customer
                     }
 
                     //isi nomor struk
-                    $('#edit-nostruk').val(order_data.nomor_struk);
-                    $('#edit-nostruk').trigger('change');
-
+                    $('#edit-nostruk').val(order_data.order_customer_invoices[0].oc_header_invoice.id);
+                    $('#edit-nostruk').trigger('change');                  
                     $('#customer-id').val(order_data.customer_id);
-
+                    // //is_piutang
+                    // if(order_data.order_customer_invoices[0].oc_header_invoice.payment_status=="piutang"){
+                    //     $('#is_piutang').prop("checked",true);
+                    // }else{
+                    //     $('#is_piutang').prop("checked",false);
+                    // }
+                    // //is_free
+                    // if(order_data.order_customer_invoices[0].oc_header_invoice.is_free=="true"){
+                    //     $('#is_free').prop("checked",true);
+                    // }else{
+                    //     $('#is_free').prop("checked",false);
+                    // }
 
                     var inventory = JSON.parse('{!! $inventory !!}');
 
@@ -608,10 +624,14 @@ List Pesanan Customer
                         $('#add_gallon_checkbox_div').hide();
                         $('#purchase_type_div').show();
                         $('#purchase_type').val(order_data.purchase_type);
+                        //$('#is_piutang_div').show();
+                        //$('#is_free_div').show();
                     }else{
                         $('#add_gallon_checkbox_div').show();
                         $('#purchase_type').val('');
                         $('#purchase_type_div').hide();
+                        //$('#is_piutang_div').hide();
+                        //$('#is_free_div').hide();
                     }
 
                     //add gallon or not

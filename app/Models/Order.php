@@ -42,7 +42,7 @@ class Order extends Model
         return $this;
     }
 
-    public function doMakeOrderCustomer($data, $customer_id, $author_id){
+    public function doMakeOrderCustomer($data, $author_id){
         $this->inventory_id = 3;
         $this->user_id = $author_id;
         $this->quantity = $data->quantity;
@@ -79,7 +79,7 @@ class Order extends Model
             if($data->add_gallon){
                 //create or update customerGallon
                 $existingCustomerGallon = CustomerGallon::where([
-                    ['customer_id',$customer_id], 
+                    ['customer_id',$data->customer_id], 
                     ['type',$data->add_gallon_purchase_type]])->first();
 
                 if( $existingCustomerGallon ){
@@ -89,7 +89,7 @@ class Order extends Model
                     } 
                 }else{
                     $customerGallonAdd = new CustomerGallon;
-                    if(!$customerGallonAdd->doMakeAdd($data, $customer_id)){
+                    if(!$customerGallonAdd->doMakeAdd($data, $data->customer_id)){
                         return false;
                     }  
                 }
@@ -111,7 +111,7 @@ class Order extends Model
                 }
                 else if($data->add_gallon_purchase_type=='purchase'){
                     $sold_gallon = Inventory::find(7);
-                    $sold_gallon->quantity += $data->quantity;
+                    $sold_gallon->quantity += $data->add_gallon_quantity;
                     if( !$sold_gallon->save() ){
                         return false;
                     }
