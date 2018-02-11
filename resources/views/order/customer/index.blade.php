@@ -208,10 +208,10 @@ List Pesanan Customer
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
-                    <div class="form-group remove-shipment">
+                    {{-- <div class="form-group remove-shipment">
                         <label for="remove-shipment"><strong>Hapus dari pengiriman</strong></label>
                         <input type="checkbox" class="form-control" name="remove_shipment" id="remove-shipment">
-                    </div>
+                    </div> --}}
                     <!-- <div class="form-group">
                         <label for="status"><strong>Status</strong></label>
                         <select name="status" id="edit-status" class="form-control">
@@ -668,17 +668,17 @@ List Pesanan Customer
                     $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                     $('#edit-qty').val(order_data.order.quantity);
                     //$('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                    if(order_data.shipment_id){
+                    if(order_data.order_customer_invoices[0].oc_header_invoice.shipment_id){
                         $('.edit-delivery-at').hide();
                         $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
-                        $('.remove-shipment').show();
-                        $('#remove-shipment').attr('checked', false);
+                        // $('.remove-shipment').show();
+                        // $('#remove-shipment').attr('checked', false);
                     }
                     else{
                         $('.edit-delivery-at').show();
                         $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
 
-                        $('.remove-shipment').hide();
+                        //$('.remove-shipment').hide();
                     }
                 });
 

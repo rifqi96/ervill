@@ -31,10 +31,10 @@ class OrderCustomer extends Model
     public function customer(){
         return $this->belongsTo('App\Models\Customer');
     }
-    public function shipment()
-    {
-        return $this->belongsTo('App\Models\Shipment');
-    }
+    // public function shipment()
+    // {
+    //     return $this->belongsTo('App\Models\Shipment');
+    // }
     public function orderCustomerInvoices()
     {
         return $this->hasMany('App\Models\OrderCustomerInvoice');
@@ -49,11 +49,14 @@ class OrderCustomer extends Model
 
             //check whether invalid nomor_struk
             $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($gallon_data){
-                $query->where('oc_header_invoice_id',$gallon_data->nomor_struk);
+                $query->whereHas('ocHeaderInvoice', function($query2){
+                    $query2->where('status','Draft');
+                })
+                ->where('oc_header_invoice_id',$gallon_data->nomor_struk);
             })
             ->where([
                 ['customer_id',$gallon_data->customer_id],
-                ['status','Draft'],
+                //['status','Draft'],
                 ['delivery_at',$gallon_data->delivery_at]
             ])->get();
 
@@ -92,7 +95,7 @@ class OrderCustomer extends Model
             $this->purchase_type = $gallon_data->add_gallon_purchase_type;
         }
         $this->delivery_at = $gallon_data->delivery_at;
-        $this->status = "Draft";
+        //$this->status = "Draft";
         
         $this->save();
 
@@ -144,11 +147,14 @@ class OrderCustomer extends Model
         //check whether invalid nomor_struk
         if($this->orderCustomerInvoices[0]->oc_header_invoice_id!=$data->nomor_struk){
             $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
-                $query->where('oc_header_invoice_id',$data->nomor_struk);
+                $query->whereHas('ocHeaderInvoice', function($query2){
+                    $query2->where('status','Draft');
+                })
+                ->where('oc_header_invoice_id',$data->nomor_struk);
             })
             ->where([
                 ['customer_id',$data->customer_id],
-                ['status','Draft'],
+                //['status','Draft'],
                 ['delivery_at',$data->delivery_at]
             ])->get();
 
@@ -543,12 +549,12 @@ class OrderCustomer extends Model
 
         $this->order->quantity = $data->quantity;
         
-        if(!$this->shipment_id){
+        if(!$this->orderCustomerInvoices[0]->ocHeaderInvoice->shipment_id){
             $this->delivery_at = $data->delivery_at;
         }
-        else if($data->remove_shipment){
-            $this->shipment_id = null;
-        }
+        // else if($data->remove_shipment){
+        //     $this->shipment_id = null;
+        // }
         // $this->status = $data->status;
         //$this->customer_id = $data->customer_id;
 
@@ -581,13 +587,13 @@ class OrderCustomer extends Model
         $old_data['quantity'] = $old_data['order']['quantity'];
         $old_data['delivery_at'] = Carbon::parse($old_data['delivery_at'])->format('Y-n-d');
 
-        $isShipped = false;
-        if($old_data['shipment_id']){
-            $isShipped = true;
-        }
+        // $isShipped = false;
+        // if($old_data['shipment_id']){
+        //     $isShipped = true;
+        // }
 
         unset($old_data['id']);
-        unset($old_data['shipment_id']);
+        //unset($old_data['shipment_id']);
         unset($old_data['customer_id']);
         unset($old_data['order_id']);
         unset($old_data['order']);
@@ -651,7 +657,7 @@ class OrderCustomer extends Model
 
     public function doDelete($description, $author_id){
 
-        if($this->status == "Batal"){
+        if($this->orderCustomerInvoices[0]->ocHeaderInvoice->status == "Batal"){//cek lagi
             if(!$this->doAddToDeleteHistory($description, $author_id)){
                 return false;
             }
@@ -1050,20 +1056,20 @@ class OrderCustomer extends Model
         return $this->order->forceDelete();
     }
 
-    public function doStartShipment(){
-        $this->status = 'Proses';
-        return $this->save();
-    }
+    // public function doStartShipment(){
+    //     $this->status = 'Proses';
+    //     return $this->save();
+    // }
 
-    public function doDropGallon(){
+    // public function doDropGallon(){
 
-        if( count($this->order->issues) > 0 ){
-            $this->status = 'Bermasalah';
-        }else{
-            $this->status = 'Selesai';
-        }        
-        return $this->save();
-    }
+    //     if( count($this->order->issues) > 0 ){
+    //         $this->status = 'Bermasalah';
+    //     }else{
+    //         $this->status = 'Selesai';
+    //     }        
+    //     return $this->save();
+    // }
 
     //need setting//
     public function doEditOrder($data)
@@ -1355,7 +1361,7 @@ class OrderCustomer extends Model
         $old_data['quantity'] = $old_data['order']['quantity'];
 
         unset($old_data['id']);
-        unset($old_data['shipment_id']);
+        //unset($old_data['shipment_id']);
         unset($old_data['customer_id']);
         unset($old_data['order_id']);
         unset($old_data['order']);
@@ -1551,10 +1557,10 @@ class OrderCustomer extends Model
     }
 
     //test
-    public function doUpdateStatus($status){
-        $this->status = $status;
-        return $this->save();
-    }
+    // public function doUpdateStatus($status){
+    //     $this->status = $status;
+    //     return $this->save();
+    // }
 
     /**
      * Get the connection of the entity.
