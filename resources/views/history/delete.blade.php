@@ -7,20 +7,6 @@
 @section('content')
     <div class="row">
         <div class="col-xl-12 dashboard-column">
-            <div class="row" style="margin-bottom:3vh;">
-                <div class="col-xl-12">
-                    <form action="{{route('history.do.mass_restore_or_delete')}}" method="POST">
-                        {{csrf_field()}}
-                        <div id="ids-list"></div>
-                        <input type="hidden" name="delete_id" value="">
-                        <input type="hidden" name="submit_btn" value="">
-                        <button type="submit" class="btn btn-danger force_delete" id="mass-delete">Hapus Data Permanen</button>
-                        <button type="submit" class="btn btn-success restore" id="mass-restore">Kembalikan Data</button>
-                        {{--<button type="button" class="btn btn-secondary showFilterBy">Kolom Pencarian</button>--}}
-                    </form>
-                </div>
-            </div>
-
             <div class="row filterBy">
                 <div class="col-xl-12">
                     <div class="card">
@@ -84,6 +70,20 @@
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom:3vh;">
+                <div class="col-xl-12">
+                    <form action="{{route('history.do.mass_restore_or_delete')}}" method="POST">
+                        {{csrf_field()}}
+                        <div id="ids-list"></div>
+                        <input type="hidden" name="delete_id" value="">
+                        <input type="hidden" name="submit_btn" value="">
+                        <button type="submit" class="btn btn-danger force_delete" id="mass-delete">Hapus Data Permanen</button>
+                        <button type="submit" class="btn btn-success restore" id="mass-restore">Kembalikan Data</button>
+                        {{--<button type="button" class="btn btn-secondary showFilterBy">Kolom Pencarian</button>--}}
+                    </form>
                 </div>
             </div>
 
