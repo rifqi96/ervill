@@ -141,7 +141,13 @@
                         {
                             data: null,
                             render: function ( data, type, row, meta ) {
-                                return '<a href="return/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>';
+                                var remove = '';
+                                if(data.shipment_id && data.status == "Draft"){
+                                    remove = '<a href="/invoice/return/do/remove/shipment/'+data.id+'"><button class="btn btn-sm btn-danger" type="button">Hapus pengiriman</button></a>';
+                                }
+
+                                return '<a href="return/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                    remove;
                             }
                         }
                     ]

@@ -119,4 +119,9 @@ class ReHeaderInvoice extends Model
         $this->status = 'Batal';  
         return $this->save();
     }
+
+    public function doRemoveShipment(){
+        $this->shipment_id = null;
+        return $this->save();
+    }
 }

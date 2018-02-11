@@ -196,14 +196,21 @@
                         {
                             data: null,
                             render: function ( data, type, row, meta ) {
+                                var remove = '';
+                                if(data.shipment_id && data.status == "Draft"){
+                                    remove = '<a href="/invoice/sales/do/remove/shipment/'+data.id+'"><button class="btn btn-sm btn-danger" type="button">Hapus pengiriman</button></a>';
+                                }
+
                                 if(data.payment_status == 'piutang'){
                                     return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
                                         '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                        remove +
                                         '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Lunas</button>';
                                 }
 
                                 return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
-                                    '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>';
+                                    '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                    remove;
                             }
                         }
                     ]

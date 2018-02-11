@@ -85,9 +85,6 @@ class OrderCustomerController extends OrderController
                 $query->with(['user', 'issues']);
             }
         ])
-//            ->whereHas('order', function ($query){
-//                $query->whereDate('created_at', '=', Carbon::today()->toDateString());
-//            })
             ->has('order')
             ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
             ->get();
