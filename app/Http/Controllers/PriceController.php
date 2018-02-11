@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Price;
 
-class PriceController extends Controller
+class PriceController extends SettingController
 {
     public function __construct(){
+        parent::__construct();
         $this->middleware('SuperadminAndAdmin');
-        $this->data['module'] = 'price';
-        $this->data['slug'] = '';
+        $this->data['slug'] = 'price';
     }
 
     /*======= Page Methods =======*/
