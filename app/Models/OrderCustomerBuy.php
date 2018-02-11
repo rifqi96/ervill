@@ -53,11 +53,14 @@ class OrderCustomerBuy extends Model
 
             //check whether invalid nomor_struk
             $oc_struk = OrderCustomer::whereHas('orderCustomerInvoices',function($query) use($data){
-                $query->where('oc_header_invoice_id',$data->nomor_struk);
+                $query->whereHas('ocHeaderInvoice', function($query2){
+                    $query2->where('status','Draft');
+                })
+                ->where('oc_header_invoice_id',$data->nomor_struk);
             })
             ->where([
                 ['customer_id',$data->customer_id],
-                ['status','Draft'],
+                //['status','Draft'],
                 ['delivery_at',$data->buy_at]
             ])->get();
 

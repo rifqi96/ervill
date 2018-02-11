@@ -59,10 +59,7 @@ class OrderCustomerController extends OrderController
 
     /*======= Get Methods =======*/
     public function getAll(){
-        $ocs = OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
+        $ocs = OrderCustomer::with([            
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);
@@ -82,10 +79,7 @@ class OrderCustomerController extends OrderController
     }
 
     public function getRecentOrders(){
-        $ocs = OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
+        $ocs = OrderCustomer::with([            
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);
@@ -110,10 +104,7 @@ class OrderCustomerController extends OrderController
     }
 
     public function get($id){
-        $oc = OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
+        $oc = OrderCustomer::with([            
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);
@@ -381,10 +372,7 @@ class OrderCustomerController extends OrderController
             array_push($filters, ['id', $request->id]);
         }
 
-        $oc = OrderCustomer::with([
-            'shipment' => function($query){
-                $query->with(['user']);
-            },
+        $oc = OrderCustomer::with([            
             'customer',
             'order' => function($query){
                 $query->with(['user', 'issues']);

@@ -64,10 +64,6 @@ class ShipmentController extends Controller
                 $query->with([
                     'orderCustomerReturnInvoices'
                 ]);
-            },
-            'orderCustomers'=> function($query){
-                $query->with('order');
-                $query->has('order');
             }])
             ->where('status', '=', 'Selesai')
             ->get();
@@ -85,10 +81,6 @@ class ShipmentController extends Controller
                 $query->with([
                     'orderCustomerReturnInvoices'
                 ]);
-            },
-            'orderCustomers'=> function($query){
-                $query->with('order');
-                $query->has('order');
             }])
             ->whereIn('status', ['Draft', 'Proses'])
             ->get();
@@ -105,10 +97,6 @@ class ShipmentController extends Controller
                 $query->with([
                     'orderCustomerReturnInvoices'
                 ]);
-            },
-            'orderCustomers'=> function($query){
-                $query->with('order');
-                $query->has('order');
             }])
             ->where([
                 ['delivery_at', $request->delivery_at],
@@ -129,14 +117,6 @@ class ShipmentController extends Controller
                 $query->with([
                     'orderCustomerReturnInvoices'
                 ]);
-            },
-            'orderCustomers' => function($query){
-                $query->with([
-                'order' => function($query){
-                    $query->with('user');
-                },
-                'customer']);
-                $query->has('order');
             }])
             ->find($shipment_id);
 
