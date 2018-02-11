@@ -124,7 +124,7 @@
                         headerOffset: $('.site-header').outerHeight()
                     },
                     processing: true,
-                    'order':[0, 'desc'],
+                    'order':[1, 'desc'],
                     select: {
                         style: 'multi'
                     },
