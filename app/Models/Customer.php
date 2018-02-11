@@ -84,9 +84,6 @@ class Customer extends Model
             },
             'order_customers' => function($query){
                 $query->with([
-                    'shipment' => function($query){
-                        $query->with(['user']);
-                    },
                     'order' => function($query){
                         $query->with(['user', 'issues']);
                     },
