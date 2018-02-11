@@ -180,7 +180,14 @@ Pengiriman
                                     }
                                 }},
                             {data:'id'},
-                            {data:'user.full_name'},
+                            {data:'user',
+                                render: function (data) {
+                                    if(data){
+                                        return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
+                                    }
+                                    return 'Data driver tidak ditemukan';
+                                }
+                            },
                             {data:null,
                             render: function(data){
                                 var gallon_total = 0;
@@ -273,7 +280,14 @@ Pengiriman
                                     }
                                 }},
                             {data:'id'},
-                            {data:'user.full_name'},
+                            {data:'user',
+                                render: function (data) {
+                                    if(data){
+                                        return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
+                                    }
+                                    return 'Data driver tidak ditemukan';
+                                }
+                            },
                             {data:null,
                                 render: function(data){
                                     var gallon_total = 0;
