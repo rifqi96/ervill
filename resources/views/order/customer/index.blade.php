@@ -91,7 +91,6 @@ List Pesanan Customer
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
-                    <th>Nama Pengemudi</th>
                     <th>Galon Isi Keluar</th>
                     <th>Galon Masuk Kosong Ervill</th>
                     <th>Galon Masuk Non Ervill</th>
@@ -464,15 +463,6 @@ List Pesanan Customer
                                     return data.customer.address;
                                 }
                                 return '<i>Data customer tidak ditemukan</i>';
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.shipment){
-                                    return data.shipment.user.full_name;
-                                }
-                                else{
-                                    return '-';
-                                }
                             }},
                         {data: null,
                             render: function (data) {
