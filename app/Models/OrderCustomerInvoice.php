@@ -35,10 +35,12 @@ class OrderCustomerInvoice extends Model
                 $this->price_id = 8;
                 $this->quantity = $order_customer->order->quantity;
                 $this->subtotal = ($this->quantity * Price::find(8)->price);
+                $this->price_number = Price::find(8)->price;
             }else{
                 $this->price_id = 1;
                 $this->quantity = $order_customer->order->quantity;
                 $this->subtotal = ($this->quantity * Price::find(1)->price);
+                $this->price_number = Price::find(1)->price;
             }
         }else{
             if($order_customer->purchase_type){
@@ -51,27 +53,33 @@ class OrderCustomerInvoice extends Model
                 if($order_customer->purchase_type=="rent"){
                     if($order_customer->customer->type=="agent"){
                         $this->price_id = 9;             
-                        $this->subtotal = ($this->quantity * Price::find(8)->price);
+                        $this->subtotal = ($this->quantity * Price::find(9)->price);
+                        $this->price_number = Price::find(9)->price;
                     }else{
                         $this->price_id = 2;  
                         $this->subtotal = ($this->quantity * Price::find(2)->price);
+                        $this->price_number = Price::find(2)->price;
                     }
                     
                 }else if($order_customer->purchase_type=="purchase"){
                     if($order_customer->customer->type=="agent"){
-                        $this->price_id = 11;  
+                        $this->price_id = 11;
                         $this->subtotal = ($this->quantity * Price::find(11)->price);
+                        $this->price_number = Price::find(11)->price;
                     }else{
                         $this->price_id = 4;  
                         $this->subtotal = ($this->quantity * Price::find(4)->price);
+                        $this->price_number = Price::find(4)->price;
                     }
                 }else if($order_customer->purchase_type=="non_ervill"){
                     if($order_customer->customer->type=="agent"){
                         $this->price_id = 10;  
                         $this->subtotal = ($this->quantity * Price::find(10)->price);
+                        $this->price_number = Price::find(10)->price;
                     }else{
                         $this->price_id = 3;  
                         $this->subtotal = ($this->quantity * Price::find(3)->price);
+                        $this->price_number = Price::find(3)->price;
                     }               
                 }
                 
@@ -80,10 +88,12 @@ class OrderCustomerInvoice extends Model
                     $this->price_id = 8;
                     $this->quantity = $order_customer->order->quantity;
                     $this->subtotal = ($this->quantity * Price::find(8)->price);
+                    $this->price_number = Price::find(8)->price;
                 }else{
                     $this->price_id = 1;
                     $this->quantity = $order_customer->order->quantity;
                     $this->subtotal = ($this->quantity * Price::find(1)->price);
+                    $this->price_number = Price::find(1)->price;
                 }
                 
             }

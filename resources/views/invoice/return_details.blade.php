@@ -95,7 +95,7 @@ Detail Retur
                                                 {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$invoice->payment_status == "Refund" ? $row->price->price : 0}}
+                                                {{$invoice->payment_status == "Refund" ? $row->price_number : 0}}
                                             </td>
                                             <td class="numeral total">
                                                 {{$invoice->payment_status == "Refund" ? $row->subtotal : 0}}
