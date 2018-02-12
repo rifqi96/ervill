@@ -216,13 +216,13 @@
                                 return '<div class="numeral">0</div>';
                             }
                             else if(data.payment_status == "Refund"){
-                                return '<div class="numeral">'+data.price.price * (-1)+'</div>';
+                                return '<div class="numeral">'+data.price_number * (-1)+'</div>';
                             }
                             else if(data.type == "sales" && data.is_free == "true"){
                                 return '<div class="numeral">0</div>';
                             }
 
-                            return '<div class="numeral">'+data.price.price+'</div>';
+                            return '<div class="numeral">'+data.price_number+'</div>';
                         }
                     },
                     {data: null,
