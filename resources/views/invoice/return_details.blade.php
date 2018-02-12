@@ -21,7 +21,7 @@ Detail Retur
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Faktur Retur - {{$invoice->payment_status}} - {{$invoice->status}}
+                    Faktur Retur - {{$invoice->payment_status}}
                 </header>
                 <div class="card-block invoice">
                     <div class="row">

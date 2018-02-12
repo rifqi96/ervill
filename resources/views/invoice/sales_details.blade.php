@@ -21,7 +21,7 @@ Detail Faktur
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Faktur Penjualan - {{$invoice->payment_status_txt}} - {{$invoice->status}}
+                    Faktur Penjualan - {{$invoice->payment_status_txt}}
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
