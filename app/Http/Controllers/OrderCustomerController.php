@@ -409,6 +409,12 @@ class OrderCustomerController extends OrderController
             });
         }
 
-        return $oc->get();
+        $ocs = $oc->get();
+
+        foreach($ocs as $oc){
+            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+        }
+
+        return $ocs;
     }
 }
