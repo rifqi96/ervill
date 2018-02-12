@@ -95,7 +95,7 @@ Detail Faktur
                                                 {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$invoice->is_free == "false" ? $row->price->price : 0}}
+                                                {{$invoice->is_free == "false" ? $row->price_number : 0}}
                                             </td>
                                             <td class="numeral total">
                                                 {{$invoice->is_free == "false" ? $row->subtotal : 0}}
@@ -112,7 +112,7 @@ Detail Faktur
                                                 {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$invoice->is_free == "false" ? $row->price->price : 0}}
+                                                {{$invoice->is_free == "false" ? $row->price_number : 0}}
                                             </td>
                                             <td class="numeral total">
                                                 {{$invoice->is_free == "false" ? $row->subtotal : 0}}
