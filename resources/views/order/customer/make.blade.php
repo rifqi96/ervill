@@ -441,6 +441,28 @@ Pesan Customer
                     $('#is_free_div, #is_piutang_div').fadeIn();
                 }
             });
+
+            $('#is_free').on('change', function () {
+                if(this.checked){
+                    $('#is_piutang').prop('checked', false);
+                    $('#is_piutang_div').fadeOut();
+                }
+                else{
+                    $('#is_piutang_div').fadeIn();
+//                    $('#is_free_div').fadeOut();
+                }
+            });
+
+            $('#is_piutang').on('change', function () {
+                if(this.checked){
+                    $('#is_free').prop('checked', false);
+                    $('#is_free_div').fadeOut();
+                }
+                else{
+                    $('#is_free_div').fadeIn();
+//                    $('#is_piutang_div').fadeOut();
+                }
+            });
         });
     </script>
 
