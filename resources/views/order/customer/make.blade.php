@@ -118,9 +118,24 @@ Pesan Customer
                         </div>
                     </div> --}}
                     <div class="form-group row" id="add_gallon_div_checkbox">
-                        <label class="col-sm-2 form-control-label" for="add_gallon">Tambah Galon ?</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon"></p>
+                        <div>
+                            <label class="col-sm-2 form-control-label" for="add_gallon">Tambah Galon ?</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon"></p>
+                            </div>
+                        </div>
+
+                        <div id="is_piutang_div">
+                            <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_piutang" id="is_piutang" value="is_piutang"></p>
+                            </div>
+                        </div>
+                        <div id="is_free_div">
+                            <label class="col-sm-2 form-control-label" for="is_free">Gratis/Sample ?</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_free" id="is_free" value="is_free"></p>
+                            </div>
                         </div>
                     </div>
 
@@ -143,19 +158,6 @@ Pesan Customer
                             <div class="col-sm-10">
                                 <p class="form-control-static"><input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min="1"></p>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" id="is_piutang_div">
-                        <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_piutang" id="is_piutang" value="is_piutang"></p>
-                        </div>
-                    </div>
-                    <div class="form-group row" id="is_free_div">
-                        <label class="col-sm-2 form-control-label" for="is_free">Gratis/Sample ?</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_free" id="is_free" value="is_free"></p>
                         </div>
                     </div>
                     <div class="form-group row">
