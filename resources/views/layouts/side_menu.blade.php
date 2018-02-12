@@ -52,7 +52,7 @@
     </li>
     <li class="with-sub {{$module=="report"?"opened":""}}">
         <span>
-            <i class="font-icon font-icon-doc"></i>
+            <i class="font-icon font-icon-list-square"></i>
             <span class="lbl">
                 Laporan
             </span>
@@ -67,12 +67,6 @@
         <a href="{{route('inventory.index')}}">
             <i class="font-icon font-icon-archive"></i>
             <span class="lbl">Inventori</span>
-        </a>
-    </li>
-    <li class="{{$module=="price"?"opened":""}}">
-        <a href="{{route('price.index')}}">
-            <i class="font-icon font-icon-list-square"></i>
-            <span class="lbl">Daftar Harga</span>
         </a>
     </li>
     <li class="with-sub {{$module=="customers"?"opened":""}}">
@@ -116,6 +110,9 @@
             {{--<li>--}}
                 {{--{!!$slug=="customers"?'<span class="lbl">Customer</span>':'<a href="'.route("setting.customers.index").'"><span class="lbl">Customer</span></a>'!!}--}}
             {{--</li>--}}
+            <li>
+                {!!$slug=="price"?'<span class="lbl">Daftar Harga</span>':'<a href="'.route("price.index").'"><span class="lbl">Daftar Harga</span></a>'!!}
+            </li>
             <li>
                 {!!$slug=="outsourcing"?'<span class="lbl">Outsourcing</span>':'<a href="'.route("setting.outsourcing.index").'"><span class="lbl">Outsourcing</span></a>'!!}
             </li>

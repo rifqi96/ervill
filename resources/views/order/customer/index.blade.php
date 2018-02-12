@@ -91,7 +91,6 @@ List Pesanan Customer
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
-                    <th>Nama Pengemudi</th>
                     <th>Galon Isi Keluar</th>
                     <th>Galon Masuk Kosong Ervill</th>
                     <th>Galon Masuk Non Ervill</th>
@@ -208,10 +207,10 @@ List Pesanan Customer
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
-                    <div class="form-group remove-shipment">
+                    {{-- <div class="form-group remove-shipment">
                         <label for="remove-shipment"><strong>Hapus dari pengiriman</strong></label>
                         <input type="checkbox" class="form-control" name="remove_shipment" id="remove-shipment">
-                    </div>
+                    </div> --}}
                     <!-- <div class="form-group">
                         <label for="status"><strong>Status</strong></label>
                         <select name="status" id="edit-status" class="form-control">
@@ -466,15 +465,6 @@ List Pesanan Customer
                                 return '<i>Data customer tidak ditemukan</i>';
                             }},
                         {data: null,
-                            render: function(data){
-                                if(data.shipment){
-                                    return data.shipment.user.full_name;
-                                }
-                                else{
-                                    return '-';
-                                }
-                            }},
-                        {data: null,
                             render: function (data) {
                                 return data.additional_quantity+data.order.quantity;
                             }
@@ -668,17 +658,17 @@ List Pesanan Customer
                     $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
                     $('#edit-qty').val(order_data.order.quantity);
                     //$('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                    if(order_data.shipment_id){
+                    if(order_data.order_customer_invoices[0].oc_header_invoice.shipment_id){
                         $('.edit-delivery-at').hide();
                         $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
-                        $('.remove-shipment').show();
-                        $('#remove-shipment').attr('checked', false);
+                        // $('.remove-shipment').show();
+                        // $('#remove-shipment').attr('checked', false);
                     }
                     else{
                         $('.edit-delivery-at').show();
                         $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
 
-                        $('.remove-shipment').hide();
+                        //$('.remove-shipment').hide();
                     }
                 });
 

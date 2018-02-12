@@ -12,8 +12,8 @@
             </header>
             <table class="table table-hover" id="refund_returns">
                 <thead>
-                <th>No Faktur</th>
                 <th>Status</th>
+                <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -31,8 +31,8 @@
             </header>
             <table class="table table-hover" id="non_refund_returns">
                 <thead>
-                <th>No Faktur</th>
                 <th>Status</th>
+                <th>No Faktur</th>
                 <th>Nama Customer</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -69,7 +69,7 @@
                         headerOffset: $('.site-header').outerHeight()
                     },
                     processing: true,
-                    'order':[0, 'desc'],
+                    'order':[1, 'desc'],
                     select: {
                         style: 'multi'
                     },
@@ -86,7 +86,6 @@
                     ],
                     data:data,
                     columns: [
-                        {data: 'id'},
                         {data: 'status',
                         render: function (data) {
                             if(data == "Selesai"){
@@ -104,6 +103,7 @@
 
                             return '<span class="label label-info">Draft</span>';
                         }},
+                        {data: 'id'},
                         {data: null,
                         render: function (data) {
                             if(data.has_order){
@@ -141,7 +141,13 @@
                         {
                             data: null,
                             render: function ( data, type, row, meta ) {
-                                return '<a href="return/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>';
+                                var remove = '';
+                                if(data.shipment_id && data.status == "Draft"){
+                                    remove = '<a href="/invoice/return/do/remove/shipment/'+data.id+'"><button class="btn btn-sm btn-danger" type="button">Hapus pengiriman</button></a>';
+                                }
+
+                                return '<a href="return/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                    remove;
                             }
                         }
                     ]

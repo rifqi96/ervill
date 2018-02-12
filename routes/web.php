@@ -469,6 +469,10 @@ Route::prefix('invoice')->group(function (){
                 'uses' => 'InvoiceController@doPay',
                 'as' => 'invoice.sales.do.pay'
             ]);
+            Route::get('remove/shipment/{id}', [
+                'uses' => 'InvoiceController@doSalesRemoveShipment',
+                'as' => 'invoice.sales.do.remove_shipment'
+            ]);
         });
     });
 
@@ -481,6 +485,12 @@ Route::prefix('invoice')->group(function (){
             'uses' => 'InvoiceController@showReturnDetails',
             'as' => 'invoice.return.details'
         ]);
+        Route::prefix('do')->group(function(){
+            Route::get('remove/shipment/{id}', [
+                'uses' => 'InvoiceController@doReturnRemoveShipment',
+                'as' => 'invoice.return.do.remove_shipment'
+            ]);
+        });
     });
 });
 

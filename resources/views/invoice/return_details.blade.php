@@ -21,27 +21,38 @@ Detail Retur
 
             <section class="card" id="print-area">
                 <header class="card-header card-header-lg">
-                    Faktur Retur - {{$invoice->payment_status}} - {{$invoice->status}}
+                    Faktur Retur - {{$invoice->payment_status}}
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
-                        <div class="col-lg-6 col-md-8 col-print-6 company-info">
+                        <div class="col-lg-4 col-md-4 col-print-4 company-info">
                             <h5>ERVILL</h5>
 
                             <div class="invoice-block">
-                                <div>Jl. Imam Bonjol No. 27 E</div>
-                                <div>Karawaci</div>
-                                <div>Tangerang</div>
+                                <div>Jl. Imam Bonjol No. 27E</div>
+                                <div>Karawaci, Tangerang</div>
                             </div>
 
                             <div class="invoice-block">
-                                <div>Telephone: (021) 5585050</div>
+                                <div>Telp: (021) 5585050</div>
+                                <div>HP: 081385439665</div>
                             </div>
                         </div>
                         <div class="newhr">
                             <hr>
                         </div>
-                        <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
+                        <div class="col-lg-4 col-md-4 col-print-4">
+                            <div class="invoice-block">
+                                <h5>Pereturan dari:</h5>
+                                <div>Ibu/Bapak {{$invoice->customer_name}}</div>
+                                <div>Alamat: {{$invoice->customer_address}}</div>
+                                <div>No. HP: {{$invoice->customer_phone}}</div>
+                            </div>
+                        </div>
+                        <div class="newhr">
+                            <hr>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-print-4 clearfix invoice-info">
                             <div class="text-lg-right">
                                 <h5>Nomor Faktur {{$invoice->id}}</h5>
                                 @if($invoice->has_order)
@@ -54,24 +65,13 @@ Detail Retur
                         </div>
                     </div>
                     @if($invoice->has_order)
-                    <hr>
-                    <div class="row">
-                        <div class="col-lg-12 col-print-12">
-                            <div class="invoice-block">
-                                <h5>Pereturan dari:</h5>
-                                <div>Ibu/Bapak {{$invoice->customer_name}}</div>
-                                <div>Alamat: {{$invoice->customer_address}}</div>
-                                <div>No. HP: {{$invoice->customer_phone}}</div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row table-details">
                         <div class="col-lg-12">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th width="10">#</th>
-                                    <th>Jenis</th>
+                                    <th>Jenis Barang</th>
                                     <th>Keterangan</th>
                                     <th>Jumlah (Galon)</th>
                                     <th>Harga</th>
@@ -95,7 +95,7 @@ Detail Retur
                                                 {{$row->quantity}}
                                             </td>
                                             <td class="numeral">
-                                                {{$invoice->payment_status == "Refund" ? $row->price->price : 0}}
+                                                {{$invoice->payment_status == "Refund" ? $row->price_number : 0}}
                                             </td>
                                             <td class="numeral total">
                                                 {{$invoice->payment_status == "Refund" ? $row->subtotal : 0}}
@@ -115,6 +115,70 @@ Detail Retur
                         <div class="col-lg-3 col-sm-3 col-xs-6 col-print-3 clearfix">
                             <div class="total-amount">
                                 <div>Total: <b class="numeral grand-total"></b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-print-12">
+                            <div class="col-lg-4 col-md-4 col-print-4">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        PELANGGAN,
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <br><br><br>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        (....................................)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        NAMA JELAS
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-print-4">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        SUPIR,
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <br><br><br>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        (....................................)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        NAMA JELAS
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-print-4">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        PENGIRIM,
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <br><br><br>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        (....................................)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-print-12 text-lg-center">
+                                        NAMA JELAS
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

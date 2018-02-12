@@ -385,4 +385,48 @@ class InvoiceController extends Controller
         return back()
             ->with('success', 'Faktur berhasil dilunasi');
     }
+
+    public function doSalesRemoveShipment($id){
+        if(empty($id)){
+            return back()
+                ->withErrors(['No Faktur tidak boleh kosong']);
+        }
+
+        $invoice = OcHeaderInvoice::find($id);
+
+        if(!$invoice){
+            return back()
+                ->withErrors(['No Faktur tidak ditemukan']);
+        }
+
+        if(!$invoice->doRemoveShipment()){
+            return back()
+                ->withErrors(['Terjadi kesalahan']);
+        }
+
+        return back()
+            ->with('success', $id . " telah berhasil dikeluarkan dari pengiriman");
+    }
+
+    public function doReturnRemoveShipment($id){
+        if(empty($id)){
+            return back()
+                ->withErrors(['No Faktur tidak boleh kosong']);
+        }
+
+        $invoice = ReHeaderInvoice::find($id);
+
+        if(!$invoice){
+            return back()
+                ->withErrors(['No Faktur tidak ditemukan']);
+        }
+
+        if(!$invoice->doRemoveShipment()){
+            return back()
+                ->withErrors(['Terjadi kesalahan']);
+        }
+
+        return back()
+            ->with('success', $id . " telah berhasil dikeluarkan dari pengiriman");
+    }
 }

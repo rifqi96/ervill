@@ -59,7 +59,7 @@ class OrderCustomerReturn extends Model
         $this->description = $data->description;
         $this->return_at = Carbon::parse($data->return_at)->format('Y-n-d');
         $this->author_id = $author_id;
-        $this->status = 'Draft';
+        //$this->status = 'Draft';
 
         $this->save();   
 
@@ -144,7 +144,7 @@ class OrderCustomerReturn extends Model
             $invoice_details[0]->reHeaderInvoice->save();
         }
 
-        $this->status = 'Selesai';
+        //$this->status = 'Selesai';
         $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status = 'Selesai';
         $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->save();
         return $this->save();
@@ -200,7 +200,7 @@ class OrderCustomerReturn extends Model
         }
         
 
-        $this->status = 'Batal';
+        //$this->status = 'Batal';
 
         $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status = 'Batal';
         $this->orderCustomerReturnInvoices[0]->reHeaderInvoice->save();

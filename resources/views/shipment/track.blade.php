@@ -176,10 +176,10 @@ Detil Pesanan
                                 render: function (data) {
                                     if(data.id){
                                         if(data.type == "sales"){
-                                            return '<a href="/invoice/sales/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+                                            return '<a href="/invoice/sales/id/'+data.id+'" target="_blank" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.id+'</a>';
                                         }
                                         else{
-                                            return '<a href="/invoice/return/id/'+data.id+'" target="_blank">'+data.id+'</a>';
+                                            return '<a href="/invoice/return/id/'+data.id+'" target="_blank" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.id+'</a>';
                                         }
                                     }
                                     return 'Data tidak ditemukan';
