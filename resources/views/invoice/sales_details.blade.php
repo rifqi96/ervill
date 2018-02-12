@@ -51,7 +51,7 @@ Detail Faktur
                                 </div>
                                 <div>
                                     Tgl Pembayaran:
-                                    <b class="payment-at">{{ $invoice->payment_status && $invoice->is_free == "false" ? \Carbon\Carbon::parse($invoice->payment_date)->format('d-m-Y H:i:s') : '-' }}</b>
+                                    <b class="payment-at">{{ $invoice->payment_status && $invoice->is_free == "false" && $invoice->payment_date ? \Carbon\Carbon::parse($invoice->payment_date)->format('d-m-Y H:i:s') : '-' }}</b>
                                 </div>
                                 @endif
                             </div>
