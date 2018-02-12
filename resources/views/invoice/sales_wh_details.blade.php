@@ -25,38 +25,23 @@ Detail Faktur
                 </header>
                 <div class="card-block invoice">
                     <div class="row">
-                        <div class="col-lg-6 col-md-8 col-print-6 company-info">
+                        <div class="col-lg-4 col-md-4 col-print-4 company-info">
                             <h5>ERVILL</h5>
 
                             <div class="invoice-block">
-                                <div>Jl. Imam Bonjol No. 27 E</div>
-                                <div>Karawaci</div>
-                                <div>Tangerang</div>
+                                <div>Jl. Imam Bonjol No. 27E</div>
+                                <div>Karawaci, Tangerang</div>
                             </div>
 
                             <div class="invoice-block">
-                                <div>Telephone: (021) 5585050</div>
+                                <div>Telp: (021) 5585050</div>
+                                <div>HP: 081385439665</div>
                             </div>
                         </div>
                         <div class="newhr">
                             <hr>
                         </div>
-                        <div class="col-lg-6 col-md-4 col-print-6 clearfix invoice-info">
-                            <div class="text-lg-right">
-                                <h5>Nomor Faktur {{$invoice->id}}</h5>
-                                @if($invoice->has_order)
-                                <div>
-                                    Tanggal Pengiriman:
-                                    <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    @if($invoice->has_order)
-                    <hr>
-                    <div class="row">
-                        <div class="col-lg-12 col-print-12">
+                        <div class="col-lg-4 col-md-4 col-print-4">
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
                                 <div>Ibu/Bapak {{$invoice->customer_name}}</div>
@@ -64,7 +49,22 @@ Detail Faktur
                                 <div>No. HP: {{$invoice->customer_phone}}</div>
                             </div>
                         </div>
+                        <div class="newhr">
+                            <hr>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-print-4 clearfix invoice-info">
+                            <div class="text-lg-right">
+                                <h5>Nomor Faktur {{$invoice->id}}</h5>
+                                @if($invoice->has_order)
+                                    <div>
+                                        Tgl Pengiriman:
+                                        <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
+                    @if($invoice->has_order)
                     <div class="row table-details">
                         <div class="col-lg-12">
                             <table class="table table-bordered">

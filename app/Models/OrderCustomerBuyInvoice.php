@@ -31,11 +31,15 @@ class OrderCustomerBuyInvoice extends Model
         if($order_customer_buy->customer->type=="agent"){
             $this->price_id = 12;
             $this->quantity = $order_customer_buy->quantity;
-            $this->subtotal = ($this->quantity * Price::find(12)->price);
+            $price = Price::find(12)->price;
+            $this->subtotal = ($this->quantity * $price);
+            $this->price_number = $price;
         }else{
             $this->price_id = 5;
             $this->quantity = $order_customer_buy->quantity;
-            $this->subtotal = ($this->quantity * Price::find(5)->price);
+            $price = Price::find(5)->price;
+            $this->subtotal = ($this->quantity * $price);
+            $this->price_number = $price;
         }
                    	
 

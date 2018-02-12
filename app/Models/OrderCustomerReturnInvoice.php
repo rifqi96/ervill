@@ -31,21 +31,29 @@ class OrderCustomerReturnInvoice extends Model
 	        if($order_customer_return->customer->type=="agent"){        	
 	            $this->price_id = 13;
 	            $this->quantity = $order_customer_return->empty_gallon_quantity;
-	            $this->subtotal = ($this->quantity * Price::find(13)->price);
+	            $price = Price::find(13)->price;
+	            $this->subtotal = ($this->quantity * $price);
+	            $this->price_number = $price;
 	        }else{
 	            $this->price_id = 6;
 	            $this->quantity = $order_customer_return->empty_gallon_quantity;
-	            $this->subtotal = ($this->quantity * Price::find(6)->price);
+	            $price = Price::find(6)->price;
+	            $this->subtotal = ($this->quantity * $price);
+	            $this->price_number = $price;
 	        }
 	    }else{
 	    	if($order_customer_return->customer->type=="agent"){        	
 	            $this->price_id = 14;
 	            $this->quantity = $order_customer_return->filled_gallon_quantity;
-	            $this->subtotal = ($this->quantity * Price::find(14)->price);
+	            $price = Price::find(14)->price;
+	            $this->subtotal = ($this->quantity * $price);
+	            $this->price_number = $price;
 	        }else{
 	            $this->price_id = 7;
 	            $this->quantity = $order_customer_return->filled_gallon_quantity;
-	            $this->subtotal = ($this->quantity * Price::find(7)->price);
+	            $price = Price::find(7)->price;
+	            $this->subtotal = ($this->quantity * $price);
+	            $this->price_number = $price;
 	        }
 	    }
                    	
