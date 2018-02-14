@@ -137,19 +137,19 @@ class OrderCustomerController extends OrderController
                 $request['phone'] = '0000';
             }
         }
-        else if(!$request->rent_qty){
+        else if(!$request->rent_qty || $request->rent_qty < 1){
             if($request->rent_qty != '0'){
                 $request->rent_qty = 0;
                 $request['rent_qty'] = 0;
             }
         }
-        else if(!$request->purchase_qty){
+        else if(!$request->purchase_qty || $request->purchase_qty < 1){
             if($request->purchase_qty != '0'){
                 $request->purchase_qty = 0;
                 $request['purchase_qty'] = 0;
             }
         }
-        else if(!$request->non_erv_qty){
+        else if(!$request->non_erv_qty || $request->non_erv_qty < 1){
             if($request->non_erv_qty != '0'){
                 $request->non_erv_qty = 0;
                 $request['non_erv_qty'] = 0;
@@ -164,6 +164,10 @@ class OrderCustomerController extends OrderController
                 return back()
                     ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
             }
+            else if($total_qty < 1){
+                return back()
+                    ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
+            }
             $this->validate($request, [
                 'name' => 'required|string',
                 'phone' => 'required|string|digits_between:3,14',
@@ -173,14 +177,19 @@ class OrderCustomerController extends OrderController
         }
         else{
             // If existing customer //
-            if(!$request->refill_qty){
+            $total_qty += $request->refill_qty;
+            if(!$request->refill_qty || $request->refill_qty < 1){
                 if($request->refill_qty != '0'){
                     $request->refill_qty = 0;
                     $request['refill_qty'] = 0;
                 }
             }
-            $total_qty += $request->refill_qty;
-            if($filled_gallon->quantity < $total_qty){
+
+            if($total_qty < 1){
+                return back()
+                    ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
+            }
+            else if($filled_gallon->quantity < $total_qty){
                 return back()
                     ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
             }

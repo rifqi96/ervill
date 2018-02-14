@@ -263,7 +263,12 @@ class OcHeaderInvoice extends Model
             }
         }
 
-        if(!$customer->doUpdateGallons($customer_gallons) || !$filled_gallon->subtract($data->refill_qty?$data->refill_qty:0 + $data->rent_qty + $data->purchase_qty + $data->non_erv_qty) || !$empty_gallon->add($data->refill_qty?$data->refill_qty:0) || !$outgoing_gallon->add($data->rent_qty) || !$outgoing_gallon->subtract($data->pay_qty) || !$sold_gallon->add($data->purchase_qty + $data->pay_qty) || !$non_erv_gallon->add($data->non_erv_qty)){
+        if(!$data->refill_qty){
+            $data->refill_qty = 0;
+            $data['refill_qty'] = 0;
+        }
+
+        if(!$customer->doUpdateGallons($customer_gallons) || !$filled_gallon->subtract($data->refill_qty + $data->rent_qty + $data->purchase_qty + $data->non_erv_qty) || !$empty_gallon->add($data->refill_qty?$data->refill_qty:0) || !$outgoing_gallon->add($data->rent_qty) || !$outgoing_gallon->subtract($data->pay_qty) || !$sold_gallon->add($data->purchase_qty + $data->pay_qty) || !$non_erv_gallon->add($data->non_erv_qty)){
             return false;
         }
 
