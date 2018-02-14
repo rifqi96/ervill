@@ -117,17 +117,14 @@
 
     <script>
         $(document).ready(function () {
-            var customers = [];
+            var customers = {!! $customers !!};
 
             $('#customer-table').dataTable({
                 scrollX: true,
                 fixedHeader: {
                     headerOffset: $('.site-header').outerHeight()
                 },
-                ajax: {
-                    url: '/getCustomers',
-                    dataSrc: ''
-                },
+                data:customers,
                 columns: [
                     {data: null,
                         render: function (data, type, row, meta) {
@@ -149,13 +146,6 @@
                     },
                     {data: null,
                         render: function (data, type, row, meta) {
-                            customers.push({
-                                'id': row.id,
-                                'name': row.name,
-                                'address': row.address,
-                                'phone': row.phone,
-                                'customer_gallons': row.customer_gallons
-                            });
                             return '<button class="btn btn-sm confirm-btn" type="button" data-toggle="modal" data-target="#assetModal" data-index="' + row.id + '">Lihat Aset</button>';
                         }},
                 ],
@@ -169,16 +159,9 @@
                 $('#non_ervill').text('');
                 for(var i in customers){
                     if(customers[i].id==$(this).data('index')){
-                        for(var j in customers[i].customer_gallons){
-                            if(customers[i].customer_gallons[j].type=='rent'){
-                                $('#rent').text(customers[i].customer_gallons[j].qty);
-                            }else if(customers[i].customer_gallons[j].type=='purchase'){
-                                $('#purchase').text(customers[i].customer_gallons[j].qty);
-                            }else if(customers[i].customer_gallons[j].type=='non_ervill'){
-                                $('#non_ervill').text(customers[i].customer_gallons[j].qty);
-                            }
-                        }
-
+                        $('#rent').text(customers[i].rent_qty);
+                        $('#purchase').text(customers[i].purchase_qty);
+                        $('#non_ervill').text(customers[i].non_erv_qty);
                     }
                 }
             });

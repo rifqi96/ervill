@@ -27,6 +27,8 @@ class OrderCustomerReturnController extends Controller
     {
         $this->data['breadcrumb'] = "Customer Order - Retur - Create";
 
+        $this->data['customers'] = (new CustomerController())->getAll();
+
         return view('return.make', $this->data);
     }
 
