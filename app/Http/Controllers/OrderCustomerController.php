@@ -155,12 +155,18 @@ class OrderCustomerController extends OrderController
                 $request['non_erv_qty'] = 0;
             }
         }
+        else if(!$request->pay_qty || $request->pay_qty < 1){
+            if($request->pay_qty != '0'){
+                $request->pay_qty = 0;
+                $request['pay_qty'] = 0;
+            }
+        }
 
-        $total_qty = $request->rent_qty + $request->purchase_qty + $request->non_erv_qty;
+        $total_qty = $request->rent_qty + $request->purchase_qty + $request->non_erv_qty + $request->pay_qty;
 
         if($request->new_customer){
             // If new customer //
-            if($filled_gallon->quantity < $total_qty){
+            if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
                 return back()
                     ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
             }
@@ -189,7 +195,7 @@ class OrderCustomerController extends OrderController
                 return back()
                     ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
             }
-            else if($filled_gallon->quantity < $total_qty){
+            else if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
                 return back()
                     ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
             }
@@ -246,14 +252,24 @@ class OrderCustomerController extends OrderController
                 $request['non_erv_qty'] = 0;
             }
         }
+        else if(!$request->pay_qty || $request->pay_qty < 1){
+            if($request->pay_qty != '0'){
+                $request->pay_qty = 0;
+                $request['pay_qty'] = 0;
+            }
+        }
 
-        $total_qty = $request->rent_qty + $request->purchase_qty + $request->non_erv_qty;
+        $total_qty = $request->refill_qty + $request->rent_qty + $request->purchase_qty + $request->non_erv_qty + $request->pay_qty;
 
         $filled_gallon = Inventory::find(3);
 
-        if($filled_gallon->quantity < $total_qty){
+        if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
             return back()
                 ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
+        }
+        else if($total_qty < 1){
+            return back()
+                ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
         }
 
         $invoice = OcHeaderInvoice::find($request->id);

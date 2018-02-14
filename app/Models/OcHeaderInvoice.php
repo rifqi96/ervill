@@ -113,7 +113,16 @@ class OcHeaderInvoice extends Model
     }
 
     public function doUpdate($data){
-        $old_data = OcHeaderInvoice::find($this->id);
+        $old_data = OcHeaderInvoice::with(['orderCustomers', 'customer'])->find($this->id);
+
+        if($data->pay_qty > 0){
+            if($data->pay_qty > $this->customer->rent_qty){
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('id', 'Jumlah galon pinjam tidak cukup');
+                throw new ValidationException($validator);
+            }
+        }
+
         if($data->is_piutang){
             $this->payment_status = "piutang";
         }else{
@@ -132,7 +141,12 @@ class OcHeaderInvoice extends Model
             $this->delivery_at = $data->delivery_at;
         }
 
-        if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customer, $this->id) || !$this->doAddToEditHistory($old_data, $data)){
+        if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customer, $this->id)){
+            return false;
+        }
+
+        $new_data = OcHeaderInvoice::find($this->id);
+        if(!$new_data->doAddToEditHistory($old_data, $data)){
             return false;
         }
 
@@ -282,7 +296,7 @@ class OcHeaderInvoice extends Model
             throw new ValidationException($validator);
         }
 
-        $this->payment_date = Carbon::now()->format('Y-n-d H:i:s');
+        $this->payment_date = Carbon::now()->format('Y-m-d H:i:s');
         $this->payment_status = 'cash';
 
         return $this->save();
@@ -381,10 +395,9 @@ class OcHeaderInvoice extends Model
     }
 
     public function doAddToEditHistory($old_data, $data){
-        $refill_qty = $rent_qty = $purchase_qty = $non_erv_qty = $pay_qty = 0;
-
         //set old values
         $old_value = '';
+        $refill_qty = $rent_qty = $purchase_qty = $non_erv_qty = $pay_qty = 0;
         foreach($old_data->orderCustomers as $orderCustomer){
             if($orderCustomer->price_id == 8 || $orderCustomer->price_id == 1){
                 $refill_qty += $orderCustomer->quantity;
@@ -409,10 +422,11 @@ class OcHeaderInvoice extends Model
         $old_value .= $pay_qty . ";";
         $old_value .= $old_data->payment_status . ";";
         $old_value .= $old_data->is_free == "true" ? "gratis/sample;":"penjualan;";
-        $old_value .= Carbon::parse($old_data->delivery_at)->format('Y-m-d');
+        $old_value .= Carbon::parse($old_data->delivery_at)->format('d-m-Y');
 
         //set new values
         $new_value = '';
+        $refill_qty = $rent_qty = $purchase_qty = $non_erv_qty = $pay_qty = 0;
         foreach($this->orderCustomers as $orderCustomer){
             if($orderCustomer->price_id == 8 || $orderCustomer->price_id == 1){
                 $refill_qty += $orderCustomer->quantity;
@@ -437,7 +451,7 @@ class OcHeaderInvoice extends Model
         $new_value .= $pay_qty . ";";
         $new_value .= $this->payment_status . ";";
         $new_value .= $this->is_free == "true" ? "gratis/sample;":"penjualan;";
-        $new_value .= Carbon::parse($data->delivery_at)->format('Y-m-d');
+        $new_value .= Carbon::parse($data->delivery_at)->format('d-m-Y');
 
         $edit_data = array(
             'module_name' => 'Order Customer',
