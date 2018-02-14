@@ -24,10 +24,10 @@ class OrderCustomerInvoice extends Model
 
 
 
-    public function doMake($order_customer, $nomor_struk, $is_refill_and_add = false){
+    public function doMake($order_customer, $invoice_no, $is_refill_and_add = false){
 
 
-    	$this->oc_header_invoice_id = $nomor_struk;
+    	$this->oc_header_invoice_id = $invoice_no;
     	$this->order_customer_id = $order_customer->id;
 
         if($is_refill_and_add){

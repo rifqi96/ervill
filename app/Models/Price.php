@@ -52,4 +52,8 @@ class Price extends Model
     public function ocReturnInvoices(){
         return $this->hasMany('App\Models\OrderCustomerReturnInvoice');
     }
+
+    public function orderCustomers(){
+        return $this->hasMany('App\Models\OrderCustomer');
+    }
 }

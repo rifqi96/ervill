@@ -43,9 +43,9 @@ Detail Faktur
                     <div class="col-lg-4 col-md-4 col-print-4">
                         <div class="invoice-block">
                             <h5>Pemesanan untuk:</h5>
-                            <div>Ibu/Bapak {{$invoice->customer_name}}</div>
-                            <div>Alamat: {{$invoice->customer_address}}</div>
-                            <div>No. HP: {{$invoice->customer_phone}}</div>
+                            <div>Ibu/Bapak {{$invoice->customer->name}}</div>
+                            <div>Alamat: {{$invoice->customer->address}}</div>
+                            <div>No. HP: {{$invoice->customer->phone}}</div>
                         </div>
                     </div>
                     <div class="newhr">
@@ -53,7 +53,6 @@ Detail Faktur
                     </div>
                     <div class="col-lg-4 col-md-4 col-print-4 text-lg-right text-md-right">
                         <h5>Nomor Faktur {{$invoice->id}}</h5>
-                        @if($invoice->has_order)
                         <div>
                             Tgl Pengiriman:
                             <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
@@ -62,11 +61,9 @@ Detail Faktur
                             Tgl Pembayaran:
                             <b class="payment-at">{{ $invoice->payment_status && $invoice->is_free == "false" && $invoice->payment_date ? \Carbon\Carbon::parse($invoice->payment_date)->format('d-m-Y H:i:s') : '-' }}</b>
                         </div>
-                        @endif
                     </div>
                     </div>
                 </div>
-                @if($invoice->has_order)
                 {{--<hr>--}}
                 <div class="row table-details">
                     <div class="col-lg-12">
@@ -84,34 +81,17 @@ Detail Faktur
                                 @php
                                 $i = 1;
                                 @endphp
-                                @foreach($invoice->orderCustomerInvoices as $row)
+                                @foreach($invoice->orderCustomers as $row)
                                     <tr>
                                         <td>{{$i++}}</td>
                                         <td>
-                                            {{$row->price->name}}
+                                            {{$row->name}}
                                         </td>
                                         <td>
                                             {{$row->quantity}}
                                         </td>
                                         <td class="numeral">
-                                            {{$invoice->is_free == "false" ? $row->price_number : 0}}
-                                        </td>
-                                        <td class="numeral total">
-                                            {{$invoice->is_free == "false" ? $row->subtotal : 0}}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                 @foreach($invoice->orderCustomerBuyInvoices as $row)
-                                    <tr>
-                                        <td>{{$i++}}</td>
-                                        <td>
-                                            {{$row->price->name}}
-                                        </td>
-                                        <td>
-                                            {{$row->quantity}}
-                                        </td>
-                                        <td class="numeral">
-                                            {{$invoice->is_free == "false" ? $row->price_number : 0}}
+                                            {{$invoice->is_free == "false" ? $row->price : 0}}
                                         </td>
                                         <td class="numeral total">
                                             {{$invoice->is_free == "false" ? $row->subtotal : 0}}
@@ -122,7 +102,6 @@ Detail Faktur
                         </table>
                     </div>
                 </div>
-                @endif
                 <div class="row">
                     <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
                         <strong>S&K</strong>

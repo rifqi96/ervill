@@ -39,69 +39,24 @@
                 <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->type}}" id="type" readonly=""></p>
             </div>
         </div>
-        @if($customer->customerGallons->count() > 0 && $customer->order_customers->count() > 0)
+
         <div class="form-group row">
             <label class="col-sm-2 form-control-label">Galon Pinjam</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    @if($customer->customerGallons->count()>0)
-                        @foreach($customer->customerGallons as $key => $val)
-                            @if($val->type == 'rent')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="{{$val->qty}}" id="rent" readonly="">
-                                @php
-                                    break;
-                                @endphp
-                            @endif
-
-                            @if($customer->customerGallons->count()-1 == $key && $val->type != 'rent')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                            @endif
-                        @endforeach
-                    @else
-                        <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                    @endif
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->rent_qty}}" id="rent" readonly="">
                 </p>
             </div>
             <label class="col-sm-2 form-control-label">Galon Beli</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    @if($customer->customerGallons->count()>0)
-                        @foreach($customer->customerGallons as $key => $val)
-                            @if($val->type == 'purchase')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="{{$val->qty}}" id="purchase" readonly="">
-                                @php
-                                    break;
-                                @endphp
-                            @endif
-
-                            @if($customer->customerGallons->count()-1 == $key && $val->type != 'purchase')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                            @endif
-                        @endforeach
-                    @else
-                        <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                    @endif
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->purchase_qty}}" id="purchase" readonly="">
                 </p>
             </div>
             <label class="col-sm-2 form-control-label">Galon Tukar Non Ervill</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    @if($customer->customerGallons->count()>0)
-                        @foreach($customer->customerGallons as $key => $val)
-                            @if($val->type == 'non_ervill')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="{{$val->qty}}" id="non_ervill" readonly="">
-                                @php
-                                    break;
-                                @endphp
-                            @endif
-
-                            @if($customer->customerGallons->count()-1 == $key && $val->type != 'non_ervill')
-                                <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                            @endif
-                        @endforeach
-                    @else
-                        <input type="text" class="form-control" name="type" placeholder="Type" value="0" readonly="">
-                    @endif
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->non_erv_qty}}" id="non_ervill" readonly="">
                 </p>
             </div>
         </div>
@@ -111,18 +66,23 @@
                 <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->notif_day}} hari dari pengiriman terakhir" id="notifday" readonly=""></p>
             </div>
         </div>
+        @if($customer->last_transaction)
         <div class="form-group row">
             <label class="col-sm-2 form-control-label">Pengiriman Terakhir</label>
             <div class="col-sm-10">
                 <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->last_transaction}}" id="lasttransaction" readonly=""></p>
             </div>
         </div>
+        @endif
+        @if($customer->overdue_date)
         <div class="form-group row">
             <label class="col-sm-2 form-control-label">Tgl Overdue</label>
             <div class="col-sm-10">
                 <p class="form-control-static"><input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->overdue_date}}" id="overduedate" readonly=""></p>
             </div>
         </div>
+        @endif
+        @if($customer->overdue)
         <div class="form-group row">
             <label class="col-sm-2 form-control-label">Hari Overdue</label>
             <div class="col-sm-10">

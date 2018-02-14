@@ -30,9 +30,9 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-2 form-control-label">Non-Refund?</label>
+                        <label class="col-sm-2 form-control-label">Refund/Kembalikan Uang Customer?</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><input id="is_non_refund" type="checkbox" class="form-control" name="is_non_refund"></p>
+                            <p class="form-control-static"><input id="is_refund" type="checkbox" class="form-control" name="is_refund"></p>
                         </div>
                     </div>
                     <div class="form-group row">

@@ -18,7 +18,7 @@ class ReportController extends Controller
         $this->data['slug'] = 'sales';
 
         $this->data['customers'] = (new CustomerController())->getAll();
-        $this->data['struks'] = (new InvoiceController())->getAllSales();
+        $this->data['struks'] = (new InvoiceController())->getAllSales(false);
 
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
@@ -38,7 +38,7 @@ class ReportController extends Controller
         ]);
 
         $invoice = new InvoiceController();
-        $all_sales = $invoice->getSalesByDate($start_date, $end_date);
+        $all_sales = $invoice->getSalesByDate($start_date, $end_date, false);
         $all_sales->each(function ($item, $key) use($res){
             $item->type = "sales";
             $res['headers']->push($item);
@@ -63,39 +63,22 @@ class ReportController extends Controller
         $res = collect();
 
         foreach($data as $header){
-            if($header->has_order){
-                if($header->type == "sales" && $header->is_only_buy){
-                    foreach($header->orderCustomerBuyInvoices as $ocBuyInvoice){
-                        $res->push($ocBuyInvoice);
-                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
-                        $res[$res->count()-1]->type = $header->type;
-                        $res[$res->count()-1]->is_free = $header->is_free;
-                        $res[$res->count()-1]->payment_status = $header->payment_status;
-                    }
+            if($header->type == "sales"){
+                foreach($header->orderCustomers as $orderCustomer){
+                    $res->push($orderCustomer);
+                    $res[$res->count()-1]->delivery_at = $header->delivery_at;
+                    $res[$res->count()-1]->type = $header->type;
+                    $res[$res->count()-1]->payment_status = $header->payment_status;
+                    $res[$res->count()-1]->oc_header_invoice_id = $header->id;
+                    $res[$res->count()-1]->customer = $header->customer;
                 }
-                else if($header->type == "sales" && !$header->is_only_buy){
-                    foreach($header->orderCustomerInvoices as $ocInvoice){
-                        $res->push($ocInvoice);
-                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
-                        $res[$res->count()-1]->type = $header->type;
-                        $res[$res->count()-1]->is_free = $header->is_free;
-                        $res[$res->count()-1]->payment_status = $header->payment_status;
-                    }
-                    foreach($header->orderCustomerBuyInvoices as $ocBuyInvoice){
-                        $res->push($ocBuyInvoice);
-                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
-                        $res[$res->count()-1]->type = $header->type;
-                        $res[$res->count()-1]->is_free = $header->is_free;
-                        $res[$res->count()-1]->payment_status = $header->payment_status;
-                    }
-                }
-                else if($header->type == "return"){
-                    foreach($header->orderCustomerReturnInvoices as $ocReturnInvoice){
-                        $res->push($ocReturnInvoice);
-                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
-                        $res[$res->count()-1]->type = $header->type;
-                        $res[$res->count()-1]->payment_status = $header->payment_status;
-                    }
+            }
+            else{
+                foreach($header->orderCustomerReturnInvoices as $ocReturnInvoice){
+                    $res->push($ocReturnInvoice);
+                    $res[$res->count()-1]->delivery_at = $header->delivery_at;
+                    $res[$res->count()-1]->type = $header->type;
+                    $res[$res->count()-1]->payment_status = $header->payment_status;
                 }
             }
         };
@@ -120,7 +103,7 @@ class ReportController extends Controller
             $report = $this->getAllByDate($request->start_date, $request->end_date);
         }
         else{
-            $report = $this->getAllByDate($request->start_date, $request->end_date, $request->type);
+            $report = $this->getAllByDate($request->start_date, $request->end_date);
 
             $sales = $report['headers']->filter(function ($value, $key){
                 return $value->type == "sales";

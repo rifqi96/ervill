@@ -174,17 +174,17 @@ class ServiceController extends Controller
 	    		//calculate amount of orders in a shipment	    	
                 //if($shipment->orderCustomers){
                     foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
-                        foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
+                        foreach ($ocHeaderInvoice->orderCustomers as $orderCustomer) {
                             
                             //galon isi
-                            if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
-                                 $gallon_quantity += $orderCustomerInvoice->quantity;
+                            if($orderCustomer->price_id=="1" || $orderCustomer->price_id=="2" || $orderCustomer->price_id=="3" || $orderCustomer->price_id=="4" || $orderCustomer->price_id=="8" || $orderCustomer->price_id=="9" || $orderCustomer->price_id=="10" || $orderCustomer->price_id=="11"){
+                                 $gallon_quantity += $orderCustomer->quantity;
                              }
 
 
                             //calculate amount of gallons in an order
-                            //$gallon_quantity += $orderCustomerInvoice->quantity;
-                            //$gallon_quantity += $orderCustomerInvoice->orderCustomer->additional_quantity;
+                            //$gallon_quantity += $orderCustomer->quantity;
+                            //$gallon_quantity += $orderCustomer->orderCustomer->additional_quantity;
                         }                                 
                         
                     }
@@ -250,21 +250,13 @@ class ServiceController extends Controller
             //ocheaderinvoices
 	    	foreach($ocHeaderInvoices as $ocHeaderInvoice){	  
                 if($ocHeaderInvoice->status=="Proses"){
-                    if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
+                    if(count($ocHeaderInvoice->orderCustomers)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
                             'type' => 'order',
-                            'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
-                            'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone         
-                        ]);
-                    }else if(count($ocHeaderInvoice->orderCustomerBuyInvoices)>0){
-                        array_push($data,[
-                            'id' => $ocHeaderInvoice->id,
-                            'type' => 'order',
-                            'customer_name' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name,
-                            'customer_address' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone         
+                            'customer_name' => $ocHeaderInvoice->customer->name,
+                            'customer_address' => $ocHeaderInvoice->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->customer->phone
                         ]);
                     }
                 }           		
@@ -313,7 +305,7 @@ class ServiceController extends Controller
 
 	 //    	foreach($orderCustomers as $orderCustomer){	    		
 	 //    		array_push($data,[
-	 //    			'id' => $orderCustomer->orderCustomerInvoices[0]->oc_header_invoice_id,
+	 //    			'id' => $orderCustomer->orderCustomers[0]->oc_header_invoice_id,
 	 //    			'customer_name' => $orderCustomer->customer->name,
 	 //    			'customer_address' => $orderCustomer->customer->address,
 	 //    			'customer_phone' => $orderCustomer->customer->phone,
@@ -354,23 +346,14 @@ class ServiceController extends Controller
             //ocheaderinvoices
             foreach($ocHeaderInvoices as $ocHeaderInvoice){   
                 //if($ocHeaderInvoice->status=="Proses"){
-                    if(count($ocHeaderInvoice->orderCustomerInvoices)>0){
+                    if(count($ocHeaderInvoice->orderCustomers)>0){
                         array_push($data,[
                             'id' => $ocHeaderInvoice->id,
                             'type' => 'order',
-                            'customer_name' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->name,
-                            'customer_address' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer->phone,
+                            'customer_name' => $ocHeaderInvoice->customer->name,
+                            'customer_address' => $ocHeaderInvoice->customer->address,
+                            'customer_phone' => $ocHeaderInvoice->customer->phone,
                             'status' => $ocHeaderInvoice->status         
-                        ]);
-                    }else if(count($ocHeaderInvoice->orderCustomerBuyInvoices)>0){
-                        array_push($data,[
-                            'id' => $ocHeaderInvoice->id,
-                            'type' => 'order',
-                            'customer_name' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->name,
-                            'customer_address' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->address,
-                            'customer_phone' => $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer->phone,
-                            'status' => $ocHeaderInvoice->status            
                         ]);
                     }
                 //}                   
@@ -426,48 +409,40 @@ class ServiceController extends Controller
         })->where('id', $request->order_id)->first();
 
         if( $header_invoice ){
-            // $gallon_qty += ($header_invoice->orderCustomerInvoices[0]->orderCustomer->order->quantity + $header_invoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity);
+            // $gallon_qty += ($header_invoice->orderCustomers[0]->orderCustomer->order->quantity + $header_invoice->orderCustomers[0]->orderCustomer->additional_quantity);
 
-             //  $ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->empty_gallon_quantity;
+             //  $ervill_empty_gallon_qty += $header_invoice->orderCustomers[0]->orderCustomer->empty_gallon_quantity;
              
-             // if($header_invoice->orderCustomerInvoices[0]->orderCustomer->purchase_type == "non_ervill"){
-             //    if($header_invoice->orderCustomerInvoices[0]->orderCustomer->is_new=="true"){
-             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->order->quantity;
-             //    }else if($header_invoice->orderCustomerInvoices[0]->orderCustomer->is_new=="false"){
-             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity;
+             // if($header_invoice->orderCustomers[0]->orderCustomer->purchase_type == "non_ervill"){
+             //    if($header_invoice->orderCustomers[0]->orderCustomer->is_new=="true"){
+             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomers[0]->orderCustomer->order->quantity;
+             //    }else if($header_invoice->orderCustomers[0]->orderCustomer->is_new=="false"){
+             //        $non_ervill_empty_gallon_qty += $header_invoice->orderCustomers[0]->orderCustomer->additional_quantity;
              //    }
              // }
-            foreach ($header_invoice->orderCustomerInvoices as $orderCustomerInvoice) {
+            foreach ($header_invoice->orderCustomers as $orderCustomer) {
 
                 //galon isi
-                if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
-                     $gallon_qty += $orderCustomerInvoice->quantity;
+                if($orderCustomer->price_id=="1" || $orderCustomer->price_id=="2" || $orderCustomer->price_id=="3" || $orderCustomer->price_id=="4" || $orderCustomer->price_id=="8" || $orderCustomer->price_id=="9" || $orderCustomer->price_id=="10" || $orderCustomer->price_id=="11"){
+                     $gallon_qty += $orderCustomer->quantity;
                  }
 
                  //isi ulang
-                 if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="8"){
-                    $ervill_empty_gallon_qty += $orderCustomerInvoice->quantity;
+                 if($orderCustomer->price_id=="1" || $orderCustomer->price_id=="8"){
+                    $ervill_empty_gallon_qty += $orderCustomer->quantity;
                  }
                  //tukar galon non_ervill
-                 if($orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="10"){
-                    $non_ervill_empty_gallon_qty += $orderCustomerInvoice->quantity;
+                 if($orderCustomer->price_id=="3" || $orderCustomer->price_id=="10"){
+                    $non_ervill_empty_gallon_qty += $orderCustomer->quantity;
                  }
 
-                 $total += $orderCustomerInvoice->subtotal;
-                 $customer_name = $orderCustomerInvoice->orderCustomer->customer->name;
-                 $customer_address = $orderCustomerInvoice->orderCustomer->customer->address;
-                 $customer_phone = $orderCustomerInvoice->orderCustomer->customer->phone;
+                 $total += $orderCustomer->subtotal;
+                 $customer_name = $header_invoice->customer->name;
+                 $customer_address = $header_invoice->customer->address;
+                 $customer_phone = $header_invoice->customer->phone;
                  
             }
 
-
-            foreach ($header_invoice->orderCustomerBuyInvoices as $orderCustomerBuyInvoice) {
-                $total += $orderCustomerBuyInvoice->subtotal;
-                $customer_name = $orderCustomerBuyInvoice->orderCustomerBuy->customer->name;
-                $customer_address = $orderCustomerBuyInvoice->orderCustomerBuy->customer->address;
-                $customer_phone = $orderCustomerBuyInvoice->orderCustomerBuy->customer->phone;
-            }
-        
             if($header_invoice->is_free=="true"){
                 $total = 0;
             }
@@ -859,16 +834,16 @@ class ServiceController extends Controller
                 //calculate amount of orders in a shipment          
                 //if($shipment->orderCustomers){
                     foreach ($shipment->ocHeaderInvoices as $ocHeaderInvoice) {
-                        foreach ($ocHeaderInvoice->orderCustomerInvoices as $orderCustomerInvoice) {
+                        foreach ($ocHeaderInvoice->orderCustomers as $orderCustomer) {
                             
                             //galon isi
-                            if($orderCustomerInvoice->price_id=="1" || $orderCustomerInvoice->price_id=="2" || $orderCustomerInvoice->price_id=="3" || $orderCustomerInvoice->price_id=="4" || $orderCustomerInvoice->price_id=="8" || $orderCustomerInvoice->price_id=="9" || $orderCustomerInvoice->price_id=="10" || $orderCustomerInvoice->price_id=="11"){
-                                 $gallon_quantity += $orderCustomerInvoice->quantity;
+                            if($orderCustomer->price_id=="1" || $orderCustomer->price_id=="2" || $orderCustomer->price_id=="3" || $orderCustomer->price_id=="4" || $orderCustomer->price_id=="8" || $orderCustomer->price_id=="9" || $orderCustomer->price_id=="10" || $orderCustomer->price_id=="11"){
+                                 $gallon_quantity += $orderCustomer->quantity;
                              }
                             
                             //calculate amount of gallons in an order
-                            // $gallon_quantity += $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->order->quantity;
-                            // $gallon_quantity += $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->additional_quantity;
+                            // $gallon_quantity += $ocHeaderInvoice->orderCustomers[0]->orderCustomer->order->quantity;
+                            // $gallon_quantity += $ocHeaderInvoice->orderCustomers[0]->orderCustomer->additional_quantity;
                         }                                 
                         
                     }
