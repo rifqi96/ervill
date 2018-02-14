@@ -71,6 +71,7 @@ class ReportController extends Controller
                     $res[$res->count()-1]->payment_status = $header->payment_status;
                     $res[$res->count()-1]->oc_header_invoice_id = $header->id;
                     $res[$res->count()-1]->customer = $header->customer;
+                    $res[$res->count()-1]->is_free = $header->is_free;
                 }
             }
             else{
