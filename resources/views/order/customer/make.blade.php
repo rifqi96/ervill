@@ -38,7 +38,7 @@ Pesan Customer
                             </table>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" id="empty_gallon_div">
                         <label class="col-sm-2 form-control-label" for="empty_gallon">Tukar Galon ?</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="empty_gallon" id="empty_gallon" value=""></p>
@@ -126,6 +126,7 @@ Pesan Customer
                     $('#new-customer-input').fadeIn();
                     $('.customer-table-container').fadeOut();
                     $('#customer-table .customer-id').prop('checked', false);
+                    $('#empty_gallon_div').fadeOut();
                 }
                 else{
                     $(this).val("");
@@ -135,6 +136,7 @@ Pesan Customer
                     $('.customer-table-container').fadeIn();
                     $('#new-customer-input input').val("");
                     $('#new-customer-input textarea').val("");
+                    $('#empty_gallon_div').fadeIn();
                 }
             });
 
