@@ -347,7 +347,11 @@ List Pesanan Customer
                         $('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
                         if(order_data.shipment_id){
                             $('.edit-delivery-at').hide();
-                            $('.remove-shipment').show();
+                            if(order_data.status=='Draft'){
+                                $('.remove-shipment').show();
+                            }else{
+                                $('.remove-shipment').hide();
+                            }
                             $('#remove-shipment').attr('checked', false);
                         }
                         else{
