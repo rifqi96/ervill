@@ -125,6 +125,7 @@ class OcHeaderInvoice extends Model
 
         if($data->is_piutang){
             $this->payment_status = "piutang";
+            $this->payment_date = null;
         }else{
             $this->payment_status = "cash";
             $this->payment_date = Carbon::now()->format('Y-m-d H:i:s');
