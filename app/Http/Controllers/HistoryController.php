@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
-use App\Models\OrderCustomer;
+use App\Models\OcHeaderInvoice;
 use App\Models\OrderWater;
 use App\Models\OutsourcingWater;
 use Illuminate\Http\Request;
@@ -131,27 +131,8 @@ class HistoryController extends Controller
             return $order_gallon;
         }
         else if($dh->module_name == "Order Customer"){
-            $order_id = OrderCustomer::find($dh->data_id)->order_id;
-            $order_customer = OrderCustomer::with(['order' => function($query){
-                    $query->onlyTrashed();
-                    $query->with('user');
-                }])
-                ->whereHas('order', function ($query) use($dh, $order_id){
-                    $query->onlyTrashed();
-                    $query->where('id', $order_id);
-                })
-                ->first();
-
-            $new_attributes = array();
-            foreach($order_customer->order->toArray() as $key => $val){
-                if($key != 'id' && $key != 'user' && $key != 'user_id')
-                    $new_attributes[$key] = $val;
-            }
-
-            $order_customer->makeHidden(['inventory_id', 'order', 'order_id', 'shipment_id', 'customer_id', 'outsourcing_driver_id']);
-            $order_customer->fill($new_attributes);
-
-            return $order_customer;
+            return OcHeaderInvoice::onlyTrashed()
+                ->find($dh->data_id);
         }
         else if($dh->module_name == "Order Water"){
             $order_id = OrderWater::find($dh->data_id)->order_id;
@@ -411,45 +392,23 @@ class HistoryController extends Controller
                 $new_value_arr['Jumlah Galon Gudang'] = $new_value[3];
                 $new_value_arr['Tgl Pengiriman'] = $new_value[4];
             }else if($edit_history->module_name == "Order Customer"){
-                if(count($old_value)==6){
-                    $old_value_arr['Nomor Faktur'] = $old_value[0];
-                    $old_value_arr['Jumlah (Galon)'] = $old_value[1];
-                    $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[2];
-                    $old_value_arr['Jenis Pembelian'] = $old_value[3];
+                $old_value_arr['Jumlah Isi Ulang'] = $old_value[0];
+                $old_value_arr['Jumlah Pinjam Galon + Air'] = $old_value[1];
+                $old_value_arr['Jumlah Beli Galon + Air'] = $old_value[2];
+                $old_value_arr['Jumlah Tukar Galon Non Ervill'] = $old_value[3];
+                $old_value_arr['Jumlah Pembayaran Galon'] = $old_value[4];
+                $old_value_arr['Jenis Pembayaran'] = $old_value[5];
+                $old_value_arr['Jenis Transaksi'] = $old_value[6];
+                $old_value_arr['Tgl Pengiriman'] = $old_value[7];
 
-              
-                    $old_value_arr['Tgl Pengiriman'] = $old_value[4];
-                    $old_value_arr['Nama Customer'] = $old_value[5];
-                
-                
-
-                    $new_value_arr['Nomor Faktur'] = $new_value[0];
-                    $new_value_arr['Jumlah (Galon)'] = $new_value[1];
-                    $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[2];
-                    $new_value_arr['Jenis Pembelian'] = $new_value[3];
-                
-                    $new_value_arr['Tgl Pengiriman'] = $new_value[4];
-                    $new_value_arr['Nama Customer'] = $new_value[5];
-                
-               }else{
-
-                    $old_value_arr['Jumlah (Galon)'] = $old_value[0];
-                    $old_value_arr['Jumlah Galon Tambah (Galon)'] = $old_value[1];
-                    $old_value_arr['Jenis Pembelian'] = $old_value[2];
-
-              
-                    $old_value_arr['Tgl Pengiriman'] = $old_value[3];
-                    $old_value_arr['Nama Customer'] = $old_value[4];
-                
-        
-                    $new_value_arr['Jumlah (Galon)'] = $new_value[0];
-                    $new_value_arr['Jumlah Galon Tambah (Galon)'] = $new_value[1];
-                    $new_value_arr['Jenis Pembelian'] = $new_value[2];
-                
-                    $new_value_arr['Tgl Pengiriman'] = $new_value[3];
-                    $new_value_arr['Nama Customer'] = $new_value[4];
-               }
-
+                $new_value_arr['Jumlah Isi Ulang'] = $new_value[0];
+                $new_value_arr['Jumlah Pinjam Galon + Air'] = $new_value[1];
+                $new_value_arr['Jumlah Beli Galon + Air'] = $new_value[2];
+                $new_value_arr['Jumlah Tukar Galon Non Ervill'] = $new_value[3];
+                $new_value_arr['Jumlah Pembayaran Galon'] = $new_value[4];
+                $new_value_arr['Jenis Pembayaran'] = $new_value[5];
+                $new_value_arr['Jenis Transaksi'] = $new_value[6];
+                $new_value_arr['Tgl Pengiriman'] = $new_value[7];
 
             }else if($edit_history->module_name == "Shipment"){
                 $old_value_arr['Nama Pengemudi'] = $old_value[0];

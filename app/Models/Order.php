@@ -166,8 +166,4 @@ class Order extends Model
     {
         return $this->hasOne('App\Models\OrderWater');
     }
-    public function orderCustomer()
-    {
-        return $this->hasOne('App\Models\OrderCustomer');
-    }
 }

@@ -98,35 +98,10 @@ class Shipment extends Model
         // Faktur ID Validation //
         foreach($data->order_ids as $order_id){
             if($oc = OcHeaderInvoice::find($order_id)){
-                if($oc->orderCustomerInvoices->count() > 0){
-                    foreach($oc->orderCustomerInvoices as $oc_invoice){
-                        if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc_invoice->orderCustomer->delivery_at)->format('Y-m-d')){
-                            $validator = Validator::make([], []); // Empty data and rules fields
-                            $validator->errors()->add('delivery_at', 'Tanggal salah');
-                            throw new ValidationException($validator);
-                        }
-                        if(!$oc_invoice->orderCustomer->save()){
-                            return false;
-                        }
-                    }
-                }
-
-                if($oc->orderCustomerBuyInvoices->count() > 0){
-                    foreach($oc->orderCustomerBuyInvoices as $oc_invoice){
-                        if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc_invoice->orderCustomerBuy->buy_at)->format('Y-m-d')){
-                            $validator = Validator::make([], []); // Empty data and rules fields
-                            $validator->errors()->add('delivery_at', 'Tanggal salah');
-                            throw new ValidationException($validator);
-                        }
-                        if(!$oc_invoice->orderCustomerBuy->save()){
-                            return false;
-                        }
-                    }
-                }
-
-                $oc->shipment_id = $this->id;
-                if(!$oc->save()){
-                    return false;
+                if(Carbon::parse($this->delivery_at)->format('Y-m-d') != Carbon::parse($oc->delivery_at)->format('Y-m-d')){
+                    $validator = Validator::make([], []); // Empty data and rules fields
+                    $validator->errors()->add('delivery_at', 'Tanggal salah');
+                    throw new ValidationException($validator);
                 }
             }
             else{
@@ -138,6 +113,26 @@ class Shipment extends Model
                             $validator->errors()->add('delivery_at', 'Tanggal salah');
                             throw new ValidationException($validator);
                         }
+                    }
+                }
+            }
+        }
+
+        // Saving the data
+        foreach($data->order_ids as $order_id){
+            if($oc = OcHeaderInvoice::find($order_id)){
+                if(!$oc->save()){
+                    return false;
+                }
+                $oc->shipment_id = $this->id;
+                if(!$oc->save()){
+                    return false;
+                }
+            }
+            else{
+                $re = ReHeaderInvoice::find($order_id);
+                if($re->orderCustomerReturnInvoices->count() > 0){
+                    foreach($re->orderCustomerReturnInvoices as $re_invoice){
                         if(!$re_invoice->orderCustomerReturn->save()){
                             return false;
                         }
@@ -183,18 +178,9 @@ class Shipment extends Model
             foreach($this->ocHeaderInvoices as $ocHeaderInvoice){
                 $ocHeaderInvoice->status = $this->status;
                 // for OC
-                foreach($ocHeaderInvoice->orderCustomerInvoices as $oc_invoice){
-                    $oc_invoice->orderCustomer->delivery_at = $this->delivery_at;
-                    if(!$oc_invoice->orderCustomer->save()){
-                        return false;
-                    }
-                }
-                // for OC BUY
-                foreach($ocHeaderInvoice->orderCustomerBuyInvoices as $oc_invoice){
-                    $oc_invoice->orderCustomerBuy->buy_at = $this->delivery_at;
-                    if(!$oc_invoice->orderCustomerBuy->save()){
-                        return false;
-                    }
+                $ocHeaderInvoice->delivery_at = $this->delivery_at;
+                if(!$ocHeaderInvoice->save()){
+                    return false;
                 }
 
                 if($status_state != "" && $status_state == "Finish"){

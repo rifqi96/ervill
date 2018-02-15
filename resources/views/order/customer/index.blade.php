@@ -8,9 +8,8 @@ List Pesanan Customer
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <!--<h3 class="panel-title">Pesanan Air</h3>-->
                 <a href="{{route('order.customer.make')}}"><button class="btn btn-success">Pesan</button></a>
-                <a href="{{route('order.customer.buy.index')}}"><button class="btn btn-primary">Pindah Tangan Galon</button></a>
+                {{--<a href="{{route('order.customer.trash.index')}}"><button class="btn btn-danger">Daftar Faktur Dihapus</button></a>--}}
                 <button class="btn btn-secondary showFilterBy">Kolom Pencarian</button>
             </header>
 
@@ -23,25 +22,13 @@ List Pesanan Customer
                         <div class="card-block">
                             <form id="filterBy">
                                 <div class="row form-group">
-                                    <div class="col-xl-3">No Order:</div>
-                                    <div class="col-xl-9">
-                                        {{--<input type="number" name="id" class="form-control" id="search-id" placeholder="101">--}}
-                                        <select name="id[]" id="search-id" class="form-control select2" multiple="multiple">
-                                            <option value="">-- Silahkan Pilih --</option>
-                                            @foreach($orders as $order)
-                                                <option value="{{$order->id}}">{{$order->id}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
                                     <div class="col-xl-3">No Faktur:</div>
                                     <div class="col-xl-9">
-                                        {{--<input type="text" name="nomor_struk" class="form-control" id="search-nostruk" placeholder="OC0000001">--}}
-                                        <select name="nomor_struk[]" id="search-nostruk" class="form-control select2" multiple="multiple">
+                                        {{--<input type="text" name="nomor_invoice" class="form-control" id="search-invoiceno" placeholder="OC0000001">--}}
+                                        <select name="invoice_no[]" id="search-invoiceno" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
-                                            @foreach($struks as $struk)
-                                                <option value="{{$struk->id}}">{{$struk->id}}</option>
+                                            @foreach($invoices as $invoice)
+                                                <option value="{{$invoice->id}}">{{$invoice->id}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -50,10 +37,10 @@ List Pesanan Customer
                                     <div class="col-xl-3">Nama Customer:</div>
                                     <div class="col-xl-9">
                                         {{--<input type="text" name="customer_name" class="form-control" id="search-cusname" placeholder="Budi">--}}
-                                        <select name="customer_name[]" id="search-cusname" class="form-control select2" multiple="multiple">
+                                        <select name="customer_id[]" id="search-cusname" class="form-control select2" multiple="multiple">
                                             <option value="">-- Silahkan Pilih --</option>
                                             @foreach($customers as $customer)
-                                                <option value="{{$customer->name}}">{{$customer->name}}</option>
+                                                <option value="{{$customer->id}}">{{$customer->name}} - {{$customer->phone}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -86,7 +73,6 @@ List Pesanan Customer
                 <thead>
                     <th>Aksi</th>
                     <th>Status</th>
-                    <th>No</th>
                     <th>No Faktur</th>
                     <th>Nama Customer</th>
                     <th>No. Telepon</th>
@@ -148,78 +134,63 @@ List Pesanan Customer
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="edit-nostruk"><strong>Nomor Faktur </strong></label>
-                            <select name="nomor_struk" id="edit-nostruk" class="form-control select2">
-                                <option value="">-- Silahkan Pilih --</option>
-                                @foreach($struks as $struk)
-                                    <option value="{{$struk->id}}">{{$struk->id}}</option>
-                                @endforeach
-                            </select>
-                    </div>
-                    <div class="form-group" id="purchase_type_div">
-                        <label for="purchase_type"><strong>Jenis Pembelian</strong></label>
-                        <select id="purchase_type" name="purchase_type" class="form-control">
-                            <option value="">--</option>
-                            <option value="rent">Pinjam Galon</option>
-                            <option value="purchase">Beli Galon</option>      
-                            <option value="non_ervill">Tukar Galon Non-Ervill</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity"><strong>Jumlah Galon </strong><span id="edit-qty-max"></span></label>
-                        <input type="number" class="form-control" name="quantity" id="edit-qty" placeholder="" max="" min="0">
-                    </div>
-                    <div class="form-group" id="add_gallon_checkbox_div">
-                        <label for="add_gallon"><strong>Tambah Galon ?</strong></label>
-                        <input type="checkbox" class="form-control checkbox" name="add_gallon" id="add_gallon" value="add_gallon">
+
+                    <div class="form-group row">
+                        <div class="col-lg-12">
+                            <table class="table table-striped table-bordered table-responsive">
+                                <thead>
+                                <tr>
+                                    <th rowspan="2" class="refill" style="text-align:center;">Isi ulang air</th>
+                                    <th colspan="3" class="pay-gallon" style="text-align:center;">Galon Tambah</th>
+                                    <th rowspan="2" class="pay-gallon" style="text-align:center;">Pembayaran Galon</th>
+                                </tr>
+                                <tr>
+                                    <th>Pinjam Galon</th>
+                                    <th>Beli Galon</th>
+                                    <th>Tukar Galon Non Ervill</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <td class="refill">
+                                    <p class="form-control-static"><input class="quantity" id="refill-qty" type="number" class="form-control" name="refill_qty" placeholder="Jumlah" max="" min=""></p>
+                                </td>
+                                <td>
+                                    <p class="form-control-static"><input class="quantity" id="rent-qty" type="number" class="form-control" name="rent_qty" placeholder="Jumlah (Maks: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min=""></p>
+                                </td>
+                                <td>
+                                    <p class="form-control-static"><input class="quantity" id="purchase-qty" type="number" class="form-control" name="purchase_qty" placeholder="Jumlah (Maks: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min=""></p>
+                                </td>
+                                <td>
+                                    <p class="form-control-static"><input class="quantity" id="non-erv-qty" type="number" class="form-control" name="non_erv_qty" placeholder="Jumlah (Maks: {{$inventory->quantity}})" max="{{$inventory->quantity}}" min=""></p>
+                                </td>
+                                <td class="pay-gallon">
+                                    <p class="form-control-static"><input class="quantity" id="pay-qty" type="number" class="form-control" name="pay_qty" placeholder="" max="" min=""></p>
+                                </td>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <div id="add_gallon_div">
-                        <div class="form-group">
-                            <label for="add_gallon_purchase_type"><strong>Jenis Pembelian Galon Tambah</strong></label>
-                            <select id="add_gallon_purchase_type" name="add_gallon_purchase_type" class="form-control">
-                                <option value="">--</option>
-                                <option value="rent">Pinjam Galon</option>
-                                <option value="purchase">Beli Galon</option>      
-                                <option value="non_ervill">Tukar Galon Non-Ervill</option>
-                            </select>
+                    <div class="form-group row">
+                        <div id="is_piutang_div">
+                            <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_piutang" id="is_piutang" value="is_piutang"></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="add_gallon_quantity"><strong>Jumlah Galon Tambah</strong><span id="add_gallon_quantity_max"></span></label>
-                            <input type="number" class="form-control" name="add_gallon_quantity" id="add_gallon_quantity" placeholder="" max="" min="0">
+                        <div id="is_free_div">
+                            <label class="col-sm-2 form-control-label" for="is_free">Gratis/Sample ?</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><input type="checkbox" class="form-control checkbox" name="is_free" id="is_free" value="is_free"></p>
+                            </div>
                         </div>
                     </div>
-                    
-                    {{-- <div class="form-group">
-                        <label for="empty_gallon_quantity"><strong>Jumlah Galon Kosong</strong></label>
-                        <input type="number" class="form-control" name="empty_gallon_quantity" id="edit-empty-gallon-qty">
-                    </div> --}}
-                    {{-- <div class="form-group" id="is_piutang_div">
-                        <label for="is_piutang"><strong>Piutang?</strong></label>
-                        <input type="checkbox" class="form-control" name="is_piutang" id="is_piutang">
-                    </div>
-                    <div class="form-group" id="is_free_div">
-                        <label for="is_free"><strong>Gratis/Sample?</strong></label>
-                        <input type="checkbox" class="form-control" name="is_free" id="is_free">
-                    </div> --}}
+
                     <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
-                    {{-- <div class="form-group remove-shipment">
-                        <label for="remove-shipment"><strong>Hapus dari pengiriman</strong></label>
-                        <input type="checkbox" class="form-control" name="remove_shipment" id="remove-shipment">
-                    </div> --}}
-                    <!-- <div class="form-group">
-                        <label for="status"><strong>Status</strong></label>
-                        <select name="status" id="edit-status" class="form-control">
-                            <option value="Draft">Draft</option>
-                            <option value="Proses">Proses</option>
-                            <option value="Bermasalah">Bermasalah</option>
-                            <option value="Selesai">Selesai</option>
-                        </select>
-                    </div> -->
+
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
@@ -269,46 +240,46 @@ List Pesanan Customer
       </div>
     </div>
 
-    <!-- Add Issue Modal -->
+    {{--<!-- Add Issue Modal -->--}}
 
-    <div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="addIssueModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{{route('order.customer.do.addIssue')}}" method="POST">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="addIssueModalLabel">Tambah Masalah</h4>
-                </div>
+    {{--<div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="addIssueModalLabel">--}}
+      {{--<div class="modal-dialog" role="document">--}}
+        {{--<div class="modal-content">--}}
+            {{--<form action="{{route('order.customer.do.addIssue')}}" method="POST">--}}
+                {{--<div class="modal-header">--}}
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--}}
+                    {{--<h4 class="modal-title" id="addIssueModalLabel">Tambah Masalah</h4>--}}
+                {{--</div>--}}
 
-                <div class="modal-body">  
-                    <div class="form-group">
-                        <label for="type"><strong>Tipe Masalah</strong></label>
-                        <select id="type" name="type" class="form-control">
-                            <option value="">--</option>
-                            <option value="Refund Gallon">Refund Galon</option>
-                            <option value="Kesalahan Customer">Kesalahan Customer</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity"><strong>Jumlah</strong></label>
-                        <input type="number" class="form-control" name="quantity" min="0">
-                    </div>                                         
-                    <div class="form-group">
-                        <label for="description"><strong>Alasan Penambahan Masalah</strong></label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
-                    </div>
-                </div>
+                {{--<div class="modal-body">  --}}
+                    {{--<div class="form-group">--}}
+                        {{--<label for="type"><strong>Tipe Masalah</strong></label>--}}
+                        {{--<select id="type" name="type" class="form-control">--}}
+                            {{--<option value="">--</option>--}}
+                            {{--<option value="Refund Gallon">Refund Galon</option>--}}
+                            {{--<option value="Kesalahan Customer">Kesalahan Customer</option>--}}
+                        {{--</select>--}}
+                    {{--</div>--}}
+                    {{--<div class="form-group">--}}
+                        {{--<label for="quantity"><strong>Jumlah</strong></label>--}}
+                        {{--<input type="number" class="form-control" name="quantity" min="0">--}}
+                    {{--</div>                                         --}}
+                    {{--<div class="form-group">--}}
+                        {{--<label for="description"><strong>Alasan Penambahan Masalah</strong></label>--}}
+                        {{--<textarea class="form-control" name="description" rows="3"></textarea>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
 
-                <div class="modal-footer">
-                    {{csrf_field()}}
-                    <input type="hidden" name="id" value="" id="addIssue_id">
-                    <button type="submit" class="btn btn-confirm">Submit</button>
-                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-      </div>
-    </div>
+                {{--<div class="modal-footer">--}}
+                    {{--{{csrf_field()}}--}}
+                    {{--<input type="hidden" name="id" value="" id="addIssue_id">--}}
+                    {{--<button type="submit" class="btn btn-confirm">Submit</button>--}}
+                    {{--<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>--}}
+                {{--</div>--}}
+            {{--</form>--}}
+        {{--</div>--}}
+      {{--</div>--}}
+    {{--</div>--}}
 
     <script>
         $(document).ready(function () {
@@ -336,353 +307,298 @@ List Pesanan Customer
             });
 
             $('#filterBy .reset-btn').click(function () {
-                $('#search-id').val('');
-                $('#search-id').trigger('change');
                 $('#search-cusname').val('');
                 $('#search-cusname').trigger('change');
-                $('#search-nostruk').val('');
-                $('#search-nostruk').trigger('change');
+                $('#search-invoiceno').val('');
+                $('#search-invoiceno').trigger('change');
             });
 
             // Init //
-            $.ajax({
-                url: '/getOrderCustomers',
-                type: 'GET',
-                dataType: 'json',
-                success: function(result){
-                    customerTable(result);
-                    tableContent(result);
+            var invoices = {!! $invoices->toJson() !!}
+            customerTable(invoices);
+            tableContent(invoices);
+        });
+
+        var customerTable = function (result) {
+            $('#customer-order').DataTable().destroy();
+            $('#customer-order').dataTable({
+                order:[2, 'desc'],
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                ],
+                data:result,
+                columns: [
+                    {data: null,
+                        render: function(data, type, row, meta){
+                            var result = '<a href="/invoice/sales/wh/id/'+data.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
+
+                            if(data.status != "Draft"){
+                                if(data.shipment){
+                                    var shipment_url = "{{route("shipment.track", ":id")}}";
+                                    shipment_url = shipment_url.replace(':id', data.shipment.id);
+                                    result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Pengiriman</a>';
+                                }
+                            }
+
+//                            if(data.order.issues.length > 0){
+//                                result += '<button class="btn btn-sm btn-warning issueModal" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Lihat Masalah</button>';
+//                            }
+//                            if(data.status!= "Draft" && data.status != "Proses"){
+//                                result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
+//                            }
+
+                            result +=
+                                '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+
+                            return result;
+                        }
+                    },
+                    {data: 'status',
+                        render: function(data, type, row, meta){
+                            if(data == "Selesai"){
+                                return '<span class="label label-success">Selesai</span>';
+                            }
+                            else if(data == "Proses"){
+                                return '<span class="label label-warning">Proses</span>';
+                            }
+                            else if(data == "Bermasalah"){
+                                return '<span class="label label-danger">Bermasalah</span>';
+                            }
+                            else if(data == "Batal"){
+                                return '<span class="label label-danger">Batal</span>';
+                            }
+
+                            return '<span class="label label-info">Draft</span>';
+                        }},
+                    {data: 'id',
+                        render: function(data){
+                            if(data){
+                                return '<a href="/invoice/sales/id/'+data+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data+'</a>';
+                            }
+                            return '<i>Data nomor faktur tidak ditemukan</i>';
+                        }},
+                    {data: null,
+                        render: function(data){
+                            if(data.customer){
+                                return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
+                            }
+                            return '<i>Data customer tidak ditemukan</i>';
+                        }},
+                    {data: null,
+                        render: function(data){
+                            if(data.customer){
+                                return data.customer.phone;
+                            }
+                            return '<i>Data customer tidak ditemukan</i>';
+                        }},
+                    {data: null,
+                        render: function(data){
+                            if(data.customer){
+                                return data.customer.address;
+                            }
+                            return '<i>Data customer tidak ditemukan</i>';
+                        }},
+                    {data: 'filled_gallon'},
+                    {data: 'empty_gallon'},
+                    {data: 'non_erv_gallon'},
+                    {data: 'created_at',
+                        render: function(data){
+                            if(data){
+                                return moment(data).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }},
+                    {data: 'delivery_at',
+                        render: function(data){
+                            return moment(data).locale('id').format('DD/MM/YYYY');
+                        }},
+                    {data: 'accepted_at',
+                        render: function(data){
+                            if(data){
+                                return moment(data).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }},
+                    {data: 'user',
+                        render: function(data){
+                            if(data){
+                                return '<a href="/setting/user_management/id/'+data.id+'" target="_blank" title="Klik untuk lihat">'+data.full_name+'</a>';
+                            }
+                            return '<i>Data admin tidak ditemukan</i>';
+                        }}
+
+                ],
+                processing: true
+            });
+        };
+
+        var tableContent = function (result) {
+            {{--$('#customer-order').on('click', '.issueModal', function () {--}}
+                {{--var issued_gallon_quantity = 0;--}}
+                {{--for(var i in result){--}}
+                    {{--if(result[i].id == $(this).data('index')){--}}
+                        {{--$('#issues').DataTable().destroy();--}}
+                        {{--$('#issues').dataTable({--}}
+                            {{--fixedHeader: true,--}}
+                            {{--processing: true,--}}
+                            {{--data:result[i].order.issues,--}}
+                            {{--columns:[--}}
+                                {{--{data:'type'},--}}
+                                {{--{data:'description'},--}}
+                                {{--{data:'quantity'},--}}
+                                {{--{--}}
+                                    {{--data: null,--}}
+                                    {{--render: function ( data, type, row, meta ) {--}}
+                                        {{--return '<button type="button" class="btn btn-sm btn-danger delete-issue-btn" data-index="' + row.id + '">Delete</button>';--}}
+                                    {{--}--}}
+                                {{--}--}}
+                            {{--]--}}
+                        {{--});--}}
+                        {{--for(var j in result[i].order.issues){--}}
+                            {{--issued_gallon_quantity += result[i].order.issues[j].quantity;--}}
+                        {{--}--}}
+                        {{--$('#issued_gallon_quantity').text("Jumlah galon yang bermasalah: " + issued_gallon_quantity);--}}
+                    {{--}--}}
+                {{--}--}}
+            {{--});--}}
+
+            {{--$('#issues').on('click','.delete-issue-btn',function(){--}}
+                {{--var id = $(this).data('index');--}}
+
+                {{--$.ajax({--}}
+                    {{--method: "POST",--}}
+                    {{--url: "{{route('issue.do.delete')}}",--}}
+                    {{--data: {id: id},--}}
+                    {{--headers: {--}}
+                        {{--'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+                    {{--}--}}
+                {{--})--}}
+                    {{--.done(function(data){--}}
+                        {{--location.reload();--}}
+                    {{--})--}}
+                    {{--.fail(function(data){--}}
+                        {{--alert('Terjadi kesalahan!');--}}
+                    {{--});--}}
+            {{--});--}}
+
+            $('#customer-order').on('click','.delete-modal', function(){
+                $('#delete-id').val($(this).data('index'));
+            });
+
+            $('#customer-order').on('click','.edit-modal', function(){
+                $('#edit-id').val($(this).data('index'));
+                var order_data = null;
+                $('#refill-qty').val('');
+                $('#rent-qty').val('');
+                $('#purchase-qty').val('');
+                $('#non-erv-qty').val('');
+                $('#pay-qty').val('');
+                $('#is_piutang_div').show();
+                $('#is_free_div').show();
+                for(var i in result){
+                    if(result[i].id == $(this).data('index')){
+                        order_data = result[i];
+                    }
+                }
+
+                var inventory = {!! $inventory->toJson() !!};
+
+                if(order_data.refill_qty > 0){
+                    $('#refill-qty').val(order_data.refill_qty);
+                }
+                if(order_data.rent_qty > 0){
+                    $('#rent-qty').val(order_data.rent_qty);
+                }
+                if(order_data.purchase_qty > 0){
+                    $('#purchase-qty').val(order_data.purchase_qty);
+                }
+                if(order_data.non_erv_qty > 0){
+                    $('#non-erv-qty').val(order_data.non_erv_qty);
+                }
+                if(order_data.pay_qty > 0){
+                    $('#pay-qty').val(order_data.pay_qty);
+                }
+
+                var total_qty = order_data.customer.rent_qty + order_data.customer.purchase_qty + order_data.customer.non_erv_qty;
+                $('#refill-qty').attr('max', total_qty);
+                $('#refill-qty').attr('placeholder', 'Jumlah (Maks: ' + total_qty + ')');
+                $('#pay-qty').attr('max', order_data.customer.rent_qty);
+                $('#pay-qty').attr('placeholder', 'Jumlah (Maks: ' + order_data.customer.rent_qty + ')');
+
+                if(order_data.payment_status == "piutang"){
+                    $('#is_piutang').prop('checked', true);
+                    $('#is_free_div').hide();
+                }
+                else{
+                    if(order_data.is_free == "true"){
+                        $('#is_free').prop('checked', true);
+                        $('#is_piutang_div').hide();
+                    }
+                    else{
+                        $('#is_piutang').prop('checked', false);
+                        $('#is_free').prop('checked', false);
+                    }
+                }
+
+                if(order_data.shipment_id){
+                    $('.edit-delivery-at').hide();
+                    $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
+                    // $('.remove-shipment').show();
+                    // $('#remove-shipment').attr('checked', false);
+                }
+                else{
+                    $('.edit-delivery-at').show();
+                    $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
+
+                    //$('.remove-shipment').hide();
                 }
             });
 
-            var customerTable = function (result) {
-                $('#customer-order').DataTable().destroy();
-                // Setup - add a text input to each footer cell
-                $('#customer-order tfoot th').each( function () {
-                    var title = $(this).text();
-                    $(this).html( '<input type="text" placeholder="Cari '+title+'" />' );
-                } );
-                $('#customer-order').dataTable({
-                    order:[2, 'desc'],
-                    fixedHeader: {
-                        headerOffset: $('.site-header').outerHeight()
-                    },
-                    select: {
-                        style: 'multi'
-                    },
-                    dom: 'Bfrtip',
-                    buttons: [
-                        { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
-                            columns: ':visible'
-                        }},
-                        { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
-                            columns: ':visible'
-                        }},
-                        { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+            $('#customer-table').on('click','.customer-id', function(){
+                $('#add_gallon_checkbox_div').show();
+                $('#purchase_type').val('');
+                $('#purchase_type_div').hide();
+            });
 
-                    ],
-                    data:result,
-                    columns: [
-                        {data: null,
-                            render: function(data, type, row, meta){
-                                var result = "";
-                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
-                                    result += '<a href="/invoice/sales/wh/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;"><button type="button" class="btn btn-sm">Logistik Gudang</button></a>';
-                                }
+            $('#customer-order').on('click','.addIssue-modal', function(){
+                $('#addIssue_id').val($(this).data('index'));
+            });
 
-                                if(data.status != "Draft"){
-                                    if(data.shipment){
-                                        var shipment_url = "{{route("shipment.track", ":id")}}";
-                                        shipment_url = shipment_url.replace(':id', data.shipment.id);
-                                        result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Pengiriman</a>';
-                                        // if(data.status == "Proses"){
-                                        //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
-                                        // }
-                                        // else if(data.status == "Bermasalah" || data.status == "Selesai"){
-                                        //     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
-                                        // }
-                                    }
-                                }
+            $('#is_free').on('change', function () {
+                if(this.checked){
+                    $('#is_piutang').prop('checked', false);
+                    $('#is_piutang_div').fadeOut();
+                }
+                else{
+                    $('#is_piutang_div').fadeIn();
+                }
+            });
 
-                                if(data.order.issues.length > 0){
-                                    result += '<button class="btn btn-sm btn-warning issueModal" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Lihat Masalah</button>';
-                                }
-                                if(data.status!= "Draft" && data.status != "Proses"){
-                                    result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
-                                }
-
-                                result +=
-                                    '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
-                                    '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
-
-                                return result;
-                            }
-                        },
-                        {data: 'status',
-                            render: function(data, type, row, meta){
-                                if(data == "Selesai"){
-                                    return '<span class="label label-success">Selesai</span>';
-                                }
-                                else if(data == "Proses"){
-                                    return '<span class="label label-warning">Proses</span>';
-                                }
-                                else if(data == "Bermasalah"){
-                                    return '<span class="label label-danger">Bermasalah</span>';
-                                }
-                                else if(data == "Batal"){
-                                    return '<span class="label label-danger">Batal</span>';
-                                }
-
-                                return '<span class="label label-info">Draft</span>';
-                            }},
-                        {data: 'id'},
-                        {data: null,
-                            render: function(data){
-                                if(data.order_customer_invoices && data.order_customer_invoices.length > 0 && data.order_customer_invoices[0].oc_header_invoice){
-                                    return '<a href="/invoice/sales/id/'+data.order_customer_invoices[0].oc_header_invoice.id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.order_customer_invoices[0].oc_header_invoice.id+'</a>';
-                                }
-                                return '<i>Data nomor faktur tidak ditemukan</i>';
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.customer){
-                                    return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
-                                }
-                                return '<i>Data customer tidak ditemukan</i>';
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.customer){
-                                    return data.customer.phone;
-                                }
-                                return '<i>Data customer tidak ditemukan</i>';
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.customer){
-                                    return data.customer.address;
-                                }
-                                return '<i>Data customer tidak ditemukan</i>';
-                            }},
-                        {data: null,
-                            render: function (data) {
-                                return data.additional_quantity+data.order.quantity;
-                            }
-                        },
-                        {data: null,
-                            render: function (data) {
-                                if(data.purchase_type == 'non_ervill'){
-                                    if(data.is_new == 'true'){
-                                        return 0;
-                                    }
-                                    else if(data.is_new == 'false'){
-                                        return data.order.quantity;
-                                    }
-                                }
-
-                                return data.empty_gallon_quantity;
-                            }},
-                        {data: null,
-                            render: function (data) {
-                                if(data.purchase_type == 'non_ervill'){
-                                    if(data.is_new == 'true'){
-                                        return data.order.quantity;
-                                    }
-                                    else if(data.is_new == 'false'){
-                                        return data.additional_quantity;
-                                    }
-                                }
-
-                                return 0;
-                            }},
-                        {data: null,
-                            render: function (data) {
-                                if(data.order.created_at){
-                                    return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                }
-                                return '-';
-                            }
-                        },
-                        {data: null,
-                            render: function(data){
-                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.order.accepted_at){
-                                    return moment(data.order.accepted_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                }
-                                return '-';
-                            }},
-                        {data: null,
-                            render: function(data){
-                                if(data.order.user){
-                                    return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
-                                }
-                                return '<i>Data admin tidak ditemukan</i>';
-                            }}
-
-                    ],
-                    processing: true
-                });
-            };
-
-            var tableContent = function (result) {
-                $('#customer-order').on('click', '.issueModal', function () {
-                    var issued_gallon_quantity = 0;
-                    for(var i in result){
-                        if(result[i].id == $(this).data('index')){
-                            $('#issues').DataTable().destroy();
-                            $('#issues').dataTable({
-                                fixedHeader: true,
-                                processing: true,
-                                data:result[i].order.issues,
-                                columns:[
-                                    {data:'type'},
-                                    {data:'description'},
-                                    {data:'quantity'},
-                                    {
-                                        data: null,
-                                        render: function ( data, type, row, meta ) {
-                                            return '<button type="button" class="btn btn-sm btn-danger delete-issue-btn" data-index="' + row.id + '">Delete</button>';
-                                        }
-                                    }
-                                ]
-                            });
-                            for(var j in result[i].order.issues){
-                                issued_gallon_quantity += result[i].order.issues[j].quantity;
-                            }
-                            $('#issued_gallon_quantity').text("Jumlah galon yang bermasalah: " + issued_gallon_quantity);
-                        }
-                    }
-                });
-
-                $('#issues').on('click','.delete-issue-btn',function(){
-                    var id = $(this).data('index');
-
-                    $.ajax({
-                        method: "POST",
-                        url: "{{route('issue.do.delete')}}",
-                        data: {id: id},
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    })
-                        .done(function(data){
-                            location.reload();
-                        })
-                        .fail(function(data){
-                            alert('Terjadi kesalahan!');
-                        });
-                });
-
-                $('#customer-order').on('click','.delete-modal', function(){
-                    $('#delete-id').val($(this).data('index'));
-                });
-
-                $('#customer-order').on('click','.edit-modal', function(){
-                    $('#edit-id').val($(this).data('index'));
-                    var order_data = null;
-                    for(var i in result){
-                        if(result[i].id == $(this).data('index')){
-                            order_data = result[i];
-                        }
-                    }
-
-                    //isi nomor struk
-                    $('#edit-nostruk').val(order_data.order_customer_invoices[0].oc_header_invoice.id);
-                    $('#edit-nostruk').trigger('change');                  
-                    $('#customer-id').val(order_data.customer_id);
-                    // //is_piutang
-                    // if(order_data.order_customer_invoices[0].oc_header_invoice.payment_status=="piutang"){
-                    //     $('#is_piutang').prop("checked",true);
-                    // }else{
-                    //     $('#is_piutang').prop("checked",false);
-                    // }
-                    // //is_free
-                    // if(order_data.order_customer_invoices[0].oc_header_invoice.is_free=="true"){
-                    //     $('#is_free').prop("checked",true);
-                    // }else{
-                    //     $('#is_free').prop("checked",false);
-                    // }
-
-                    var inventory = JSON.parse('{!! $inventory !!}');
-
-                    //new customer or not
-                    if(order_data.is_new=='true'){
-                        $('#add_gallon').prop('checked',false);
-                        $('#add_gallon_checkbox_div').hide();
-                        $('#purchase_type_div').show();
-                        $('#purchase_type').val(order_data.purchase_type);
-                        //$('#is_piutang_div').show();
-                        //$('#is_free_div').show();
-                    }else{
-                        $('#add_gallon_checkbox_div').show();
-                        $('#purchase_type').val('');
-                        $('#purchase_type_div').hide();
-                        //$('#is_piutang_div').hide();
-                        //$('#is_free_div').hide();
-                    }
-
-                    //add gallon or not
-                    if(order_data.additional_quantity==0){
-                        $('#add_gallon').prop('checked',false);
-                        $('#add_gallon_div').hide();
-                        $('#add_gallon_purchase_type').val('');
-                        $('#add_gallon_quantity').val('');
-                    }else{
-                        $('#add_gallon').prop('checked',true);
-                        $('#add_gallon_div').show();
-                        $('#add_gallon_purchase_type').val(order_data.purchase_type);
-                        $('#add_gallon_quantity').val(order_data.additional_quantity);
-                    }
-
-                    //add more gallon
-                    $('#add_gallon').on('change', function () {
-                        //$('#add_gallon_quantity').attr('placeholder','Jumlah Gallon (Stock Gudang: {{$inventory->quantity}})');
-                        //$('#add_gallon_quantity').attr('max', {{$inventory->quantity}});
-                        if(this.checked){
-                            $('#add_gallon_div').fadeIn();
-                            $('#add_gallon_purchase_type').val(order_data.purchase_type);
-                            $('#add_gallon_quantity').val(order_data.additional_quantity);
-                        }
-                        else{
-                            $('#add_gallon_div').fadeOut();
-                            $('#add_gallon_purchase_type').val('');
-                            $('#add_gallon_quantity').val('');
-                        }
-                    });
-
-
-                    $('#edit-qty').attr('max', (inventory.quantity + order_data.order.quantity));
-                    $('#edit-qty').attr('placeholder', 'Jumlah Gallon (Stock Gudang: '+ (inventory.quantity + order_data.order.quantity) +')');
-                    $('#edit-qty').val(order_data.order.quantity);
-                    //$('#edit-empty-gallon-qty').val(order_data.empty_gallon_quantity);
-                    if(order_data.order_customer_invoices[0].oc_header_invoice.shipment_id){
-                        $('.edit-delivery-at').hide();
-                        $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
-                        // $('.remove-shipment').show();
-                        // $('#remove-shipment').attr('checked', false);
-                    }
-                    else{
-                        $('.edit-delivery-at').show();
-                        $('#edit-delivery-at').val(moment(order_data.delivery_at).format('YYYY-MM-DD'));
-
-                        //$('.remove-shipment').hide();
-                    }
-                });
-
-                $('#customer-table').on('click','.customer-id', function(){
-                    $('#add_gallon_checkbox_div').show();
-                    $('#purchase_type').val('');
-                    $('#purchase_type_div').hide();
-                });
-
-                $('#customer-order').on('click','.addIssue-modal', function(){
-                    $('#addIssue_id').val($(this).data('index'));
-                });
-            };
-        });
+            $('#is_piutang').on('change', function () {
+                if(this.checked){
+                    $('#is_free').prop('checked', false);
+                    $('#is_free_div').fadeOut();
+                }
+                else{
+                    $('#is_free_div').fadeIn();
+                }
+            });
+        };
     </script>
 
 @endsection

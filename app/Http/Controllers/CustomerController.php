@@ -169,7 +169,7 @@ class CustomerController extends SettingController
 
     public function getAll()
     {
-        return Customer::with('customerGallons')->get();
+        return Customer::all();
     }
 
     public function get($id){

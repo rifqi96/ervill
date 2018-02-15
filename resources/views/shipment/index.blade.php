@@ -134,206 +134,199 @@ Pengiriman
     <script>
         $(document).ready(function () {
             // Get Unfinished Shipments //
-            $.ajax({
-                url:'/getUnfinishedShipments',
-                type:'GET',
-                dataType:'json',
-                success: function(result){
-                    $('#unfinished-shipment').dataTable({
-                        fixedHeader: {
-                            headerOffset: $('.site-header').outerHeight()
-                        },
-                        processing: true,
-                        order:[1, 'desc'],
-                        select: {
-                            style: 'multi'
-                        },
-                        dom: 'Bfrtip',
-                        buttons: [
-                            { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
-                                columns: ':visible'
-                            }},
-                            { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
-                                columns: ':visible'
-                            }},
-                            { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+            var unfinished_shipments = {!! $unfinished_shipments->toJson() !!};
 
-                        ],
-                        data:result,
-                        columns:[
-                            {data: null,
-                                render: function(data, type, row, meta){
-                                    if(data.status == "Selesai"){
-                                        return '<span class="label label-success">Selesai</span>';
-                                    }
-                                    else if(data.status == "Proses"){
-                                        return '<span class="label label-warning">Proses</span>';
-                                    }
-                                    else if(data.status == "Bermasalah"){
-                                        return '<span class="label label-danger">Bermasalah</span>';
-                                    }
-                                    else if(data.status == "Batal"){
-                                        return '<span class="label label-danger">Batal</span>';
-                                    }
-                                    else{
-                                        return '<span class="label label-info">Draft</span>';
-                                    }
-                                }},
-                            {data:'id'},
-                            {data:'user',
-                                render: function (data) {
-                                    if(data){
-                                        return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
-                                    }
-                                    return 'Data driver tidak ditemukan';
-                                }
-                            },
-                            {data:null,
-                            render: function(data){
-                                var gallon_total = 0;
-                                for(var i in data.oc_header_invoices){
-                                    for(var j in data.oc_header_invoices[i].order_customer_invoices){
-                                        gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
-                                    }
-                                }
+            $('#unfinished-shipment').dataTable({
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
+                processing: true,
+                order:[1, 'desc'],
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
 
-                                return gallon_total;
-                            }},
-                            {data: null,
-                                render: function (data) {
-                                    if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
+                ],
+                data:unfinished_shipments,
+                columns:[
+                    {data: null,
+                        render: function(data, type, row, meta){
+                            if(data.status == "Selesai"){
+                                return '<span class="label label-success">Selesai</span>';
+                            }
+                            else if(data.status == "Proses"){
+                                return '<span class="label label-warning">Proses</span>';
+                            }
+                            else if(data.status == "Bermasalah"){
+                                return '<span class="label label-danger">Bermasalah</span>';
+                            }
+                            else if(data.status == "Batal"){
+                                return '<span class="label label-danger">Batal</span>';
+                            }
+                            else{
+                                return '<span class="label label-info">Draft</span>';
+                            }
+                        }},
+                    {data:'id'},
+                    {data:'user',
+                        render: function (data) {
+                            if(data){
+                                return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
+                            }
+                            return 'Data driver tidak ditemukan';
+                        }
+                    },
+                    {data:null,
+                        render: function(data){
+                            var gallon_total = 0;
+                            for(var i in data.oc_header_invoices){
+                                for(var j in data.oc_header_invoices[i].order_customers){
+                                    if(data.oc_header_invoices[i].order_customers[j].price_id != 5 && data.oc_header_invoices[i].order_customers[j] != 12){
+                                        gallon_total += data.oc_header_invoices[i].order_customers[j].quantity;
                                     }
-                                    return '-';
                                 }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                            render: function(data){
-                                var shipment_url = "{{route("shipment.track", ":id")}}";
-                                shipment_url = shipment_url.replace(':id', data.id);
-                                return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
-                                    '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
-                                    '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
-                            }}
-                        ]
-                    });
-                }
+                            }
+
+                            return gallon_total;
+                        }},
+                    {data: null,
+                        render: function (data) {
+                            if(data.delivery_at){
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function(data){
+                            var shipment_url = "{{route("shipment.track", ":id")}}";
+                            shipment_url = shipment_url.replace(':id', data.id);
+                            return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
+                                '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+                        }}
+                ]
             });
 
             // Get Finished Shipments //
-            $.ajax({
-                url:'/getFinishedShipments',
-                type:'GET',
-                dataType:'json',
-                success: function(result){
-                    $('#finished-shipment').dataTable({
-                        fixedHeader: {
-                            headerOffset: $('.site-header').outerHeight()
-                        },
-                        processing: true,
-                        order:[1, 'desc'],
-                        select: {
-                            style: 'multi'
-                        },
-                        dom: 'Bfrtip',
-                        buttons: [
-                            { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
-                                columns: ':visible'
-                            }},
-                            { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
-                                columns: ':visible'
-                            }},
-                            { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+            var finished_shipments = {!! $finished_shipments->toJson() !!};
+            $('#finished-shipment').dataTable({
+                fixedHeader: {
+                    headerOffset: $('.site-header').outerHeight()
+                },
+                processing: true,
+                order:[1, 'desc'],
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
 
-                        ],
-                        data:result,
-                        columns:[
-                            {data: null,
-                                render: function(data, type, row, meta){
-                                    if(data.status == "Selesai"){
-                                        return '<span class="label label-success">Selesai</span>';
+                ],
+                data:finished_shipments,
+                columns:[
+                    {data: null,
+                        render: function(data, type, row, meta){
+                            if(data.status == "Selesai"){
+                                return '<span class="label label-success">Selesai</span>';
+                            }
+                            else if(data.status == "Proses"){
+                                return '<span class="label label-warning">Proses</span>';
+                            }
+                            else if(data.status == "Bermasalah"){
+                                return '<span class="label label-danger">Bermasalah</span>';
+                            }
+                            else{
+                                return '<span class="label label-info">Draft</span>';
+                            }
+                        }},
+                    {data:'id'},
+                    {data:'user',
+                        render: function (data) {
+                            if(data){
+                                return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
+                            }
+                            return 'Data driver tidak ditemukan';
+                        }
+                    },
+                    {data:null,
+                        render: function(data){
+                            var gallon_total = 0;
+                            for(var i in data.oc_header_invoices){
+                                for(var j in data.oc_header_invoices[i].order_customers){
+                                    if(data.oc_header_invoices[i].order_customers[j].price_id != 5 && data.oc_header_invoices[i].order_customers[j] != 12){
+                                        gallon_total += data.oc_header_invoices[i].order_customers[j].quantity;
                                     }
-                                    else if(data.status == "Proses"){
-                                        return '<span class="label label-warning">Proses</span>';
-                                    }
-                                    else if(data.status == "Bermasalah"){
-                                        return '<span class="label label-danger">Bermasalah</span>';
-                                    }
-                                    else{
-                                        return '<span class="label label-info">Draft</span>';
-                                    }
-                                }},
-                            {data:'id'},
-                            {data:'user',
-                                render: function (data) {
-                                    if(data){
-                                        return '<a href="/setting/user_management/id/'+data.id+'" target="_blank">'+data.full_name+'</a>';
-                                    }
-                                    return 'Data driver tidak ditemukan';
                                 }
-                            },
-                            {data:null,
-                                render: function(data){
-                                    var gallon_total = 0;
-                                    for(var i in data.oc_header_invoices){
-                                        for(var j in data.oc_header_invoices[i].order_customer_invoices){
-                                            gallon_total += data.oc_header_invoices[i].order_customer_invoices[j].quantity;
-                                        }
-                                    }
+                            }
 
-                                    return gallon_total;
-                                }},
-                            {data: null,
-                                render: function (data) {
-                                    if(data.delivery_at){
-                                        return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.created_at){
-                                        return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function (data) {
-                                    if(data.updated_at){
-                                        return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
-                                    }
-                                    return '-';
-                                }
-                            },
-                            {data: null,
-                                render: function(data){
-                                    var shipment_url = "{{route("shipment.track", ":id")}}";
-                                    shipment_url = shipment_url.replace(':id', data.id);
-                                    return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
-                                        '<button type="button" class="btn btn-sm edit-modal finished" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
-                                        '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
-                                }}
-                        ]
-                    });
-                }
+                            return gallon_total;
+                        }},
+                    {data: null,
+                        render: function (data) {
+                            if(data.delivery_at){
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.created_at){
+                                return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
+                            if(data.updated_at){
+                                return moment(data.updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function(data){
+                            var shipment_url = "{{route("shipment.track", ":id")}}";
+                            shipment_url = shipment_url.replace(':id', data.id);
+                            return '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Detail</a>' +
+                                '<button type="button" class="btn btn-sm edit-modal finished" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
+                                '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
+                        }}
+                ]
             });
 
             // Get All Drivers for Select Input //
@@ -348,28 +341,29 @@ Pengiriman
                 }
             });
             
-            var editModal = function ($elem) {
-                $.ajax({
-                    url:'/getShipmentById/' + $elem.data('index'),
-                    type:'get',
-                    dataType:'json',
-                    success:function (result) {
-                        $('#driver-id').val(result.user.id);
-                        $('#delivery-at').val(moment(result.delivery_at).format('YYYY-MM-DD'));
-                        $('.shipment-id').val($elem.data('index'));
-                        $('#status').val(result.status);
-                    }
-                });
+            var editModal = function (result) {
+                $('#driver-id').val(result.user.id);
+                $('#delivery-at').val(moment(result.delivery_at).format('YYYY-MM-DD'));
+                $('.shipment-id').val(result.id);
+                $('#status').val(result.status);
             }
 
             // On Edit Button //
             $('#unfinished-shipment').on('click','.edit-modal,.delete-modal',function(){
-                $('#editModal .status').show();
-                editModal($(this));
+                for(var i in unfinished_shipments){
+                    if(unfinished_shipments[i].id == $(this).data('index')){
+                        $('#editModal .status').show();
+                        editModal(unfinished_shipments[i]);
+                    }
+                }
             });
             $('#finished-shipment').on('click','.edit-modal,.delete-modal',function(){
-                $('#editModal .status').hide();
-                editModal($(this));
+                for(var i in finished_shipments){
+                    if(finished_shipments[i].id == $(this).data('index')){
+                        $('#editModal .status').hide();
+                        editModal(finished_shipments[i]);
+                    }
+                }
             });
         });
     </script>

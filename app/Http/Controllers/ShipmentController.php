@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderCustomer;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\UserThirdParty;
@@ -27,6 +26,8 @@ class ShipmentController extends Controller
     public function index()
     {
         $this->data['breadcrumb'] = "Shipment";
+        $this->data['unfinished_shipments'] = $this->getAllUnfinished();
+        $this->data['finished_shipments'] = $this->getAllFinished();
 
         return view('shipment.index', $this->data);
     }
@@ -57,7 +58,7 @@ class ShipmentController extends Controller
             'user',
             'ocHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                    'orderCustomers', 'customer', 'user'
                 ]);
             },
             'reHeaderInvoices' => function($query){
@@ -74,7 +75,7 @@ class ShipmentController extends Controller
             'user',
             'ocHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                    'orderCustomers', 'customer', 'user'
                 ]);
             },
             'reHeaderInvoices' => function($query){
@@ -90,7 +91,7 @@ class ShipmentController extends Controller
             'user',
             'ocHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                    'orderCustomers', 'customer', 'user'
                 ]);
             },
             'reHeaderInvoices' => function($query){
@@ -110,7 +111,7 @@ class ShipmentController extends Controller
             'user',
             'ocHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerInvoices', 'orderCustomerBuyInvoices'
+                    'orderCustomers', 'customer', 'user'
                 ]);
             },
             'reHeaderInvoices' => function($query){
@@ -124,13 +125,6 @@ class ShipmentController extends Controller
 
         if($shipment->ocHeaderInvoices){
             foreach($shipment->ocHeaderInvoices as $ocHeaderInvoice){
-                if($ocHeaderInvoice->orderCustomerInvoices->count() > 0){
-                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerInvoices[0]->orderCustomer->customer;
-                }
-                else if($ocHeaderInvoice->orderCustomerBuyInvoices->count() > 0){
-                    $ocHeaderInvoice->customer = $ocHeaderInvoice->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer;
-                }
-
                 $ocHeaderInvoice->type = "sales";
                 $shipment->details->push($ocHeaderInvoice);
             }

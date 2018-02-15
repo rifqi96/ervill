@@ -155,16 +155,17 @@
                                 else if(data == "Bermasalah"){
                                     return '<span class="label label-danger">Bermasalah</span>';
                                 }
+                                else if(data == "Dihapus"){
+                                    return '<span class="label label-danger">Dihapus</span>';
+                                }
 
                                 return '<span class="label label-info">Draft</span>';
                             }},
                         {data: 'id'},
-                        {data: null,
+                        {data: 'customer',
                         render: function (data) {
-                            if(data.has_order){
-                                if(data.customer_id){
-                                    return '<a href="/setting/customers/id/'+data.customer_id+'" target="_blank">'+data.customer_name+'</a>';
-                                }
+                            if(data){
+                                return '<a href="/setting/customers/id/'+data.id+'" target="_blank">'+data.name+'</a>';
                             }
 
                             return '<i>Data tidak ditemukan</i>';

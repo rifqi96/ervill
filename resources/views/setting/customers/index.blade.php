@@ -232,38 +232,26 @@
                             return "-";
                         }
                     },
-                    {data:'customer_gallons',
+                    {data:'rent_qty',
                     render: function (data) {
                         if(data){
-                            for(var i in data){
-                                if(data[i].type=='rent'){
-                                    return data[i].qty;
-                                }
-                            }
+                            return data;
                         }
-                        return 0;
+                        return '-';
                     }},
-                    {data:'customer_gallons',
+                    {data:'purchase_qty',
                         render: function (data) {
                             if(data){
-                                for(var i in data){
-                                    if(data[i].type=='purchase'){
-                                        return data[i].qty;
-                                    }
-                                }
+                                return data;
                             }
-                            return 0;
+                            return '-';
                         }},
-                    {data:'customer_gallons',
+                    {data:'non_erv_qty',
                         render: function (data) {
                             if(data){
-                                for(var i in data){
-                                    if(data[i].type=='non_ervill'){
-                                        return data[i].qty;
-                                    }
-                                }
+                                return data;
                             }
-                            return 0;
+                            return '-';
                         }},
                     {data: 'notif_day',
                         render: function (data) {

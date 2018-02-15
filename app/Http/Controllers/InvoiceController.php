@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\OcHeaderInvoice;
-use App\Models\OrderCustomerInvoice;
-use App\Models\OrderCustomerBuyInvoice;
 
 use App\Models\ReHeaderInvoice;
 use App\Models\OrderCustomerReturnInvoice;
@@ -63,27 +61,20 @@ class InvoiceController extends Controller
         return view('invoice.sales_wh_details', $this->data);
     }
 
-    public function getAllSales(){
-        $invoices = OcHeaderInvoice::with([
-            'orderCustomerInvoices' => function($query){
-                $query->with([
-                    'orderCustomer' => function($query){
-                        $query->with('customer');
-                        $query->has('order');
-                    }
-                ]);
-                $query->has('orderCustomer.order');
-            },
-            'orderCustomerBuyInvoices' => function($query){
-                $query->with([
-                    'orderCustomerBuy' => function($query){
-                        $query->with('customer');
-                    }
-                ]);
-                $query->has('orderCustomerBuy');
-            }
+    public function getAllSales($withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
             ])
-            ->get();
+                ->withTrashed()
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->get();
+        }
 
         foreach($invoices as $invoice){
             $invoice->setInvoiceAttributes();
@@ -92,33 +83,28 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
-    public function getCashSales(){
-        $invoices = OcHeaderInvoice::with([
-            'orderCustomerInvoices' => function($query){
-                $query->with([
-                    'orderCustomer' => function($query){
-                        $query->with('customer');
-                        $query->has('order');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomer.order');
-            },
-            'orderCustomerBuyInvoices' => function($query){
-                $query->with([
-                    'orderCustomerBuy' => function($query){
-                        $query->with('customer');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomerBuy');
-            }
+    public function getCashSales($withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
             ])
-            ->where([
-                ['payment_status', '=', 'cash'],
-                ['is_free', '=', 'false']
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['is_free', '=', 'false']
+                ])
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
             ])
-            ->get();
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['is_free', '=', 'false']
+                ])
+                ->get();
+        }
 
         foreach($invoices as $invoice){
             $invoice->setInvoiceAttributes();
@@ -127,33 +113,28 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
-    public function getPiutangSales(){
-        $invoices = OcHeaderInvoice::with([
-            'orderCustomerInvoices' => function($query){
-                $query->with([
-                    'orderCustomer' => function($query){
-                        $query->with('customer');
-                        $query->has('order');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomer.order');
-            },
-            'orderCustomerBuyInvoices' => function($query){
-                $query->with([
-                    'orderCustomerBuy' => function($query){
-                        $query->with('customer');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomerBuy');
-            }
-        ])
-            ->where([
-                ['payment_status', '=', 'piutang'],
-                ['is_free', '=', 'false']
+    public function getPiutangSales($withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
             ])
-            ->get();
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'piutang'],
+                    ['is_free', '=', 'false']
+                ])
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->where([
+                    ['payment_status', '=', 'piutang'],
+                    ['is_free', '=', 'false']
+                ])
+                ->get();
+        }
 
         foreach($invoices as $invoice){
             $invoice->setInvoiceAttributes();
@@ -162,32 +143,26 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
-    public function getFreeSales(){
-        $invoices = OcHeaderInvoice::with([
-            'orderCustomerInvoices' => function($query){
-                $query->with([
-                    'orderCustomer' => function($query){
-                        $query->with('customer');
-                        $query->has('order');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomer.order');
-            },
-            'orderCustomerBuyInvoices' => function($query){
-                $query->with([
-                    'orderCustomerBuy' => function($query){
-                        $query->with('customer');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomerBuy');
-            }
-        ])
-            ->where([
-                ['is_free', '=', 'true']
+    public function getFreeSales($withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
             ])
-            ->get();
+                ->withTrashed()
+                ->where([
+                    ['is_free', '=', 'true']
+                ])
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->where([
+                    ['is_free', '=', 'true']
+                ])
+                ->get();
+        }
 
         foreach($invoices as $invoice){
             $invoice->setInvoiceAttributes();
@@ -196,44 +171,28 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
-    public function getSalesByDate($start_date, $end_date){
-        $invoices = OcHeaderInvoice::with([
-                'orderCustomerInvoices' => function($query) use($start_date, $end_date){
-                    $query->with([
-                        'orderCustomer' => function($query){
-                            $query->with('customer');
-                            $query->has('order');
-                        },
-                        'price'
-                    ]);
-                    $query->has('orderCustomer.order');
-                },
-                'orderCustomerBuyInvoices' => function($query) use($start_date, $end_date){
-                    $query->with([
-                        'orderCustomerBuy' => function($query){
-                            $query->with('customer');
-                        },
-                        'price'
-                    ]);
-                    $query->has('orderCustomerBuy');
-                    $query->whereHas('ocHeaderInvoice', function ($query){
-                        $query->where('status', 'Selesai');
-                    });
-                }
-            ])
-            ->whereHas('orderCustomerInvoices.orderCustomer', function ($query) use($start_date, $end_date){
-                $query->where([
+    public function getSalesByDate($start_date, $end_date, $withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+                ])
+                ->withTrashed()
+                ->where([
                     ['delivery_at', '>=', $start_date],
                     ['delivery_at', '<=', $end_date]
-                ]);
-            })
-            ->orWHereHas('orderCustomerBuyInvoices.orderCustomerBuy', function ($query) use($start_date, $end_date){
-                $query->where([
-                    ['buy_at', '>=', $start_date],
-                    ['buy_at', '<=', $end_date]
-                ]);
-            })
-            ->get();
+                ])
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+                ])
+                ->where([
+                    ['delivery_at', '>=', $start_date],
+                    ['delivery_at', '<=', $end_date]
+                ])
+                ->get();
+        }
 
         foreach($invoices as $invoice){
             $invoice->setInvoiceAttributes();
@@ -242,29 +201,20 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
-    public function getSales($id){
-        $invoice = OcHeaderInvoice::with([
-            'orderCustomerInvoices' => function($query){
-                $query->with([
-                    'orderCustomer' => function($query){
-                        $query->with(['customer', 'order']);
-                        $query->has('order');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomer.order');
-            },
-            'orderCustomerBuyInvoices' => function($query){
-                $query->with([
-                    'orderCustomerBuy' => function($query){
-                        $query->with('customer');
-                    },
-                    'price'
-                ]);
-                $query->has('orderCustomerBuy');
-            }
-        ])
-            ->find($id);
+    public function getSales($id, $withTrashed = true){
+        if($withTrashed){
+            $invoice = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->find($id);
+        }
+        else{
+            $invoice = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->find($id);
+        }
 
         $invoice->setInvoiceAttributes();
 

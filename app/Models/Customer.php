@@ -27,32 +27,20 @@ class Customer extends Model
     ];
 
     // Relations //
-    public function order_customers(){
-        return $this->hasMany('App\Models\OrderCustomer');
-    }
-    public function customerGallons(){
-        return $this->hasMany('App\Models\CustomerGallon');
+    public function ocHeaderInvoices(){
+        return $this->hasMany('App\Models\OcHeaderInvoice');
     }
 
     public function get($id){
         $customer = Customer::with([
-            'customerGallons' => function($query){
-                $query->orderBy('type', 'DESC');
-            },
-            'order_customers' => function($query){
-                $query->with([
-                    'order' => function($query){
-                        $query->with(['user', 'issues']);
-                    },
-                ]);
-                $query->has('order');
+            'ocHeaderInvoices' => function($query){
                 $query->orderBy('delivery_at', 'DESC');
-                $query->orderBy('id', 'DESC');
-            }])
+            }
+            ])
             ->find($id);
 
-        if($customer->customerGallons->count() > 0 && $customer->order_customers->count() > 0){
-            $last_transaction = Carbon::parse($customer->order_customers[0]->delivery_at);
+        if($customer->ocHeaderInvoices->count() > 0){
+            $last_transaction = Carbon::parse($customer->ocHeaderInvoices[0]->delivery_at);
             if(!$customer->notif_day){
                 $notif_day = 14;
             }
@@ -62,7 +50,7 @@ class Customer extends Model
             $overdue = $last_transaction->addDay($notif_day);
 
             $customer->overdue = Carbon::now()->diffInDays($overdue, false);
-            $customer->last_transaction = $customer->order_customers[0]->delivery_at;
+            $customer->last_transaction = $customer->ocHeaderInvoices[0]->delivery_at;
             $customer->overdue_date = $overdue->format('Y-m-d');
         }
         else{
@@ -76,26 +64,15 @@ class Customer extends Model
 
     public function getOverdueCustomers(){
         $customers = Customer::with([
-            'customerGallons' => function($query){
-                $query->orderBy('type', 'DESC');
-            },
-            'order_customers' => function($query){
-                $query->with([
-                    'order' => function($query){
-                        $query->with(['user', 'issues']);
-                    },
-                ]);
-                $query->has('order');
+            'ocHeaderInvoices' => function($query){
                 $query->orderBy('delivery_at', 'DESC');
-                $query->orderBy('id', 'DESC');
             }])
-            ->has('order_customers')
             ->get();
 
         $res = collect();
 
         foreach($customers as $key => $val){
-            $last_transaction = Carbon::parse($customers[$key]->order_customers[0]->delivery_at);
+            $last_transaction = Carbon::parse($customers[$key]->ocHeaderInvoices[0]->delivery_at);
             if(!$customers[$key]->notif_day){
                 $notif_day = 14;
             }
@@ -105,7 +82,7 @@ class Customer extends Model
             $overdue = $last_transaction->addDay($notif_day);
 
             $customers[$key]->overdue = Carbon::now()->diffInDays($overdue, false);
-            $customers[$key]->last_transaction = $customers[$key]->order_customers[0]->delivery_at;
+            $customers[$key]->last_transaction = $customers[$key]->ocHeaderInvoices[0]->delivery_at;
             $customers[$key]->overdue_date = $overdue->format('Y-m-d');
 
             if($customers[$key]->overdue <= 0){
@@ -142,6 +119,27 @@ class Customer extends Model
         $this->notif_day = $data->notif_day;
 
         return ($this->save());
+    }
+
+    public function doUpdateGallons($data){
+        if(isset($data->rent_qty) && $data->rent_qty > 0){
+            $this->rent_qty += $data->rent_qty;
+        }
+
+        if(isset($data->purchase_qty) && $data->purchase_qty > 0){
+            $this->purchase_qty += $data->purchase_qty;
+        }
+
+        if(isset($data->non_erv_qty) && $data->non_erv_qty > 0){
+            $this->non_erv_qty += $data->non_erv_qty;
+        }
+
+        if(isset($data->pay_qty) && $data->pay_qty > 0){
+            $this->rent_qty -= $data->pay_qty;
+            $this->purchase_qty += $data->pay_qty;
+        }
+
+        return $this->save();
     }
 
     public function doRestore(){

@@ -44,9 +44,9 @@ Detail Faktur
                         <div class="col-lg-4 col-md-4 col-print-4">
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
-                                <div>Ibu/Bapak {{$invoice->customer_name}}</div>
-                                <div>Alamat: {{$invoice->customer_address}}</div>
-                                <div>No. HP: {{$invoice->customer_phone}}</div>
+                                <div>Ibu/Bapak {{$invoice->customer->name}}</div>
+                                <div>Alamat: {{$invoice->customer->address}}</div>
+                                <div>No. HP: {{$invoice->customer->phone}}</div>
                             </div>
                         </div>
                         <div class="newhr">
@@ -55,16 +55,13 @@ Detail Faktur
                         <div class="col-lg-4 col-md-4 col-print-4 clearfix invoice-info">
                             <div class="text-lg-right">
                                 <h5>Nomor Faktur {{$invoice->id}}</h5>
-                                @if($invoice->has_order)
-                                    <div>
-                                        Tgl Pengiriman:
-                                        <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
-                                    </div>
-                                @endif
+                                <div>
+                                    Tgl Pengiriman:
+                                    <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @if($invoice->has_order)
                     <div class="row table-details">
                         <div class="col-lg-12">
                             <table class="table table-bordered">
@@ -84,18 +81,17 @@ Detail Faktur
                                     <tr>
                                         <td>2</td>
                                         <td>Galon Masuk Kosong (ERVILL)</td>
-                                        <td>{{$invoice->ervill_empty_gallon}}</td>
+                                        <td>{{$invoice->empty_gallon}}</td>
                                     </tr>
                                     <tr>
                                         <td>3</td>
                                         <td>Galon Masuk Kosong (NON - ERVILL / MERK LAIN)</td>
-                                        <td>{{$invoice->non_ervill_empty_gallon}}</td>
+                                        <td>{{$invoice->non_erv_gallon}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    @endif
                     <div class="row">
                         <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
                             <strong>S&K</strong>
