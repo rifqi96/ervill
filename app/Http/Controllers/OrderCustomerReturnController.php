@@ -27,6 +27,8 @@ class OrderCustomerReturnController extends Controller
     {
         $this->data['breadcrumb'] = "Customer Order - Retur - Create";
 
+        $this->data['customers'] = (new CustomerController())->getAll();
+
         return view('return.make', $this->data);
     }
 
@@ -46,7 +48,7 @@ class OrderCustomerReturnController extends Controller
     }
 
     public function getRecentOrders(){
-        $oc_returns = OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice'])
+        $oc_returns = OrderCustomerReturn::with(['customer', 'author','orderCustomerReturnInvoices','orderCustomerReturnInvoices.reHeaderInvoice', 'orderCustomerReturnInvoices.reHeaderInvoice.shipment', 'orderCustomerReturnInvoices.reHeaderInvoice.shipment.user'])
             ->whereDate('return_at', '=', Carbon::today()->toDateString())
             ->get();
         foreach($oc_returns as $oc_return){
@@ -54,6 +56,7 @@ class OrderCustomerReturnController extends Controller
             $oc_return->user = $oc_return->author;
             $oc_return->invoice_no = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->id;
             $oc_return->status = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->status;
+            $oc_return->shipment = $oc_return->orderCustomerReturnInvoices[0]->reHeaderInvoice->shipment;
         }
 
         return $oc_returns;

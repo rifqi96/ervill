@@ -23,16 +23,9 @@ class OrderCustomerReturn extends Model
     }
 
     public function doMake($data, $author_id){
-        $customer_gallon = CustomerGallon::with([
-            'customer'
-        ])
-        ->where([
-            ['customer_id', $data->customer_id],
-            ['type', 'rent']
-        ])
-            ->first();
+        $rent_qty = Customer::find($data->customer_id)->rent_qty;
 
-        if(!$customer_gallon){
+        if(!$rent_qty || $rent_qty < 1){
             $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('customer_gallon_rent_return', 'Customer tidak memiliki galon pinjam, mohon diperiksa kembali');
             throw new ValidationException($validator);
@@ -40,7 +33,7 @@ class OrderCustomerReturn extends Model
 
         $returned_gallons = $data->empty_quantity + $data->filled_quantity;
 
-        if($returned_gallons > $customer_gallon->qty){
+        if($returned_gallons > $rent_qty){
             $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('returned_gallons_return', 'Jumlah galon melebihi kapasitas, mohon diperiksa kembali');
             throw new ValidationException($validator);
@@ -51,7 +44,7 @@ class OrderCustomerReturn extends Model
         $this->customer_id = $data->customer_id;
         $this->filled_gallon_quantity = $data->filled_quantity;
         $this->empty_gallon_quantity = $data->empty_quantity;
-        if($data->is_non_refund){
+        if(!$data->is_refund){
             $this->is_non_refund = "true";
         }else{
             $this->is_non_refund = "false";
@@ -79,18 +72,13 @@ class OrderCustomerReturn extends Model
     }
 
     public function doConfirm(){
-        $customer_gallon = CustomerGallon::with('customer')
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'rent']
-            ])
-            ->first();
+        $customer = Customer::find($this->customer_id);
 
         $empty_gallon = Inventory::find(2);
         $filled_gallon = Inventory::find(3);
         $outgoing_gallon = Inventory::find(5);
 
-        if(!$customer_gallon){
+        if(!$customer || !$customer->rent_qty || $customer->rent_qty < 1){
             $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('customer', 'Gagal Retur, customer tidak memiliki galon pinjam');
             throw new ValidationException($validator);
@@ -98,7 +86,7 @@ class OrderCustomerReturn extends Model
 
         $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
 
-        if($returned_gallons > $customer_gallon->qty){
+        if($returned_gallons > $customer->rent_qty){
             $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('customer', 'Gagal Retur, jumlah galon retur melibihi kapasitas pinjam customer');
             throw new ValidationException($validator);
@@ -119,19 +107,11 @@ class OrderCustomerReturn extends Model
             return false;
         }
 
-        $customer_gallon->qty -= $returned_gallons;
-        if($customer_gallon->qty > 0){
-            if(!$customer_gallon->save()){
-                return false;
-            }
-        }
-        else{
-            if(!$customer_gallon->delete()){
-                return false;
-            }
-        }
+        $customer->rent_qty -= $returned_gallons;
 
-        
+        if(!$customer->save()){
+            return false;
+        }
 
         if($this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status=="Batal"){
             //update faktur_detail
@@ -153,12 +133,7 @@ class OrderCustomerReturn extends Model
     public function doCancel(){
 
         if($this->orderCustomerReturnInvoices[0]->reHeaderInvoice->status=="Selesai"){
-            $customer_gallon = CustomerGallon::with('customer')
-            ->where([
-                ['customer_id', $this->customer_id],
-                ['type', 'rent']
-            ])
-            ->first();
+            $customer = Customer::find($this->customer_id);
 
             $empty_gallon = Inventory::find(2);
             $filled_gallon = Inventory::find(3);
@@ -166,21 +141,10 @@ class OrderCustomerReturn extends Model
 
             $returned_gallons = $this->empty_gallon_quantity + $this->filled_gallon_quantity;
 
-            if(!$customer_gallon){
-                $customer_gallon = new CustomerGallon();
-                $customer_gallon->customer_id = $this->customer_id;
-                $customer_gallon->qty = $returned_gallons;
-                $customer_gallon->type = "rent";
-                if(!$customer_gallon->save()){
-                    return false;
-                }
-            }
-            else{
-                $customer_gallon->qty += $returned_gallons;
+            $customer->rent_qty += $returned_gallons;
 
-                if(!$customer_gallon->save()){
-                    return false;
-                }
+            if(!$customer->save()){
+                return false;
             }
 
             $empty_gallon->quantity -= $this->empty_gallon_quantity;

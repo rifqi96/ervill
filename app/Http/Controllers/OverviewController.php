@@ -49,11 +49,6 @@ class OverviewController extends Controller
             $recent_orders->push($oc);
         }
 
-        $oc_buys = (new OrderCustomerBuyController())->getRecentOrders();
-        foreach($oc_buys as $oc_buy){
-            $recent_orders->push($oc_buy);
-        }
-
         $oc_returns = (new OrderCustomerReturnController())->getRecentOrders();
         foreach($oc_returns as $oc_return){
             $recent_orders->push($oc_return);

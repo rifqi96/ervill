@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\OcHeaderInvoice;
 use App\Models\ReHeaderInvoice;
 use Illuminate\Http\Request;
@@ -27,8 +28,7 @@ class OrderCustomerController extends OrderController
         $this->data['inventory'] = Inventory::find(3);
 
         $this->data['customers'] = (new CustomerController())->getAll();
-        $this->data['struks'] = (new InvoiceController())->getAllSales();
-        $this->data['orders'] = $this->getAll();
+        $this->data['invoices'] = $this->getAllInvoices();
 
         return view('order.customer.index', $this->data);
     }
@@ -38,63 +38,39 @@ class OrderCustomerController extends OrderController
         $this->data['breadcrumb'] = "Order - Customer Order - Create";
 
         $this->data['inventory'] = Inventory::find(3);
-        $this->data['customer_gallons'] = CustomerGallon::all();
-        $this->data['struks'] = (new InvoiceController())->getAllSales();
-
-        // $latest_nomor_struk_str = OrderCustomer::orderBy('nomor_struk','desc')->pluck('nomor_struk')->first();
-        // $new_nomor_struk = (int)substr($latest_nomor_struk_str,2)+1;
-        // $this->data['latest_nomor_struk'] = $new_nomor_struk;
+        $this->data['customers'] = (new CustomerController())->getAll();
 
         return view('order.customer.make', $this->data);
     }
 
-//    public function showDetails($id){
-//        $this->data['breadcrumb'] = "Order - Customer Order - Details";
-//
-//        $this->data['invoices'] = OrderCustomerInvoice::has('orderCustomer.order')->where('oc_header_invoice_id',$id)->get();
-//        $this->data['buy_invoices'] = OrderCustomerBuyInvoice::where('oc_header_invoice_id',$id)->get();
-//
-//         return view('order.customer.details', $this->data);
-//    }
-
     /*======= Get Methods =======*/
-    public function getAll(){
-        $ocs = OrderCustomer::with([            
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            },
-            'orderCustomerInvoices' => function($query){
-                $query->with(['ocHeaderInvoice']);
-            }
-            ])
-            ->has('order')
-            ->get();
+    public function getAllInvoices(){
+        $invoices = OcHeaderInvoice::with(['customer', 'orderCustomers' => function($query){
+            $query->with('priceMaster');
+        }, 'shipment', 'user'])->get();
 
-        foreach($ocs as $oc){
-            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+        foreach($invoices as $invoice){
+            $invoice->setInvoiceAttributes();
         }
 
-        return $ocs;
+        return $invoices;
     }
 
     public function getRecentOrders(){
-        $ocs = OrderCustomer::with([            
+        $ocs = OcHeaderInvoice::with([
             'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
+            'orderCustomers',
+            'user',
+            'shipment' => function($query){
+                $query->with('user');
             }
-        ])
-            ->has('order')
+            ])
             ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
             ->get();
 
         foreach($ocs as $oc){
             $oc->type = "sales";
-            $oc->user = $oc->order->user;
-            $oc->updated_at = Carbon::parse($oc->order->updated_at)->format('Y-m-d H:i:s');
-            $oc->invoice_no = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->id;
-            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
+            $oc->invoice_no = $oc->id;
         }
 
         return $ocs;
@@ -116,22 +92,12 @@ class OrderCustomerController extends OrderController
     }
 
     public function getUnshippedOrders(Request $request){
-        $oc = OcHeaderInvoice::where([
+        $oc = OcHeaderInvoice::with(['customer', 'orderCustomers', 'user'])
+            ->where([
                 ['status', '=', 'Draft'],
                 ['shipment_id', null]
             ])
-            ->whereHas('orderCustomerInvoices.orderCustomer', function($query) use($request){
-                $query->where('delivery_at', '=', $request->delivery_at);
-            })
-            ->get();
-        $ocBuy = OcHeaderInvoice::where([
-                ['status', '=', 'Draft'],
-                ['shipment_id', null]
-            ])
-            ->has('orderCustomerInvoices', '<', 1)
-            ->whereHas('orderCustomerBuyInvoices.orderCustomerBuy', function($query) use($request){
-                $query->where('buy_at', '=', $request->delivery_at);
-            })
+            ->whereDate('delivery_at', '=', $request->delivery_at)
             ->get();
 
         $returns = ReHeaderInvoice::where([
@@ -147,18 +113,13 @@ class OrderCustomerController extends OrderController
         $orders = collect();
 
         $oc->each(function($item, $value) use($orders){
-            $item->customer = $item->orderCustomerInvoices[0]->orderCustomer->customer;
             $item->type = "sales";
-            $orders->push($item);
-        });
-        $ocBuy->each(function($item, $value) use($orders){
-            $item->customer = $item->orderCustomerBuyInvoices[0]->orderCustomerBuy->customer;
-            $item->type = "sales";
+            $item->setInvoiceAttributes();
             $orders->push($item);
         });
         $returns->each(function($item, $value) use($orders){
-            $item->customer = $item->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
             $item->type = "return";
+            $item->customer = $item->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
             $orders->push($item);
         });
 
@@ -170,98 +131,81 @@ class OrderCustomerController extends OrderController
         $customer_id = null;
         $filled_gallon = Inventory::find(3);
 
-
-        if($filled_gallon->quantity < $request->quantity){
-            return back()
-                ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
-        }
-
         if(!$request->phone){
             if($request->phone != '0'){
                 $request->phone = '0000';
                 $request['phone'] = '0000';
             }
         }
+        else if(!$request->rent_qty || $request->rent_qty < 1){
+            if($request->rent_qty != '0'){
+                $request->rent_qty = 0;
+                $request['rent_qty'] = 0;
+            }
+        }
+        else if(!$request->purchase_qty || $request->purchase_qty < 1){
+            if($request->purchase_qty != '0'){
+                $request->purchase_qty = 0;
+                $request['purchase_qty'] = 0;
+            }
+        }
+        else if(!$request->non_erv_qty || $request->non_erv_qty < 1){
+            if($request->non_erv_qty != '0'){
+                $request->non_erv_qty = 0;
+                $request['non_erv_qty'] = 0;
+            }
+        }
+        else if(!$request->pay_qty || $request->pay_qty < 1){
+            if($request->pay_qty != '0'){
+                $request->pay_qty = 0;
+                $request['pay_qty'] = 0;
+            }
+        }
+
+        $total_qty = $request->rent_qty + $request->purchase_qty + $request->non_erv_qty + $request->pay_qty;
 
         if($request->new_customer){
             // If new customer //
+            if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
+                return back()
+                    ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
+            }
+            else if($total_qty < 1){
+                return back()
+                    ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
+            }
             $this->validate($request, [
                 'name' => 'required|string',
                 'phone' => 'required|string|digits_between:3,14',
                 'address' => 'required|string',
-                'quantity' => 'required|integer|min:0',
-                'delivery_at' => 'required|date',
-                'purchase_type' => 'required'
+                'delivery_at' => 'required|date'
             ]);
-
-            // $customer = new Customer;
-            // $customerGallon = new CustomerGallon;
-
-            // //create customer
-            // if($customer->doMake($request)){
-            //     $customer_id = $customer->id;
-            //     //create customer gallon
-            //     if(!$customerGallon->doMake($request, $customer_id)){
-            //         return back()
-            //         ->withErrors(['message' => 'There is something wrong, please contact admin (customer telah dibuat, customergallon error)']);
-            //     }              
-            // }else{
-            //     return back()
-            //         ->withErrors(['message' => 'There is something wrong, please contact admin']);
-            // }
         }
         else{
             // If existing customer //
+            $total_qty += $request->refill_qty;
+            if(!$request->refill_qty || $request->refill_qty < 1){
+                if($request->refill_qty != '0'){
+                    $request->refill_qty = 0;
+                    $request['refill_qty'] = 0;
+                }
+            }
+
+            if($total_qty < 1){
+                return back()
+                    ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
+            }
+            else if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
+                return back()
+                    ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
+            }
             $this->validate($request, [
                 'customer_id' => 'required|integer|exists:customers,id',
                 'delivery_at' => 'required|date'
-                // 'empty_quantity' => 'required|integer'
-                // 'empty_non_quantity' => 'required|integer'
             ]);
-
-            //if change nomor_struk
-            if($request->change_nomor_struk){
-                $this->validate($request, [               
-                    'nomor_struk' => 'required'
-                ]);             
-            }
-
-            if($request->add_gallon){
-                $this->validate($request, [
-                    'quantity' => 'required|integer|min:0',
-                    'add_gallon_purchase_type' => 'required|string',
-                    'add_gallon_quantity' => 'required|integer|min:1'
-                ]);
-
-                if($filled_gallon->quantity < ($request->quantity + $request->add_gallon_quantity)){
-                    return back()
-                        ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
-                }
-            }else{
-                $this->validate($request, [                    
-                    'quantity' => 'required|integer|min:1'           
-                ]);
-            }
-
-            
-
-            //$customer_id = $request->customer_id;
         }
 
-        // $order_customer = (new OrderCustomer())->doMake($request, auth()->id());
-        // if(!$order_customer){
-        //     return back()
-        //         ->withErrors(['message' => 'Input data salah, harap hubungi admin']);
-        // }
-
-        // //handle nomor_struk
-        // $order_customer_invoice = (new OrderCustomerInvoice())->doMake($request);
-        // if(!$order_customer_invoice){
-        //     return back()
-        //         ->withErrors(['message' => 'Input order customer invoice data salah, harap hubungi admin']);
-        // }
-
-        if(!(new OrderCustomer())->doMake($request, auth()->id())){
+        if(!(new OcHeaderInvoice())->doMake($request, auth()->id())){
             return back()
                 ->withErrors(['message' => 'Input data salah, harap hubungi admin']);
         }
@@ -273,54 +217,64 @@ class OrderCustomerController extends OrderController
     public function doUpdate(Request $request)
     {
         $this->validate($request, [
-            'customer_id' => 'required|integer|exists:customers,id',
-            'nomor_struk' => 'required',
-            // 'status' => 'required|in:Draft,Proses,Bermasalah,Selesai',
-            'description' => 'required|string|regex:/^[^;]+$/'
+            'id' => 'required|string|exists:oc_header_invoices,id',
+//            'customer_id' => 'required|integer|exists:customers,id',
+//            'delivery_at' => 'date',
+            'description' => 'required|string|regex:/^[^;]+$/',
+//            'refill_qty' => 'integer',
+//            'rent_qty' => 'integer',
+//            'purchase_qty' => 'integer',
+//            'non_erv_qty' => 'integer',
+//            'pay_qty' => 'integer'
         ]);
 
-
-        $order_customer = OrderCustomer::with(['customer', 'order'])->find($request->id);
-
-        //new customer
-        if($order_customer->is_new=='true'){
-            if($order_customer->customer_id==$request->customer_id){
-               $this->validate($request, [
-                    'quantity' => 'required|integer|min:1',  
-                    'purchase_type' => 'required|string'               
-                ]); 
-           }else{
-                //if add more gallon
-                if($request->add_gallon){
-                    $this->validate($request, [
-                        'quantity' => 'required|integer|min:0',
-                        'add_gallon_purchase_type' => 'required|string',
-                        'add_gallon_quantity' => 'required|integer|min:1'
-                    ]);
-                }else{
-                    $this->validate($request, [                    
-                        'quantity' => 'required|integer|min:1'           
-                    ]);
-                }
-           }
-            
-        }else{//existing customer
-
-            //if add more gallon
-            if($request->add_gallon){
-                $this->validate($request, [
-                    'quantity' => 'required|integer|min:0',
-                    'add_gallon_purchase_type' => 'required|string',
-                    'add_gallon_quantity' => 'required|integer|min:1'
-                ]);
-            }else{
-                $this->validate($request, [                    
-                    'quantity' => 'required|integer|min:1'           
-                ]);
+        if(!$request->refill_qty){
+            if($request->refill_qty != '0'){
+                $request->refill_qty = 0;
+                $request['refill_qty'] = 0;
+            }
+        }
+        else if(!$request->rent_qty){
+            if($request->rent_qty != '0'){
+                $request->rent_qty = 0;
+                $request['rent_qty'] = 0;
+            }
+        }
+        else if(!$request->purchase_qty){
+            if($request->purchase_qty != '0'){
+                $request->purchase_qty = 0;
+                $request['purchase_qty'] = 0;
+            }
+        }
+        else if(!$request->non_erv_qty){
+            if($request->non_erv_qty != '0'){
+                $request->non_erv_qty = 0;
+                $request['non_erv_qty'] = 0;
+            }
+        }
+        else if(!$request->pay_qty || $request->pay_qty < 1){
+            if($request->pay_qty != '0'){
+                $request->pay_qty = 0;
+                $request['pay_qty'] = 0;
             }
         }
 
-        if(!$order_customer->doUpdate($request)){
+        $total_qty = $request->refill_qty + $request->rent_qty + $request->purchase_qty + $request->non_erv_qty + $request->pay_qty;
+
+        $filled_gallon = Inventory::find(3);
+
+        if($filled_gallon->quantity < ($total_qty - $request->pay_qty) ){
+            return back()
+                ->withErrors(['message' => 'Stock air di gudang tidak cukup untuk melakukan order']);
+        }
+        else if($total_qty < 1){
+            return back()
+                ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
+        }
+
+        $invoice = OcHeaderInvoice::find($request->id);
+
+        if(!$invoice->doUpdate($request)){
             return back()
                 ->withErrors(['message' => 'Input salah, harap hubungi admin']);
         }
@@ -329,13 +283,13 @@ class OrderCustomerController extends OrderController
     }
 
     public function doDelete(Request $request){
-        $order_customer = OrderCustomer::find($request->id);
+        $invoice = OcHeaderInvoice::find($request->id);
 
         $this->validate($request, [
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
-        if($order_customer->doDelete($request->description, auth()->user()->id)){
+        if($invoice->doDelete($request, auth()->user()->id)){
             return back()
                 ->with('success', 'Data telah berhasil dihapus');
         }else{
@@ -365,56 +319,40 @@ class OrderCustomerController extends OrderController
 
     public function filterBy(Request $request){
         $filters = [];
-        if($request->id){
-            array_push($filters, ['id', $request->id]);
+        if($request->invoice_no){
+            array_push($filters, ['id', $request->invoice_no]);
         }
 
-        $oc = OrderCustomer::with([            
-            'customer',
-            'order' => function($query){
-                $query->with(['user', 'issues']);
-            },
-            'orderCustomerInvoices' => function($query){
-                $query->with(['ocHeaderInvoice']);
-            }
-            ]);
+        if($request->customer_id){
+            array_push($filters, ['customer_id', $request->customer_id]);
+        }
+
+        $invoices = OcHeaderInvoice::with(['customer', 'orderCustomers', 'user']);
 
         foreach($filters as $filter){
-            $oc->whereIn($filter[0], $filter[1]);
-        }
-        if($request->nomor_struk){
-            $oc->whereHas('orderCustomerInvoices', function ($query) use ($request){
-                $query->whereIn('oc_header_invoice_id', $request->nomor_struk);
-            });
+            $invoices->whereIn($filter[0], $filter[1]);
         }
 
+
         if($request->delivery_start && !$request->delivery_end){
-            $oc->where('delivery_at', '>=', $request->delivery_start);
+            $invoices->where('delivery_at', '>=', $request->delivery_start);
         }
         else if($request->delivery_end && !$request->delivery_start){
-            $oc->where('delivery_at', '<=', $request->delivery_end);
+            $invoices->where('delivery_at', '<=', $request->delivery_end);
         }
         else if($request->delivery_start && $request->delivery_end){
-            $oc->where([
+            $invoices->where([
                 ['delivery_at', '>=', $request->delivery_start],
                 ['delivery_at', '<=', $request->delivery_end]
             ]);
         }
 
-        $oc->has('order');
+        $res = $invoices->get();
 
-        if($request->customer_name){
-            $oc->whereHas('customer', function ($query) use($request){
-                $query->whereIn('name', $request->customer_name);
-            });
+        foreach($res as $re){
+            $re->setInvoiceAttributes();
         }
 
-        $ocs = $oc->get();
-
-        foreach($ocs as $oc){
-            $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
-        }
-
-        return $ocs;
+        return $res;
     }
 }

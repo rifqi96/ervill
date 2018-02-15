@@ -140,13 +140,10 @@
                     },
                     {data: null,
                         render: function (data) {
-                            if(data.order_customer){
+                            if(data.type == "sales"){
                                 return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
                             }
-                            else if(data.order_customer_buy){
-                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
-                            }
-                            else if(data.order_customer_return){
+                            else if(data.type == "return"){
                                 return '<a href="/invoice/return/id/'+data.re_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.re_header_invoice_id+'</a>';
                             }
                             return 'Data tidak ditemukan';
@@ -154,33 +151,24 @@
                     },
                     {data: null,
                         render: function (data) {
-                            if(data.order_customer){
-                                return '<a href="/setting/customers/id/'+data.order_customer.customer.id+'" target="_blank">'+data.order_customer.customer.name+'</a>';
+                            if(data.type == "sales"){
+                                return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                             }
-                            else if(data.order_customer_buy){
-                                return '<a href="/setting/customers/id/'+data.order_customer_buy.customer.id+'" target="_blank">'+data.order_customer_buy.customer.name+'</a>';
-                            }
-                            else if(data.order_customer_return){
-                                return '<a href="/setting/customers/id/'+data.order_customer_return.id+'" target="_blank">'+data.order_customer_return.customer.name+'</a>';
+                            else if(data.type == "return"){
+                                return '<a href="/setting/customers/id/'+data.order_customer_return.customer.id+'" target="_blank">'+data.order_customer_return.customer.name+'</a>';
                             }
                             return 'Data tidak ditemukan';
                         }
                     },
                     {data: null,
                         render: function (data) {
-                            if(data.order_customer){
-                                if(data.order_customer.customer.type == "end_customer"){
+                            if(data.type == "sales"){
+                                if(data.customer.type == "end_customer"){
                                     return "End Customer";
                                 }
                                 return "Agen"
                             }
-                            else if(data.order_customer_buy){
-                                if(data.order_customer_buy.customer.type == "end_customer"){
-                                    return "End Customer";
-                                }
-                                return "Agen"
-                            }
-                            else if(data.order_customer_return){
+                            else if(data.type == "return"){
                                 if(data.order_customer_return.customer.type == "end_customer"){
                                     return "End Customer";
                                 }
@@ -192,12 +180,15 @@
                     },
                     {data: null,
                         render: function(data){
-                            if(data.price){
-                                if(data.type == "return"){
-                                    return data.price.name + " (" +data.payment_status+")";
+                            if(data.type == "sales"){
+                                if(data.price_master){
+                                    return data.name;
                                 }
-                                return data.price.name;
                             }
+                            else if(data.type == "return"){
+                                return data.price.name + " (" +data.payment_status+")";
+                            }
+
                             return 'Data tidak ditemukan';
                         }
                     },
@@ -222,7 +213,7 @@
                                 return '<div class="numeral">0</div>';
                             }
 
-                            return '<div class="numeral">'+data.price_number+'</div>';
+                            return '<div class="numeral">'+data.price+'</div>';
                         }
                     },
                     {data: null,
@@ -257,8 +248,7 @@
 
         $(document).ready(function () {
             var report = {!! $report['details']->toJson() !!}
-
-            console.log(report);
+            reportTable(report);
 
             $('.types input[value=all]').change(function () {
                 if($(this).is(':checked')){
@@ -269,8 +259,6 @@
                     $('.types input[value!=all]').prop('disabled', false);
                 }
             });
-
-            reportTable(report);
 
             $('#filterBy').submit(function (e) {
                 e.preventDefault();

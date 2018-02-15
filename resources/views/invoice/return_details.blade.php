@@ -55,16 +55,13 @@ Detail Retur
                         <div class="col-lg-4 col-md-4 col-print-4 clearfix invoice-info">
                             <div class="text-lg-right">
                                 <h5>Nomor Faktur {{$invoice->id}}</h5>
-                                @if($invoice->has_order)
                                 <div>
                                     Tgl Pengiriman:
                                     <b class="delivery-at">{{\Carbon\Carbon::parse($invoice->delivery_at)->format('d-m-Y')}}</b>
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>
-                    @if($invoice->has_order)
                     <div class="row table-details">
                         <div class="col-lg-12">
                             <table class="table table-bordered">
@@ -106,7 +103,6 @@ Detail Retur
                             </table>
                         </div>
                     </div>
-                    @endif
                     <div class="row">
                         <div class="col-lg-9 col-sm-9 col-xs-6 col-print-9">
                             <strong>S&K</strong>

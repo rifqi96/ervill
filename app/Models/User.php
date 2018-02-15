@@ -125,5 +125,8 @@ class User extends Authenticatable
     public function userThirdParty() {
         return $this->hasOne('App\Models\UserThirdParty');
     }
+    public function ocHeaderInvoices() {
+        return $this->hasMany('App\Models\OcHeaderInvoice');
+    }
 
 }

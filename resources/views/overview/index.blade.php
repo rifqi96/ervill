@@ -163,8 +163,8 @@ Overview
 
     <script>
         $(document).ready(function () {
-            var recent_orders = JSON.parse('{!! $recent_orders !!}');
-            var recent_issues = JSON.parse('{!! $recent_issues !!}');
+            var recent_orders = {!! $recent_orders->toJson() !!};
+            var recent_issues = {!! $recent_issues->toJson() !!};
 
             $('#recent-orders').dataTable({
                 scrollX:true,
@@ -232,37 +232,6 @@ Overview
                                 return '-';
                             }
                         }},
-//                    {data: null,
-//                        render: function (data) {
-//                            return data.additional_quantity+data.order.quantity;
-//                        }
-//                    },
-//                    {data: null,
-//                        render: function (data) {
-//                            if(data.purchase_type == 'non_ervill'){
-//                                if(data.is_new == 'true'){
-//                                    return 0;
-//                                }
-//                                else if(data.is_new == 'false'){
-//                                    return data.order.quantity;
-//                                }
-//                            }
-//
-//                            return data.empty_gallon_quantity;
-//                        }},
-//                    {data: null,
-//                        render: function (data) {
-//                            if(data.purchase_type == 'non_ervill'){
-//                                if(data.is_new == 'true'){
-//                                    return data.order.quantity;
-//                                }
-//                                else if(data.is_new == 'false'){
-//                                    return data.additional_quantity;
-//                                }
-//                            }
-//
-//                            return 0;
-//                        }},
                     {data: null,
                     render: function (data) {
                         var date = moment(data.updated_at, 'YYYY-MM-DD HH:mm:ss');
@@ -276,24 +245,6 @@ Overview
                         }
                         return 'Data admin tidak ditemukan';
                     }},
-                    // {data: null,
-                    //     render: function(data, type, row, meta){
-                    //         var result = "";
-                    //         if(data.status != "Draft"){
-                    //             if(data.shipment){
-                    //                 var shipment_url = "{{route("shipment.track", ":id")}}";
-                    //                 shipment_url = shipment_url.replace(':id', data.shipment.id);
-                    //                 if(data.status == "Proses"){
-                    //                     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Live Tracking</a>';
-                    //                 }
-                    //                 else if(data.status == "Bermasalah" || data.status == "Selesai"){
-                    //                     result += '<a class="btn btn-sm" href="'+shipment_url+'" target="_blank">Tracking History</a>';
-                    //                 }
-                    //             }
-                    //         }
-
-                    //         return result;
-                    //     }}
                 ]
             });
 

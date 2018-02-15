@@ -49,12 +49,10 @@ class ReHeaderInvoice extends Model
     }
 
     public function setReturnAttributes(){
-        $this->has_order = false;
         $this->filled_gallon = 0;
         $this->empty_gallon = 0;
         $this->return_status = 'Selesai';
         if($this->orderCustomerReturnInvoices->count() > 0){
-            $this->has_order = true;
             if($this->orderCustomerReturnInvoices[0]->orderCustomerReturn && $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer){
                 $this->delivery_at = $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->return_at;
                 $this->customer_id = $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer->id;

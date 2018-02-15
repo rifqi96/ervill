@@ -211,41 +211,6 @@ Route::prefix('order')->group(function(){
                 'as' => 'order.customer.do.filterby'
             ]);
         });
-
-        Route::prefix('buy')->group(function(){
-            Route::get('/', [
-                'uses' => 'OrderCustomerBuyController@index',
-                'as' => 'order.customer.buy.index'
-            ]);
-
-            Route::get('create', [
-                'uses' => 'OrderCustomerBuyController@showMake',
-                'as' => 'order.customer.buy.make'
-            ]);
-
-            Route::prefix('do')->group(function(){
-                Route::post('make', [
-                    'uses' => 'OrderCustomerBuyController@doMake',
-                    'as' => 'order.customer.buy.do.make'
-                ]);
-
-                Route::post('confirm', [
-                    'uses' => 'OrderCustomerBuyController@doConfirm',
-                    'as' => 'order.customer.buy.do.confirm'
-                ]);
-
-                Route::post('cancel', [
-                    'uses' => 'OrderCustomerBuyController@doCancel',
-                    'as' => 'order.customer.buy.do.cancel'
-                ]);
-
-                Route::post('delete', [
-                    'uses' => 'OrderCustomerBuyController@doDelete',
-                    'as' => 'order.customer.buy.do.delete'
-                ]);
-            });
-
-        });
     });
 });
 
