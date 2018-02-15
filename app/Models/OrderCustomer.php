@@ -24,24 +24,10 @@ class OrderCustomer extends Model
 
     protected $guarded = [];
 
-    public function order()
-    {
-        return $this->belongsTo('App\Models\Order');
-    }
-    public function customer(){
-        return $this->belongsTo('App\Models\Customer');
-    }
     public function priceMaster(){
         return $this->belongsTo('App\Models\Price', 'price_id');
     }
-    // public function shipment()
-    // {
-    //     return $this->belongsTo('App\Models\Shipment');
-    // }
-    public function orderCustomerInvoices()
-    {
-        return $this->hasMany('App\Models\OrderCustomerInvoice');
-    }
+
     public function ocHeaderInvoice(){
         return $this->belongsTo('App\Models\OcHeaderInvoice');
     }

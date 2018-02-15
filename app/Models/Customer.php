@@ -27,12 +27,6 @@ class Customer extends Model
     ];
 
     // Relations //
-    public function order_customers(){
-        return $this->hasMany('App\Models\OrderCustomer');
-    }
-    public function customerGallons(){
-        return $this->hasMany('App\Models\CustomerGallon');
-    }
     public function ocHeaderInvoices(){
         return $this->hasMany('App\Models\OcHeaderInvoice');
     }

@@ -8,7 +8,6 @@ use App\Models\ReHeaderInvoice;
 use Illuminate\Http\Request;
 use App\Models\OrderCustomer;
 use App\Models\Inventory;
-use App\Models\CustomerGallon;
 use App\Models\Issue;
 use Carbon\Carbon;
 

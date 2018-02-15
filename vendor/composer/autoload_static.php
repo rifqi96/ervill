@@ -2753,6 +2753,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'Ramsey\\Uuid\\UuidFactory' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidFactory.php',
         'Ramsey\\Uuid\\UuidFactoryInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidFactoryInterface.php',
         'Ramsey\\Uuid\\UuidInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidInterface.php',
+        'RemoveAllUnnecessaryTablesAndColumns' => __DIR__ . '/../..' . '/database/migrations/2018_02_15_091755_remove_all_unnecessary_tables_and_columns.php',
         'RemoveIsFreeInReHeaderInvoices' => __DIR__ . '/../..' . '/database/migrations/2018_02_04_201428_remove_is_free_in_re_header_invoices.php',
         'RemoveNomorStrukInOrderCustomersTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_01_134226_remove_nomor_struk_in_order_customers_table.php',
         'RemoveOutsourcingWatersTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_29_160040_remove_outsourcing_waters_table.php',

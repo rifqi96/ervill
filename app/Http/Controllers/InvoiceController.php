@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\OcHeaderInvoice;
-use App\Models\OrderCustomerInvoice;
-use App\Models\OrderCustomerBuyInvoice;
 
 use App\Models\ReHeaderInvoice;
 use App\Models\OrderCustomerReturnInvoice;

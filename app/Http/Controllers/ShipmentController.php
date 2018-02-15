@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderCustomer;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\UserThirdParty;

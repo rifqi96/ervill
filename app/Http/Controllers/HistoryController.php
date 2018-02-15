@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
 use App\Models\OcHeaderInvoice;
-use App\Models\OrderCustomer;
 use App\Models\OrderWater;
 use App\Models\OutsourcingWater;
 use Illuminate\Http\Request;
