@@ -40,8 +40,10 @@ class ReportController extends Controller
         $invoice = new InvoiceController();
         $all_sales = $invoice->getSalesByDate($start_date, $end_date, false);
         $all_sales->each(function ($item, $key) use($res){
-            $item->type = "sales";
-            $res['headers']->push($item);
+            if($item->status == "Selesai"){
+                $item->type = "sales";
+                $res['headers']->push($item);
+            }
         });
 
         $all_returns = $invoice->getFinishedReturnsByDate($start_date, $end_date);

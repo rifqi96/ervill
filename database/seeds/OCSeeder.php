@@ -5,6 +5,7 @@ use App\Models\OcHeaderInvoice;
 use App\Models\OrderCustomer;
 use App\Models\OrderCustomerBuy;
 use App\Models\Price;
+use App\Models\Order;
 
 class OCSeeder extends Seeder
 {
@@ -39,9 +40,12 @@ class OCSeeder extends Seeder
         //Removing existing OC
         foreach($ocs as $oc){
             $oc->order->delete();
-            $oc->order->forceDelete();
 
             $oc->delete();
+        }
+        $orders = Order::onlyTrashed()->get();
+        foreach($orders as $order){
+            $order->forceDelete();
         }
         foreach($ocbuys as $ocbuy){
             $ocbuy->delete();
