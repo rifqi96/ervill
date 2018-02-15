@@ -69,7 +69,7 @@ class OverviewController extends Controller
     }
 
     public function getRecentIssues(){
-        return (new Issue())->getRecentIssues();
+        return Issue::all();
     }
 
     public function getOverdueCustomers(){

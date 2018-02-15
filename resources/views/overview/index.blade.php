@@ -110,23 +110,23 @@ Overview
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading">
-                <h3 class="panel-title">Masalah Terbaru</h3>
-            </header>
-            <table class="table table-hover" id="recent-issues">
-                <thead>
-                <th>Status</th>
-                <th>Nama Customer</th>
-                <th>Jumlah</th>
-                <th>Nama Driver</th>
-                <th align="center">Waktu</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
-        </div>
-    </div>
+    {{--<div class="row">--}}
+        {{--<div class="col-xl-12 dashboard-column">--}}
+            {{--<header class="box-typical-header panel-heading">--}}
+                {{--<h3 class="panel-title">Masalah Terbaru</h3>--}}
+            {{--</header>--}}
+            {{--<table class="table table-hover" id="recent-issues">--}}
+                {{--<thead>--}}
+                {{--<th>Status</th>--}}
+                {{--<th>Nama Customer</th>--}}
+                {{--<th>Jumlah</th>--}}
+                {{--<th>Nama Driver</th>--}}
+                {{--<th align="center">Waktu</th>--}}
+                {{--<th>Aksi</th>--}}
+                {{--</thead>--}}
+            {{--</table>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 
     <!-- Driver Modal -->
     <div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="issueModalLabel">
@@ -164,7 +164,7 @@ Overview
     <script>
         $(document).ready(function () {
             var recent_orders = {!! $recent_orders->toJson() !!};
-            var recent_issues = {!! $recent_issues->toJson() !!};
+            {{--var recent_issues = {!! $recent_issues->toJson() !!};--}}
 
             $('#recent-orders').dataTable({
                 scrollX:true,
@@ -248,58 +248,58 @@ Overview
                 ]
             });
 
-            $('#recent-issues').dataTable({
-                scrollX:true,
-                scrollY: 250,
-                scrollCollapse:true,
-                processing: true,
-                order:[4, 'desc'],
-                data:recent_issues,
-                columns:[
-                    {data: null,
-                        render: function(data, type, row, meta){
-                            return '<span class="label label-danger">'+data.type+'</span>';
-                        }},
-                    {data: null,
-                        render: function(data){
-                            if(data.order.order_customer.customer){
-                                return data.order.order_customer.customer.name;
-                            }
-                            return '<i>Data customer tidak ditemukan</i>';
-                        }},
-                    {data: 'quantity'},
-                    {data: null,
-                        render: function(data){
-                            if(data.order.order_customer.shipment){
-                                return data.order.order_customer.shipment.user.full_name;
-                            }
-                            else{
-                                return '-';
-                            }
-                        }},
-                    {data: null,
-                        render: function (data) {
-                            var date = moment(data.created_at, 'YYYY-MM-DD HH:mm:ss');
-                            date.locale('id');
-                            return date.calendar();
-                        }},
-                    {data:null,
-                    render: function (data) {
-                        return '<a class="btn btn-sm issue-modal-btn" href="#" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Detail Masalah</a>';
-                    }}
-                ]
-            });
-
-            // On issue modal button being clicked
-            $('#recent-issues').on('click', '.issue-modal-btn', function () {
-                for(var i in recent_issues){
-                    if(recent_issues[i].id == $(this).data('index')){
-                        $('#issue-qty').text(recent_issues[i].quantity);
-                        $('#issue-status').text(recent_issues[i].type);
-                        $('#issue-description').text(recent_issues[i].description);
-                    }
-                }
-            });
+//            $('#recent-issues').dataTable({
+//                scrollX:true,
+//                scrollY: 250,
+//                scrollCollapse:true,
+//                processing: true,
+//                order:[4, 'desc'],
+//                data:recent_issues,
+//                columns:[
+//                    {data: null,
+//                        render: function(data, type, row, meta){
+//                            return '<span class="label label-danger">'+data.type+'</span>';
+//                        }},
+//                    {data: null,
+//                        render: function(data){
+//                            if(data.order.order_customer.customer){
+//                                return data.order.order_customer.customer.name;
+//                            }
+//                            return '<i>Data customer tidak ditemukan</i>';
+//                        }},
+//                    {data: 'quantity'},
+//                    {data: null,
+//                        render: function(data){
+//                            if(data.order.order_customer.shipment){
+//                                return data.order.order_customer.shipment.user.full_name;
+//                            }
+//                            else{
+//                                return '-';
+//                            }
+//                        }},
+//                    {data: null,
+//                        render: function (data) {
+//                            var date = moment(data.created_at, 'YYYY-MM-DD HH:mm:ss');
+//                            date.locale('id');
+//                            return date.calendar();
+//                        }},
+//                    {data:null,
+//                    render: function (data) {
+//                        return '<a class="btn btn-sm issue-modal-btn" href="#" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Detail Masalah</a>';
+//                    }}
+//                ]
+//            });
+//
+//            // On issue modal button being clicked
+//            $('#recent-issues').on('click', '.issue-modal-btn', function () {
+//                for(var i in recent_issues){
+//                    if(recent_issues[i].id == $(this).data('index')){
+//                        $('#issue-qty').text(recent_issues[i].quantity);
+//                        $('#issue-status').text(recent_issues[i].type);
+//                        $('#issue-description').text(recent_issues[i].description);
+//                    }
+//                }
+//            });
         });
     </script>
 @endsection

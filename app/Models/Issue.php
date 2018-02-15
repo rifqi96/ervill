@@ -218,20 +218,20 @@ class Issue extends Model
     }
 
     public function getRecentIssues(){
-        return $this->with(['order' => function($query){
-                $query->with(['orderCustomer' => function($query){
-                    $query->with(['customer', 'shipment' =>function($query){
-                        $query->with('user');
-                        $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
-                    }]);
-                }]);
-            }])
-            ->whereHas('order', function($query){
-                // $query->has('orderCustomer');
-                $query->whereHas('orderCustomer', function($query){
-                    $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
-                });
-            })
-            ->get();
+//        return $this->with(['order' => function($query){
+//                $query->with(['orderCustomer' => function($query){
+//                    $query->with(['customer', 'shipment' =>function($query){
+//                        $query->with('user');
+//                        $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
+//                    }]);
+//                }]);
+//            }])
+//            ->whereHas('order', function($query){
+//                // $query->has('orderCustomer');
+//                $query->whereHas('orderCustomer', function($query){
+//                    $query->whereDate('delivery_at', '=', Carbon::today()->toDateString());
+//                });
+//            })
+//            ->get();
     }
 }
