@@ -313,6 +313,8 @@ class OcHeaderInvoice extends Model
         $non_erv_qty = 0;
         $pay_qty = 0;
 
+        $total = 0;
+
         foreach($this->orderCustomers as $orderCustomer){
             // Refill
             if($orderCustomer->priceMaster->id == 1 || $orderCustomer->priceMaster->id == 8){
@@ -344,6 +346,11 @@ class OcHeaderInvoice extends Model
                     $pay_qty += $orderCustomer->quantity;
                 }
             }
+
+            // Total
+            if($this->is_free != 'true'){
+                $total += $orderCustomer->subtotal;
+            }
         }
 
         $this->filled_gallon = $filled_gallon;
@@ -354,6 +361,7 @@ class OcHeaderInvoice extends Model
         $this->purchase_qty = $purchase_qty;
         $this->non_erv_qty = $non_erv_qty;
         $this->pay_qty = $pay_qty;
+        $this->total = $total;
 
         $this->payment_status_txt = "LUNAS";
 

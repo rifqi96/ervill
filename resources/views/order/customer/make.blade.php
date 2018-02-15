@@ -259,13 +259,16 @@ Pesan Customer
                     if(customers[i].id == $(this).val()){
                         $('.quantity').val('');
                         $('#refill-qty').val('');
-                        var max_refill = customers[i].rent_qty + customers[i].purchase_qty + customers[i].non_erv_qty;
+                        var rent_qty = customers[i].rent_qty ? customers[i].rent_qty : 0;
+                        var purchase_qty = customers[i].purchase_qty ? customers[i].purchase_qty : 0;
+                        var non_erv_qty = customers[i].non_erv_qty ? customers[i].non_erv_qty : 0;
+                        var max_refill = rent_qty + purchase_qty + non_erv_qty;
                         $('#refill-qty').attr('placeholder','Jumlah (Maks: '+ max_refill + ')');
                         $('#refill-qty').attr('max', max_refill);
 
                         $('#pay-qty').val('');
-                        $('#pay-qty').attr('placeholder','Jumlah (Maks: '+customers[i].rent_qty + ')');
-                        $('#pay-qty').attr('max', customers[i].rent_qty);
+                        $('#pay-qty').attr('placeholder','Jumlah (Maks: '+rent_qty + ')');
+                        $('#pay-qty').attr('max', rent_qty);
                     }
                 }
             });

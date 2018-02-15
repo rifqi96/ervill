@@ -159,9 +159,12 @@
                 $('#non_ervill').text('');
                 for(var i in customers){
                     if(customers[i].id==$(this).data('index')){
-                        $('#rent').text(customers[i].rent_qty);
-                        $('#purchase').text(customers[i].purchase_qty);
-                        $('#non_ervill').text(customers[i].non_erv_qty);
+                        var rent_qty = customers[i].rent_qty ? customers[i].rent_qty : 0;
+                        var purchase_qty = customers[i].purchase_qty ? customers[i].purchase_qty : 0;
+                        var non_erv_qty = customers[i].non_erv_qty ? customers[i].non_erv_qty : 0;
+                        $('#rent').text(rent_qty);
+                        $('#purchase').text(purchase_qty);
+                        $('#non_ervill').text(non_erv_qty);
                     }
                 }
             });

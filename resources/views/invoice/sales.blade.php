@@ -15,6 +15,7 @@
                 <th>Status</th>
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
+                <th>Total</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
@@ -34,6 +35,7 @@
                 <th>Status</th>
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
+                <th>Total</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
@@ -53,6 +55,7 @@
                 <th>Status</th>
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
+                <th>Total</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
@@ -170,6 +173,13 @@
 
                             return '<i>Data tidak ditemukan</i>';
                         }},
+                        {data: 'total',
+                        render: function (data) {
+                            if(data){
+                                return '<div class="numeral">'+data+'</div>';
+                            }
+                            return '<div class="numeral">0</div>';
+                        }},
                         {data: null,
                             render: function (data) {
                                 if(data.created_at){
@@ -215,6 +225,18 @@
                             }
                         }
                     ]
+                });
+
+                $('#' + id + ' .numeral').each(function () {
+                    var price = $(this).text();
+                    $(this).text(numeral(price).format('$0,0'));
+                });
+
+                $('#' + id + '_paginate').on('click', function () {
+                    $('.numeral').each(function () {
+                        var price = $(this).text();
+                        $(this).text(numeral(price).format('$0,0'));
+                    });
                 });
             }
 

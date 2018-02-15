@@ -45,12 +45,12 @@ Overview
             </div><!--.row-->
             <div class="row">
                 <div class="col-sm-6">
-                    @if($recent_issues->count() > 0)
-                        <a href="{{route('order.customer.index')}}">
-                            <article class="statistic-box red">
+                    @if($piutang_invoices->count() > 0)
+                        <a href="{{route('invoice.sales.index')}}#piutang_invoices">
+                            <article class="statistic-box yellow">
                                 <div>
-                                    <div class="number">{{$recent_issues->count()}}</div>
-                                    <div class="caption"><div>Masalah Hari Ini</div></div>
+                                    <div class="number">{{$piutang_invoices->count()}} / <span class="numeral">{{$total_piutang}}</span></div>
+                                    <div class="caption"><div>Faktur Piutang / Jumlah Piutang</div></div>
                                 </div>
                             </article>
                         </a>
@@ -58,17 +58,17 @@ Overview
                         <article class="statistic-box green">
                             <div>
                                 <div class="number">0</div>
-                                <div class="caption"><div>Masalah Hari Ini</div></div>
+                                <div class="caption"><div>Faktur Piutang</div></div>
                             </div>
                         </article>
                     @endif
                 </div><!--.col-->
                 <div class="col-sm-6">
-                    @if($overdue_customers->count() > 0)
+                    @if($piutang_invoices->count() > 0)
                         <a href="{{route('setting.customers.overdue')}}">
                             <article class="statistic-box yellow">
                                 <div>
-                                    <div class="number">{{$overdue_customers->count()}}</div>
+                                    <div class="number">{{$piutang_invoices->count()}}</div>
                                     <div class="caption"><div>Customer Overdue</div></div>
                                 </div>
                             </article>
@@ -246,6 +246,11 @@ Overview
                         return 'Data admin tidak ditemukan';
                     }},
                 ]
+            });
+
+            $('.numeral').each(function () {
+                var price = $(this).text();
+                $(this).text(numeral(price).format('$0,0'));
             });
 
 //            $('#recent-issues').dataTable({

@@ -32,7 +32,9 @@ class OverviewController extends Controller
     {
 //        abort(401, 'This action is unauthorized');
         $this->data['recent_orders'] = $this->getRecentOrders();
-        $this->data['recent_issues'] = $this->getRecentIssues();
+        $this->data['piutang_invoices'] = $this->getPiutangInvoices()['invoices'];
+        $this->data['total_piutang'] = $this->getPiutangInvoices()['total'];
+//        $this->data['recent_issues'] = $this->getRecentIssues();
         $this->data['process_orders'] = $this->getProcessOrders();
         $this->data['overdue_customers'] = $this->getOverdueCustomers();
         $this->data['slug'] = "";
@@ -74,5 +76,15 @@ class OverviewController extends Controller
 
     public function getOverdueCustomers(){
         return (new Customer())->getOverdueCustomers();
+    }
+
+    public function getPiutangInvoices(){
+        $invoices = (new InvoiceController())->getPiutangSales();
+        $total = 0;
+        foreach($invoices as $invoice){
+            $total += $invoice->total;
+        }
+
+        return ['invoices' => $invoices, 'total' => $total];
     }
 }
