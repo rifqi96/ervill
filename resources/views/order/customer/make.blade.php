@@ -104,6 +104,15 @@ Pesan Customer
                         </div>
 
                         <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Harga Satuan Tambahan</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <input type="number" class="form-control" name="additional_price" placeholder="Jika ada, tidak wajib diisi. Contoh: -2000 (Artinya harga satuan berkurang Rp 2.000,- dan sebaliknya)">
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div id="is_piutang_div">
                                 <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
                                 <div class="col-sm-2">
@@ -122,6 +131,14 @@ Pesan Customer
                             <div class="col-sm-10">
                                 <p class="form-control-static">
                                     <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Keterangan Tambahan</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <textarea name="description" class="form-control" id="" cols="30" rows="10" placeholder="Keterangan / Pesan / Catatan tambahan. Boleh dikosongkan, tidak wajib diisi."></textarea>
                                 </p>
                             </div>
                         </div>

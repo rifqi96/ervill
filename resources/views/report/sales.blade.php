@@ -197,6 +197,9 @@
                             if(data.type == "return"){
                                 return data.order_customer_return.description;
                             }
+                            else if(data.type == "sales" && data.description){
+                                return data.description;
+                            }
                             return "";
                         }
                     },

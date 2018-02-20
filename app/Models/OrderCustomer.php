@@ -32,12 +32,17 @@ class OrderCustomer extends Model
         return $this->belongsTo('App\Models\OcHeaderInvoice');
     }
 
-    public function doMake($data, $invoice_no)
+    public function doMake($data, $invoice_no, $additional_price = null)
     {
         $price = Price::find($data->price_id);
         $this->oc_header_invoice_id = $invoice_no;
         $this->name = $price->name;
-        $this->price = $price->price;
+        if($additional_price){
+            $this->price = $price->price + $additional_price;
+        }
+        else{
+            $this->price = $price->price;
+        }
         $this->price_id = $data->price_id;
         $this->quantity = $data->qty;
         $this->subtotal = $this->quantity * $this->price;

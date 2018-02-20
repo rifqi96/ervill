@@ -130,6 +130,12 @@ class OrderCustomerController extends OrderController
         $customer_id = null;
         $filled_gallon = Inventory::find(3);
 
+        if($request->additional_price){
+            $this->validate($request, [
+                'additional_price' => 'required|integer'
+            ]);
+        }
+
         if(!$request->phone){
             if($request->phone != '0'){
                 $request->phone = '0000';
@@ -226,6 +232,12 @@ class OrderCustomerController extends OrderController
 //            'non_erv_qty' => 'integer',
 //            'pay_qty' => 'integer'
         ]);
+
+        if($request->additional_price){
+            $this->validate($request, [
+                'additional_price' => 'required|integer'
+            ]);
+        }
 
         if(!$request->refill_qty){
             if($request->refill_qty != '0'){

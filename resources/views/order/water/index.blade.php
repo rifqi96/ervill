@@ -14,8 +14,8 @@ List Pesanan Air
 
             <table class="table table-hover" id="water_order">
                 <thead>
-                <th>Status</th>
                 <th>No</th>
+                <th>Status</th>
                 <th>Admin</th>
                 {{--<th>Outsourcing Air</th>--}}
                 <th>Outsourcing Pengemudi</th>
@@ -282,7 +282,7 @@ List Pesanan Air
                     headerOffset: $('.site-header').outerHeight()
                 },
                 processing: true,
-                order:[7, 'desc'],
+                order:[0, 'desc'],
                 select: {
                     style: 'multi'
                 },
@@ -302,6 +302,7 @@ List Pesanan Air
                     dataSrc: ''
                 },
                 columns: [
+                    {data: 'id'},
                     {
                         data: 'status',
                         render: function ( data, type, row, meta ) {
@@ -314,7 +315,6 @@ List Pesanan Air
                             }                               
                         }
                     },
-                    {data: 'id'},
                     {data: null,
                     render: function (data) {
                         if(data.order.user){

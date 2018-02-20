@@ -95,6 +95,12 @@ class OcHeaderInvoice extends Model
             throw new ValidationException($validator);
         }
 
+        if($data->additional_price){
+            $this->additional_price = $data->additional_price;
+        }
+        if($data->description){
+            $this->description = $data->description;
+        }
         $this->customer_id = $data->customer_id;
         $this->delivery_at = $data->delivery_at;
         $this->status = "Draft";
@@ -140,6 +146,20 @@ class OcHeaderInvoice extends Model
 
         if(!$this->shipment_id || $this->status != 'Draft'){
             $this->delivery_at = $data->delivery_at;
+        }
+
+        if($data->additional_price){
+            $this->additional_price = $data->additional_price;
+        }
+        else{
+            $this->additional_price = null;
+        }
+
+        if($data->oc_description){
+            $this->description = $data->description;
+        }
+        else{
+            $this->description = null;
         }
 
         if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customer, $this->id)){
@@ -209,6 +229,7 @@ class OcHeaderInvoice extends Model
         $sold_gallon = Inventory::find(7);
         $details = collect();
         $customer_gallons = new \stdClass();
+        $additional_price = $data->additional_price ? $data->additional_price:null;
 
         // Get Price ID
 
@@ -273,7 +294,7 @@ class OcHeaderInvoice extends Model
         }
 
         foreach($details as $detail){
-            if(!(new OrderCustomer())->doMake($detail, $invoice_no)){
+            if(!(new OrderCustomer())->doMake($detail, $invoice_no, $additional_price)){
                 return false;
             }
         }
