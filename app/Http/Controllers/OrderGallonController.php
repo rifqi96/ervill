@@ -39,6 +39,7 @@ class OrderGallonController extends OrderController
     public function doMake(Request $request)
     {
         $this->validate($request, [
+            'purchase_invoice_no' => 'required|string',
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
             'quantity' => 'required|integer|min:1'
         ]);
@@ -64,15 +65,20 @@ class OrderGallonController extends OrderController
                 ->withErrors(['message' => 'Terjadi kesalahan, nama pengemudi tidak boleh dirubah!']);
             }
             $this->validate($request, [           
+                'purchase_invoice_no' => 'required|string',
                 'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
                 'quantity' => 'required|integer|min:1',
                 'description' => 'required|string|regex:/^[^;]+$/'                
             ]);          
         }else{
-            $this->validate($request, [           
+            $this->validate($request, [        
+                'purchase_invoice_no' => 'required|string',   
                 'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
                 'quantity' => 'required|integer|min:1',
                 'driver_name' => 'required|string',
+                'invoice_no_edit' => 'required|string',
+                'price_edit' => 'required|integer|min:0',
+                'total_edit' => 'required|integer|min:0',
                 'description' => 'required|string|regex:/^[^;]+$/'                
             ]);             
         } 
@@ -105,12 +111,15 @@ class OrderGallonController extends OrderController
     public function doConfirm(Request $request)
     {
         $this->validate($request, [
-            'driver_name' => 'required|string'
+            'driver_name' => 'required|string',
+            'invoice_no' => 'required|string',
+            'price' => 'required|integer|min:0',
+            'total' => 'required|integer|min:0'
         ]);
 
         $orderGallon = OrderGallon::with('order')->find($request->id);
         
-        if($orderGallon->doConfirm($request->driver_name) ){
+        if($orderGallon->doConfirm($request) ){
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{

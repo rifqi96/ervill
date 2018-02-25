@@ -20,6 +20,7 @@ class OrderGallon extends Model
     {
         $order = (new Order)->doMakeOrderGallon($orderGallon, $author_id);
 
+        $this->purchase_invoice_no = $orderGallon->purchase_invoice_no;
         $this->outsourcing_driver_id = $orderGallon->outsourcing_driver;
         $this->order_id = $order->id;
         return $this->save();
@@ -36,9 +37,13 @@ class OrderGallon extends Model
 
             //set driver name
             $this->driver_name = $data->driver_name;
+            $this->invoice_no = $data->invoice_no_edit;
+            $this->price = $data->price_edit;
+            $this->total = $data->total_edit;
         }     
 
         //update order gallon and order data
+        $this->purchase_invoice_no = $data->purchase_invoice_no;
         $this->outsourcing_driver_id = $data->outsourcing;         
         $this->order->quantity = $data->quantity;
         
@@ -65,7 +70,11 @@ class OrderGallon extends Model
         $old_value = '';
         $old_value .= $old_data['outsourcing_driver_name'] . ';';
         $old_value .= $old_data['driver_name'] . ';';
-        $old_value .= $old_data['quantity'];
+        $old_value .= $old_data['quantity'] . ';';
+        $old_value .= $old_data['purchase_invoice_no'] . ';';
+        $old_value .= $old_data['invoice_no'] . ';';
+        $old_value .= $old_data['price'] . ';';
+        $old_value .= $old_data['total'];
 
 
         //set new values
@@ -79,7 +88,11 @@ class OrderGallon extends Model
         $new_value = '';
         $new_value .= $new_value_obj['outsourcing'] . ';';
         $new_value .= $new_value_obj['driver_name'] . ';';
-        $new_value .= $new_value_obj['quantity'];
+        $new_value .= $new_value_obj['quantity'] . ';';
+        $new_value .= $new_value_obj['purchase_invoice_no'] . ';';
+        $new_value .= $new_value_obj['invoice_no_edit'] . ';';
+        $new_value .= $new_value_obj['price_edit'] . ';';
+        $new_value .= $new_value_obj['total_edit'];
 
         $edit_data = array(
             'module_name' => 'Order Gallon',
@@ -124,7 +137,7 @@ class OrderGallon extends Model
         return DeleteHistory::create($data);
     }
 
-    public function doConfirm($driver_name){
+    public function doConfirm($data){
 
         $empty_gallon = Inventory::find(1);
 
@@ -132,8 +145,11 @@ class OrderGallon extends Model
         $empty_gallon->quantity += ($this->order->quantity);
 
         //update order gallon and order data
-        $this->driver_name = $driver_name;
+        $this->driver_name = $data->driver_name;
         $this->order->accepted_at = Carbon::now();
+        $this->invoice_no = $data->invoice_no;
+        $this->price = $data->price;
+        $this->total = $data->total;
 
         if(!$this->order->save() || !$empty_gallon->save() ){
             return false;
@@ -152,6 +168,9 @@ class OrderGallon extends Model
         //update order gallon and order data
         $this->driver_name = null;
         $this->order->accepted_at = null;
+        $this->invoice_no = null;
+        $this->price = null;
+        $this->total = null;
 
         // if($empty_gallon->quantity<0){
         //     $empty_gallon->quantity = 0;

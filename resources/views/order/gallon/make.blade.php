@@ -13,6 +13,12 @@ Pesan Gallon
         <form action="{{route('order.gallon.do.make')}}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row">
+                <label class="col-sm-2 form-control-label">No Surat Pembelian</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static"><input type="text" class="form-control" name="purchase_invoice_no" placeholder="No Surat Pembelian"></p>                    
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-2 form-control-label">Outsourcing Pengemudi</label>
                 <div class="col-sm-10">
                     <p class="form-control-static">                 

@@ -14,9 +14,13 @@ List Pesanan Galon
                 <thead>
                 <th>No</th>
                 <th>Admin</th>
+                <th>No Surat Pembelian</th>
+                <th>No Faktur</th>
                 <th>Outsourcing Pengemudi</th>
                 <th>Pengemudi</th>
+                <th>Harga Satuan</th>
                 <th>Jumlah (Gallon)</th>
+                <th>Total Harga</th>
                 <th align="center">Tgl Order</th>
                 <th align="center">Tgl Penerimaan</th>
                 <th>Aksi</th>
@@ -72,7 +76,25 @@ List Pesanan Galon
                             <p class="form-control-static">
                                 <input id="driver_name" type="text" class="form-control" name="driver_name" placeholder="Nama Pengemudi">
                             </p> 
-                        </div>             
+                        </div>     
+                        <div class="form-group">
+                            <label for="invoice_no"><strong>No Faktur dari Penjual</strong></label>
+                            <p class="form-control-static">
+                                <input id="invoice_no" type="text" class="form-control" name="invoice_no" placeholder="No Faktur dari Penjual">
+                            </p> 
+                        </div> 
+                        <div class="form-group">
+                            <label for="price"><strong>Harga Satuan</strong></label>
+                            <p class="form-control-static">
+                                <input id="price" type="text" class="form-control" name="price" placeholder="Harga Satuan">
+                            </p> 
+                        </div> 
+                        <div class="form-group">
+                            <label for="total"><strong>Total Harga</strong></label>
+                            <p class="form-control-static">
+                                <input id="total" type="text" class="form-control" name="total" placeholder="Total Harga">
+                            </p> 
+                        </div>         
                     </div>
                 
                     <div class="modal-footer">
@@ -98,7 +120,15 @@ List Pesanan Galon
                     <h4 class="modal-title" id="editModalLabel">Edit Data</h4>
                 </div>
 
-                <div class="modal-body">                                          
+                <div class="modal-body">  
+                    <div class="form-group">
+                        <label for="purchase_invoice_no"><strong>No Surat Pembelian</strong></label>
+                        <input type="text" id="purchase_invoice_no" name="purchase_invoice_no" class="form-control">
+                    </div>       
+                    <div class="form-group" id="invoice_no_edit_div">
+                        <label for="invoice_no_edit"><strong>No Faktur</strong></label>
+                        <input type="text" id="invoice_no_edit" name="invoice_no_edit" class="form-control">
+                    </div>                                    
                     <div class="form-group">
                         <label for="outsourcing"><strong>Outsourcing</strong></label>
                         <select id="outsourcing" name="outsourcing" class="form-control">
@@ -111,11 +141,19 @@ List Pesanan Galon
                     <div id="driver_name_div" class="form-group">
                         <label for="driver_name_edit"><strong>Nama Pengemudi</strong></label>
                         <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
-                    </div>                      
+                    </div>      
+                    <div class="form-group" id="price_edit_div">
+                        <label for="price_edit"><strong>Harga Satuan</strong></label>
+                        <input type="text" id="price_edit" name="price_edit" class="form-control">
+                    </div>                   
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
                         <input type="number" class="form-control" name="quantity" id="quantity">
-                    </div>                   
+                    </div>    
+                    <div class="form-group" id="total_edit_div">
+                        <label for="total_edit"><strong>Total Harga</strong></label>
+                        <input type="text" id="total_edit" name="total_edit" class="form-control">
+                    </div>                
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
                         <textarea class="form-control" name="description" rows="3" id="description"></textarea>
@@ -176,14 +214,21 @@ List Pesanan Galon
                         if(orderGallons[i].accepted_at==null){
                             $('#cancel-btn').css('display','none');
                             $('#driver_name_div').css('display','none');
+                            $('#invoice_no_edit_div, #price_edit_div, #total_edit_div').css('display','none');
+                            
                         }else{
                             $('#cancel-btn').css('display','inline-block');
                             $('#driver_name_div').css('display','block');
+                            $('#invoice_no_edit_div, #price_edit_div, #total_edit_div').css('display','block');
                         }                        
                         $('#outsourcing').val(orderGallons[i].outsourcing);
                         $('#driver_name_edit').val(orderGallons[i].driver_name);
                         $('#quantity').val(orderGallons[i].quantity);
                         $('#input_id').val(orderGallons[i].id);
+                        $('#purchase_invoice_no').val(orderGallons[i].purchase_invoice_no);
+                        $('#invoice_no_edit').val(orderGallons[i].invoice_no);
+                        $('#price_edit').val(orderGallons[i].price);
+                        $('#total_edit').val(orderGallons[i].total);
 
                     }
                 }
@@ -267,6 +312,8 @@ List Pesanan Galon
                         }
                         return 'Data admin tidak ditemukan';
                     }},
+                    {data: 'purchase_invoice_no'},
+                    {data: 'invoice_no'},
                     {
                         data: 'outsourcing_driver',
                         render: function ( data ){           
@@ -286,8 +333,10 @@ List Pesanan Galon
                                 return '-';
                             }
                         }
-                    },    
+                    },   
+                    {data: 'price'}, 
                     {data: 'order.quantity'},
+                    {data: 'total'},
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
@@ -314,7 +363,11 @@ List Pesanan Galon
                                 'driver_name': row.driver_name,
                                 'quantity': row.order.quantity,
                                 'order_at': row.order.created_at,
-                                'accepted_at': row.order.accepted_at                            
+                                'accepted_at': row.order.accepted_at,
+                                'purchase_invoice_no': row.purchase_invoice_no,   
+                                'invoice_no': row.invoice_no,
+                                'price': row.price,
+                                'total': row.total                         
                             });
 
                             if(row.order.accepted_at == null){
