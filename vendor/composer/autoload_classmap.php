@@ -12,6 +12,8 @@ return array(
     'AddDataIdToEditHistories' => $baseDir . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
     'AddDescriptionAndAdditionalPriceToOcHeader' => $baseDir . '/database/migrations/2018_02_20_235002_add_description_and_additional_price_to_oc_header.php',
     'AddErvillTokenToUsers' => $baseDir . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
+    'AddFinanceAttributesIntoOrderGallonsTable' => $baseDir . '/database/migrations/2018_02_25_121102_add_finance_attributes_into_order_gallons_table.php',
+    'AddFinanceAttributesIntoOrderWatersTable' => $baseDir . '/database/migrations/2018_02_25_121903_add_finance_attributes_into_order_waters_table.php',
     'AddIsNewToOrderCustomers' => $baseDir . '/database/migrations/2018_01_03_194143_add_is_new_to_order_customers.php',
     'AddIsNonRefundIntoOrderCustomerReturns' => $baseDir . '/database/migrations/2018_02_04_210152_add_is_non_refund_into_order_customer_returns.php',
     'AddNomorStrukToOrderCustomers' => $baseDir . '/database/migrations/2018_01_25_165625_add_nomor_struk_to_order_customers.php',

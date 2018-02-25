@@ -113,6 +113,7 @@ class OrderWaterController extends OrderController
 
         $this->validate($request, [
 //            'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+            'purchase_invoice_no' => 'required|string',
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
             'buffer_qty' => 'required|integer|min:0|max:'.$max_buffer_qty,
             'warehouse_qty' => 'required|integer|min:0|max:'.$max_warehouse_qty,
@@ -145,6 +146,7 @@ class OrderWaterController extends OrderController
             }
             $this->validate($request, [           
 //                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+                'purchase_invoice_no' => 'required|string',
                 'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
                 'buffer_qty' => 'required|integer|min:0|max:'.$request->max_buffer_qty,
                 'warehouse_qty' => 'required|integer|min:0|max:'.$request->max_warehouse_qty,
@@ -155,11 +157,15 @@ class OrderWaterController extends OrderController
         }else{
             $this->validate($request, [           
 //                'outsourcing_water' => 'required|integer|exists:outsourcing_waters,id',
+                'purchase_invoice_no' => 'required|string',
                 'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
                 'driver_name' => 'required|string',
                 'buffer_qty' => 'required|integer|min:0|max:'.$request->max_buffer_qty,
                 'warehouse_qty' => 'required|integer|min:0|max:'.$request->max_warehouse_qty,
                 'delivery_at' => 'required|date',
+                'invoice_no_edit' => 'required|string',
+                'price_edit' => 'required|integer|min:0',
+                'total_edit' => 'required|integer|min:0',
                 'description' => 'required|string|regex:/^[^;]+$/'
                 
             ]);
@@ -198,12 +204,15 @@ class OrderWaterController extends OrderController
     public function doConfirm(Request $request)
     {
         $this->validate($request, [
-            'driver_name' => 'required|string'
+            'driver_name' => 'required|string',
+            'invoice_no' => 'required|string',
+            'price' => 'required|integer|min:0',
+            'total' => 'required|integer|min:0'
         ]);
 
         $orderWater = OrderWater::with('order')->find($request->id);
 
-        if( $orderWater->doConfirm($request->driver_name) ){
+        if( $orderWater->doConfirm($request) ){
             return back()
             ->with('success', 'Data telah berhasil dikonfirmasi');
         }else{

@@ -21,6 +21,7 @@ class OrderWater extends Model
         $order = (new Order)->doMakeOrderWater($data, $author_id);
 
 //        $this->outsourcing_water_id = $data->outsourcing_water;
+        $this->purchase_invoice_no = $data->purchase_invoice_no;
         $this->outsourcing_driver_id = $data->outsourcing_driver;
         $this->order_id = $order->id;
         $this->buffer_qty = $data->buffer_qty;
@@ -46,10 +47,14 @@ class OrderWater extends Model
 
             //set driver name
             $this->driver_name = $data->driver_name;
+            $this->invoice_no = $data->invoice_no_edit;
+            $this->price = $data->price_edit;
+            $this->total = $data->total_edit;
         }
 
         //update order water and order data
 //        $this->outsourcing_water_id = $data->outsourcing_water;
+        $this->purchase_invoice_no = $data->purchase_invoice_no;
         $this->outsourcing_driver_id = $data->outsourcing_driver;
         $this->delivery_at = $data->delivery_at;
         $this->order->quantity = $data->buffer_qty + $data->warehouse_qty;
@@ -93,7 +98,11 @@ class OrderWater extends Model
         $old_value .= $old_data['driver_name'] . ';';
         $old_value .= $old_data['buffer_qty'] . ';';
         $old_value .= $old_data['warehouse_qty'] . ';';
-        $old_value .= $old_data['delivery_at'];
+        $old_value .= $old_data['delivery_at'] . ';';
+        $old_value .= $old_data['purchase_invoice_no'] . ';';
+        $old_value .= $old_data['invoice_no'] . ';';
+        $old_value .= $old_data['price'] . ';';
+        $old_value .= $old_data['total'];
 
 
         //set new values
@@ -112,7 +121,11 @@ class OrderWater extends Model
         $new_value .= $new_value_obj['driver_name'] . ';';
         $new_value .= $new_value_obj['buffer_qty'] . ';';
         $new_value .= $new_value_obj['warehouse_qty'] . ';';
-        $new_value .= $new_value_obj['delivery_at'];
+        $new_value .= $new_value_obj['delivery_at'] . ';';
+        $new_value .= $new_value_obj['purchase_invoice_no'] . ';';
+        $new_value .= $new_value_obj['invoice_no_edit'] . ';';
+        $new_value .= $new_value_obj['price_edit'] . ';';
+        $new_value .= $new_value_obj['total_edit'];
 
         $edit_data = array(
             'module_name' => 'Order Water',
@@ -126,7 +139,7 @@ class OrderWater extends Model
         return EditHistory::create($edit_data);
     }
 
-    public function doConfirm($driver_name){
+    public function doConfirm($data){
 
         $empty_buffer_gallon = Inventory::find(1);
         $empty_warehouse_gallon = Inventory::find(2);
@@ -139,8 +152,11 @@ class OrderWater extends Model
 
         //update order water and order data
         $this->status = 'selesai';
-        $this->driver_name = $driver_name;
+        $this->driver_name = $data->driver_name;
         $this->order->accepted_at = Carbon::now();
+        $this->invoice_no = $data->invoice_no;
+        $this->price = $data->price;
+        $this->total = $data->total;
 
         // if($empty_gallon->quantity<0){
         //     $empty_gallon->quantity = 0;
@@ -187,6 +203,9 @@ class OrderWater extends Model
         $this->status = 'proses';
         $this->driver_name = null;
         $this->order->accepted_at = null;
+        $this->invoice_no = null;
+        $this->price = null;
+        $this->total = null;
 
         // if($filled_gallon->quantity<0){
         //     $filled_gallon->quantity = 0;
