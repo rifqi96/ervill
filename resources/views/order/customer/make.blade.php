@@ -104,6 +104,15 @@ Pesan Customer
                         </div>
 
                         <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Harga Satuan Tambahan</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <input type="number" class="form-control" name="additional_price" placeholder="Jika ada, tidak wajib diisi. Contoh: -2000 (Artinya harga satuan berkurang Rp 2.000,- dan sebaliknya)">
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div id="is_piutang_div">
                                 <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
                                 <div class="col-sm-2">
@@ -122,6 +131,14 @@ Pesan Customer
                             <div class="col-sm-10">
                                 <p class="form-control-static">
                                     <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Keterangan Tambahan</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">
+                                    <textarea name="description" class="form-control" id="" cols="30" rows="10" placeholder="Keterangan / Pesan / Catatan tambahan. Boleh dikosongkan, tidak wajib diisi."></textarea>
                                 </p>
                             </div>
                         </div>
@@ -259,13 +276,16 @@ Pesan Customer
                     if(customers[i].id == $(this).val()){
                         $('.quantity').val('');
                         $('#refill-qty').val('');
-                        var max_refill = customers[i].rent_qty + customers[i].purchase_qty + customers[i].non_erv_qty;
+                        var rent_qty = customers[i].rent_qty ? customers[i].rent_qty : 0;
+                        var purchase_qty = customers[i].purchase_qty ? customers[i].purchase_qty : 0;
+                        var non_erv_qty = customers[i].non_erv_qty ? customers[i].non_erv_qty : 0;
+                        var max_refill = rent_qty + purchase_qty + non_erv_qty;
                         $('#refill-qty').attr('placeholder','Jumlah (Maks: '+ max_refill + ')');
                         $('#refill-qty').attr('max', max_refill);
 
                         $('#pay-qty').val('');
-                        $('#pay-qty').attr('placeholder','Jumlah (Maks: '+customers[i].rent_qty + ')');
-                        $('#pay-qty').attr('max', customers[i].rent_qty);
+                        $('#pay-qty').attr('placeholder','Jumlah (Maks: '+rent_qty + ')');
+                        $('#pay-qty').attr('max', rent_qty);
                     }
                 }
             });

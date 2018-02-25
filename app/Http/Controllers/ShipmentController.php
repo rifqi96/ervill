@@ -63,7 +63,9 @@ class ShipmentController extends Controller
             },
             'reHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerReturnInvoices'
+                    'orderCustomerReturnInvoices' => function($query){
+                        $query->with(['orderCustomerReturn']);
+                    }
                 ]);
             }])
             ->where('status', '=', 'Selesai')
@@ -80,7 +82,9 @@ class ShipmentController extends Controller
             },
             'reHeaderInvoices' => function($query){
                 $query->with([
-                    'orderCustomerReturnInvoices'
+                    'orderCustomerReturnInvoices' => function($query){
+                        $query->with(['orderCustomerReturn']);
+                    }
                 ]);
             }])
             ->whereIn('status', ['Draft', 'Proses'])

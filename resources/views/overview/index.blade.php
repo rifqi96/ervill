@@ -9,60 +9,45 @@ Overview
         <div class="col-xl-12">
             <div class="row">
                 <div class="col-sm-6">
-                    @if($recent_orders->count() > 0)
-                        <article class="statistic-box yellow">
-                            <div>
-                                <div class="number">{{$recent_orders->count()}}</div>
-                                <div class="caption"><div>Order Hari Ini</div></div>
-                            </div>
-                        </article>
-                    @else
-                        <article class="statistic-box green">
-                            <div>
-                                <div class="number">{{$recent_orders->count()}}</div>
-                                <div class="caption"><div>Order Hari Ini</div></div>
-                            </div>
-                        </article>
-                    @endif
+                    <a href="#recent-orders">
+                        @if($ongoing_orders->count() > 0)
+                            <article class="statistic-box yellow">
+                                <div>
+                                    <div class="number">{{$ongoing_orders->count()}} / {{$recent_orders->count()}}</div>
+                                    <div class="caption"><div>Pesanan hari ini: Berlangsung / Total</div></div>
+                                </div>
+                            </article>
+                        @else
+                            <article class="statistic-box green">
+                                <div>
+                                    <div class="number">{{$recent_orders->count()}}</div>
+                                    <div class="caption"><div>Pesanan Hari Ini</div></div>
+                                </div>
+                            </article>
+                        @endif
+                    </a>
                 </div><!--.col-->
                 <div class="col-sm-6">
-                    @if($process_orders->count() > 0)
-                        <article class="statistic-box yellow">
-                            <div>
-                                <div class="number">{{$process_orders->count()}}</div>
-                                <div class="caption"><div>Order Berlangsung</div></div>
-                            </div>
-                        </article>
+                    @if($monthly_sales->count() > 0)
+                        <a href="{{route('report.sales.index')}}">
+                            <article class="statistic-box green">
+                                <div>
+                                    <div class="number">{{$monthly_sales->count()}} / <span class="numeral">{{$total_monthly_sales}}</span></div>
+                                    <div class="caption"><div>Bulan Ini: Jml Faktur / Jml Rupiah</div></div>
+                                </div>
+                            </article>
+                        </a>
                     @else
-                        <article class="statistic-box green">
+                        <article class="statistic-box red">
                             <div>
-                                <div class="number">{{$process_orders->count()}}</div>
-                                <div class="caption"><div>Order Berlangsung</div></div>
+                                <div class="number">0</div>
+                                <div class="caption"><div>Penjualan Bulan Ini</div></div>
                             </div>
                         </article>
                     @endif
                 </div><!--.col-->
             </div><!--.row-->
             <div class="row">
-                <div class="col-sm-6">
-                    @if($recent_issues->count() > 0)
-                        <a href="{{route('order.customer.index')}}">
-                            <article class="statistic-box red">
-                                <div>
-                                    <div class="number">{{$recent_issues->count()}}</div>
-                                    <div class="caption"><div>Masalah Hari Ini</div></div>
-                                </div>
-                            </article>
-                        </a>
-                    @else
-                        <article class="statistic-box green">
-                            <div>
-                                <div class="number">0</div>
-                                <div class="caption"><div>Masalah Hari Ini</div></div>
-                            </div>
-                        </article>
-                    @endif
-                </div><!--.col-->
                 <div class="col-sm-6">
                     @if($overdue_customers->count() > 0)
                         <a href="{{route('setting.customers.overdue')}}">
@@ -76,12 +61,31 @@ Overview
                     @else
                         <article class="statistic-box green">
                             <div>
-                                <div class="number">{{$overdue_customers->count()}}</div>
+                                <div class="number">0</div>
                                 <div class="caption"><div>Customer Overdue</div></div>
                             </div>
                         </article>
                     @endif
                 </div>
+                <div class="col-sm-6">
+                    @if($piutang_invoices->count() > 0)
+                        <a href="{{route('invoice.sales.index')}}#piutang_invoices">
+                            <article class="statistic-box yellow">
+                                <div>
+                                    <div class="number">{{$piutang_invoices->count()}} / <span class="numeral">{{$total_piutang}}</span></div>
+                                    <div class="caption"><div>Piutang: Jml Faktur / Jml Rupiah</div></div>
+                                </div>
+                            </article>
+                        </a>
+                    @else
+                        <article class="statistic-box green">
+                            <div>
+                                <div class="number">0</div>
+                                <div class="caption"><div>Faktur Piutang</div></div>
+                            </div>
+                        </article>
+                    @endif
+                </div><!--.col-->
             </div>
         </div><!--.col-->
     </div>
@@ -246,6 +250,11 @@ Overview
                         return 'Data admin tidak ditemukan';
                     }},
                 ]
+            });
+
+            $('.numeral').each(function () {
+                var price = $(this).text();
+                $(this).text(numeral(price).format('$0,0'));
             });
 
 //            $('#recent-issues').dataTable({

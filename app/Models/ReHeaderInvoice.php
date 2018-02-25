@@ -49,6 +49,7 @@ class ReHeaderInvoice extends Model
     }
 
     public function setReturnAttributes(){
+        $total = 0;
         $this->filled_gallon = 0;
         $this->empty_gallon = 0;
         $this->return_status = 'Selesai';
@@ -63,9 +64,14 @@ class ReHeaderInvoice extends Model
                 foreach($this->orderCustomerReturnInvoices as $ocReturn){
                     $this->filled_gallon += $ocReturn->orderCustomerReturn->filled_gallon_quantity;
                     $this->empty_gallon += $ocReturn->orderCustomerReturn->empty_gallon_quantity;
+                    if($ocReturn->orderCustomerReturn->is_non_refund != "false"){
+                        $total += $ocReturn->subtotal;
+                    }
                 }
             }
         }
+
+        $this->total = $total;
     }
 
     //////////api/////////

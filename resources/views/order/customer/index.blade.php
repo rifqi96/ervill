@@ -83,6 +83,7 @@ List Pesanan Customer
                     <th>Tgl Order</th>
                     <th>Tgl Pengiriman</th>
                     <th>Tgl Penerimaan</th>
+                    <th>Keterangan</th>
                     <th>Admin</th>
                 </thead>
             </table>
@@ -171,6 +172,11 @@ List Pesanan Customer
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="edit-additional-price">Harga Satuan Tambahan</label>
+                        <input type="number" class="form-control" id="edit-additional-price" name="additional_price" placeholder="Jika ada, tidak wajib diisi. Contoh: -2000 (Artinya harga satuan berkurang Rp 2.000,- dan sebaliknya)">
+                    </div>
+
                     <div class="form-group row">
                         <div id="is_piutang_div">
                             <label class="col-sm-2 form-control-label" for="is_piutang">Dibayar dengan Piutang ?</label>
@@ -189,6 +195,11 @@ List Pesanan Customer
                     <div class="form-group edit-delivery-at">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-description">Keterangan tambahan</label>
+                        <textarea name="oc_description" class="form-control" id="edit-description" rows="3" placeholder="Keterangan / Pesan / Catatan tambahan. Boleh dikosongkan, tidak wajib diisi."></textarea>
                     </div>
 
                     <div class="form-group">
@@ -434,6 +445,7 @@ List Pesanan Customer
                             }
                             return '-';
                         }},
+                    {data: 'description'},
                     {data: 'user',
                         render: function(data){
                             if(data){
@@ -567,6 +579,9 @@ List Pesanan Customer
 
                     //$('.remove-shipment').hide();
                 }
+
+                $('#edit-additional-price').val(order_data.additional_price);
+                $('#edit-description').val(order_data.description);
             });
 
             $('#customer-table').on('click','.customer-id', function(){

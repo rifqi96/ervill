@@ -95,6 +95,12 @@ class OcHeaderInvoice extends Model
             throw new ValidationException($validator);
         }
 
+        if($data->additional_price){
+            $this->additional_price = $data->additional_price;
+        }
+        if($data->description){
+            $this->description = $data->description;
+        }
         $this->customer_id = $data->customer_id;
         $this->delivery_at = $data->delivery_at;
         $this->status = "Draft";
@@ -125,6 +131,7 @@ class OcHeaderInvoice extends Model
 
         if($data->is_piutang){
             $this->payment_status = "piutang";
+            $this->payment_date = null;
         }else{
             $this->payment_status = "cash";
             $this->payment_date = Carbon::now()->format('Y-m-d H:i:s');
@@ -139,6 +146,20 @@ class OcHeaderInvoice extends Model
 
         if(!$this->shipment_id || $this->status != 'Draft'){
             $this->delivery_at = $data->delivery_at;
+        }
+
+        if($data->additional_price){
+            $this->additional_price = $data->additional_price;
+        }
+        else{
+            $this->additional_price = null;
+        }
+
+        if($data->oc_description){
+            $this->description = $data->description;
+        }
+        else{
+            $this->description = null;
         }
 
         if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customer, $this->id)){
@@ -208,6 +229,7 @@ class OcHeaderInvoice extends Model
         $sold_gallon = Inventory::find(7);
         $details = collect();
         $customer_gallons = new \stdClass();
+        $additional_price = $data->additional_price ? $data->additional_price:null;
 
         // Get Price ID
 
@@ -272,7 +294,7 @@ class OcHeaderInvoice extends Model
         }
 
         foreach($details as $detail){
-            if(!(new OrderCustomer())->doMake($detail, $invoice_no)){
+            if(!(new OrderCustomer())->doMake($detail, $invoice_no, $additional_price)){
                 return false;
             }
         }
@@ -313,6 +335,8 @@ class OcHeaderInvoice extends Model
         $non_erv_qty = 0;
         $pay_qty = 0;
 
+        $total = 0;
+
         foreach($this->orderCustomers as $orderCustomer){
             // Refill
             if($orderCustomer->priceMaster->id == 1 || $orderCustomer->priceMaster->id == 8){
@@ -344,6 +368,11 @@ class OcHeaderInvoice extends Model
                     $pay_qty += $orderCustomer->quantity;
                 }
             }
+
+            // Total
+            if($this->is_free != 'true'){
+                $total += $orderCustomer->subtotal;
+            }
         }
 
         $this->filled_gallon = $filled_gallon;
@@ -354,6 +383,7 @@ class OcHeaderInvoice extends Model
         $this->purchase_qty = $purchase_qty;
         $this->non_erv_qty = $non_erv_qty;
         $this->pay_qty = $pay_qty;
+        $this->total = $total;
 
         $this->payment_status_txt = "LUNAS";
 

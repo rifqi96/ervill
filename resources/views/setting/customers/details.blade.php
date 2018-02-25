@@ -44,19 +44,19 @@
             <label class="col-sm-2 form-control-label">Galon Pinjam</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->rent_qty}}" id="rent" readonly="">
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->rent_qty ? $customer->rent_qty : '-'}}" id="rent" readonly="">
                 </p>
             </div>
             <label class="col-sm-2 form-control-label">Galon Beli</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->purchase_qty}}" id="purchase" readonly="">
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->purchase_qty ? $customer->purchase_qty : '-'}}" id="purchase" readonly="">
                 </p>
             </div>
             <label class="col-sm-2 form-control-label">Galon Tukar Non Ervill</label>
             <div class="col-sm-2">
                 <p class="form-control-static">
-                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->non_erv_qty}}" id="non_ervill" readonly="">
+                    <input type="text" class="form-control" name="type" placeholder="Type" value="{{$customer->non_erv_qty ? $customer->non_erv_qty : '-'}}" id="non_ervill" readonly="">
                 </p>
             </div>
         </div>
