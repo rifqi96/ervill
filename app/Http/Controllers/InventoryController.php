@@ -29,7 +29,9 @@ class InventoryController extends Controller
     }
 
     public function doUpdate(Request $request)
-    {        
+    {
+        $this->middleware('superadmin');
+
         $this->validate($request, [           
             'quantity' => 'required|integer|min:0',
             'price' => 'required|integer|min:0',

@@ -17,7 +17,9 @@ Persediaan Galon
                 {{--<th>Harga (Rupiah)</th>--}}
                 {{--<th align="center">Tgl Pembuatan</th>--}}
                 <th align="center">Tgl Update</th>
+                @if(auth()->user()->role->name == "superadmin")
                 <th>Action</th>
+                @endif
                 </thead>
             </table>
         </div>
@@ -125,6 +127,7 @@ Persediaan Galon
                             return '-';
                         }
                     },
+                    @if(auth()->user()->role->name == "superadmin")
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {
@@ -137,7 +140,8 @@ Persediaan Galon
                                     '<i class="glyphicon glyphicon-edit"></i>'+
                                 '</a>';
                         }
-                    }                   
+                    }
+                    @endif
                 ]
             });
         });
