@@ -195,9 +195,17 @@ List Pesanan Customer Non Ervill
                     {{csrf_field()}}
                     <input type="hidden" name="id" value="" id="edit-id">
                     <input type="hidden" name="customer_id" value="" id="customer-id">
+                    
+                    <button id="cancel-btn" type="button" class="btn btn-info ajax-btn" style="float: left;">Batalkan penerimaan stock</button>
+                  
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                 </div>
+            </form>
+
+            <form id="cancel-form" action="{{route('order.customerNonErvill.do.cancel')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="id" value="" id="edit-id-cancel-form">
             </form>
 
 
@@ -232,6 +240,33 @@ List Pesanan Customer Non Ervill
             </form>
         </div>
       </div>
+    </div>
+
+
+    <!-- Confirm Modal -->
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmModalLabel">Terima Stock</h4>
+                </div>
+                <form action="{{route('order.customerNonErvill.do.confirm')}}" method="POST">
+                    {{csrf_field()}}
+                    <input type="hidden" name="id" value="" id="confirm_id">
+                    <div class="modal-body">       
+                        <p><b>Konfirmasi bahwa pihak ketiga sudah menerima barang</b></p>       
+                    </div>
+                
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Konfirmasi</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
     </div>
 
     {{--<!-- Add Issue Modal -->--}}
@@ -277,6 +312,12 @@ List Pesanan Customer Non Ervill
 
     <script>
         $(document).ready(function () {
+
+            $('#cancel-btn').click(function(){
+                $('#edit-id-cancel-form').val($('#edit-id').val());
+                $('#cancel-form').submit();
+            });
+
             $('.filterBy').hide();
 
             $('.showFilterBy').click(function () {
@@ -355,7 +396,11 @@ List Pesanan Customer Non Ervill
 //                                result += '<button type="button" class="btn btn-sm btn-info addIssue-modal" data-toggle="modal" data-target="#addIssueModal" data-index="'+data.id+'">Ada masalah</button>';
 //                            }
 
-                            result +=
+                            if(data.status!="Selesai"){
+                                result +=
+                                '<button type="button" class="btn btn-sm btn-success confirm-modal" data-toggle="modal" data-target="#confirmModal" data-index="'+data.id+'">Konfirmasi</button>';
+                            }
+                            result +=                                
                                 '<button type="button" class="btn btn-sm edit-modal" data-toggle="modal" data-target="#editModal" data-index="'+data.id+'">Edit</button>' +
                                 '<button type="button" class="btn btn-sm btn-danger delete-modal" data-toggle="modal" data-target="#deleteModal" data-index="'+data.id+'">Delete</button>';
 
@@ -489,6 +534,10 @@ List Pesanan Customer Non Ervill
                         {{--alert('Terjadi kesalahan!');--}}
                     {{--});--}}
             {{--});--}}
+
+            $('#customer-order').on('click','.confirm-modal', function(){
+                $('#confirm_id').val($(this).data('index'));
+            });
 
             $('#customer-order').on('click','.delete-modal', function(){
                 $('#delete-id').val($(this).data('index'));

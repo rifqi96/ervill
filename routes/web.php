@@ -247,6 +247,10 @@ Route::prefix('order')->group(function(){
                 'uses' => 'OrderCustomerNonErvillController@doConfirm',
                 'as' => 'order.customerNonErvill.do.confirm'
             ]);
+            Route::post('cancel', [
+                'uses' => 'OrderCustomerNonErvillController@doCancel',
+                'as' => 'order.customerNonErvill.do.cancel'
+            ]);
 
             Route::post('addIssue', [
                 'uses' => 'OrderCustomerNonErvillController@addIssueByAdmin',

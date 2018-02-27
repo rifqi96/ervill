@@ -276,6 +276,34 @@ class OrderCustomerNonErvillController extends OrderController
         }
     }
 
+    public function doConfirm(Request $request)
+    {        
+
+        $invoice = NeHeaderInvoice::find($request->id);
+
+        if( $invoice->doConfirm($request) ){
+            return back()
+            ->with('success', 'Data telah berhasil dikonfirmasi');
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
+    public function doCancel(Request $request)
+    {        
+
+        $invoice = NeHeaderInvoice::find($request->id);
+
+        if( $invoice->doCancel($request) ){
+            return back()
+            ->with('success', 'Data telah berhasil dibatalkan');
+        }else{
+            return back()
+            ->withErrors(['message' => 'There is something wrong, please contact admin']);
+        }
+    }
+
     // public function addIssueByAdmin(Request $request){
     //     $order_customer = OrderCustomer::find($request->id);
 

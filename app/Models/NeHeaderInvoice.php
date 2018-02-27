@@ -251,6 +251,42 @@ class NeHeaderInvoice extends Model
         return true;
     }
 
+    public function doConfirm($data){
+
+        // $empty_gallon = Inventory::find(1);
+
+        // //recalculate inventory
+        // $empty_gallon->quantity += ($this->order->quantity);
+
+        //update order gallon and order data   
+        $this->accepted_at = Carbon::now();     
+        $this->status = "Selesai";  
+
+        // if(!$this->order->save() || !$empty_gallon->save() ){
+        //     return false;
+        // }
+
+        return ($this->save()); 
+    }
+
+    public function doCancel($data){
+
+        // $empty_gallon = Inventory::find(1);
+
+        // //recalculate inventory
+        // $empty_gallon->quantity += ($this->order->quantity);
+
+        //update order gallon and order data   
+        $this->accepted_at = null;     
+        $this->status = "Draft";  
+
+        // if(!$this->order->save() || !$empty_gallon->save() ){
+        //     return false;
+        // }
+
+        return ($this->save()); 
+    }
+
     public function doForceDelete(){
         return $this->forceDelete();
     }
