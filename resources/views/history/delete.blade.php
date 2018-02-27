@@ -25,6 +25,7 @@
                                             <option value="Inventory">Inventori</option>
                                             <option value="Order Gallon">Order Gallon</option>
                                             <option value="Order Water">Order Air</option>
+                                            <option value="Order Customer Pihak Ketiga">Order Customer Pihak Ketiga</option>
                                             <option value="User Management">User</option>
                                             <option value="Outsourcing Driver">Outsourcing Driver</option>
                                             <option value="Customers">Customer</option>

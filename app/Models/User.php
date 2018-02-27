@@ -128,5 +128,8 @@ class User extends Authenticatable
     public function ocHeaderInvoices() {
         return $this->hasMany('App\Models\OcHeaderInvoice');
     }
+    public function neHeaderInvoices() {
+        return $this->hasMany('App\Models\NeHeaderInvoice');
+    }
 
 }

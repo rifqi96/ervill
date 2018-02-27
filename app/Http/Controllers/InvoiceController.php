@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\OcHeaderInvoice;
-
+use App\Models\NeHeaderInvoice;
 use App\Models\ReHeaderInvoice;
 use App\Models\OrderCustomerReturnInvoice;
 
@@ -35,6 +35,14 @@ class InvoiceController extends Controller
         return view('invoice.sales_details', $this->data);
     }
 
+    public function showSalesNonErvillDetails($id){
+        $this->data['breadcrumb'] = "Home - Faktur - Penjualan - Detail";
+        $this->data['slug'] = 'sales';
+        $this->data['invoice'] = $this->getSalesNonErvill($id);
+
+        return view('invoice.salesNonErvill_details', $this->data);
+    }
+
     public function showReturn()
     {
         $this->data['breadcrumb'] = "Home - Faktur - Retur";
@@ -59,6 +67,14 @@ class InvoiceController extends Controller
         $this->data['invoice'] = $this->getSales($id);
 
         return view('invoice.sales_wh_details', $this->data);
+    }
+
+    public function showSalesNonErvillWHDetails($id){
+        $this->data['breadcrumb'] = "Home - Faktur - Penjualan - Logistik Gudang";
+        $this->data['slug'] = 'sales';
+        $this->data['invoice'] = $this->getSalesNonErvill($id);
+
+        return view('invoice.salesNonErvill_wh_details', $this->data);
     }
 
     public function getAllSales($withTrashed = true){
@@ -212,6 +228,26 @@ class InvoiceController extends Controller
         else{
             $invoice = OcHeaderInvoice::with([
                 'orderCustomers', 'customer', 'user'
+            ])
+                ->find($id);
+        }
+
+        $invoice->setInvoiceAttributes();
+
+        return $invoice;
+    }
+
+    public function getSalesNonErvill($id, $withTrashed = true){
+        if($withTrashed){
+            $invoice = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customerNonErvill', 'user'
+            ])
+                ->withTrashed()
+                ->find($id);
+        }
+        else{
+            $invoice = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customerNonErvill', 'user'
             ])
                 ->find($id);
         }
