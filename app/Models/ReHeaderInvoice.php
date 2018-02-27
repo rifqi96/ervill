@@ -53,6 +53,8 @@ class ReHeaderInvoice extends Model
         $this->filled_gallon = 0;
         $this->empty_gallon = 0;
         $this->return_status = 'Selesai';
+        $this->invoice_code = "re";
+        $this->type = "return";
         if($this->orderCustomerReturnInvoices->count() > 0){
             if($this->orderCustomerReturnInvoices[0]->orderCustomerReturn && $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer){
                 $this->delivery_at = $this->orderCustomerReturnInvoices[0]->orderCustomerReturn->return_at;

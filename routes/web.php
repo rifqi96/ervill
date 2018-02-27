@@ -555,12 +555,8 @@ Route::prefix('invoice')->group(function (){
         ]);
         Route::prefix('do')->group(function(){
             Route::post('pay', [
-                'uses' => 'InvoiceController@doPayNonErvill',
+                'uses' => 'InvoiceController@doPay',
                 'as' => 'invoice.salesNonErvill.do.pay'
-            ]);
-            Route::get('remove/shipment/{id}', [
-                'uses' => 'InvoiceController@doSalesNonErvillRemoveShipment',
-                'as' => 'invoice.salesNonErvill.do.remove_shipment'
             ]);
         });
     });

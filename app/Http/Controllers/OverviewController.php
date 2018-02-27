@@ -49,6 +49,11 @@ class OverviewController extends Controller
             $recent_orders->push($oc);
         }
 
+        $nes = (new OrderCustomerNonErvillController())->getRecentOrders();
+        foreach($nes as $ne){
+            $recent_orders->push($ne);
+        }
+
         $oc_returns = (new OrderCustomerReturnController())->getRecentOrders();
         foreach($oc_returns as $oc_return){
             $recent_orders->push($oc_return);

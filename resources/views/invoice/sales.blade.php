@@ -70,7 +70,7 @@
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{route('invoice.sales.do.pay')}}" method="POST">
+                <form id="edit-form" action="" method="POST">
                     {{csrf_field()}}
                     <input type="hidden" name="id" value="" id="input_id">
                     <div class="modal-header">
@@ -165,10 +165,17 @@
                                 return '<span class="label label-info">Draft</span>';
                             }},
                         {data: 'id'},
-                        {data: 'customer',
+                        {data: null,
                         render: function (data) {
-                            if(data){
-                                return '<a href="/setting/customers/id/'+data.id+'" target="_blank">'+data.name+'</a>';
+                            if(data.customer){
+                                if(data.invoice_code == "oc"){
+                                    return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
+                                }
+                                else if(data.invoice_code == "ne"){
+                                    return data.customer.name;
+                                }
+
+                                return '<i>Data tidak ditemukan</i>';
                             }
 
                             return '<i>Data tidak ditemukan</i>';
@@ -213,15 +220,30 @@
                                 }
 
                                 if(data.payment_status == 'piutang'){
-                                    return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
-                                        '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
-                                        remove +
-                                        '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '">Lunas</button>';
+                                    if(data.invoice_code == "oc"){
+                                        return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                            '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                            remove +
+                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.type + '">Lunas</button>';
+                                    }
+                                    else if(data.invoice_code == "ne"){
+                                        return '<a href="salesNonErvill/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                            '<a href="salesNonErvill/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                            remove +
+                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.type + '">Lunas</button>';
+                                    }
                                 }
 
-                                return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
-                                    '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
-                                    remove;
+                                if(data.invoice_code == "oc"){
+                                    return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                        '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                        remove;
+                                }
+                                else if(data.invoice_code == "ne"){
+                                    return '<a href="salesNonErvill/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
+                                        '<a href="salesNonErvill/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
+                                        remove;
+                                }
                             }
                         }
                     ]
@@ -242,6 +264,15 @@
 
             $('#piutang_invoices').on('click','.pay-btn',function(){
                 var index = $(this).data('index');
+                var type = $(this).data('type');
+
+                if(type == "oc"){
+                    $('#edit-form').attr('action', '{{route('invoice.sales.do.pay')}}');
+                }
+                else if(type == "ne"){
+                    $('#edit-form').attr('action', '{{route('invoice.salesNonErvill.do.pay')}}');
+                }
+
                 for(var i in piutang_invoices){
                     if(piutang_invoices[i].id==index){
                         $('#input_id').val(piutang_invoices[i].id);

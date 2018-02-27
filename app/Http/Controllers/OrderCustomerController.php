@@ -68,8 +68,8 @@ class OrderCustomerController extends OrderController
             ->get();
 
         foreach($ocs as $oc){
-            $oc->type = "sales";
             $oc->invoice_no = $oc->id;
+            $oc->setInvoiceAttributes();
         }
 
         return $ocs;

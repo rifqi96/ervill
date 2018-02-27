@@ -44,9 +44,9 @@ Detail Faktur
                         <div class="col-lg-4 col-md-4 col-print-4">
                             <div class="invoice-block">
                                 <h5>Pemesanan untuk:</h5>
-                                <div>Ibu/Bapak {{$invoice->customerNonErvill->name}}</div>
-                                <div>Alamat: {{$invoice->customerNonErvill->address}}</div>
-                                <div>No. HP: {{$invoice->customerNonErvill->phone}}</div>
+                                <div>Ibu/Bapak {{$invoice->customer->name}}</div>
+                                <div>Alamat: {{$invoice->customer->address}}</div>
+                                <div>No. HP: {{$invoice->customer->phone}}</div>
                             </div>
                         </div>
                         <div class="newhr">

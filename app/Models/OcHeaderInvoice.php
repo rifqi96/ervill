@@ -384,6 +384,8 @@ class OcHeaderInvoice extends Model
         $this->non_erv_qty = $non_erv_qty;
         $this->pay_qty = $pay_qty;
         $this->total = $total;
+        $this->invoice_code = "oc";
+        $this->type = "sales";
 
         $this->payment_status_txt = "LUNAS";
 

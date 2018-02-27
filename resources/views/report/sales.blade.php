@@ -141,7 +141,12 @@
                     {data: null,
                         render: function (data) {
                             if(data.type == "sales"){
-                                return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
+                                if(data.invoice_code == "oc"){
+                                    return '<a href="/invoice/sales/id/'+data.oc_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.oc_header_invoice_id+'</a>';
+                                }
+                                else if(data.invoice_code == "ne"){
+                                    return '<a href="/invoice/salesNonErvill/id/'+data.ne_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.ne_header_invoice_id+'</a>';
+                                }
                             }
                             else if(data.type == "return"){
                                 return '<a href="/invoice/return/id/'+data.re_header_invoice_id+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.re_header_invoice_id+'</a>';
@@ -152,7 +157,12 @@
                     {data: null,
                         render: function (data) {
                             if(data.type == "sales"){
-                                return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
+                                if(data.invoice_code == "oc"){
+                                    return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
+                                }
+                                else if(data.invoice_code == "ne"){
+                                    return data.customer.name;
+                                }
                             }
                             else if(data.type == "return"){
                                 return '<a href="/setting/customers/id/'+data.order_customer_return.customer.id+'" target="_blank">'+data.order_customer_return.customer.name+'</a>';
@@ -163,8 +173,13 @@
                     {data: null,
                         render: function (data) {
                             if(data.type == "sales"){
-                                if(data.customer.type == "end_customer"){
-                                    return "End Customer";
+                                if(data.invoice_code == "oc"){
+                                    if(data.customer.type == "end_customer"){
+                                        return "End Customer";
+                                    }
+                                }
+                                else if(data.invoice_code == "ne"){
+                                    return "Pihak Ketiga";
                                 }
                                 return "Agen"
                             }

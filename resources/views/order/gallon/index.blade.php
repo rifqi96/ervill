@@ -21,7 +21,7 @@ List Pesanan Galon
                 <th>Harga Satuan</th>
                 <th>Jumlah (Gallon)</th>
                 <th>Total Harga</th>
-                <th align="center">Tgl Order</th>
+                <th align="center">Tgl Pembuatan</th>
                 <th align="center">Tgl Pengiriman</th>
                 <th align="center">Tgl Penerimaan</th>
                 <th>Aksi</th>

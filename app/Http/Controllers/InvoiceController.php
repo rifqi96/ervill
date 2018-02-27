@@ -110,6 +110,15 @@ class InvoiceController extends Controller
                     ['is_free', '=', 'false']
                 ])
                 ->get();
+
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'cash']
+                ])
+                ->get();
         }
         else{
             $invoices = OcHeaderInvoice::with([
@@ -120,13 +129,34 @@ class InvoiceController extends Controller
                     ['is_free', '=', 'false']
                 ])
                 ->get();
+
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->where([
+                    ['payment_status', '=', 'cash']
+                ])
+                ->get();
         }
 
-        foreach($invoices as $invoice){
-            $invoice->setInvoiceAttributes();
+        $res = collect();
+
+        if($invoices){
+            foreach($invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
         }
 
-        return $invoices;
+        if($ne_invoices){
+            foreach($ne_invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
+        }
+
+
+        return $res;
     }
 
     public function getPiutangSales($withTrashed = true){
@@ -140,6 +170,15 @@ class InvoiceController extends Controller
                     ['is_free', '=', 'false']
                 ])
                 ->get();
+
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'piutang']
+                ])
+                ->get();
         }
         else{
             $invoices = OcHeaderInvoice::with([
@@ -150,13 +189,34 @@ class InvoiceController extends Controller
                     ['is_free', '=', 'false']
                 ])
                 ->get();
+
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->where([
+                    ['payment_status', '=', 'piutang']
+                ])
+                ->get();
         }
 
-        foreach($invoices as $invoice){
-            $invoice->setInvoiceAttributes();
+        $res = collect();
+
+        if($invoices){
+            foreach($invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
         }
 
-        return $invoices;
+        if($ne_invoices){
+            foreach($ne_invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
+        }
+
+
+        return $res;
     }
 
     public function getFreeSales($withTrashed = true){
@@ -198,6 +258,15 @@ class InvoiceController extends Controller
                     ['delivery_at', '<=', $end_date]
                 ])
                 ->get();
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->where([
+                    ['delivery_at', '>=', $start_date],
+                    ['delivery_at', '<=', $end_date]
+                ])
+                ->get();
         }
         else{
             $invoices = OcHeaderInvoice::with([
@@ -208,13 +277,34 @@ class InvoiceController extends Controller
                     ['delivery_at', '<=', $end_date]
                 ])
                 ->get();
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->where([
+                    ['delivery_at', '>=', $start_date],
+                    ['delivery_at', '<=', $end_date]
+                ])
+                ->get();
         }
 
-        foreach($invoices as $invoice){
-            $invoice->setInvoiceAttributes();
+        $res = collect();
+
+        if($invoices){
+            foreach($invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
         }
 
-        return $invoices;
+        if($ne_invoices){
+            foreach($ne_invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
+        }
+
+
+        return $res;
     }
 
     public function getSales($id, $withTrashed = true){
@@ -240,14 +330,14 @@ class InvoiceController extends Controller
     public function getSalesNonErvill($id, $withTrashed = true){
         if($withTrashed){
             $invoice = NeHeaderInvoice::with([
-                'orderCustomerNonErvills', 'customerNonErvill', 'user'
+                'orderCustomerNonErvills', 'customer', 'user'
             ])
                 ->withTrashed()
                 ->find($id);
         }
         else{
             $invoice = NeHeaderInvoice::with([
-                'orderCustomerNonErvills', 'customerNonErvill', 'user'
+                'orderCustomerNonErvills', 'customer', 'user'
             ])
                 ->find($id);
         }
@@ -358,12 +448,29 @@ class InvoiceController extends Controller
 
     public function doPay(Request $request){
         $this->validate($request, [
-            'id' => 'required|string|exists:oc_header_invoices,id'
+            'id' => 'required|string'
         ]);
 
-        $oc_header_invoice = OcHeaderInvoice::find($request->id);
+        $code = substr($request->id, 0, 2);
 
-        if(!$oc_header_invoice->doPay()){
+        if($code == 'OC'){
+            $this->validate($request, [
+                'id' => 'exists:oc_header_invoices,id'
+            ]);
+            $invoice = OcHeaderInvoice::find($request->id);
+        }
+        else if($code == 'NE'){ // NE
+            $this->validate($request, [
+                'id' => 'exists:ne_header_invoices,id'
+            ]);
+            $invoice = NeHeaderInvoice::find($request->id);
+        }
+        else{
+            return back()
+                ->withErrors(['message' => 'Kode Faktur tidak ditemukan']);
+        }
+
+        if(!$invoice->doPay()){
             return back()
                 ->withErrors(['message' => 'Terjadi kesalahan, update data gagal.']);
         }

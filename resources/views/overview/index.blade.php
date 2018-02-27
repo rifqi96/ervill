@@ -199,7 +199,12 @@ Overview
                         render:function (data) {
                             if(data.invoice_no){
                                 if(data.type == "sales"){
-                                    return '<a href="invoice/sales/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
+                                    if(data.invoice_code == "oc"){
+                                        return '<a href="invoice/sales/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
+                                    }
+                                    else if(data.invoice_code == "ne"){
+                                        return '<a href="invoice/salesNonErvill/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
+                                    }
                                 }
                                 return '<a href="invoice/return/id/'+data.invoice_no+'" onclick="window.open(this.href, \'Struk\', \'left=300,top=50,width=800,height=500,toolbar=1,resizable=1, scrollable=1\'); return false;">'+data.invoice_no+'</a>';
                             }

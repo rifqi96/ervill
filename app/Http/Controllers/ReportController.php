@@ -41,14 +41,12 @@ class ReportController extends Controller
         $all_sales = $invoice->getSalesByDate($start_date, $end_date, false);
         $all_sales->each(function ($item, $key) use($res){
             if($item->status == "Selesai"){
-                $item->type = "sales";
                 $res['headers']->push($item);
             }
         });
 
         $all_returns = $invoice->getFinishedReturnsByDate($start_date, $end_date);
         $all_returns->each(function ($item, $key) use($res){
-            $item->type = "return";
             $res['headers']->push($item);
         });
 
@@ -66,15 +64,31 @@ class ReportController extends Controller
 
         foreach($data as $header){
             if($header->type == "sales"){
-                foreach($header->orderCustomers as $orderCustomer){
-                    $res->push($orderCustomer);
-                    $res[$res->count()-1]->delivery_at = $header->delivery_at;
-                    $res[$res->count()-1]->type = $header->type;
-                    $res[$res->count()-1]->payment_status = $header->payment_status;
-                    $res[$res->count()-1]->oc_header_invoice_id = $header->id;
-                    $res[$res->count()-1]->customer = $header->customer;
-                    $res[$res->count()-1]->is_free = $header->is_free;
-                    $res[$res->count()-1]->description = $header->description;
+                if($header->invoice_code == "oc"){
+                    foreach($header->orderCustomers as $order){
+                        $res->push($order);
+                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
+                        $res[$res->count()-1]->type = $header->type;
+                        $res[$res->count()-1]->payment_status = $header->payment_status;
+                        $res[$res->count()-1]->oc_header_invoice_id = $header->id;
+                        $res[$res->count()-1]->customer = $header->customer;
+                        $res[$res->count()-1]->is_free = $header->is_free;
+                        $res[$res->count()-1]->description = $header->description;
+                        $res[$res->count()-1]->invoice_code = $header->invoice_code;
+                    }
+                }
+                else if($header->invoice_code == "ne"){
+                    foreach($header->orderCustomerNonErvills as $order){
+                        $res->push($order);
+                        $res[$res->count()-1]->delivery_at = $header->delivery_at;
+                        $res[$res->count()-1]->type = $header->type;
+                        $res[$res->count()-1]->payment_status = $header->payment_status;
+                        $res[$res->count()-1]->ne_header_invoice_id = $header->id;
+                        $res[$res->count()-1]->customer = $header->customer;
+                        $res[$res->count()-1]->is_free = $header->is_free;
+                        $res[$res->count()-1]->description = $header->description;
+                        $res[$res->count()-1]->invoice_code = $header->invoice_code;
+                    }
                 }
             }
             else{
@@ -83,6 +97,7 @@ class ReportController extends Controller
                     $res[$res->count()-1]->delivery_at = $header->delivery_at;
                     $res[$res->count()-1]->type = $header->type;
                     $res[$res->count()-1]->payment_status = $header->payment_status;
+                    $res[$res->count()-1]->invoice_code = $header->invoice_code;
                 }
             }
         };

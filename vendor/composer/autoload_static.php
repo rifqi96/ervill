@@ -329,7 +329,6 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'App\\Http\\Controllers\\IssueController' => __DIR__ . '/../..' . '/app/Http/Controllers/IssueController.php',
         'App\\Http\\Controllers\\ModuleAccessController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModuleAccessController.php',
         'App\\Http\\Controllers\\ModuleController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModuleController.php',
-        'App\\Http\\Controllers\\NeHeaderInvoiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/NeHeaderInvoiceController.php',
         'App\\Http\\Controllers\\OrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrderController.php',
         'App\\Http\\Controllers\\OrderCustomerController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrderCustomerController.php',
         'App\\Http\\Controllers\\OrderCustomerNonErvillController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrderCustomerNonErvillController.php',

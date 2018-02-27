@@ -53,7 +53,6 @@ return array(
     'App\\Http\\Controllers\\IssueController' => $baseDir . '/app/Http/Controllers/IssueController.php',
     'App\\Http\\Controllers\\ModuleAccessController' => $baseDir . '/app/Http/Controllers/ModuleAccessController.php',
     'App\\Http\\Controllers\\ModuleController' => $baseDir . '/app/Http/Controllers/ModuleController.php',
-    'App\\Http\\Controllers\\NeHeaderInvoiceController' => $baseDir . '/app/Http/Controllers/NeHeaderInvoiceController.php',
     'App\\Http\\Controllers\\OrderController' => $baseDir . '/app/Http/Controllers/OrderController.php',
     'App\\Http\\Controllers\\OrderCustomerController' => $baseDir . '/app/Http/Controllers/OrderCustomerController.php',
     'App\\Http\\Controllers\\OrderCustomerNonErvillController' => $baseDir . '/app/Http/Controllers/OrderCustomerNonErvillController.php',

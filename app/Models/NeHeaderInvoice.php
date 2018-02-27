@@ -29,8 +29,8 @@ class NeHeaderInvoice extends Model
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
-    public function customerNonErvill(){
-        return $this->belongsTo('App\Models\CustomerNonErvill');
+    public function customer(){
+        return $this->belongsTo('App\Models\CustomerNonErvill', 'customer_non_ervill_id');
     }
 
     public function doMake($data, $author_id){
@@ -174,11 +174,11 @@ class NeHeaderInvoice extends Model
             }
         }
 
-        $this->customerNonErvill->aqua_qty -= $aqua_qty;
-        $this->customerNonErvill->non_aqua_qty -= $non_aqua_qty;
+        $this->customer->aqua_qty -= $aqua_qty;
+        $this->customer->non_aqua_qty -= $non_aqua_qty;
       
 
-        if(!$this->customerNonErvill->save() || !$non_erv_gallon->add($aqua_qty+$non_aqua_qty) || !$aqua_gallon->subtract($aqua_qty) || !$non_aqua_gallon->subtract($non_aqua_qty) ){
+        if(!$this->customer->save() || !$non_erv_gallon->add($aqua_qty+$non_aqua_qty) || !$aqua_gallon->subtract($aqua_qty) || !$non_aqua_gallon->subtract($non_aqua_qty) ){
             return false;
         }
 
@@ -224,7 +224,7 @@ class NeHeaderInvoice extends Model
             $this->description = null;
         }
 
-        if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customerNonErvill, $this->id)){
+        if(!$this->save() || !$this->doDeleteDetails() || !$this->doMakeDetails($data, $this->customer, $this->id)){
             return false;
         }
 
@@ -249,6 +249,19 @@ class NeHeaderInvoice extends Model
         }
 
         return true;
+    }
+
+    public function doPay(){
+        if($this->payment_status == "cash"){
+            $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('id', 'Gagal update, status faktur telah lunas');
+            throw new ValidationException($validator);
+        }
+
+        $this->payment_date = Carbon::now()->format('Y-m-d H:i:s');
+        $this->payment_status = 'cash';
+
+        return $this->save();
     }
 
     public function doConfirm($data){
@@ -311,11 +324,11 @@ class NeHeaderInvoice extends Model
             }
         }
 
-        $this->customerNonErvill->aqua_qty += $aqua_qty;
-        $this->customerNonErvill->non_aqua_qty += $non_aqua_qty;
+        $this->customer->aqua_qty += $aqua_qty;
+        $this->customer->non_aqua_qty += $non_aqua_qty;
        
 
-        if(!$this->customerNonErvill->save() || !$non_erv_gallon->subtract($aqua_qty+$non_aqua_qty) || !$aqua_gallon->add($aqua_qty) || !$non_aqua_gallon->add($non_aqua_qty) ){
+        if(!$this->customer->save() || !$non_erv_gallon->subtract($aqua_qty+$non_aqua_qty) || !$aqua_gallon->add($aqua_qty) || !$non_aqua_gallon->add($non_aqua_qty) ){
             return false;
         }
 
@@ -395,6 +408,9 @@ class NeHeaderInvoice extends Model
         $this->aqua_gallon = $aqua_gallon;
         $this->non_aqua_gallon = $non_aqua_gallon;       
         $this->total = $total;
+        $this->invoice_code = "ne";
+        $this->is_free = "false";
+        $this->type = "sales";
 
         $this->payment_status_txt = "LUNAS";
 

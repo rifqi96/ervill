@@ -26,7 +26,7 @@ List Pesanan Air
                 <th>Jumlah Galon Buffer</th>
                 <th>Jumlah Galon Gudang</th>
                 <th>Total Harga</th>
-                <th>Tgl Order</th>
+                <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
                 <th>Tgl Penerimaan</th>
                 <th>Aksi</th>

@@ -45,7 +45,7 @@ class OrderCustomerNonErvillController extends OrderController
 
     /*======= Get Methods =======*/
     public function getAllInvoices(){
-        $invoices = NeHeaderInvoice::with(['customerNonErvill', 'orderCustomerNonErvills' => function($query){
+        $invoices = NeHeaderInvoice::with(['customer', 'orderCustomerNonErvills' => function($query){
             $query->with('priceMaster');
         }, 'user'])->get();
 
@@ -56,75 +56,20 @@ class OrderCustomerNonErvillController extends OrderController
         return $invoices;
     }
 
-    // public function getRecentOrders(){
-    //     $ocs = OcHeaderInvoice::with([
-    //         'customer',
-    //         'orderCustomers',
-    //         'user',
-    //         'shipment' => function($query){
-    //             $query->with('user');
-    //         }
-    //         ])
-    //         ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
-    //         ->get();
+    public function getRecentOrders(){
+        $nes = NeHeaderInvoice::with([
+            'orderCustomerNonErvills', 'customer', 'user'
+        ])
+            ->whereDate('delivery_at', '=', Carbon::today()->toDateString())
+            ->get();
 
-    //     foreach($ocs as $oc){
-    //         $oc->type = "sales";
-    //         $oc->invoice_no = $oc->id;
-    //     }
+        foreach($nes as $ne){
+            $ne->invoice_no = $ne->id;
+            $ne->setInvoiceAttributes();
+        }
 
-    //     return $ocs;
-    // }
-
-    // public function get($id){
-    //     $oc = OrderCustomer::with([            
-    //         'customer',
-    //         'order' => function($query){
-    //             $query->with(['user', 'issues']);
-    //         }
-    //         ])
-    //         ->has('order')
-    //         ->find($id);
-
-    //     $oc->status = $oc->orderCustomerInvoices[0]->ocHeaderInvoice->status;
-
-    //     return $oc;
-    // }
-
-    // public function getUnshippedOrders(Request $request){
-    //     $oc = OcHeaderInvoice::with(['customer', 'orderCustomers', 'user'])
-    //         ->where([
-    //             ['status', '=', 'Draft'],
-    //             ['shipment_id', null]
-    //         ])
-    //         ->whereDate('delivery_at', '=', $request->delivery_at)
-    //         ->get();
-
-    //     $returns = ReHeaderInvoice::where([
-    //             ['status', '=', 'Draft'],
-    //             ['shipment_id', null]
-    //         ])
-    //         ->has('orderCustomerReturnInvoices')
-    //         ->whereHas('orderCustomerReturnInvoices.orderCustomerReturn', function($query) use($request){
-    //             $query->where('return_at', '=', $request->delivery_at);
-    //         })
-    //         ->get();
-
-    //     $orders = collect();
-
-    //     $oc->each(function($item, $value) use($orders){
-    //         $item->type = "sales";
-    //         $item->setInvoiceAttributes();
-    //         $orders->push($item);
-    //     });
-    //     $returns->each(function($item, $value) use($orders){
-    //         $item->type = "return";
-    //         $item->customer = $item->orderCustomerReturnInvoices[0]->orderCustomerReturn->customer;
-    //         $orders->push($item);
-    //     });
-
-    //     return $orders;
-    // }
+        return $nes;
+    }
 
     /*======= Do Methods =======*/
     public function doMake(Request $request){
@@ -207,14 +152,7 @@ class OrderCustomerNonErvillController extends OrderController
     {
         $this->validate($request, [
             'id' => 'required|string|exists:ne_header_invoices,id',
-//            'customer_id' => 'required|integer|exists:customers,id',
-//            'delivery_at' => 'date',
-            'description' => 'required|string|regex:/^[^;]+$/',
-//            'refill_qty' => 'integer',
-//            'rent_qty' => 'integer',
-//            'purchase_qty' => 'integer',
-//            'non_erv_qty' => 'integer',
-//            'pay_qty' => 'integer'
+            'description' => 'required|string|regex:/^[^;]+$/'
         ]);
 
         if($request->additional_price){
@@ -304,25 +242,6 @@ class OrderCustomerNonErvillController extends OrderController
         }
     }
 
-    // public function addIssueByAdmin(Request $request){
-    //     $order_customer = OrderCustomer::find($request->id);
-
-    //     $this->validate($request, [
-    //         'quantity' => 'required|integer|min:1',
-    //         'type' => 'required|string',
-    //         'description' => 'required|string|regex:/^[^;]+$/'
-    //     ]);
-
-    //     $issue = new Issue();
-    //     if($issue->doMakeIssueOrderCustomer($order_customer->order, $request)){     
-    //         return back()
-    //             ->with('success', 'Data telah berhasil ditambahkan masalah');             
-    //     }else{
-    //         return back()
-    //             ->withErrors(['message' => 'Terjadi kesalahan pada penambahan masalah']);
-    //     }
-    // }
-
     public function filterBy(Request $request){
         $filters = [];
         if($request->invoice_no){
@@ -333,7 +252,7 @@ class OrderCustomerNonErvillController extends OrderController
             array_push($filters, ['customer_non_ervill_id', $request->customer_id]);
         }
 
-        $invoices = NeHeaderInvoice::with(['customerNonErvill', 'orderCustomerNonErvills', 'user']);
+        $invoices = NeHeaderInvoice::with(['customer', 'orderCustomerNonErvills', 'user']);
 
         foreach($filters as $filter){
             $invoices->whereIn($filter[0], $filter[1]);

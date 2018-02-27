@@ -79,9 +79,9 @@ List Pesanan Customer Non Ervill
                     <th>Alamat Customer</th>
                     <th>Galon Aqua</th>
                     <th>Galon Non Aqua</th>                    
-                    <th>Tgl Order</th>   
+                    <th>Tgl Pembuatan</th>   
                     <th>Tgl Pengiriman</th>                
-                    <th>Tgl Penerimaan</th>
+                    <th>Tgl Konfirmasi</th>
                     <th>Keterangan</th>
                     <th>Admin</th>
                 </thead>
@@ -433,22 +433,22 @@ List Pesanan Customer Non Ervill
                         }},
                     {data: null,
                         render: function(data){
-                            if(data.customer_non_ervill){
-                                return '<a href="/setting/customerNonErvills/id/'+data.customer_non_ervill.id+'" target="_blank">'+data.customer_non_ervill.name+'</a>';
+                            if(data.customer){
+                                return '<a href="/setting/customerNonErvills/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                             }
                             return '<i>Data customer tidak ditemukan</i>';
                         }},
                     {data: null,
                         render: function(data){
-                            if(data.customer_non_ervill){
-                                return data.customer_non_ervill.phone;
+                            if(data.customer){
+                                return data.customer.phone;
                             }
                             return '<i>Data customer tidak ditemukan</i>';
                         }},
                     {data: null,
                         render: function(data){
-                            if(data.customer_non_ervill){
-                                return data.customer_non_ervill.address;
+                            if(data.customer){
+                                return data.customer.address;
                             }
                             return '<i>Data customer tidak ditemukan</i>';
                         }},

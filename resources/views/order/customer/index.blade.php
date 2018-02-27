@@ -80,7 +80,7 @@ List Pesanan Customer
                     <th>Galon Isi Keluar</th>
                     <th>Galon Masuk Kosong Ervill</th>
                     <th>Galon Masuk Non Ervill</th>
-                    <th>Tgl Order</th>
+                    <th>Tgl Pembuatan</th>
                     <th>Tgl Pengiriman</th>
                     <th>Tgl Penerimaan</th>
                     <th>Keterangan</th>
