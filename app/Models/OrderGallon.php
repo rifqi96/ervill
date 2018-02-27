@@ -23,6 +23,8 @@ class OrderGallon extends Model
         $this->purchase_invoice_no = $orderGallon->purchase_invoice_no;
         $this->outsourcing_driver_id = $orderGallon->outsourcing_driver;
         $this->order_id = $order->id;
+        $this->delivery_at = $orderGallon->delivery_at;
+
         return $this->save();
     }
 
@@ -46,6 +48,7 @@ class OrderGallon extends Model
         $this->purchase_invoice_no = $data->purchase_invoice_no;
         $this->outsourcing_driver_id = $data->outsourcing;         
         $this->order->quantity = $data->quantity;
+        $this->delivery_at = $data->delivery_at;
         
 
         if(!$this->order->save() || !$empty_gallon->save() || !$this->doAddToEditHistory($old_data, $data)){
@@ -74,7 +77,8 @@ class OrderGallon extends Model
         $old_value .= $old_data['purchase_invoice_no'] . ';';
         $old_value .= $old_data['invoice_no'] . ';';
         $old_value .= $old_data['price'] . ';';
-        $old_value .= $old_data['total'];
+        $old_value .= $old_data['total'] . ';';
+        $old_value .= $old_data['delivery_at'];
 
 
         //set new values
@@ -92,7 +96,8 @@ class OrderGallon extends Model
         $new_value .= $new_value_obj['purchase_invoice_no'] . ';';
         $new_value .= $new_value_obj['invoice_no_edit'] . ';';
         $new_value .= $new_value_obj['price_edit'] . ';';
-        $new_value .= $new_value_obj['total_edit'];
+        $new_value .= $new_value_obj['total_edit'] . ';';
+        $new_value .= $new_value_obj['delivery_at'];
 
         $edit_data = array(
             'module_name' => 'Order Gallon',

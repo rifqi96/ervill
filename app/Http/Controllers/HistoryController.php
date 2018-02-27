@@ -394,6 +394,9 @@ class HistoryController extends Controller
                     $old_value_arr['Harga Satuan'] = $old_value[5];
                     $old_value_arr['Total Harga'] = $old_value[6];
                 }
+                if(count($old_value)>7){
+                    $old_value_arr['Tgl Pengiriman'] = $old_value[7];                    
+                }
 
                 $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
                 $new_value_arr['Nama Pengemudi'] = $new_value[1];
@@ -403,6 +406,9 @@ class HistoryController extends Controller
                     $new_value_arr['No Faktur'] = $new_value[4];
                     $new_value_arr['Harga Satuan'] = $new_value[5];
                     $new_value_arr['Total Harga'] = $new_value[6];
+                }
+                if(count($new_value)>7){
+                    $new_value_arr['Tgl Pengiriman'] = $new_value[7];                   
                 }
             }else if($edit_history->module_name == "Inventory"){
                 $old_value_arr['Jumlah (Galon)'] = $old_value[0];

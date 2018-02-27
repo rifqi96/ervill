@@ -10,6 +10,7 @@ return array(
     'AddAddressToOutsourcingDriversTable' => $baseDir . '/database/migrations/2017_12_29_155753_add_address_to_outsourcing_drivers_table.php',
     'AddCustomerGallonsIntoCustomersTable' => $baseDir . '/database/migrations/2018_02_13_113334_add_customer_gallons_into_customers_table.php',
     'AddDataIdToEditHistories' => $baseDir . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
+    'AddDeliveryAtIntoOrderGallons' => $baseDir . '/database/migrations/2018_02_27_235912_add_delivery_at_into_order_gallons.php',
     'AddDescriptionAndAdditionalPriceToOcHeader' => $baseDir . '/database/migrations/2018_02_20_235002_add_description_and_additional_price_to_oc_header.php',
     'AddErvillTokenToUsers' => $baseDir . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
     'AddFinanceAttributesIntoOrderGallonsTable' => $baseDir . '/database/migrations/2018_02_25_121102_add_finance_attributes_into_order_gallons_table.php',

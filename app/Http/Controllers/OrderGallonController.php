@@ -41,7 +41,8 @@ class OrderGallonController extends OrderController
         $this->validate($request, [
             'purchase_invoice_no' => 'required|string',
             'outsourcing_driver' => 'required|integer|exists:outsourcing_drivers,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'delivery_at' => 'required|date'
         ]);
         
         if((new OrderGallon())->doMake($request, auth()->id())){
@@ -68,6 +69,7 @@ class OrderGallonController extends OrderController
                 'purchase_invoice_no' => 'required|string',
                 'outsourcing' => 'required|integer|exists:outsourcing_drivers,id',
                 'quantity' => 'required|integer|min:1',
+                'delivery_at' => 'required|date',
                 'description' => 'required|string|regex:/^[^;]+$/'                
             ]);          
         }else{
@@ -79,6 +81,7 @@ class OrderGallonController extends OrderController
                 'invoice_no_edit' => 'required|string',
                 'price_edit' => 'required|integer|min:0',
                 'total_edit' => 'required|integer|min:0',
+                'delivery_at' => 'required|date',
                 'description' => 'required|string|regex:/^[^;]+$/'                
             ]);             
         } 

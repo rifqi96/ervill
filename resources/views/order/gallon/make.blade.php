@@ -37,6 +37,15 @@ Pesan Gallon
                     <p class="form-control-static"><input type="number" class="form-control" name="quantity" placeholder="Jumlah Gallon"></p>                    
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Tgl Pengiriman</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">
+                        <input type="date" class="form-control" name="delivery_at" placeholder="Tgl Pengiriman" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                    </p>
+                </div>
+            </div>
                        
             <div class="form-group row">
                 <div class="col-sm-2"></div>
