@@ -212,6 +212,57 @@ Route::prefix('order')->group(function(){
             ]);
         });
     });
+
+    Route::prefix('customerNonErvill')->group(function(){
+        Route::get('/', [
+            'uses' => 'OrderCustomerNonErvillController@index',
+            'as' => 'order.customerNonErvill.index'
+        ]);
+        Route::get('create', [
+            'uses' => 'OrderCustomerNonErvillController@showMake',
+            'as' => 'order.customerNonErvill.make'
+        ]);
+        Route::get('id/{id}', [
+            'uses' => 'OrderCustomerNonErvillController@showDetails',
+            'as' => 'order.customerNonErvill.details'
+        ]);
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'OrderCustomerNonErvillController@doMake',
+                'as' => 'order.customerNonErvill.do.make'
+            ]);
+
+            Route::post('update', [
+                'uses' => 'OrderCustomerNonErvillController@doUpdate',
+                'as' => 'order.customerNonErvill.do.update'
+            ]);
+
+            Route::post('delete', [
+                'uses' => 'OrderCustomerNonErvillController@doDelete',
+                'as' => 'order.customerNonErvill.do.delete'
+            ]);
+
+            Route::post('confirm', [
+                'uses' => 'OrderCustomerNonErvillController@doConfirm',
+                'as' => 'order.customerNonErvill.do.confirm'
+            ]);
+            Route::post('cancel', [
+                'uses' => 'OrderCustomerNonErvillController@doCancel',
+                'as' => 'order.customerNonErvill.do.cancel'
+            ]);
+
+            Route::post('addIssue', [
+                'uses' => 'OrderCustomerNonErvillController@addIssueByAdmin',
+                'as' => 'order.customerNonErvill.do.addIssue'
+            ]);
+
+            Route::post('', [
+                'uses' => 'OrderCustomerNonErvillController@filterBy',
+                'as' => 'order.customerNonErvill.do.filterby'
+            ]);
+        });
+    });
 });
 
 Route::prefix('return')->group(function(){
@@ -413,6 +464,37 @@ Route::prefix('setting')->group(function(){
         });
 
     });
+
+    Route::prefix('customerNonErvills')->group(function(){
+        Route::get('/', [
+            'uses' => 'CustomerNonErvillController@index',
+            'as' => 'setting.customerNonErvills.index'
+        ]);
+        Route::get('create', [
+            'uses' => 'CustomerNonErvillController@showMake',
+            'as' => 'setting.customerNonErvills.make'
+        ]);      
+        Route::get('id/{id}', [
+            'uses' => 'CustomerNonErvillController@showDetails',
+            'as' => 'setting.customerNonErvills.details'
+        ]);
+
+        Route::prefix('do')->group(function(){
+            Route::post('make', [
+                'uses' => 'CustomerNonErvillController@doMake',
+                'as' => 'setting.customerNonErvills.do.make'
+            ]);
+            Route::post('update', [
+                'uses' => 'CustomerNonErvillController@doUpdate',
+                'as' => 'setting.customerNonErvills.do.update'
+            ]);
+            Route::post('delete', [
+                'uses' => 'CustomerNonErvillController@doDelete',
+                'as' => 'setting.customerNonErvills.do.delete'
+            ]);
+        });
+
+    });
 });
 
 Route::prefix('invoice')->group(function (){
@@ -454,6 +536,31 @@ Route::prefix('invoice')->group(function (){
             Route::get('remove/shipment/{id}', [
                 'uses' => 'InvoiceController@doReturnRemoveShipment',
                 'as' => 'invoice.return.do.remove_shipment'
+            ]);
+        });
+    });
+
+    Route::prefix('salesNonErvill')->group(function (){
+        // Route::get('', [
+        //     'uses' => 'InvoiceController@showSalesNonErvill',
+        //     'as' => 'invoice.salesNonErvill.index'
+        // ]);
+        Route::get('id/{id}', [
+            'uses' => 'InvoiceController@showSalesNonErvillDetails',
+            'as' => 'invoice.salesNonErvill.details'
+        ]);
+        Route::get('wh/id/{id}', [
+            'uses' => 'InvoiceController@showSalesNonErvillWHDetails',
+            'as' => 'invoice.salesNonErvill.wh.details'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('pay', [
+                'uses' => 'InvoiceController@doPayNonErvill',
+                'as' => 'invoice.salesNonErvill.do.pay'
+            ]);
+            Route::get('remove/shipment/{id}', [
+                'uses' => 'InvoiceController@doSalesNonErvillRemoveShipment',
+                'as' => 'invoice.salesNonErvill.do.remove_shipment'
             ]);
         });
     });
@@ -499,6 +606,7 @@ Route::get('/getInventories', 'InventoryController@getInventories');
 Route::get('/getOrderWaters', 'OrderWaterController@getAll');
 
 Route::get('/getCustomers', 'CustomerController@getAll');
+Route::get('/getCustomerNonErvills', 'CustomerNonErvillController@getAll');
 Route::get('/getOrderCustomers', 'OrderCustomerController@getAll');
 Route::get('/getFinishedShipments', 'ShipmentController@getAllFinished');
 Route::get('/getUnfinishedShipments', 'ShipmentController@getAllUnfinished');

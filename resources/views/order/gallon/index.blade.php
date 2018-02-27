@@ -22,6 +22,7 @@ List Pesanan Galon
                 <th>Jumlah (Gallon)</th>
                 <th>Total Harga</th>
                 <th align="center">Tgl Order</th>
+                <th align="center">Tgl Pengiriman</th>
                 <th align="center">Tgl Penerimaan</th>
                 <th>Aksi</th>
                 </thead>
@@ -141,7 +142,11 @@ List Pesanan Galon
                     <div id="driver_name_div" class="form-group">
                         <label for="driver_name_edit"><strong>Nama Pengemudi</strong></label>
                         <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
-                    </div>      
+                    </div> 
+                    <div id="delivery_at_div" class="form-group">
+                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <input id="delivery_at" type="date" class="form-control" name="delivery_at">
+                    </div>                         
                     <div class="form-group" id="price_edit_div">
                         <label for="price_edit"><strong>Harga Satuan</strong></label>
                         <input type="text" id="price_edit" name="price_edit" class="form-control">
@@ -229,6 +234,7 @@ List Pesanan Galon
                         $('#invoice_no_edit').val(orderGallons[i].invoice_no);
                         $('#price_edit').val(orderGallons[i].price);
                         $('#total_edit').val(orderGallons[i].total);
+                        $('#delivery_at').val(moment(orderGallons[i].delivery_at).format('YYYY-MM-DD'));
 
                     }
                 }
@@ -347,6 +353,14 @@ List Pesanan Galon
                     },
                     {data: null,
                         render: function (data) {
+                            if(data.delivery_at){
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            }
+                            return '-';
+                        }
+                    },
+                    {data: null,
+                        render: function (data) {
                             if(data.order.accepted_at){
                                 return moment(data.order.accepted_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
@@ -363,6 +377,7 @@ List Pesanan Galon
                                 'driver_name': row.driver_name,
                                 'quantity': row.order.quantity,
                                 'order_at': row.order.created_at,
+                                'delivery_at': row.delivery_at,
                                 'accepted_at': row.order.accepted_at,
                                 'purchase_invoice_no': row.purchase_invoice_no,   
                                 'invoice_no': row.invoice_no,

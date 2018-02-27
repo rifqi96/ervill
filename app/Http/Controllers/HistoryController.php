@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EditHistory;
 use App\Models\DeleteHistory;
 use App\Models\OcHeaderInvoice;
+use App\Models\NeHeaderInvoice;
 use App\Models\OrderWater;
 use App\Models\OutsourcingWater;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use App\Models\OutsourcingDriver;
 use App\Models\Order;
 use App\Models\OrderGallon;
 use App\Models\Customer;
+use App\Models\CustomerNonErvill;
 use App\Models\Shipment;
 use League\CLImate\TerminalObject\Basic\Out;
 use Illuminate\Support\Collection;
@@ -100,6 +102,10 @@ class HistoryController extends Controller
             return Customer::onlyTrashed()
                 ->find($dh->data_id);
         }
+        else if($dh->module_name == "Customers Pihak Ketiga"){
+            return CustomerNonErvill::onlyTrashed()
+                ->find($dh->data_id);
+        }
         else if($dh->module_name == "Outsourcing Driver"){
             return OutsourcingDriver::onlyTrashed()
                 ->find($dh->data_id);
@@ -132,6 +138,10 @@ class HistoryController extends Controller
         }
         else if($dh->module_name == "Order Customer"){
             return OcHeaderInvoice::onlyTrashed()
+                ->find($dh->data_id);
+        }
+        else if($dh->module_name == "Order Customer Pihak Ketiga"){
+            return NeHeaderInvoice::onlyTrashed()
                 ->find($dh->data_id);
         }
         else if($dh->module_name == "Order Water"){
@@ -351,6 +361,17 @@ class HistoryController extends Controller
                 }
                 $new_value_arr['Jenis'] = $type;
             }
+            else if($edit_history->module_name == "Customers Pihak Ketiga"){
+                $old_value_arr['Nama'] = $old_value[0];
+                $old_value_arr['Alamat'] = $old_value[1];
+                $old_value_arr['No. Telepon'] = $old_value[2];
+               
+
+                $new_value_arr['Nama'] = $new_value[0];
+                $new_value_arr['Alamat'] = $new_value[1];
+                $new_value_arr['No. Telepon'] = $new_value[2];
+                
+            }
             else if($edit_history->module_name == "Outsourcing Driver"){
                 $old_value_arr['Nama'] = $old_value[0];
                 $old_value_arr['No Telp/HP'] = $old_value[1];
@@ -373,6 +394,9 @@ class HistoryController extends Controller
                     $old_value_arr['Harga Satuan'] = $old_value[5];
                     $old_value_arr['Total Harga'] = $old_value[6];
                 }
+                if(count($old_value)>7){
+                    $old_value_arr['Tgl Pengiriman'] = $old_value[7];                    
+                }
 
                 $new_value_arr['Outsourcing Pengemudi'] = $new_value[0];
                 $new_value_arr['Nama Pengemudi'] = $new_value[1];
@@ -382,6 +406,9 @@ class HistoryController extends Controller
                     $new_value_arr['No Faktur'] = $new_value[4];
                     $new_value_arr['Harga Satuan'] = $new_value[5];
                     $new_value_arr['Total Harga'] = $new_value[6];
+                }
+                if(count($new_value)>7){
+                    $new_value_arr['Tgl Pengiriman'] = $new_value[7];                   
                 }
             }else if($edit_history->module_name == "Inventory"){
                 $old_value_arr['Jumlah (Galon)'] = $old_value[0];
@@ -459,6 +486,18 @@ class HistoryController extends Controller
                 $new_value_arr['Nama'] = $new_value[0];
                 $new_value_arr['Harga'] = $new_value[1];
                 $new_value_arr['Jenis Customer'] = $new_value[2];
+            }
+            else if($edit_history->module_name == "Order Customer Pihak Ketiga"){
+                $old_value_arr['Jumlah Galon Aqua'] = $old_value[0];
+                $old_value_arr['Jumlah Galon Non Aqua'] = $old_value[1];                
+                $old_value_arr['Jenis Pembayaran'] = $old_value[2];               
+                $old_value_arr['Tgl Pengiriman'] = $old_value[3];
+
+                $new_value_arr['Jumlah Galon Aqua'] = $new_value[0];
+                $new_value_arr['Jumlah Galon Non Aqua'] = $new_value[1];              
+                $new_value_arr['Jenis Pembayaran'] = $new_value[2];            
+                $new_value_arr['Tgl Pengiriman'] = $new_value[3];
+
             }
 
             $edit_history->old_value = $old_value_arr;
