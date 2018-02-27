@@ -20,6 +20,9 @@
             <li>
                 {!!$slug=="customer"?'<span class="lbl">Customer</span>':'<a href="'.route("order.customer.index").'"><span class="lbl">Customer</span></a>'!!}
             </li>
+            <li>
+                {!!$slug=="customerNonErvill"?'<span class="lbl">Customer Non Ervill</span>':'<a href="'.route("order.customerNonErvill.index").'"><span class="lbl">Customer Non Ervill</span></a>'!!}
+            </li>
         </ul>
     </li>
     <li class="{{$module=="shipment"?"opened":""}}">
@@ -79,6 +82,9 @@
         <ul>
             <li>
                 {!!$slug=="list"?'<span class="lbl">Daftar Customer</span>':'<a href="'.route('setting.customers.index').'"><span class="lbl">Daftar Customer</span></a>'!!}
+            </li>
+            <li>
+                {!!$slug=="listNonErvill"?'<span class="lbl">Daftar Customer Pihak Ketiga</span>':'<a href="'.route('setting.customerNonErvills.index').'"><span class="lbl">Daftar Customer Pihak Ketiga</span></a>'!!}
             </li>
             <li>
                 {!!$slug=="overdue"?'<span class="lbl">Customer Overdue</span>':'<a href="'.route("setting.customers.overdue").'"><span class="lbl">Customer Overdue</span></a>'!!}

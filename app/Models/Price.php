@@ -56,4 +56,7 @@ class Price extends Model
     public function orderCustomers(){
         return $this->hasMany('App\Models\OrderCustomer');
     }
+    public function orderCustomerNonErvills(){
+        return $this->hasMany('App\Models\OrderCustomerNonErvill');
+    }
 }
