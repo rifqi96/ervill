@@ -14,7 +14,6 @@ List Pesanan Galon
                 <thead>
                 <th>No</th>
                 <th>Status</th>
-                <th>Admin</th>
                 <th>No Surat Pembelian</th>
                 <th>No Faktur</th>
                 <th>Outsourcing Pengemudi</th>
@@ -23,38 +22,11 @@ List Pesanan Galon
                 <th>Harga Satuan</th>
                 <th>Total Harga</th>
                 <th align="center">Tgl Pembuatan</th>
-                <th align="center">Tgl Pengiriman</th>
-                <th align="center">Tgl Penerimaan</th>
+                <th align="center">Tgl Pembelian</th>
+                <th align="center">Tgl Konfirmasi</th>
+                <th>Admin</th>
                 <th>Aksi</th>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Ibu Dwi</td>
-                    <td>PT Jingkrak</td>
-                    <td>200</td>
-                    <td>20/10/2017 08:20:55</td>
-                    <td>20/10/2017 12:20:55</td>
-                    <td>
-                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
-                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Ibu Dwi</td>
-                    <td>PT Jingkrak</td>
-                    <td>350</td>
-                    <td>25/10/2017 08:20:55</td>
-                    <td>-</td>
-                    <td>
-                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#confirmModal">Terima Stock</button>
-                        <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#editModal">Edit</button>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                    </td>
-                </tr>
-                </tbody>
             </table>
         </div>
     </div>
@@ -139,7 +111,7 @@ List Pesanan Galon
                         <input id="driver_name_edit" type="text" class="form-control" name="driver_name">
                     </div> 
                     <div id="delivery_at_div" class="form-group">
-                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <label for="delivery_at"><strong>Tgl Pembelian</strong></label>
                         <input id="delivery_at" type="date" class="form-control" name="delivery_at">
                     </div>                         
                     <div class="form-group" id="price_edit_div">
@@ -311,13 +283,6 @@ List Pesanan Galon
                             }
                         }
                     },
-                    {data: null,
-                    render: function (data) {
-                        if(data.order.user){
-                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
-                        }
-                        return 'Data admin tidak ditemukan';
-                    }},
                     {data: 'purchase_invoice_no'},
                     {data: 'invoice_no'},
                     {
@@ -366,7 +331,7 @@ List Pesanan Galon
                     {data: null,
                         render: function (data) {
                             if(data.delivery_at){
-                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }
@@ -379,6 +344,13 @@ List Pesanan Galon
                             return '-';
                         }
                     },
+                    {data: null,
+                        render: function (data) {
+                            if(data.order.user){
+                                return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
+                            }
+                            return 'Data admin tidak ditemukan';
+                        }},
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {

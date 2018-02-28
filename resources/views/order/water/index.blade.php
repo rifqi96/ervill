@@ -16,7 +16,6 @@ List Pesanan Air
                 <thead>
                 <th>No</th>
                 <th>Status</th>
-                <th>Admin</th>
                 <th>No Surat Pembelian</th>
                 <th>No Faktur</th>
                 {{--<th>Outsourcing Air</th>--}}
@@ -27,8 +26,9 @@ List Pesanan Air
                 <th>Harga Satuan</th>
                 <th>Total Harga</th>
                 <th>Tgl Pembuatan</th>
-                <th>Tgl Pengiriman</th>
-                <th>Tgl Penerimaan</th>
+                <th>Tgl Pembelian</th>
+                <th>Tgl Konfirmasi</th>
+                <th>Admin</th>
                 <th>Aksi</th>
                 </thead>                
             </table>
@@ -178,7 +178,7 @@ List Pesanan Air
                     </div>
                     
                     <div class="form-group">
-                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <label for="delivery_at"><strong>Tgl Pembelian</strong></label>
                         <input id="delivery_at" type="date" class="form-control" name="delivery_at">
                     </div>                                   
                     <div class="form-group">
@@ -351,13 +351,6 @@ List Pesanan Air
                             }                               
                         }
                     },
-                    {data: null,
-                    render: function (data) {
-                        if(data.order.user){
-                            return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
-                        }
-                        return 'Data admin tidak ditemukan';
-                    }},
                     {data: 'purchase_invoice_no'},
                     {data: 'invoice_no'},
                     {
@@ -420,6 +413,13 @@ List Pesanan Air
                             return '-';
                         }
                     },
+                    {data: null,
+                        render: function (data) {
+                            if(data.order.user){
+                                return '<a href="/setting/user_management/id/'+data.order.user.id+'" target="_blank" title="Klik untuk lihat">'+data.order.user.full_name+'</a>';
+                            }
+                            return 'Data admin tidak ditemukan';
+                        }},
                     {
                         data: null, 
                         render: function ( data, type, row, meta ) {                            
