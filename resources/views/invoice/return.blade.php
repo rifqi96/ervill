@@ -15,8 +15,8 @@
                 <th>Status</th>
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
+                <th>Tgl Retur</th>
                 <th>Tgl Pembuatan</th>
-                <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
                 <th>Aksi</th>
                 </thead>
@@ -34,8 +34,8 @@
                 <th>Status</th>
                 <th>No Faktur</th>
                 <th>Nama Customer</th>
+                <th>Tgl Retur</th>
                 <th>Tgl Pembuatan</th>
-                <th>Tgl Pengiriman</th>
                 <th>Tgl Update</th>
                 <th>Aksi</th>
                 </thead>
@@ -117,16 +117,16 @@
                         }},
                         {data: null,
                             render: function (data) {
-                                if(data.created_at){
-                                    return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                                if(data.delivery_at){
+                                    return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                                 }
                                 return '-';
                             }
                         },
                         {data: null,
                             render: function (data) {
-                                if(data.delivery_at){
-                                    return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
+                                if(data.created_at){
+                                    return moment(data.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                                 }
                                 return '-';
                             }

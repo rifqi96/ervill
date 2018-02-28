@@ -80,8 +80,8 @@ List Pesanan Customer
                     <th>Galon Isi Keluar</th>
                     <th>Galon Masuk Kosong Ervill</th>
                     <th>Galon Masuk Non Ervill</th>
-                    <th>Tgl Pembuatan</th>
                     <th>Tgl Pengiriman</th>
+                    <th>Tgl Pembuatan</th>
                     <th>Tgl Penerimaan</th>
                     <th>Keterangan</th>
                     <th>Admin</th>
@@ -427,16 +427,16 @@ List Pesanan Customer
                     {data: 'filled_gallon'},
                     {data: 'empty_gallon'},
                     {data: 'non_erv_gallon'},
+                    {data: 'delivery_at',
+                        render: function(data){
+                            return moment(data).locale('id').format('DD/MM/YYYY');
+                        }},
                     {data: 'created_at',
                         render: function(data){
                             if(data){
                                 return moment(data).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
-                        }},
-                    {data: 'delivery_at',
-                        render: function(data){
-                            return moment(data).locale('id').format('DD/MM/YYYY');
                         }},
                     {data: 'accepted_at',
                         render: function(data){

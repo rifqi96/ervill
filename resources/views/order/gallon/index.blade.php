@@ -21,8 +21,8 @@ List Pesanan Galon
                 <th>Jumlah (Gallon)</th>
                 <th>Harga Satuan</th>
                 <th>Total Harga</th>
-                <th align="center">Tgl Pembuatan</th>
                 <th align="center">Tgl Pembelian</th>
+                <th align="center">Tgl Pembuatan</th>
                 <th align="center">Tgl Konfirmasi</th>
                 <th>Admin</th>
                 <th>Aksi</th>
@@ -322,16 +322,16 @@ List Pesanan Galon
                         }},
                     {data: null,
                         render: function (data) {
-                            if(data.order.created_at){
-                                return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
+                            if(data.delivery_at){
+                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
                             }
                             return '-';
                         }
                     },
                     {data: null,
                         render: function (data) {
-                            if(data.delivery_at){
-                                return moment(data.delivery_at).locale('id').format('DD/MM/YYYY');
+                            if(data.order.created_at){
+                                return moment(data.order.created_at).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
                         }

@@ -46,7 +46,7 @@ List Pesanan Customer Non Ervill
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-xl-3">Tgl Pengiriman dari:</div>
+                                    <div class="col-xl-3">Tgl Penjualan dari:</div>
                                     <div class="col-xl-4">
                                         <input type="date" name="delivery_start" class="form-control" id="search-date-start" value="">
                                     </div>
@@ -78,9 +78,9 @@ List Pesanan Customer Non Ervill
                     <th>No. Telepon</th>
                     <th>Alamat Customer</th>
                     <th>Galon Aqua</th>
-                    <th>Galon Non Aqua</th>                    
-                    <th>Tgl Pembuatan</th>   
-                    <th>Tgl Pengiriman</th>                
+                    <th>Galon Non Aqua</th>
+                    <th>Tgl Penjualan</th>
+                    <th>Tgl Pembuatan</th>
                     <th>Tgl Konfirmasi</th>
                     <th>Keterangan</th>
                     <th>Admin</th>
@@ -176,7 +176,7 @@ List Pesanan Customer Non Ervill
                     </div>
 
                     <div class="form-group edit-delivery-at">
-                        <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
+                        <label for="delivery_at"><strong>Tgl Penjualan</strong></label>
                         <input type="date" class="form-control" name="delivery_at" id="edit-delivery-at">
                     </div>
 
@@ -453,17 +453,17 @@ List Pesanan Customer Non Ervill
                             return '<i>Data customer tidak ditemukan</i>';
                         }},
                     {data: 'aqua_gallon'},
-                    {data: 'non_aqua_gallon'},                   
+                    {data: 'non_aqua_gallon'},
+                    {data: 'delivery_at',
+                        render: function(data){
+                            return moment(data).locale('id').format('DD/MM/YYYY');
+                        }},
                     {data: 'created_at',
                         render: function(data){
                             if(data){
                                 return moment(data).locale('id').format('DD/MM/YYYY HH:mm:ss');
                             }
                             return '-';
-                        }},
-                    {data: 'delivery_at',
-                        render: function(data){
-                            return moment(data).locale('id').format('DD/MM/YYYY');
                         }},
                     {data: 'accepted_at',
                         render: function(data){
