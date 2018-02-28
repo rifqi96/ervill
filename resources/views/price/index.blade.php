@@ -42,6 +42,23 @@
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                <h2>Harga Penjualan Galon NON ERVILL</h2>
+            </header>
+            <table class="table table-hover" id="non-ervill-prices">
+                <thead>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th align="center">Tgl Update</th>
+                <th>Aksi</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 dashboard-column">
+            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
                 <h2>Biaya Retur End Customer</h2>
             </header>
             <table class="table table-hover" id="customer-return-prices">
@@ -115,9 +132,10 @@
             var customer_return_prices = {!! $customer_return_prices->toJson() !!};
             var agent_sale_prices = {!! $agent_sale_prices->toJson() !!};
             var agent_return_prices = {!! $agent_return_prices->toJson() !!};
+            var non_ervill_prices = {!! $non_ervill_prices->toJson() !!};
             var price_list = {!! $price_list->toJson() !!};
 
-            for(var i=0; i<4; i++){
+            for(var i=0; i<5; i++){
                 var id = "";
                 var name = "";
                 var data = null;
@@ -136,10 +154,15 @@
                     name = "agent_sale_prices";
                     data = agent_sale_prices;
                 }
-                else{
+                else if(i==3){
                     id = "agent-return-prices";
                     name = "agent_return_prices";
                     data = agent_return_prices;
+                }
+                else{
+                    id = "non-ervill-prices";
+                    name = "non_ervill_prices";
+                    data = non_ervill_prices;
                 }
 
                 $('#' + id).dataTable({

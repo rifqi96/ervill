@@ -23,6 +23,7 @@ class PriceController extends SettingController
         $this->data['customer_return_prices'] = $this->getEndCustomerReturnPrices();
         $this->data['agent_sale_prices'] = $this->getAgentSalePrices();
         $this->data['agent_return_prices'] = $this->getAgentReturnPrices();
+        $this->data['non_ervill_prices'] = $this->getNonErvillPrices();
 
         return view('price.index', $this->data);
     }
@@ -56,6 +57,10 @@ class PriceController extends SettingController
     public function getAgentReturnPrices(){
         return Price::whereIn('id', [13,14])
             ->get();
+    }
+
+    public function getNonErvillPrices(){
+        return Price::whereIn('id', [15,16])->get();
     }
 
     /*======= Do Methods =======*/
