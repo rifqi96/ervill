@@ -224,13 +224,13 @@
                                         return '<a href="sales/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
                                             '<a href="sales/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
                                             remove +
-                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.type + '">Lunas</button>';
+                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.invoice_code + '">Lunas</button>';
                                     }
                                     else if(data.invoice_code == "ne"){
                                         return '<a href="salesNonErvill/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Lihat</button></a>' +
                                             '<a href="salesNonErvill/wh/id/'+row.id+'" target="_blank"><button class="btn btn-sm" type="button">Logistik Gudang</button></a>' +
                                             remove +
-                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.type + '">Lunas</button>';
+                                            '<button class="btn btn-sm btn-success pay-btn" type="button" data-toggle="modal" data-target="#editModal" data-index="' + row.id + '" data-type="' + row.invoice_code + '">Lunas</button>';
                                     }
                                 }
 
