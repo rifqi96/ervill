@@ -33,8 +33,8 @@ class OutsourcingController extends SettingController
     public function doMake(Request $request)
     {
         $this->validate($request, [
-            'phone' => 'required|string||digits_between:3,14',
-            'name' => 'required|string|min:3',
+            'name' => 'required|string',
+            'phone' => 'required|string|digits_between:3,14',
             'address' => 'required|string|min:3'
         ]);
 
@@ -127,7 +127,9 @@ class OutsourcingController extends SettingController
     public function doUpdateDriver(Request $request)
     {
         $this->validate($request, [           
-            'name' => 'required|string',           
+            'name' => 'required|string',
+            'phone' => 'required|string|digits_between:3,14',
+            'address' => 'required|string|min:3',
             'description' => 'required|string|regex:/^[^;]+$/'
         ]);   
 
@@ -175,7 +177,7 @@ class OutsourcingController extends SettingController
         );
 
         if($outsourcingDrivers->doUpdate($request) && EditHistory::create($edit_data)){
-            return back();
+            return back()->with('success','Berhasil mengubah data');
         }else{
             return back()
             ->withErrors(['message' => 'There is something wrong, please contact admin']);

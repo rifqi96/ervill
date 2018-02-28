@@ -63,7 +63,7 @@ List Outsourcing Pengemudi
                         <input type="tel" class="form-control" name="phone" id="phone">
                     </div>
                     <div class="form-group">
-                        <label for="adress"><strong>Alamat</strong></label>
+                        <label for="address"><strong>Alamat</strong></label>
                         <input type="text" class="form-control" name="address" id="address">
                     </div>
                     <div class="form-group">
