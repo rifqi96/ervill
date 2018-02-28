@@ -69,12 +69,7 @@ List Pesanan Air
                         <input id="price" type="text" class="form-control" name="price" placeholder="Harga Satuan">
                     </p> 
                 </div> 
-                <div class="form-group">
-                    <label for="total"><strong>Total Harga</strong></label>
-                    <p class="form-control-static">
-                        <input id="total" type="text" class="form-control" name="total" placeholder="Total Harga">
-                    </p> 
-                </div>             
+                            
               </div>
 
               <div class="modal-footer">
@@ -181,10 +176,7 @@ List Pesanan Air
                         <label for="warehouse_qty"><strong>Jumlah Galon Gudang</strong></label>
                         <input id="warehouse_qty" type="number" class="form-control" name="warehouse_qty" min="0">
                     </div>
-                    <div class="form-group" id="total_edit_div">
-                        <label for="total_edit"><strong>Total Harga</strong></label>
-                        <input type="text" id="total_edit" name="total_edit" class="form-control">
-                    </div>  
+                    
                     <div class="form-group">
                         <label for="delivery_at"><strong>Tgl Pengiriman</strong></label>
                         <input id="delivery_at" type="date" class="form-control" name="delivery_at">

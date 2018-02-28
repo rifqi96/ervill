@@ -41,7 +41,7 @@ class OrderGallon extends Model
             $this->driver_name = $data->driver_name;
             $this->invoice_no = $data->invoice_no_edit;
             $this->price = $data->price_edit;
-            $this->total = $data->total_edit;
+            $this->total = $data->price_edit * $data->quantity;
         }     
 
         //update order gallon and order data
@@ -96,7 +96,7 @@ class OrderGallon extends Model
         $new_value .= $new_value_obj['purchase_invoice_no'] . ';';
         $new_value .= $new_value_obj['invoice_no_edit'] . ';';
         $new_value .= $new_value_obj['price_edit'] . ';';
-        $new_value .= $new_value_obj['total_edit'] . ';';
+        $new_value .= ((int)$new_value_obj['price_edit'] * (int)$new_value_obj['quantity']) . ';';
         $new_value .= $new_value_obj['delivery_at'];
 
         $edit_data = array(
@@ -154,7 +154,7 @@ class OrderGallon extends Model
         $this->order->accepted_at = Carbon::now();
         $this->invoice_no = $data->invoice_no;
         $this->price = $data->price;
-        $this->total = $data->total;
+        $this->total = $data->price * $this->order->quantity;
 
         if(!$this->order->save() || !$empty_gallon->save() ){
             return false;

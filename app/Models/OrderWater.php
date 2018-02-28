@@ -49,7 +49,7 @@ class OrderWater extends Model
             $this->driver_name = $data->driver_name;
             $this->invoice_no = $data->invoice_no_edit;
             $this->price = $data->price_edit;
-            $this->total = $data->total_edit;
+            $this->total = $data->price_edit * ($data->buffer_qty + $data->warehouse_qty);
         }
 
         //update order water and order data
@@ -125,7 +125,7 @@ class OrderWater extends Model
         $new_value .= $new_value_obj['purchase_invoice_no'] . ';';
         $new_value .= $new_value_obj['invoice_no_edit'] . ';';
         $new_value .= $new_value_obj['price_edit'] . ';';
-        $new_value .= $new_value_obj['total_edit'];
+        $new_value .= ((int)$new_value_obj['price_edit'] * ( (int)$new_value_obj['buffer_qty'] + (int)$new_value_obj['warehouse_qty'] ) );
 
         $edit_data = array(
             'module_name' => 'Order Water',
@@ -156,7 +156,7 @@ class OrderWater extends Model
         $this->order->accepted_at = Carbon::now();
         $this->invoice_no = $data->invoice_no;
         $this->price = $data->price;
-        $this->total = $data->total;
+        $this->total = $data->price * ($this->buffer_qty + $this->warehouse_qty);
 
         // if($empty_gallon->quantity<0){
         //     $empty_gallon->quantity = 0;
