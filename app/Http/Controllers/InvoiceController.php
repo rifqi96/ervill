@@ -247,6 +247,70 @@ class InvoiceController extends Controller
         return $invoices;
     }
 
+    public function getIncomeByDate($start_date, $end_date, $withTrashed = true){
+        if($withTrashed){
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['payment_date', '>=', $start_date],
+                    ['payment_date', '<=', $end_date]
+                ])
+                ->get();
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->withTrashed()
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['payment_date', '>=', $start_date],
+                    ['payment_date', '<=', $end_date]
+                ])
+                ->get();
+        }
+        else{
+            $invoices = OcHeaderInvoice::with([
+                'orderCustomers', 'customer', 'user'
+            ])
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['payment_date', '>=', $start_date],
+                    ['payment_date', '<=', $end_date]
+                ])
+                ->get();
+            $ne_invoices = NeHeaderInvoice::with([
+                'orderCustomerNonErvills', 'customer', 'user'
+            ])
+                ->where([
+                    ['payment_status', '=', 'cash'],
+                    ['payment_date', '>=', $start_date],
+                    ['payment_date', '<=', $end_date]
+                ])
+                ->get();
+        }
+
+        $res = collect();
+
+        if($invoices){
+            foreach($invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
+        }
+
+        if($ne_invoices){
+            foreach($ne_invoices as $invoice){
+                $invoice->setInvoiceAttributes();
+                $res->push($invoice);
+            }
+        }
+
+
+        return $res;
+    }
+
     public function getSalesByDate($start_date, $end_date, $withTrashed = true){
         if($withTrashed){
             $invoices = OcHeaderInvoice::with([

@@ -570,8 +570,21 @@ Route::prefix('report')->group(function (){
         ]);
         Route::prefix('do')->group(function(){
             Route::post('filter', [
-                'uses' => 'ReportController@filterBy',
+                'uses' => 'ReportController@salesFilterBy',
                 'as' => 'report.sales.do.filterby'
+            ]);
+        });
+    });
+
+    Route::prefix('income')->group(function (){
+        Route::get('', [
+            'uses' => 'ReportController@showIncome',
+            'as' => 'report.income.index'
+        ]);
+        Route::prefix('do')->group(function(){
+            Route::post('filter', [
+                'uses' => 'ReportController@incomeFilterBy',
+                'as' => 'report.income.do.filterby'
             ]);
         });
     });

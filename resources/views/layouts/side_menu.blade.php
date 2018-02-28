@@ -64,6 +64,9 @@
             <li>
                 {!!$module=="report" && $slug=="sales"?'<span class="lbl">Penjualan</span>':'<a href="'.route('report.sales.index').'"><span class="lbl">Penjualan</span></a>'!!}
             </li>
+            <li>
+                {!!$module=="report" && $slug=="income"?'<span class="lbl">Penerimaan</span>':'<a href="'.route('report.income.index').'"><span class="lbl">Penerimaan</span></a>'!!}
+            </li>
         </ul>
     </li>
     <li class="{{$module=="inventory"?"opened":""}}">

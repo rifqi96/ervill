@@ -36,5 +36,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call('PriceSeeder');
         $this->command->info("Prices table seeded :)");
+
+        $this->call('AddOrderNonErvill');
+        $this->command->info('Non Ervill Orders table seeded :)');
     }
 }
