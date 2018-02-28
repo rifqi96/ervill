@@ -13,13 +13,14 @@ List Pesanan Galon
             <table class="table table-hover" id="gallon_order">
                 <thead>
                 <th>No</th>
+                <th>Status</th>
                 <th>Admin</th>
                 <th>No Surat Pembelian</th>
                 <th>No Faktur</th>
                 <th>Outsourcing Pengemudi</th>
                 <th>Pengemudi</th>
-                <th>Harga Satuan</th>
                 <th>Jumlah (Gallon)</th>
+                <th>Harga Satuan</th>
                 <th>Total Harga</th>
                 <th align="center">Tgl Pembuatan</th>
                 <th align="center">Tgl Pengiriman</th>
@@ -200,7 +201,6 @@ List Pesanan Galon
 
     <script>
         $(document).ready(function () {
-
             var orderGallons = [];
             $('#gallon_order').on('click','.detail-btn',function(){
                 var index = $(this).data('index');
@@ -301,6 +301,16 @@ List Pesanan Galon
                 },
                 columns: [
                     {data: 'id'},
+                    {
+                        data: null,
+                        render: function ( data, type, row, meta ) {
+                            if(!row.price || row.price == null || row.order.accepted_at == null){
+                                return '<td><span class="label label-warning">Proses</span></td>';
+                            }else{
+                                return '<td><span class="label label-success">Selesai</span></td>';
+                            }
+                        }
+                    },
                     {data: null,
                     render: function (data) {
                         if(data.order.user){
@@ -329,10 +339,22 @@ List Pesanan Galon
                                 return '-';
                             }
                         }
-                    },   
-                    {data: 'price'}, 
+                    },
                     {data: 'order.quantity'},
-                    {data: 'total'},
+                    {data: 'price',
+                        render: function (data) {
+                            if(data){
+                                return '<div class="numeral">'+data+'</div>';
+                            }
+                            return '<div class="numeral">0</div>';
+                        }},
+                    {data: 'total',
+                        render: function (data) {
+                            if(data){
+                                return '<div class="numeral">'+data+'</div>';
+                            }
+                            return '<div class="numeral">0</div>';
+                        }},
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
@@ -385,7 +407,20 @@ List Pesanan Galon
                             }                             
                         }
                     }                   
-                ]
+                ],
+                initComplete:function (settings, json) {
+                    $('.numeral').each(function () {
+                        var price = $(this).text();
+                        $(this).text(numeral(price).format('$0,0'));
+                    });
+
+                    $('#gallon_order_paginate').on('click', function () {
+                        $('.numeral').each(function () {
+                            var price = $(this).text();
+                            $(this).text(numeral(price).format('$0,0'));
+                        });
+                    });
+                }
             });
         });
     </script>

@@ -530,6 +530,10 @@ List Pesanan Customer
 
                 var inventory = {!! $inventory->toJson() !!};
 
+                if(!order_data){
+                    return 0;
+                }
+
                 if(order_data.refill_qty > 0){
                     $('#refill-qty').val(order_data.refill_qty);
                 }

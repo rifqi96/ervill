@@ -556,7 +556,9 @@ List Pesanan Customer Non Ervill
                     }
                 }
 
-                
+                if(!order_data){
+                    return 0;
+                }
 
                 if(order_data.aqua_gallon > 0){
                     $('#aqua-qty').val(order_data.aqua_gallon);

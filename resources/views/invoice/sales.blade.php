@@ -172,7 +172,7 @@
                                     return '<a href="/setting/customers/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                                 }
                                 else if(data.invoice_code == "ne"){
-                                    return data.customer.name;
+                                    return '<a href="/setting/customerNonErvills/id/'+data.customer.id+'" target="_blank">'+data.customer.name+'</a>';
                                 }
 
                                 return '<i>Data tidak ditemukan</i>';

@@ -22,9 +22,9 @@ List Pesanan Air
                 {{--<th>Outsourcing Air</th>--}}
                 <th>Outsourcing Pengemudi</th>
                 <th>Pengemudi</th>
-                <th>Harga Satuan</th>
                 <th>Jumlah Galon Buffer</th>
                 <th>Jumlah Galon Gudang</th>
+                <th>Harga Satuan</th>
                 <th>Total Harga</th>
                 <th>Tgl Pembuatan</th>
                 <th>Tgl Pengiriman</th>
@@ -360,16 +360,6 @@ List Pesanan Air
                     }},
                     {data: 'purchase_invoice_no'},
                     {data: 'invoice_no'},
-//                    {
-//                        data: 'outsourcing_water',
-//                        render: function ( data ){
-//                            if(data!=null){
-//                                return data.name;
-//                            }else{
-//                                return '-';
-//                            }
-//                        }
-//                    },
                     {
                         data: 'outsourcing_driver',
                         render: function ( data ){           
@@ -389,11 +379,23 @@ List Pesanan Air
                                 return '-';
                             }
                         }
-                    },      
-                    {data: 'price'},            
+                    },
                     {data: 'buffer_qty'},
                     {data: 'warehouse_qty'},
-                    {data: 'total'},
+                    {data: 'price',
+                        render: function (data) {
+                            if(data){
+                                return '<div class="numeral">'+data+'</div>';
+                            }
+                            return '<div class="numeral">0</div>';
+                        }},
+                    {data: 'total',
+                        render: function (data) {
+                            if(data){
+                                return '<div class="numeral">'+data+'</div>';
+                            }
+                            return '<div class="numeral">0</div>';
+                        }},
                     {data: null,
                         render: function (data) {
                             if(data.order.created_at){
@@ -455,7 +457,32 @@ List Pesanan Air
                             }                               
                         }
                     }                   
-                ]
+                ],
+                initComplete:function (settings, json) {
+                    $('.numeral').each(function () {
+                        var price = $(this).text();
+                        $(this).text(numeral(price).format('$0,0'));
+                    });
+
+                    $('#water_order_paginate').on('click', function () {
+                        $('.numeral').each(function () {
+                            var price = $(this).text();
+                            $(this).text(numeral(price).format('$0,0'));
+                        });
+                    });
+                }
+            });
+
+            $('#water_order .numeral').each(function () {
+                var price = $(this).text();
+                $(this).text(numeral(price).format('$0,0'));
+            });
+
+            $('#water_order_paginate').on('click', function () {
+                $('.numeral').each(function () {
+                    var price = $(this).text();
+                    $(this).text(numeral(price).format('$0,0'));
+                });
             });
 
             var issue_detail=[];
