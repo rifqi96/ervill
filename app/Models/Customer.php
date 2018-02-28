@@ -67,6 +67,7 @@ class Customer extends Model
             'ocHeaderInvoices' => function($query){
                 $query->orderBy('delivery_at', 'DESC');
             }])
+            ->where('rent_qty', '>', 0)
             ->get();
 
         $res = collect();
