@@ -89,13 +89,7 @@ List Pesanan Galon
                             <p class="form-control-static">
                                 <input id="price" type="text" class="form-control" name="price" placeholder="Harga Satuan">
                             </p> 
-                        </div> 
-                        <div class="form-group">
-                            <label for="total"><strong>Total Harga</strong></label>
-                            <p class="form-control-static">
-                                <input id="total" type="text" class="form-control" name="total" placeholder="Total Harga">
-                            </p> 
-                        </div>         
+                        </div>                                 
                     </div>
                 
                     <div class="modal-footer">
@@ -154,11 +148,7 @@ List Pesanan Galon
                     <div class="form-group">
                         <label for="quantity"><strong>Jumlah Galon</strong></label>
                         <input type="number" class="form-control" name="quantity" id="quantity">
-                    </div>    
-                    <div class="form-group" id="total_edit_div">
-                        <label for="total_edit"><strong>Total Harga</strong></label>
-                        <input type="text" id="total_edit" name="total_edit" class="form-control">
-                    </div>                
+                    </div>                                       
                     <div class="form-group">
                         <label for="description"><strong>Deskripsi Pengubahan Data</strong></label>
                         <textarea class="form-control" name="description" rows="3" id="description"></textarea>

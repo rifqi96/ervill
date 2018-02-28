@@ -165,7 +165,7 @@ class OrderWaterController extends OrderController
                 'delivery_at' => 'required|date',
                 'invoice_no_edit' => 'required|string',
                 'price_edit' => 'required|integer|min:0',
-                'total_edit' => 'required|integer|min:0',
+                //'total_edit' => 'required|integer|min:0',
                 'description' => 'required|string|regex:/^[^;]+$/'
                 
             ]);
@@ -206,8 +206,7 @@ class OrderWaterController extends OrderController
         $this->validate($request, [
             'driver_name' => 'required|string',
             'invoice_no' => 'required|string',
-            'price' => 'required|integer|min:0',
-            'total' => 'required|integer|min:0'
+            'price' => 'required|integer|min:0'
         ]);
 
         $orderWater = OrderWater::with('order')->find($request->id);
