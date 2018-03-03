@@ -149,10 +149,10 @@ List Pesanan Customer Non Ervill
                                 </thead>
                                 <tbody>                               
                                 <td>
-                                    <p class="form-control-static"><input class="quantity" id="aqua-qty" type="number" class="form-control" name="aqua_qty" placeholder="Jumlah (Maks: {{$non_ervill->quantity}})" max="{{$non_ervill->quantity}}" min=""></p>
+                                    <p class="form-control-static"><input class="quantity" id="aqua-qty" type="number" class="form-control" name="aqua_qty" min=""></p>
                                 </td>
                                 <td>
-                                    <p class="form-control-static"><input class="quantity" id="non_aqua-qty" type="number" class="form-control" name="non_aqua_qty" placeholder="Jumlah (Maks: {{$non_ervill->quantity}})" max="{{$non_ervill->quantity}}" min=""></p>
+                                    <p class="form-control-static"><input class="quantity" id="non_aqua-qty" type="number" class="form-control" name="non_aqua_qty" min=""></p>
                                 </td>                              
                                
                                 </tbody>
@@ -569,10 +569,10 @@ List Pesanan Customer Non Ervill
                 
 
                 //var total_qty = order_data.customerNonErvill.aqua_qty + order_data.customerNonErvill.non_aqua_qty;
-                $('#aqua-qty').attr('max', {{$non_ervill->quantity}});
-                $('#aqua-qty').attr('placeholder', 'Jumlah (Maks: ' + {{$non_ervill->quantity}} + ')');
-                $('#non_aqua-qty').attr('max', {{$non_ervill->quantity}});
-                $('#non_aqua-qty').attr('placeholder', 'Jumlah (Maks: ' + {{$non_ervill->quantity}} + ')');
+                //$('#aqua-qty').attr('max', {{$non_ervill->quantity}});
+                //$('#aqua-qty').attr('placeholder', 'Jumlah (Maks: ' + {{$non_ervill->quantity}} + ')');
+                //$('#non_aqua-qty').attr('max', {{$non_ervill->quantity}});
+                //$('#non_aqua-qty').attr('placeholder', 'Jumlah (Maks: ' + {{$non_ervill->quantity}} + ')');
 
                 if(order_data.payment_status == "piutang"){
                     $('#is_piutang').prop('checked', true);
