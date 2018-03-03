@@ -178,8 +178,15 @@ class OrderCustomerNonErvillController extends OrderController
         $total_qty = $request->aqua_qty + $request->non_aqua_qty;
 
         $non_ervill = Inventory::find(6);
+        $current_quantity = 0;
 
-        if($non_ervill->quantity < $total_qty ){
+        $invoice = NeHeaderInvoice::find($request->id);
+
+        foreach ($invoice->orderCustomerNonErvills as $orderCustomerNonErvill) {
+            $current_quantity += $orderCustomerNonErvill->quantity;
+        }
+
+        if( ($non_ervill->quantity + $current_quantity) < $total_qty ){
             return back()
                 ->withErrors(['message' => 'Stock galon non ervill di gudang tidak cukup untuk melakukan order']);
         }
@@ -187,8 +194,8 @@ class OrderCustomerNonErvillController extends OrderController
             return back()
                 ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
         }
-
-        $invoice = NeHeaderInvoice::find($request->id);
+        dd('berhasil');
+        
 
         if(!$invoice->doUpdate($request)){
             return back()
