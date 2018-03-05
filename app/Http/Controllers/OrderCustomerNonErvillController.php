@@ -194,7 +194,7 @@ class OrderCustomerNonErvillController extends OrderController
             return back()
                 ->withErrors(['message' => 'Anda harus mengisi minimal 1 transaksi']);
         }
-        dd('berhasil');
+        
         
 
         if(!$invoice->doUpdate($request)){
