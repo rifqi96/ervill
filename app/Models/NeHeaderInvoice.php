@@ -186,7 +186,7 @@ class NeHeaderInvoice extends Model
     }
 
     public function doUpdate($data){
-        $old_data = NeHeaderInvoice::with(['orderCustomerNonErvills', 'customerNonErvill'])->find($this->id);
+        $old_data = NeHeaderInvoice::with(['orderCustomerNonErvills', 'customer'])->find($this->id);
 
         // if($data->aqua_qty > 0){
         //     if($data->pay_qty > $this->customer->rent_qty){
