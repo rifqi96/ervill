@@ -62,7 +62,17 @@ List Pesanan Galon
                             <p class="form-control-static">
                                 <input id="price" type="text" class="form-control" name="price" placeholder="Harga Satuan">
                             </p> 
-                        </div>                                 
+                        </div>
+                        <div class="form-group">
+                            <label for=""><strong>Tempat Penerimaan Stock</strong></label>
+                            <p class="form-control-static">
+                                <select name="destination" id="" class="form-control">
+                                    <option value="">-- Mohon Pilih Salah Satu --</option>
+                                    <option value="buffer">Buffer / Pabrik Air</option>
+                                    <option value="warehouse">Gudang ERVILL</option>
+                                </select>
+                            </p>
+                        </div>
                     </div>
                 
                     <div class="modal-footer">

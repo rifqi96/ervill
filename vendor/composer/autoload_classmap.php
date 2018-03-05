@@ -12,6 +12,7 @@ return array(
     'AddDataIdToEditHistories' => $baseDir . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
     'AddDeliveryAtIntoOrderGallons' => $baseDir . '/database/migrations/2018_02_27_235912_add_delivery_at_into_order_gallons.php',
     'AddDescriptionAndAdditionalPriceToOcHeader' => $baseDir . '/database/migrations/2018_02_20_235002_add_description_and_additional_price_to_oc_header.php',
+    'AddDestinationToOg' => $baseDir . '/database/migrations/2018_03_03_080044_add_destination_to_og.php',
     'AddErvillTokenToUsers' => $baseDir . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
     'AddFinanceAttributesIntoOrderGallonsTable' => $baseDir . '/database/migrations/2018_02_25_121102_add_finance_attributes_into_order_gallons_table.php',
     'AddFinanceAttributesIntoOrderWatersTable' => $baseDir . '/database/migrations/2018_02_25_121903_add_finance_attributes_into_order_waters_table.php',

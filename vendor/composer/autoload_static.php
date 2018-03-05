@@ -288,6 +288,7 @@ class ComposerStaticInit58bf29c67ad279b870e76df6eefee7a7
         'AddDataIdToEditHistories' => __DIR__ . '/../..' . '/database/migrations/2017_11_17_221710_add_data_id_to_edit_histories.php',
         'AddDeliveryAtIntoOrderGallons' => __DIR__ . '/../..' . '/database/migrations/2018_02_27_235912_add_delivery_at_into_order_gallons.php',
         'AddDescriptionAndAdditionalPriceToOcHeader' => __DIR__ . '/../..' . '/database/migrations/2018_02_20_235002_add_description_and_additional_price_to_oc_header.php',
+        'AddDestinationToOg' => __DIR__ . '/../..' . '/database/migrations/2018_03_03_080044_add_destination_to_og.php',
         'AddErvillTokenToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_11_24_145152_add_ervill_token_to_users.php',
         'AddFinanceAttributesIntoOrderGallonsTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_25_121102_add_finance_attributes_into_order_gallons_table.php',
         'AddFinanceAttributesIntoOrderWatersTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_25_121903_add_finance_attributes_into_order_waters_table.php',

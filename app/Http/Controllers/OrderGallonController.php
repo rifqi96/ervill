@@ -116,7 +116,8 @@ class OrderGallonController extends OrderController
         $this->validate($request, [
             'driver_name' => 'required|string',
             'invoice_no' => 'required|string',
-            'price' => 'required|integer|min:0'
+            'price' => 'required|integer|min:0',
+            'destination' => 'required|in:buffer,warehouse'
         ]);
 
         $orderGallon = OrderGallon::with('order')->find($request->id);

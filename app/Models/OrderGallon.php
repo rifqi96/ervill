@@ -144,7 +144,12 @@ class OrderGallon extends Model
 
     public function doConfirm($data){
 
-        $empty_gallon = Inventory::find(1);
+        if($data->destination == "buffer"){
+            $empty_gallon = Inventory::find(1);
+        }
+        else{ // Warehouse
+            $empty_gallon = Inventory::find(2);
+        }
 
         //recalculate inventory
         $empty_gallon->quantity += ($this->order->quantity);
@@ -165,7 +170,12 @@ class OrderGallon extends Model
 
     public function doCancel(){
 
-        $empty_gallon = Inventory::find(1);
+        if($this->destination == "buffer"){
+            $empty_gallon = Inventory::find(1);
+        }
+        else{ // Warehouse
+            $empty_gallon = Inventory::find(2);
+        }
 
         //recalculate inventory
         $empty_gallon->quantity -= ($this->order->quantity);
@@ -190,7 +200,12 @@ class OrderGallon extends Model
 
     public function doRestore(){
 
-        $empty_gallon = Inventory::find(1);
+        if($this->destination == "buffer"){
+            $empty_gallon = Inventory::find(1);
+        }
+        else{ // Warehouse
+            $empty_gallon = Inventory::find(2);
+        }
 
         //recalculate inventory if order is finished
         if($this->order->accepted_at != null){
