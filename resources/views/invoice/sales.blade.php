@@ -5,23 +5,25 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-xl-2 dashboard-column">
-            <button type="button" data-index="lunas" class="btn btn-primary">
-                Lunas
-            </button>
+    <section class="box-typical box-typical-padding">
+        <div class="row">
+            <div class="col-xl-2 dashboard-column">
+                <button type="button" data-index="lunas" class="btn btn-primary">
+                    Lunas
+                </button>
+            </div>
+            <div class="col-xl-2 dashboard-column">
+                <button type="button" data-index="piutang" class="btn btn-primary">
+                    Piutang
+                </button>
+            </div>
+            <div class="col-xl-2 dashboard-column">
+                <button type="button" data-index="free" class="btn btn-primary">
+                    Gratis/Free Sample
+                </button>
+            </div>
         </div>
-        <div class="col-xl-2 dashboard-column">
-            <button type="button" data-index="piutang" class="btn btn-primary">
-                Piutang
-            </button>
-        </div>
-        <div class="col-xl-2 dashboard-column">
-            <button type="button" data-index="free" class="btn btn-primary">
-                Gratis/Free Sample
-            </button>
-        </div>
-    </div>
+    </section>
 
     <br>
 

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Customer Overdue
+    Customer Overdue Per Tgl {{\Carbon\Carbon::now()->format('d/m/Y')}}
 @endsection
 
 @section('content')
@@ -38,6 +38,20 @@
                 },
                 processing: true,
                 order:[0, 'desc'],
+                select: {
+                    style: 'multi'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text:'Simpan ke Excel', className:'btn btn-success btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'print', text:'Cetak', className:'btn btn-warning btn-sm', exportOptions: {
+                        columns: ':visible'
+                    }},
+                    { extend: 'colvis', text:'Pilih Kolom', className:'btn btn-default btn-sm'}
+
+                ],
                 data:customers,
                 columns: [
                     {data: 'id'},

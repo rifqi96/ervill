@@ -15,6 +15,7 @@ class OrderCustomerNonErvillController extends OrderController
     public function __construct(){
         parent::__construct();
         $this->middleware('SuperadminAndAdmin');
+        $this->data['module'] = 'order';
         $this->data['slug'] = 'customerNonErvill';
     }
 

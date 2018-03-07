@@ -14,7 +14,7 @@ class CustomerNonErvillController extends SettingController
     public function __construct(){
         parent::__construct();
         $this->middleware('SuperadminAndAdmin');
-        $this->data['module'] = 'customerNonErvills';
+        $this->data['module'] = 'customers';
     }
 
     public function index()

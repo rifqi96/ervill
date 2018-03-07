@@ -5,18 +5,20 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-xl-2 dashboard-column">
-            <button type="button" data-index="non-refund" class="btn btn-primary">
-                Non Refund
-            </button>
+    <section class="box-typical box-typical-padding">
+        <div class="row">
+            <div class="col-xl-2 dashboard-column">
+                <button type="button" data-index="non-refund" class="btn btn-primary">
+                    Non Refund
+                </button>
+            </div>
+            <div class="col-xl-2 dashboard-column">
+                <button type="button" data-index="refund" class="btn btn-primary">
+                    Refund
+                </button>
+            </div>
         </div>
-        <div class="col-xl-2 dashboard-column">
-            <button type="button" data-index="refund" class="btn btn-primary">
-                Refund
-            </button>
-        </div>
-    </div>
+    </section>
 
     <br>
 

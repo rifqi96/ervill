@@ -12,16 +12,16 @@
         </span>
         <ul>
             <li>
-                {!!$slug=="gallon"?'<span class="lbl">Galon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Galon</span></a>'!!}
+                {!!$module=="order" && $slug=="gallon"?'<span class="lbl">Galon</span>':'<a href="'.route('order.gallon.index').'"><span class="lbl">Galon</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="water"?'<span class="lbl">Air</span>':'<a href="'.route("order.water.index").'"><span class="lbl">Air</span></a>'!!}
+                {!!$module=="order" && $slug=="water"?'<span class="lbl">Air</span>':'<a href="'.route("order.water.index").'"><span class="lbl">Air</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="customer"?'<span class="lbl">Customer</span>':'<a href="'.route("order.customer.index").'"><span class="lbl">Customer</span></a>'!!}
+                {!!$module=="order" && $slug=="customer"?'<span class="lbl">Customer</span>':'<a href="'.route("order.customer.index").'"><span class="lbl">Customer</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="customerNonErvill"?'<span class="lbl">Customer Non Ervill</span>':'<a href="'.route("order.customerNonErvill.index").'"><span class="lbl">Customer Non Ervill</span></a>'!!}
+                {!!$module=="order" && $slug=="customerNonErvill"?'<span class="lbl">Customer Non Ervill</span>':'<a href="'.route("order.customerNonErvill.index").'"><span class="lbl">Customer Non Ervill</span></a>'!!}
             </li>
         </ul>
     </li>
@@ -67,6 +67,9 @@
             <li>
                 {!!$module=="report" && $slug=="income"?'<span class="lbl">Penerimaan</span>':'<a href="'.route('report.income.index').'"><span class="lbl">Penerimaan</span></a>'!!}
             </li>
+            <li>
+                {!!$module=="report" && $slug=="overdue"?'<span class="lbl">Customer Overdue</span>':'<a href="'.route("setting.customers.overdue").'"><span class="lbl">Customer Overdue</span></a>'!!}
+            </li>
         </ul>
     </li>
     <li class="{{$module=="inventory"?"opened":""}}">
@@ -84,13 +87,10 @@
         </span>
         <ul>
             <li>
-                {!!$slug=="list"?'<span class="lbl">Daftar Customer</span>':'<a href="'.route('setting.customers.index').'"><span class="lbl">Daftar Customer</span></a>'!!}
+                {!!$module=="customers" && $slug=="list"?'<span class="lbl">Daftar Customer</span>':'<a href="'.route('setting.customers.index').'"><span class="lbl">Daftar Customer</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="listNonErvill"?'<span class="lbl">Daftar Customer Pihak Ketiga</span>':'<a href="'.route('setting.customerNonErvills.index').'"><span class="lbl">Daftar Customer Pihak Ketiga</span></a>'!!}
-            </li>
-            <li>
-                {!!$slug=="overdue"?'<span class="lbl">Customer Overdue</span>':'<a href="'.route("setting.customers.overdue").'"><span class="lbl">Customer Overdue</span></a>'!!}
+                {!!$module=="customers" && $slug=="listNonErvill"?'<span class="lbl">Daftar Customer Pihak Ketiga</span>':'<a href="'.route('setting.customerNonErvills.index').'"><span class="lbl">Daftar Customer Pihak Ketiga</span></a>'!!}
             </li>
         </ul>
     </li>
@@ -102,10 +102,10 @@
         </span>
         <ul>
             <li>
-                {!!$slug=="edit_history"?'<span class="lbl">Edit History</span>':'<a href="'.route("history.edit.index").'"><span class="lbl">Edit History</span></a>'!!}
+                {!!$module=="history" && $slug=="edit_history"?'<span class="lbl">Edit History</span>':'<a href="'.route("history.edit.index").'"><span class="lbl">Edit History</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="delete_history"?'<span class="lbl">Delete History</span>':'<a href="'.route("history.delete.index").'"><span class="lbl">Delete History</span></a>'!!}
+                {!!$module=="history" && $slug=="delete_history"?'<span class="lbl">Delete History</span>':'<a href="'.route("history.delete.index").'"><span class="lbl">Delete History</span></a>'!!}
             </li>
         </ul>
     </li>
@@ -120,13 +120,13 @@
                 {{--{!!$slug=="customers"?'<span class="lbl">Customer</span>':'<a href="'.route("setting.customers.index").'"><span class="lbl">Customer</span></a>'!!}--}}
             {{--</li>--}}
             <li>
-                {!!$slug=="price"?'<span class="lbl">Daftar Harga</span>':'<a href="'.route("price.index").'"><span class="lbl">Daftar Harga</span></a>'!!}
+                {!!$module=="settings" && $slug=="price"?'<span class="lbl">Daftar Harga</span>':'<a href="'.route("price.index").'"><span class="lbl">Daftar Harga</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="outsourcing"?'<span class="lbl">Outsourcing</span>':'<a href="'.route("setting.outsourcing.index").'"><span class="lbl">Outsourcing</span></a>'!!}
+                {!!$module=="settings" && $slug=="outsourcing"?'<span class="lbl">Outsourcing</span>':'<a href="'.route("setting.outsourcing.index").'"><span class="lbl">Outsourcing</span></a>'!!}
             </li>
             <li>
-                {!!$slug=="user_management"?'<span class="lbl">User Management</span>':'<a href="'.route("setting.user_management.index").'"><span class="lbl">User Management</span></a>'!!}
+                {!!$module=="settings" && $slug=="user_management"?'<span class="lbl">User Management</span>':'<a href="'.route("setting.user_management.index").'"><span class="lbl">User Management</span></a>'!!}
             </li>
             {{--<li>--}}
                 {{--{!!$slug=="user_role"?'<span class="lbl">User Role</span>':'<a href="'.route("setting.user_role.index").'"><span class="lbl">User Role</span></a>'!!}--}}

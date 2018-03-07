@@ -34,6 +34,7 @@ class CustomerController extends SettingController
 
     public function showOverdue(){
         $this->data['breadcrumb'] = "Home - Customer Overdue";
+        $this->data['module'] = 'report';
         $this->data['slug'] = 'overdue';
 
         $this->data['customers'] = $this->getOverdueCustomers();
