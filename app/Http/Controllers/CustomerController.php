@@ -169,7 +169,18 @@ class CustomerController extends SettingController
 
     public function getAll()
     {
-        return Customer::all();
+        $customers = Customer::all();
+        foreach($customers as $customer){
+            $piutang = 0;
+            foreach($customer->OcHeaderInvoices as $invoice){
+                if(!$invoice->payment_date){
+                    $piutang ++;
+                }
+            }
+            $customer->piutang = $piutang;
+        }
+
+        return $customers;
     }
 
     public function get($id){

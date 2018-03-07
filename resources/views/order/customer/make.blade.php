@@ -26,7 +26,7 @@ Pesan Customer
                     </div>
                     <div class="form-group row customer-table-container">
                         <div class="col-sm-12">
-                            <h4 class="box-typical-header"><label for="existingCustomerTable" class="form-control-label">Silahkan pilih customer</label></h4>
+                            <h4 class="box-typical-header"><label for="customer-table" class="form-control-label">Silahkan pilih customer</label></h4>
                             <table id="customer-table">
                                 <thead>
                                     <th></th>
@@ -190,10 +190,37 @@ Pesan Customer
       </div>
     </div>
 
+    <!-- Edit Modal -->
+
+    <div class="modal fade" id="piutangModal" tabindex="-1" role="dialog" aria-labelledby="piutangModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="piutangModalLabel">PERINGATAN! Customer Masih Memiliki Piutang</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Ini adalah pengingat kalau customer ini masih memiliki piutang pada faktur/transaksi sebelumnya. Mohon dicek jika customer telah membayarkan piutang, untuk segera tekan tombol LUNAS pada menu FAKTUR</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="{{route('invoice.sales.index')}}#piutang_invoices" target="_blank">
+                        <button type="button" class="btn btn-success">Menu Faktur</button>
+                    </a>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
             // Init
             var customers = {!! $customers->toJson() !!};
+            var customer = null;
 
             $('#new-customer-input').hide();
             $('.input-forms').hide();
@@ -256,6 +283,7 @@ Pesan Customer
                     $('.input-forms').fadeIn();
                     $('.refill').fadeOut();
                     $('.pay-gallon').fadeOut();
+                    customer = null;
                 }
                 else{
                     $(this).val("");
@@ -286,6 +314,8 @@ Pesan Customer
                         $('#pay-qty').val('');
                         $('#pay-qty').attr('placeholder','Jumlah (Maks: '+rent_qty + ')');
                         $('#pay-qty').attr('max', rent_qty);
+                        customer = customers[i];
+                        break;
                     }
                 }
             });
@@ -302,6 +332,9 @@ Pesan Customer
 
             $('#is_piutang').on('change', function () {
                 if(this.checked){
+                    if(customer.piutang > 0){
+                        $('#piutangModal').modal('show');
+                    }
                     $('#is_free').prop('checked', false);
                     $('#is_free_div').fadeOut();
                 }
