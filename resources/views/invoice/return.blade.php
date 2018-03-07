@@ -6,45 +6,101 @@
 
 @section('content')
     <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <h2>Faktur REFUND</h2>
-            </header>
-            <table class="table table-hover" id="refund_returns">
-                <thead>
-                <th>Status</th>
-                <th>No Faktur</th>
-                <th>Nama Customer</th>
-                <th>Tgl Retur</th>
-                <th>Tgl Pembuatan</th>
-                <th>Tgl Update</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
+        <div class="col-xl-2 dashboard-column">
+            <button type="button" data-index="non-refund" class="btn btn-primary">
+                Non Refund
+            </button>
+        </div>
+        <div class="col-xl-2 dashboard-column">
+            <button type="button" data-index="refund" class="btn btn-primary">
+                Refund
+            </button>
         </div>
     </div>
 
+    <br>
+
     <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <h2>Faktur NON REFUND</h2>
-            </header>
-            <table class="table table-hover" id="non_refund_returns">
-                <thead>
-                <th>Status</th>
-                <th>No Faktur</th>
-                <th>Nama Customer</th>
-                <th>Tgl Retur</th>
-                <th>Tgl Pembuatan</th>
-                <th>Tgl Update</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
+        <div class="col-xl-12">
+            <div class="tab-content">
+                <div id="refund">
+                    <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                        <h2>Faktur REFUND</h2>
+                    </header>
+                    <table class="table table-hover" id="refund_returns">
+                        <thead>
+                        <th>Status</th>
+                        <th>No Faktur</th>
+                        <th>Nama Customer</th>
+                        <th>Tgl Retur</th>
+                        <th>Tgl Pembuatan</th>
+                        <th>Tgl Update</th>
+                        <th>Aksi</th>
+                        </thead>
+                    </table>
+                </div>
+                <div id="non-refund">
+                    <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                        <h2>Faktur NON REFUND</h2>
+                    </header>
+                    <table class="table table-hover" id="non_refund_returns">
+                        <thead>
+                        <th>Status</th>
+                        <th>No Faktur</th>
+                        <th>Nama Customer</th>
+                        <th>Tgl Retur</th>
+                        <th>Tgl Pembuatan</th>
+                        <th>Tgl Update</th>
+                        <th>Aksi</th>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         $(document).ready(function () {
+
+            $("#refund").hide();
+            $("#non-refund").hide();
+            $("#free").hide();
+
+            var hash = window.location.hash;
+            var id = hash.substring(hash.lastIndexOf('#') + 1);
+
+            if(id){
+                if(id == "refund" || id == "refund_invoices"){
+                    $('button[data-index=refund]').attr('disabled', true);
+                    $("#refund").show();
+                }
+                else if(id == "non_refund" || id == "non_refund_invoices"){
+                    $('button[data-index=non-refund]').attr('disabled', true);
+                    $("#non-refund").show();
+                }
+            }
+            else{
+                $('button[data-index=non-refund]').attr('disabled', true);
+                $("#non-refund").show();
+            }
+
+            $('button[data-index=non-refund]').click(function () {
+                if($(this).is(':not(:disabled)')){
+                    $('button[data-index=non-refund]').attr('disabled', true);
+                    $('button[data-index=refund]').attr('disabled', false);
+                    $("#non-refund").fadeIn();
+                    $("#refund").hide();
+                }
+            });
+
+            $('button[data-index=refund]').click(function () {
+                if($(this).is(':not(:disabled)')){
+                    $('button[data-index=refund]').attr('disabled', true);
+                    $('button[data-index=non-refund]').attr('disabled', false);
+                    $("#refund").fadeIn();
+                    $("#non-refund").hide();
+                }
+            });
 
             var refund_returns = {!! $refund_returns->toJson() !!};
             var non_refund_returns = {!! $non_refund_returns->toJson() !!};

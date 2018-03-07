@@ -6,62 +6,80 @@
 
 @section('content')
     <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <h2>Faktur Lunas</h2>
-            </header>
-            <table class="table table-hover" id="cash_invoices">
-                <thead>
-                <th>Status</th>
-                <th>No Faktur</th>
-                <th>Nama Customer</th>
-                <th>Total</th>
-                <th>Tgl Penjualan</th>
-                <th>Tgl Pembuatan</th>
-                <th>Tgl Update</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
+        <div class="col-xl-2 dashboard-column">
+            <button type="button" data-index="lunas" class="btn btn-primary">
+                Lunas
+            </button>
+        </div>
+        <div class="col-xl-2 dashboard-column">
+            <button type="button" data-index="piutang" class="btn btn-primary">
+                Piutang
+            </button>
+        </div>
+        <div class="col-xl-2 dashboard-column">
+            <button type="button" data-index="free" class="btn btn-primary">
+                Gratis/Free Sample
+            </button>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <h2>Faktur Piutang</h2>
-            </header>
-            <table class="table table-hover" id="piutang_invoices">
-                <thead>
-                <th>Status</th>
-                <th>No Faktur</th>
-                <th>Nama Customer</th>
-                <th>Total</th>
-                <th>Tgl Penjualan</th>
-                <th>Tgl Pembuatan</th>
-                <th>Tgl Update</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
-        </div>
-    </div>
+    <br>
 
     <div class="row">
-        <div class="col-xl-12 dashboard-column">
-            <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
-                <h2>Faktur Barang Free / Sample</h2>
-            </header>
-            <table class="table table-hover" id="free_invoices">
-                <thead>
-                <th>Status</th>
-                <th>No Faktur</th>
-                <th>Nama Customer</th>
-                <th>Total</th>
-                <th>Tgl Penjualan</th>
-                <th>Tgl Pembuatan</th>
-                <th>Tgl Update</th>
-                <th>Aksi</th>
-                </thead>
-            </table>
+        <div class="col-xl-12">
+            <div class="tab-content">
+                <div id="lunas">
+                    <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                        <h2>Faktur LUNAS</h2>
+                    </header>
+                    <table class="table table-hover" id="cash_invoices">
+                        <thead>
+                        <th>Status</th>
+                        <th>No Faktur</th>
+                        <th>Nama Customer</th>
+                        <th>Total</th>
+                        <th>Tgl Penjualan</th>
+                        <th>Tgl Pembuatan</th>
+                        <th>Tgl Update</th>
+                        <th>Aksi</th>
+                        </thead>
+                    </table>
+                </div>
+                <div id="piutang">
+                    <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                        <h2>Faktur PIUTANG</h2>
+                    </header>
+                    <table class="table table-hover" id="piutang_invoices">
+                        <thead>
+                        <th>Status</th>
+                        <th>No Faktur</th>
+                        <th>Nama Customer</th>
+                        <th>Total</th>
+                        <th>Tgl Penjualan</th>
+                        <th>Tgl Pembuatan</th>
+                        <th>Tgl Update</th>
+                        <th>Aksi</th>
+                        </thead>
+                    </table>
+                </div>
+                <div id="free">
+                    <header class="box-typical-header panel-heading" style="margin-bottom: 30px;">
+                        <h2>Faktur Gratis/Free Sample</h2>
+                    </header>
+                    <table class="table table-hover" id="free_invoices">
+                        <thead>
+                        <th>Status</th>
+                        <th>No Faktur</th>
+                        <th>Nama Customer</th>
+                        <th>Total</th>
+                        <th>Tgl Penjualan</th>
+                        <th>Tgl Pembuatan</th>
+                        <th>Tgl Update</th>
+                        <th>Aksi</th>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -97,6 +115,65 @@
 
     <script>
         $(document).ready(function () {
+
+            $("#piutang").hide();
+            $("#lunas").hide();
+            $("#free").hide();
+
+            var hash = window.location.hash;
+            var id = hash.substring(hash.lastIndexOf('#') + 1);
+
+            if(id){
+                if(id == "piutang" || id == "piutang_invoices"){
+                    $('button[data-index=piutang]').attr('disabled', true);
+                    $("#piutang").show();
+                }
+                else if(id == "lunas" || id == "lunas_invoices"){
+                    $('button[data-index=lunas]').attr('disabled', true);
+                    $("#lunas").show();
+                }
+                else if(id == "free" || id == "free_invoices"){
+                    $('button[data-index=free]').attr('disabled', true);
+                    $("#free").show();
+                }
+            }
+            else{
+                $('button[data-index=lunas]').attr('disabled', true);
+                $("#lunas").show();
+            }
+            
+            $('button[data-index=lunas]').click(function () {
+                if($(this).is(':not(:disabled)')){
+                    $('button[data-index=lunas]').attr('disabled', true);
+                    $('button[data-index=free]').attr('disabled', false);
+                    $('button[data-index=piutang]').attr('disabled', false);
+                    $("#lunas").fadeIn();
+                    $("#piutang").hide();
+                    $("#free").hide();
+                }
+            });
+
+            $('button[data-index=piutang]').click(function () {
+                if($(this).is(':not(:disabled)')){
+                    $('button[data-index=piutang]').attr('disabled', true);
+                    $('button[data-index=lunas]').attr('disabled', false);
+                    $('button[data-index=free]').attr('disabled', false);
+                    $("#piutang").fadeIn();
+                    $("#lunas").hide();
+                    $("#free").hide();
+                }
+            });
+
+            $('button[data-index=free]').click(function () {
+                if($(this).is(':not(:disabled)')){
+                    $('button[data-index=free]').attr('disabled', true);
+                    $('button[data-index=lunas]').attr('disabled', false);
+                    $('button[data-index=piutang]').attr('disabled', false);
+                    $("#free").fadeIn();
+                    $("#lunas").hide();
+                    $("#piutang").hide();
+                }
+            });
 
             var cash_invoices = {!! $cash_invoices->toJson() !!};
             var piutang_invoices = {!! $piutang_invoices->toJson() !!};

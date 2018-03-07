@@ -190,7 +190,7 @@ Pesan Customer
       </div>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- Piutang Modal -->
 
     <div class="modal fade" id="piutangModal" tabindex="-1" role="dialog" aria-labelledby="piutangModalLabel">
         <div class="modal-dialog" role="document">
