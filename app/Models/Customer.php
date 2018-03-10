@@ -42,7 +42,7 @@ class Customer extends Model
         if($customer->ocHeaderInvoices->count() > 0){
             $last_transaction = Carbon::parse($customer->ocHeaderInvoices[0]->delivery_at);
             if(!$customer->notif_day){
-                $notif_day = 14;
+                $notif_day = 10;
             }
             else{
                 $notif_day = $customer->notif_day;
@@ -75,7 +75,7 @@ class Customer extends Model
         foreach($customers as $key => $val){
             $last_transaction = Carbon::parse($customers[$key]->ocHeaderInvoices[0]->delivery_at);
             if(!$customers[$key]->notif_day){
-                $notif_day = 14;
+                $notif_day = 10;
             }
             else{
                 $notif_day = $customers[$key]->notif_day;

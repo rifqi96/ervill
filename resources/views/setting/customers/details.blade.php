@@ -118,7 +118,7 @@
             $('#updated_at').val(moment(updated_at).locale('id').format('DD/MM/YYYY HH:mm:ss'));
 
             if(!notif_day){
-                $('#notifday').val('14 Hari dari pengiriman terakhir');
+                $('#notifday').val('10 Hari dari pengiriman terakhir');
             }
 
             $('#lasttransaction').val(moment(last_transaction).locale('id').format('DD/MM/YYYY'));

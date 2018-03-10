@@ -259,7 +259,7 @@
                                 return data + ' hari dari pengiriman terakhir';
                             }
 
-                            return '14 hari dari pengiriman terakhir';
+                            return '10 hari dari pengiriman terakhir';
                         }
                     },
                     {
