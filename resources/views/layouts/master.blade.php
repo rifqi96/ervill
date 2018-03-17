@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    
+    <meta name="theme-color" content="#d3a">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -43,6 +43,7 @@
 </div><!--.page-content-->
 @include('layouts.errors')<!--.errors-->
 @include('layouts.success')<!--.errors-->
+
 <script type="text/javascript">
     // load a locale
     numeral.register('locale', 'id', {
@@ -87,6 +88,8 @@
         $('.select2').select2({
             theme:'classic'
         });
+        //nprogress.start();
+
     });
 </script>
 </body>

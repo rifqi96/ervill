@@ -18,10 +18,11 @@
 <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/r-2.2.1/sc-1.4.3/sl-1.2.4/datatables.min.css"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="{{ mix('/css/all.css') }}">
+<script type="text/javascript" src="{{mix('js/app.js')}}"></script>
 <script src="{{asset('assets/js/lib/jquery/jquery.min.js')}}"></script>
 <script src="{{asset('assets/js/lib/tether/tether.min.js')}}"></script>
-<script src="{{asset('assets/js/lib/bootstrap/bootstrap.min.js')}}"></script>
+
 <script src="{{asset('assets/js/plugins.js')}}"></script>
 
 <script src="{{asset('assets/js/lib/table-edit/jquery.tabledit.min.js')}}"></script>
@@ -32,7 +33,7 @@
 {{--<script src="{{asset('assets/bower_components/moment/moment.js')}}"></script>--}}
 <script src="{{asset('assets/js/lib/moment/moment-with-locales.js')}}"></script>
 
-<script src="{{asset('assets/js/app.js')}}"></script>
+{{-- <script src="{{asset('assets/js/app.js')}}"></script> --}}
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
