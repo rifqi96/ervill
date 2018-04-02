@@ -679,29 +679,24 @@ Auth::routes();
 
 Route::get('/redirect', function () {
     $query = http_build_query([
-        'client_id' => '5',
-        'redirect_uri' => 'http://localhost:8000/callback',
+        'client_id' => '3',
+        'redirect_uri' => 'http://rev-ervill.esy.es/callback',
         'response_type' => 'code',
         'scope' => '',
     ]);
 
-    return redirect('oauth/authorize?'.$query);
+    return redirect('http://rev-ervill.esy.es/oauth/authorize?'.$query);
 });
 
 Route::get('/callback', function (Request $request) {
-        $http = new \GuzzleHttp\Client([
-        'base_uri' => 'http://localhost:8000/',
-        'defaults' => [
-            'exceptions' => false
-        ]
-    ]);
+        $http = new GuzzleHttp\Client;
 
-    $response = $http->post('oauth/token', [
+    $response = $http->post('http://rev-ervill.esy.es/oauth/token', [
         'form_params' => [
             'grant_type' => 'authorization_code',
-            'client_id' => '5',
-            'client_secret' => 'weUydb1I0bn4wFBeyIhCF3z2vgJZ7MYPccUkXcih',
-            'redirect_uri' => 'http://localhost:8000/callback',
+            'client_id' => '3',
+            'client_secret' => '4dwUWqmdKn37cDQXVz62raOM9iRiMSbwKKlzV6A9',
+            'redirect_uri' => 'http://rev-ervill.esy.es/callback',
             'code' => $request->code,
         ],
     ]);
