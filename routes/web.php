@@ -677,29 +677,29 @@ Auth::routes();
 //     return json_decode((string) $response->getBody(), true);
 // });
 
-Route::get('/redirect', function () {
-    $query = http_build_query([
-        'client_id' => '3',
-        'redirect_uri' => 'http://rev-ervill.esy.es/callback',
-        'response_type' => 'code',
-        'scope' => '',
-    ]);
+// Route::get('/redirect', function () {
+//     $query = http_build_query([
+//         'client_id' => '3',
+//         'redirect_uri' => 'http://localhost:8000/callback',
+//         'response_type' => 'code',
+//         'scope' => '',
+//     ]);
 
-    return redirect('http://rev-ervill.esy.es/oauth/authorize?'.$query);
-});
+//     return redirect('http://rev-ervill.esy.es/oauth/authorize?'.$query);
+// });
 
-Route::get('/callback', function (Request $request) {
-        $http = new GuzzleHttp\Client;
+// Route::get('/callback', function (Request $request) {
+//         $http = new GuzzleHttp\Client;
 
-    $response = $http->post('http://rev-ervill.esy.es/oauth/token', [
-        'form_params' => [
-            'grant_type' => 'authorization_code',
-            'client_id' => '3',
-            'client_secret' => '4dwUWqmdKn37cDQXVz62raOM9iRiMSbwKKlzV6A9',
-            'redirect_uri' => 'http://rev-ervill.esy.es/callback',
-            'code' => $request->code,
-        ],
-    ]);
+//     $response = $http->post('http://rev-ervill.esy.es/oauth/token', [
+//         'form_params' => [
+//             'grant_type' => 'authorization_code',
+//             'client_id' => '3',
+//             'client_secret' => '4dwUWqmdKn37cDQXVz62raOM9iRiMSbwKKlzV6A9',
+//             'redirect_uri' => 'http://localhost:8000/callback',
+//             'code' => $request->code,
+//         ],
+//     ]);
 
-    return json_decode((string) $response->getBody(), true);
-});
+//     return json_decode((string) $response->getBody(), true);
+// });
