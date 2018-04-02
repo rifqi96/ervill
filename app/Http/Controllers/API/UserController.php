@@ -13,4 +13,8 @@ class UserController extends Controller
     {
         return new UserResource(User::find($id));
     }
+    public function index()
+    {
+        return new UserResource(User::all());
+    }
 }
