@@ -14,6 +14,7 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+use Illuminate\Http\Request;
 
 Route::prefix('/')->group(function(){
     Route::get('/', [
@@ -603,7 +604,7 @@ Route::prefix('issue')->group(function(){
 // Route::group(['middleware' => ['cors']], function() {
 //     Route::post('api','ServiceController@api');
 // });
-Route::post('api','ServiceController@api');
+//Route::post('api','ServiceController@api');
 
 
 Route::get('/getUsers', 'UserController@getUsers');
@@ -623,10 +624,10 @@ Route::post('/getAvailableShipmentsByDate', 'ShipmentController@getAvailableShip
 Route::post('/getUnshippedOrders', 'OrderCustomerController@getUnshippedOrders');
 Route::get('/getAllDrivers', 'UserController@getAllDrivers');
 Route::get('/getShipmentById/{shipment_id}', 'ShipmentController@getShipmentById');
-Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
+//Route::get('/getCustomerGallon', 'CustomerGallonController@getCustomerGallon');
 
 Route::get('/getReturns', 'OrderCustomerReturnController@getAll');
-Route::get('/getOrderCustomerBuys', 'OrderCustomerBuyController@getAll');
+//Route::get('/getOrderCustomerBuys', 'OrderCustomerBuyController@getAll');
 
 /**
  * Auth::routes() are :
@@ -650,3 +651,55 @@ Route::get('/getOrderCustomerBuys', 'OrderCustomerBuyController@getAll');
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
+
+
+// Route::get('/masuk',function(Request $request){
+//     //$http = new \GuzzleHttp\Client;
+
+//     $http = new \GuzzleHttp\Client([
+//         'base_uri' => 'http://localhost:8000',
+//         'defaults' => [
+//             'exceptions' => false
+//         ]
+//     ]);
+
+//     $response = $http->post('http://localhost:8000/oauth/token', [
+//         'form_params' => [
+//             'grant_type' => 'password',
+//             'client_id' => '2',
+//             'client_secret' => 'ehMYJFDtpGF0ZmwHa4igAE1k1muTBCuYxcE85ccw',
+//             'username' => 'admin',
+//             'password' => 'admin',
+//             'scope' => '',
+//         ],
+// ]);
+
+//     return json_decode((string) $response->getBody(), true);
+// });
+
+// Route::get('/redirect', function () {
+//     $query = http_build_query([
+//         'client_id' => '3',
+//         'redirect_uri' => 'http://localhost:8000/callback',
+//         'response_type' => 'code',
+//         'scope' => '',
+//     ]);
+
+//     return redirect('http://rev-ervill.esy.es/oauth/authorize?'.$query);
+// });
+
+// Route::get('/callback', function (Request $request) {
+//         $http = new GuzzleHttp\Client;
+
+//     $response = $http->post('http://rev-ervill.esy.es/oauth/token', [
+//         'form_params' => [
+//             'grant_type' => 'authorization_code',
+//             'client_id' => '3',
+//             'client_secret' => '4dwUWqmdKn37cDQXVz62raOM9iRiMSbwKKlzV6A9',
+//             'redirect_uri' => 'http://localhost:8000/callback',
+//             'code' => $request->code,
+//         ],
+//     ]);
+
+//     return json_decode((string) $response->getBody(), true);
+// });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class OverviewController extends Controller
 {
@@ -35,6 +36,7 @@ class OverviewController extends Controller
         $this->data['total_monthly_sales'] = $this->getMonthlySales()['total'];
         $this->data['ongoing_orders'] = $this->getOngoingOrders();
         $this->data['overdue_customers'] = $this->getOverdueCustomers();
+        $this->data['charts_data'] = $this->getChartsData();
         $this->data['slug'] = "";
         $this->data['breadcrumb'] = "Home - Overview";
 
@@ -92,6 +94,25 @@ class OverviewController extends Controller
         return ['sales' => $sales['headers'], 'total' => $total];
     }
 
+    public function getAllSales(){
+        $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $report_ctrl = new ReportController();
+        $sales = $report_ctrl->getAllByDate($startOfMonth, $endOfMonth);
+        $sales['details'] = $report_ctrl->splitDetails($sales['headers']);
+        $total = 0;
+        foreach($sales['details'] as $detail){
+            if($detail->type == "sales" && $detail->is_free != "true"){
+                $total += $detail->subtotal;
+            }
+            else if($detail->type == "return" && $detail->payment_status == "Refund"){
+                $total -= $detail->subtotal;
+            }
+        }
+
+        return ['sales' => $sales['headers'], 'total' => $total];
+    }
+
     public function getOverdueCustomers(){
         return (new Customer())->getOverdueCustomers();
     }
@@ -104,5 +125,29 @@ class OverviewController extends Controller
         }
 
         return ['invoices' => $invoices, 'total' => $total];
+    }
+
+    public function getChartsData(){
+        $chartsDatas = DB::table('oc_header_invoices')
+            ->join('order_customers','oc_header_invoices.id','=','order_customers.oc_header_invoice_id')
+            ->select('oc_header_invoices.delivery_at',DB::raw('SUM(er_order_customers.subtotal) as total'))
+            ->where([
+                ['oc_header_invoices.is_free','=','false'],
+                ['oc_header_invoices.delivery_at','!=',null]
+            ])
+            ->groupBy('oc_header_invoices.delivery_at')
+            ->get();
+
+
+
+        $data = array();
+        foreach ($chartsDatas as $chartsData) {
+            $chartsData->delivery_at = Carbon::parse((Carbon::parse($chartsData->delivery_at))->toDateString())->timestamp*1000;//convert to ms timestamp
+            $chartsData->total = (int) $chartsData->total;//convert string to int
+            array_push($data, array_values((array) $chartsData));//only push the values of array            
+        }
+        $collection = collect(array_values($data));
+       
+        return $collection;
     }
 }

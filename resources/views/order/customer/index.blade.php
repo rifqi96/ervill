@@ -293,7 +293,14 @@ List Pesanan Customer
     {{--</div>--}}
 
     <script>
+        nprogress.configure({ minimum: 0.2, easing: 'linear', showSpinner:false, trickleSpeed: 100 }); 
+
+        $(document)
+            .ajaxStart(nprogress.start)
+            .ajaxStop(nprogress.done);
+
         $(document).ready(function () {
+
             $('.filterBy').hide();
 
             $('.showFilterBy').click(function () {
@@ -309,6 +316,7 @@ List Pesanan Customer
                         console.log(result);
                         customerTable(result);
                         tableContent(result);
+                        //nprogress.inc();
                     })
                     .fail(function (msg) {
                         console.log('error');
