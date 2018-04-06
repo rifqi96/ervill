@@ -89,13 +89,7 @@ Overview
             </div>
         </div><!--.col-->
     </div>
-
-    <div class="row">
-        <div id="container" style="width:100%; height:400px;"></div>
-
-    </div>
-
-
+    
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading">
@@ -115,6 +109,10 @@ Overview
                 </thead>
             </table>
         </div>
+    </div>
+
+    <div class="row">
+        <div id="container" style="width:100%; height:400px;"></div>
     </div>
 
 
