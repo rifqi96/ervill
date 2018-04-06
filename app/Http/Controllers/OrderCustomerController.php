@@ -329,6 +329,11 @@ class OrderCustomerController extends OrderController
     }
 
     public function filterBy(Request $request){
+        $a = 2;
+        while($a<111111111){
+            $a = $a+1;
+        }
+        
         $filters = [];
         if($request->invoice_no){
             array_push($filters, ['id', $request->invoice_no]);
