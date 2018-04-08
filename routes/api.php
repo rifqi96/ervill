@@ -17,7 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('/users','API\UserController')->middleware('auth:api');
+Route::apiResource('/users','API\UserController');
+Route::apiResource('/orderCustomers','API\OrderCustomerController')->middleware('auth:api');
 // Route::get('/test', function () {
 //     return new UserResource(User::find(1));
 // });

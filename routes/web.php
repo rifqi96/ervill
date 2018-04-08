@@ -654,22 +654,22 @@ Auth::routes();
 
 
 // Route::get('/masuk',function(Request $request){
-//     //$http = new \GuzzleHttp\Client;
+//     $http = new \GuzzleHttp\Client;
 
-//     $http = new \GuzzleHttp\Client([
-//         'base_uri' => 'http://localhost:8000',
-//         'defaults' => [
-//             'exceptions' => false
-//         ]
-//     ]);
+//     // $http = new \GuzzleHttp\Client([
+//     //     'base_uri' => 'http://localhost:8000',
+//     //     'defaults' => [
+//     //         'exceptions' => false
+//     //     ]
+//     // ]);
 
-//     $response = $http->post('http://localhost:8000/oauth/token', [
+//     $response = $http->post('http://rev-ervill.esy.es/oauth/token', [
 //         'form_params' => [
 //             'grant_type' => 'password',
 //             'client_id' => '2',
-//             'client_secret' => 'ehMYJFDtpGF0ZmwHa4igAE1k1muTBCuYxcE85ccw',
-//             'username' => 'admin',
-//             'password' => 'admin',
+//             'client_secret' => '8rBDxxrOUa6U5M5yNeUgAXXQfU42wonF6QMsFiDU',
+//             'username' => $request->username,
+//             'password' => $request->password,
 //             'scope' => '',
 //         ],
 // ]);
