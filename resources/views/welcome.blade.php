@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
+<link rel="stylesheet" type="text/css" href="{{mix('css/all.css')}}">
         <!-- Styles -->
         <style>
             html, body {
@@ -93,3 +93,9 @@
         </div>
     </body>
 </html>
+<script type="text/javascript" src="{{mix('js/app.js')}}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        NProgress.start();
+    });
+</script>

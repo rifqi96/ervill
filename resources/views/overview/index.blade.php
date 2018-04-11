@@ -89,7 +89,7 @@ Overview
             </div>
         </div><!--.col-->
     </div>
-
+    
     <div class="row">
         <div class="col-xl-12 dashboard-column">
             <header class="box-typical-header panel-heading">
@@ -102,10 +102,7 @@ Overview
                 <th>Nama Customer</th>
                 <th>No. Telepon</th>
                 <th>Alamat Customer</th>
-                <th>Nama Driver</th>
-                {{--<th>Galon Isi Keluar</th>--}}
-                {{--<th>Galon Masuk Kosong Ervill</th>--}}
-                {{--<th>Galon Masuk Kosong Non Ervill</th>--}}
+                <th>Nama Driver</th>             
                 <th align="center">Waktu</th>
                 <th>Admin</th>
                 <!-- <th>Action</th> -->
@@ -114,23 +111,10 @@ Overview
         </div>
     </div>
 
-    {{--<div class="row">--}}
-        {{--<div class="col-xl-12 dashboard-column">--}}
-            {{--<header class="box-typical-header panel-heading">--}}
-                {{--<h3 class="panel-title">Masalah Terbaru</h3>--}}
-            {{--</header>--}}
-            {{--<table class="table table-hover" id="recent-issues">--}}
-                {{--<thead>--}}
-                {{--<th>Status</th>--}}
-                {{--<th>Nama Customer</th>--}}
-                {{--<th>Jumlah</th>--}}
-                {{--<th>Nama Driver</th>--}}
-                {{--<th align="center">Waktu</th>--}}
-                {{--<th>Aksi</th>--}}
-                {{--</thead>--}}
-            {{--</table>--}}
-        {{--</div>--}}
-    {{--</div>--}}
+    <div class="row">
+        <div id="container" style="width:100%; height:400px;"></div>
+    </div>
+
 
     <!-- Driver Modal -->
     <div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="issueModalLabel">
@@ -168,6 +152,7 @@ Overview
     <script>
         $(document).ready(function () {
             var recent_orders = {!! $recent_orders->toJson() !!};
+            var charts_data = {!! $charts_data !!};
             {{--var recent_issues = {!! $recent_issues->toJson() !!};--}}
 
             $('#recent-orders').dataTable({
@@ -262,58 +247,66 @@ Overview
                 $(this).text(numeral(price).format('$0,0'));
             });
 
-//            $('#recent-issues').dataTable({
-//                scrollX:true,
-//                scrollY: 250,
-//                scrollCollapse:true,
-//                processing: true,
-//                order:[4, 'desc'],
-//                data:recent_issues,
-//                columns:[
-//                    {data: null,
-//                        render: function(data, type, row, meta){
-//                            return '<span class="label label-danger">'+data.type+'</span>';
-//                        }},
-//                    {data: null,
-//                        render: function(data){
-//                            if(data.order.order_customer.customer){
-//                                return data.order.order_customer.customer.name;
-//                            }
-//                            return '<i>Data customer tidak ditemukan</i>';
-//                        }},
-//                    {data: 'quantity'},
-//                    {data: null,
-//                        render: function(data){
-//                            if(data.order.order_customer.shipment){
-//                                return data.order.order_customer.shipment.user.full_name;
-//                            }
-//                            else{
-//                                return '-';
-//                            }
-//                        }},
-//                    {data: null,
-//                        render: function (data) {
-//                            var date = moment(data.created_at, 'YYYY-MM-DD HH:mm:ss');
-//                            date.locale('id');
-//                            return date.calendar();
-//                        }},
-//                    {data:null,
-//                    render: function (data) {
-//                        return '<a class="btn btn-sm issue-modal-btn" href="#" data-toggle="modal" data-target="#issueModal" data-index="'+data.id+'">Detail Masalah</a>';
-//                    }}
-//                ]
-//            });
-//
-//            // On issue modal button being clicked
-//            $('#recent-issues').on('click', '.issue-modal-btn', function () {
-//                for(var i in recent_issues){
-//                    if(recent_issues[i].id == $(this).data('index')){
-//                        $('#issue-qty').text(recent_issues[i].quantity);
-//                        $('#issue-status').text(recent_issues[i].type);
-//                        $('#issue-description').text(recent_issues[i].description);
-//                    }
-//                }
-//            });
+            //HighCharts
+            console.log(charts_data);
+            Highcharts.setOptions({
+                time: {
+                    timezoneOffset: -7 * 60
+               }
+            });
+            $(function () { 
+            var myChart = Highcharts.chart('container', {
+                chart: {                   
+                    zoomType:'x'
+                },
+                title: {
+                    text: 'Ervill Sales Report'
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Rupiah'
+                    }
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1
+                            },
+                            stops: [
+                                [0, Highcharts.getOptions().colors[0]],
+                                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            ]
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 2,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                       
+                    }
+                },
+                series: [{
+                    type: 'area',
+                    name: 'Ervill Sales',
+                    data: charts_data
+                }]
+                });
+            });
+
         });
+    
+    
+
     </script>
 @endsection

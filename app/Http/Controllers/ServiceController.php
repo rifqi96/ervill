@@ -14,7 +14,7 @@ use App\Models\UserThirdParty;
 use App\Models\OrderCustomerReturn;
 use App\Models\OcHeaderInvoice;
 use App\Models\ReHeaderInvoice;
-
+use App\Http\Resources\UserResource;
 class ServiceController extends Controller
 {
     public function api(Request $request){
