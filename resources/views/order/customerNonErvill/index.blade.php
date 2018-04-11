@@ -311,6 +311,7 @@ List Pesanan Customer Non Ervill
     {{--</div>--}}
 
     <script>
+
         $(document).ready(function () {
 
             $('#cancel-btn').click(function(){

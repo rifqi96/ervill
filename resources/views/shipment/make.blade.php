@@ -109,7 +109,8 @@ Buat Pengiriman
         </div>
     </div>
 
-    <script>
+    <script>;
+
         $(document).ready(function () {
             // Init //
             var delivery_at = $('#delivery_at').val();

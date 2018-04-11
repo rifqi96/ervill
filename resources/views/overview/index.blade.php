@@ -112,7 +112,9 @@ Overview
     </div>
 
     <div class="row">
-        <div id="container" style="width:100%; height:400px;"></div>
+        <div class="col-xl-12 dashboard-column">
+            <div id="container" style="width:100%; height:400px;"></div>
+        </div>
     </div>
 
 
@@ -248,7 +250,6 @@ Overview
             });
 
             //HighCharts
-            console.log(charts_data);
             Highcharts.setOptions({
                 time: {
                     timezoneOffset: -7 * 60
@@ -260,7 +261,7 @@ Overview
                     zoomType:'x'
                 },
                 title: {
-                    text: 'Ervill Sales Report'
+                    text: 'Penjualan Ervill'
                 },
                 xAxis: {
                     type: 'datetime'
@@ -298,7 +299,7 @@ Overview
                 },
                 series: [{
                     type: 'area',
-                    name: 'Ervill Sales',
+                    name: 'Penjualan Ervill',
                     data: charts_data
                 }]
                 });
