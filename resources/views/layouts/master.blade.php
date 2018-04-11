@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="theme-color" content="#d3a">
+    <meta name="theme-color" content="#3273db">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -18,6 +18,14 @@
             color: #3875d7;
         }
     </style>
+
+    <script>
+        nprogress.configure({ minimum: 0.2, easing: 'linear', showSpinner:false, trickleSpeed: 100 });
+
+        $(document)
+            .ajaxStart(nprogress.start)
+            .ajaxStop(nprogress.done);
+    </script>
 
 </head>
 <body class="with-side-menu control-panel control-panel-compact">

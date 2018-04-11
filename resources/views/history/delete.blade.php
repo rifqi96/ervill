@@ -151,6 +151,12 @@
 
 
     <script>
+        nprogress.configure({ minimum: 0.2, easing: 'linear', showSpinner:false, trickleSpeed: 100 });
+
+        $(document)
+            .ajaxStart(nprogress.start)
+            .ajaxStop(nprogress.done);
+
         $(document).ready(function () {
             $('#ids-list').hide();
             $('#mass-restore').attr('disabled', true);

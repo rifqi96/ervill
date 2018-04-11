@@ -293,11 +293,6 @@ List Pesanan Customer
     {{--</div>--}}
 
     <script>
-        nprogress.configure({ minimum: 0.2, easing: 'linear', showSpinner:false, trickleSpeed: 100 }); 
-
-        $(document)
-            .ajaxStart(nprogress.start)
-            .ajaxStop(nprogress.done);
 
         $(document).ready(function () {
 
