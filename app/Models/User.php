@@ -67,6 +67,22 @@ class User extends Authenticatable
         return ($this->save());
     }
 
+    public function doMakeByPass($user)
+    {
+        //check that admin only can create driver
+        if($user->role!=3)
+            return false;
+
+        $this->role_id = $user->role;
+        $this->username = $user->username;
+        $this->password = bcrypt($user->password);
+        $this->full_name = $user->full_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+        
+        return ($this->save());
+    }
+
     public function doUpdate($user)
     {
         if(auth()->user()->role->name=='admin' && $user->role!=3)
