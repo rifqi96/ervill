@@ -19,7 +19,7 @@
     "vue": "^2.1.10"
   },
   "dependencies": {
-    "highcharts": "^6.0.7",
+    "highcharts": "^9.0.0",
     "nprogress": "^0.2.0"
   }
 }
